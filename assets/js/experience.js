@@ -8,7 +8,7 @@ const exp = [
     cardImage: "assets/images/experience-page/gdev.gif",
     place: "Google Developer",
     time: "(Feb, 2017 - present)",
-    desp: "<li>Reviewing other people's code and helping them improve.</li> <li>Writing design documents that states the problem being solved, alternatives considered and why you picked one of them.</li> <li>Testing code.</li> <li>Writing readable code in C++, Java, Python or Go.</li>",
+    desp: "<li>Reviewing other people's code and helping them improve.</li> <li>Writing design documents that states the problem being solved, alternatives considered and why you picked one of them.</li> <li>Testing code.</li> <li>Writing readable code in C++, C#, Java, Python, HTML, JavaScript, CSS, PHP, Swift, Django or Go.</li>",
   },
   {
     title: "Multi-Disciplinary Visual Designer",
@@ -29,7 +29,7 @@ const exp = [
     cardImage: "assets/images/experience-page/app.gif",
     place: "Kode Kenobi Studios",
     time: "Feb, 2015 - present",
-    desp: "<li>To understand clients' applications requirements. Identifying key application features. Designing creative prototypes based on specifications. Writing high quality source code to program complete applications. Writing high quality source code to program complete applications.</li>"
+    desp: "<li>To understand clients' applications requirements. Identifying key application features. Designing creative prototypes based on specifications. Writing high quality source code to program complete applications.</li>"
   }  
 ];
 
