@@ -8,7 +8,7 @@ import About from "./components/AboutPage.tsx";
 import SkillsPage from "./components/SkillsPage.tsx";
 import ProjectsPage from "./components/ProjectsPage.tsx";
 import NusuruPage from "./components/NusuruPage.tsx";
-import React, { Component } from "react";
+import { Component } from "react";
 import type { ErrorInfo, ReactNode } from "react";
 
 console.log("🚀 main.tsx: Starting React application initialization");
