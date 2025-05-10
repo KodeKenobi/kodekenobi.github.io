@@ -133,7 +133,29 @@
       // Monitor for any errors in the React application
       window.addEventListener("error", (event) => {
         console.error("❌ Global Error Caught:", event.error);
+        console.error("Error Source:", event.filename);
+        console.error("Line Number:", event.lineno);
+        console.error("Column Number:", event.colno);
       });
+
+      // Monitor script loading errors
+      window.addEventListener("unhandledrejection", (event) => {
+        console.error("❌ Unhandled Promise Rejection:", event.reason);
+      });
+
+      // Monitor resource loading
+      const observer = new PerformanceObserver((list) => {
+        for (const entry of list.getEntries()) {
+          if (entry.initiatorType === "script") {
+            console.log(`📦 Script Load: ${entry.name}`, {
+              duration: entry.duration,
+              size: entry.transferSize,
+              type: entry.initiatorType,
+            });
+          }
+        }
+      });
+      observer.observe({ entryTypes: ["resource"] });
     </script>
   </body>
 </html>
