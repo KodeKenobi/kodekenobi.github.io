@@ -11,11 +11,20 @@
   will-change: filter;
   transition: filter 300ms;
 }
+<<<<<<< HEAD
 
 .logo:hover,
 .logo.react:hover {
   filter: drop-shadow(0 0 2em #646cffaa);
 }
+=======
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+>>>>>>> 96eed360985c465177d120257abf03f438d65b9a
 
 @keyframes logo-spin {
   from {
@@ -27,7 +36,11 @@
 }
 
 @media (prefers-reduced-motion: no-preference) {
+<<<<<<< HEAD
   .logo-spin {
+=======
+  a:nth-of-type(2) .logo {
+>>>>>>> 96eed360985c465177d120257abf03f438d65b9a
     animation: logo-spin infinite 20s linear;
   }
 }
@@ -39,9 +52,12 @@
 .read-the-docs {
   color: #888;
 }
+<<<<<<< HEAD
 
 .resume-button {
   border: 2px solid blue;
   border-radius: 4px;
   padding: 6px 12px;
 }
+=======
+>>>>>>> 96eed360985c465177d120257abf03f438d65b9a
