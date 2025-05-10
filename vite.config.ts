@@ -5,7 +5,7 @@ import { resolve } from "path";
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base: "/kodekenobi.github.io/",
+  base: "/kodekenobi.github.io",
   server: {
     port: 5173,
     host: false,
