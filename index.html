@@ -14,6 +14,25 @@
     <!-- Debug logging -->
     <script>
       console.log("🔄 HTML Document Loading Started");
+
+      // Log favicon path and status
+      const faviconElement = document.getElementById("favicon");
+      console.log("🔍 Favicon Element:", faviconElement);
+      console.log("🔍 Favicon Path:", faviconElement?.href);
+
+      // Check if favicon exists
+      fetch(faviconElement?.href)
+        .then((response) => {
+          console.log("✅ Favicon Status:", response.status);
+          console.log(
+            "✅ Favicon Content-Type:",
+            response.headers.get("content-type")
+          );
+        })
+        .catch((error) => {
+          console.error("❌ Favicon Error:", error);
+        });
+
       window.addEventListener("DOMContentLoaded", () => {
         console.log("✅ DOM Content Loaded");
       });
@@ -76,10 +95,12 @@
           blinkInterval = setInterval(() => {
             isVisible = !isVisible;
 
-            // Update favicon
-            favicon.href = isVisible
+            // Update favicon with logging
+            const newFaviconPath = isVisible
               ? "/kodekenobi.github.io/assets/images/favicon-transparent.png"
               : "/kodekenobi.github.io/assets/images/favicon-transparent.png";
+            console.log("🔄 Updating favicon to:", newFaviconPath);
+            favicon.href = newFaviconPath;
 
             // Update title with warning emojis
             pageTitle.textContent = isVisible ? alertTitle : originalTitle;
@@ -88,8 +109,10 @@
           console.log("👁️ Tab visibility changed: Visible");
           // Stop blinking and reset to original when tab is active
           clearInterval(blinkInterval);
-          favicon.href =
+          const resetFaviconPath =
             "/kodekenobi.github.io/assets/images/favicon-transparent.png";
+          console.log("🔄 Resetting favicon to:", resetFaviconPath);
+          favicon.href = resetFaviconPath;
           pageTitle.textContent = originalTitle;
         }
       });
@@ -119,7 +142,11 @@
   </head>
   <body>
     <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+    <script
+      type="text/javascript"
+      src="/kodekenobi.github.io/dist/assets/index.js"
+      crossorigin="anonymous"
+    ></script>
     <script>
       console.log("🔄 React Application Script Loading Started");
       // Check if root element exists
