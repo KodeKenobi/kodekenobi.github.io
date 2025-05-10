@@ -4,9 +4,31 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Hello World</title>
+    <style>
+      .main-button {
+        background-color: #4caf50;
+        border: none;
+        color: white;
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        cursor: pointer;
+        border-radius: 4px;
+        transition: background-color 0.3s;
+      }
+      .main-button:hover {
+        background-color: #45a049;
+      }
+    </style>
   </head>
   <body>
     <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+    <button class="main-button" onclick="window.location.href='/main'">
+      Go to Main
+    </button>
+    <!-- <script type="module" src="/src/main.tsx"></script> -->
   </body>
 </html>
