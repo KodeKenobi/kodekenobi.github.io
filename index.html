@@ -2,12 +2,21 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link
-      rel="icon"
-      type="image/png"
-      href="/kodekenobi.github.io/assets/images/favicon-transparent.png"
-      id="favicon"
-    />
+    <script>
+      // Dynamic base path detection
+      const getBasePath = () => {
+        const pathSegments = window.location.pathname.split("/");
+        // Check if we're in a GitHub Pages environment
+        if (pathSegments[1] === "kodekenobi.github.io") {
+          return "/kodekenobi.github.io";
+        }
+        return "";
+      };
+
+      const basePath = getBasePath();
+      console.log("🔍 Detected Base Path:", basePath);
+    </script>
+    <link rel="icon" type="image/png" href="" id="favicon" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title id="pageTitle">Kode Kenobi</title>
 
@@ -15,13 +24,16 @@
     <script>
       console.log("🔄 HTML Document Loading Started");
 
-      // Log favicon path and status
+      // Set favicon path dynamically
       const faviconElement = document.getElementById("favicon");
+      const faviconPath = `${basePath}/assets/images/favicon-transparent.png`;
+      faviconElement.href = faviconPath;
+
       console.log("🔍 Favicon Element:", faviconElement);
-      console.log("🔍 Favicon Path:", faviconElement?.href);
+      console.log("🔍 Favicon Path:", faviconPath);
 
       // Check if favicon exists
-      fetch(faviconElement?.href)
+      fetch(faviconPath)
         .then((response) => {
           console.log("✅ Favicon Status:", response.status);
           console.log(
@@ -96,9 +108,7 @@
             isVisible = !isVisible;
 
             // Update favicon with logging
-            const newFaviconPath = isVisible
-              ? "/kodekenobi.github.io/assets/images/favicon-transparent.png"
-              : "/kodekenobi.github.io/assets/images/favicon-transparent.png";
+            const newFaviconPath = `${basePath}/assets/images/favicon-transparent.png`;
             console.log("🔄 Updating favicon to:", newFaviconPath);
             favicon.href = newFaviconPath;
 
@@ -109,8 +119,7 @@
           console.log("👁️ Tab visibility changed: Visible");
           // Stop blinking and reset to original when tab is active
           clearInterval(blinkInterval);
-          const resetFaviconPath =
-            "/kodekenobi.github.io/assets/images/favicon-transparent.png";
+          const resetFaviconPath = `${basePath}/assets/images/favicon-transparent.png`;
           console.log("🔄 Resetting favicon to:", resetFaviconPath);
           favicon.href = resetFaviconPath;
           pageTitle.textContent = originalTitle;
@@ -144,10 +153,16 @@
     <div id="root"></div>
     <script
       type="text/javascript"
-      src="/kodekenobi.github.io/dist/assets/index.js"
+      src=""
+      id="mainScript"
       crossorigin="anonymous"
     ></script>
     <script>
+      // Set main script path dynamically
+      const mainScript = document.getElementById("mainScript");
+      mainScript.src = `${basePath}/dist/assets/index.js`;
+      console.log("🔍 Main Script Path:", mainScript.src);
+
       console.log("🔄 React Application Script Loading Started");
       // Check if root element exists
       const rootElement = document.getElementById("root");
