@@ -6,6 +6,10 @@ import { resolve } from "path";
 export default defineConfig({
   plugins: [react()],
   base: "/kodekenobi.github.io/",
+  server: {
+    port: 5173,
+    host: false,
+  },
   build: {
     outDir: "dist",
     sourcemap: true,
@@ -21,11 +25,6 @@ export default defineConfig({
         entryFileNames: "assets/[name].[hash].js",
       },
     },
-  },
-  server: {
-    port: 3000,
-    strictPort: true,
-    host: true,
   },
   publicDir: "public",
 });
