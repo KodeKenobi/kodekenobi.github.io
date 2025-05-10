@@ -16,7 +16,12 @@
       const basePath = getBasePath();
       console.log("🔍 Detected Base Path:", basePath);
     </script>
-    <link rel="icon" type="image/png" href="" id="favicon" />
+    <link
+      rel="icon"
+      type="image/png"
+      href="/kodekenobi.github.io/assets/favicon-transparent.BE0vkk9J.png"
+      id="favicon"
+    />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title id="pageTitle">Kode Kenobi</title>
 
@@ -26,7 +31,7 @@
 
       // Set favicon path dynamically
       const faviconElement = document.getElementById("favicon");
-      const faviconPath = `${basePath}/assets/images/favicon-transparent.png`;
+      const faviconPath = `${basePath}/public/assets/images/favicon-transparent.png`;
       faviconElement.href = faviconPath;
 
       console.log("🔍 Favicon Element:", faviconElement);
@@ -108,7 +113,7 @@
             isVisible = !isVisible;
 
             // Update favicon with logging
-            const newFaviconPath = `${basePath}/assets/images/favicon-transparent.png`;
+            const newFaviconPath = `${basePath}/public/assets/images/favicon-transparent.png`;
             console.log("🔄 Updating favicon to:", newFaviconPath);
             favicon.href = newFaviconPath;
 
@@ -119,7 +124,7 @@
           console.log("👁️ Tab visibility changed: Visible");
           // Stop blinking and reset to original when tab is active
           clearInterval(blinkInterval);
-          const resetFaviconPath = `${basePath}/assets/images/favicon-transparent.png`;
+          const resetFaviconPath = `${basePath}/public/assets/images/favicon-transparent.png`;
           console.log("🔄 Resetting favicon to:", resetFaviconPath);
           favicon.href = resetFaviconPath;
           pageTitle.textContent = originalTitle;
@@ -148,21 +153,12 @@
         }
       })(window.location);
     </script>
+    <script type="module" crossorigin src="/kodekenobi.github.io/assets/main.CwtGqEOr.js"></script>
+    <link rel="stylesheet" crossorigin href="/kodekenobi.github.io/assets/main.Bblvy-IX.css">
   </head>
   <body>
-    <div id="root"></div>
-    <script
-      type="text/javascript"
-      src=""
-      id="mainScript"
-      crossorigin="anonymous"
-    ></script>
+    <div id="root"></div>
     <script>
-      // Set main script path dynamically
-      const mainScript = document.getElementById("mainScript");
-      mainScript.src = `${basePath}/dist/assets/index.js`;
-      console.log("🔍 Main Script Path:", mainScript.src);
-
       console.log("🔄 React Application Script Loading Started");
       // Check if root element exists
       const rootElement = document.getElementById("root");
