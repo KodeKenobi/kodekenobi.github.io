@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link
+      rel="icon"
+      type="image/png"
+      href="/kodekenobi.github.io/assets/images/favicon-transparent.png"
+      id="favicon"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title id="pageTitle">Kode Kenobi</title>
+
+    <!-- Meta tags -->
+    <meta
+      name="description"
+      content="I am a programmer and multi-disciplinary visual designer, coding and designing from Wakanda in Johannesburg, South Africa. I am a Full Stack Developer with intermediate experience in Python, C++, C#, Java, HTML, PHP, CSS, JavaScript, Django and Ruby. I am currently learning Data Science, CyberSecurity, Machine Learning and AI."
+    />
+    <meta
+      name="keywords"
+      content="kode kenobi, kode, kenobi, graphic designer, website developer, website designer, johannesburg website developer, johannesburg website designer, johannesburg graphic designer"
+    />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://kodekenobi.github.io/" />
+    <meta property="og:title" content="Kode Kenobi" />
+    <meta
+      property="og:description"
+      content="I am a programmer and multi-disciplinary visual designer, coding and designing from Wakanda in Johannesburg, South Africa."
+    />
+    <meta
+      property="og:image"
+      content="https://kodekenobi.github.io/portfolio/images/graphic10.jpg"
+    />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://kodekenobi.github.io/" />
+    <meta property="twitter:title" content="Kode Kenobi" />
+    <meta
+      property="twitter:description"
+      content="I am a programmer and multi-disciplinary visual designer, coding and designing from Wakanda in Johannesburg, South Africa."
+    />
+    <meta
+      property="twitter:image"
+      content="https://kodekenobi.github.io/portfolio/images/graphic10.jpg"
+    />
+
+    <script>
+      // Attention-grabbing effect when tab is not active
+      const favicon = document.getElementById("favicon");
+      const pageTitle = document.getElementById("pageTitle");
+      let blinkInterval;
+      const originalTitle = "Kode Kenobi";
+      const alertTitle = "🌟 Vibes this side ⚡";
+
+      document.addEventListener("visibilitychange", () => {
+        if (document.hidden) {
+          // Start blinking when tab is not active
+          let isVisible = true;
+
+          blinkInterval = setInterval(() => {
+            isVisible = !isVisible;
+
+            // Update favicon
+            favicon.href = isVisible
+              ? "/kodekenobi.github.io/assets/images/favicon-transparent.png"
+              : "/kodekenobi.github.io/assets/images/favicon-transparent.png";
+
+            // Update title with warning emojis
+            pageTitle.textContent = isVisible ? alertTitle : originalTitle;
+          }, 2000); // Blink every half second
+        } else {
+          // Stop blinking and reset to original when tab is active
+          clearInterval(blinkInterval);
+          favicon.href =
+            "/kodekenobi.github.io/assets/images/favicon-transparent.png";
+          pageTitle.textContent = originalTitle;
+        }
+      });
+
+      // Single Page Apps for GitHub Pages
+      // MIT License
+      // https://github.com/rafgraph/spa-github-pages
+      (function (l) {
+        if (l.search[1] === "/") {
+          var decoded = l.search
+            .slice(1)
+            .split("&")
+            .map(function (s) {
+              return s.replace(/~and~/g, "&");
+            })
+            .join("?");
+          window.history.replaceState(
+            null,
+            null,
+            l.pathname.slice(0, -1) + decoded + l.hash
+          );
+        }
+      })(window.location);
+    </script>
+    <script type="module" crossorigin src="/kodekenobi.github.io/assets/index-rM3Npk6D.js"></script>
+    <link rel="stylesheet" crossorigin href="/kodekenobi.github.io/assets/index-Bblvy-IX.css">
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
