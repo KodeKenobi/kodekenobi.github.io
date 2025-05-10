@@ -2,7 +2,10 @@ import { FaGithub, FaFacebook, FaTwitter, FaInstagram } from "react-icons/fa";
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 
+console.log("🚀 App.tsx: Component starting to load");
+
 function App() {
+  console.log("🔄 App.tsx: Component rendering");
   // For blinking cursor animation
   const cursorRef = useRef<HTMLSpanElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -23,6 +26,7 @@ function App() {
   ];
 
   useEffect(() => {
+    console.log("✅ App.tsx: Component mounted");
     if (cursorRef.current) {
       cursorRef.current.animate(
         [{ opacity: 1 }, { opacity: 0 }, { opacity: 1 }],
@@ -67,6 +71,12 @@ function App() {
       clearInterval(stepTimeout);
     };
   }, [isInstalling]);
+
+  useEffect(() => {
+    return () => {
+      console.log("👋 App.tsx: Component unmounting");
+    };
+  }, []);
 
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInput(e.target.value);
