@@ -156,12 +156,16 @@
         }
       })(window.location);
     </script>
-    <script type="module" crossorigin src="/kodekenobi.github.io/assets/main.D_ru0zwk.js"></script>
-    <link rel="stylesheet" crossorigin href="/kodekenobi.github.io/assets/main.Bblvy-IX.css">
+    <script type="module" crossorigin src="/kodekenobi.github.io/assets/main.B5Qt9EMX.js"></script>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root"></div>
+    <script type="module" id="mainScript"></script>
     <script>
+      // Set the module source dynamically
+      const mainScript = document.getElementById("mainScript");
+      mainScript.src = `${basePath}/src/main.tsx`;
+
       console.log("🔄 React Application Script Loading Started");
       // Check if root element exists
       const rootElement = document.getElementById("root");
