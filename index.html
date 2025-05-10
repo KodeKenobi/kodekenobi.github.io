@@ -2,176 +2,204 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <script>
+      // Dynamic base path detection
+      const getBasePath = () => {
+        const pathSegments = window.location.pathname.split("/");
+        // Check if we're in a GitHub Pages environment
+        if (pathSegments[1] === "kodekenobi.github.io") {
+          return "/kodekenobi.github.io";
+        }
+        // Also check if we're at the root of the GitHub Pages site
+        if (window.location.hostname === "kodekenobi.github.io") {
+          return "/kodekenobi.github.io";
+        }
+        return "";
+      };
+
+      const basePath = getBasePath();
+      console.log("🔍 Detected Base Path:", basePath);
+    </script>
+    <link
+      rel="icon"
+      type="image/png"
+      href="https://raw.githubusercontent.com/KodeKenobi/kodekenobi.github.io/refs/heads/main/public/assets/images/favicon-transparent.png"
+      id="favicon"
+    />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Kode Kenobi</title>
-    <style>
-      body {
-        margin: 0;
-        padding: 0;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-          Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
-      }
-      .min-h-screen {
-        min-height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: linear-gradient(to bottom right, #1a1a1a, #2d2d2d, #1a1a1a);
-        padding: 1rem;
-      }
-      .terminal-window {
-        width: 100%;
-        border: 1px solid #4a4a4a;
-        border-radius: 0.75rem;
-        background: linear-gradient(to bottom right, #1a1a1a, #2d2d2d, #1a1a1a);
-        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-        padding: 1rem;
-      }
-      .terminal-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 0.5rem 1rem;
-        border-bottom: 1px solid #4a4a4a;
-      }
-      .terminal-button {
-        width: 12px;
-        height: 12px;
-        border-radius: 50%;
-        margin-right: 8px;
-      }
-      .bg-terminal-red {
-        background-color: #ff5f56;
-      }
-      .bg-terminal-yellow {
-        background-color: #ffbd2e;
-      }
-      .bg-terminal-green {
-        background-color: #27c93f;
-      }
-      .terminal-content {
-        padding: 1rem;
-        color: #e0e0e0;
-        font-family: "Courier New", Courier, monospace;
-      }
-      .topic-header {
-        color: #4ade80;
-        font-weight: bold;
-        margin-top: 1.5rem;
-        margin-bottom: 0.5rem;
-      }
-      .topic-text {
-        color: #e0e0e0;
-        margin-bottom: 1rem;
-      }
-      .social-link {
-        color: #e0e0e0;
-        text-decoration: none;
-        transition: all 0.2s;
-      }
-      .social-link:hover {
-        transform: translateY(-2px);
-      }
-      .animate-blink {
-        animation: blink 1s infinite;
-      }
-      @keyframes blink {
-        50% {
-          opacity: 0;
+    <title id="pageTitle">Kode Kenobi</title>
+
+    <!-- Debug logging -->
+    <script>
+      console.log("🔄 HTML Document Loading Started");
+
+      // Set favicon path dynamically
+      const faviconElement = document.getElementById("favicon");
+      const faviconPath =
+        "https://raw.githubusercontent.com/KodeKenobi/kodekenobi.github.io/refs/heads/main/public/assets/images/favicon-transparent.png";
+      faviconElement.href = faviconPath;
+
+      console.log("🔍 Favicon Element:", faviconElement);
+      console.log("🔍 Favicon Path:", faviconPath);
+
+      // Check if favicon exists
+      fetch(faviconPath)
+        .then((response) => {
+          console.log("✅ Favicon Status:", response.status);
+          console.log(
+            "✅ Favicon Content-Type:",
+            response.headers.get("content-type")
+          );
+        })
+        .catch((error) => {
+          console.error("❌ Favicon Error:", error);
+        });
+
+      window.addEventListener("DOMContentLoaded", () => {
+        console.log("✅ DOM Content Loaded");
+      });
+      window.addEventListener("load", () => {
+        console.log("🚀 Window Load Event Fired");
+      });
+    </script>
+
+    <!-- Meta tags -->
+    <meta
+      name="description"
+      content="I am a programmer and multi-disciplinary visual designer, coding and designing from Wakanda in Johannesburg, South Africa. I am a Full Stack Developer with intermediate experience in Python, C++, C#, Java, HTML, PHP, CSS, JavaScript, Django and Ruby. I am currently learning Data Science, CyberSecurity, Machine Learning and AI."
+    />
+    <meta
+      name="keywords"
+      content="kode kenobi, kode, kenobi, graphic designer, website developer, website designer, johannesburg website developer, johannesburg website designer, johannesburg graphic designer"
+    />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://kodekenobi.github.io/" />
+    <meta property="og:title" content="Kode Kenobi" />
+    <meta
+      property="og:description"
+      content="I am a programmer and multi-disciplinary visual designer, coding and designing from Wakanda in Johannesburg, South Africa."
+    />
+    <meta
+      property="og:image"
+      content="https://kodekenobi.github.io/portfolio/images/graphic10.jpg"
+    />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://kodekenobi.github.io/" />
+    <meta property="twitter:title" content="Kode Kenobi" />
+    <meta
+      property="twitter:description"
+      content="I am a programmer and multi-disciplinary visual designer, coding and designing from Wakanda in Johannesburg, South Africa."
+    />
+    <meta
+      property="twitter:image"
+      content="https://kodekenobi.github.io/portfolio/images/graphic10.jpg"
+    />
+
+    <script>
+      console.log("🔄 Initializing Page Title and Favicon Scripts");
+      // Attention-grabbing effect when tab is not active
+      const favicon = document.getElementById("favicon");
+      const pageTitle = document.getElementById("pageTitle");
+      let blinkInterval;
+      const originalTitle = "Kode Kenobi";
+      const alertTitle = "🌟 Vibes this side ⚡";
+
+      document.addEventListener("visibilitychange", () => {
+        if (document.hidden) {
+          console.log("👁️ Tab visibility changed: Hidden");
+          // Start blinking when tab is not active
+          let isVisible = true;
+
+          blinkInterval = setInterval(() => {
+            isVisible = !isVisible;
+
+            // Update favicon with logging
+            const newFaviconPath =
+              "https://raw.githubusercontent.com/KodeKenobi/kodekenobi.github.io/refs/heads/main/public/assets/images/favicon-transparent.png";
+            console.log("🔄 Updating favicon to:", newFaviconPath);
+            favicon.href = newFaviconPath;
+
+            // Update title with warning emojis
+            pageTitle.textContent = isVisible ? alertTitle : originalTitle;
+          }, 2000); // Blink every half second
+        } else {
+          console.log("👁️ Tab visibility changed: Visible");
+          // Stop blinking and reset to original when tab is active
+          clearInterval(blinkInterval);
+          const resetFaviconPath =
+            "https://raw.githubusercontent.com/KodeKenobi/kodekenobi.github.io/refs/heads/main/public/assets/images/favicon-transparent.png";
+          console.log("🔄 Resetting favicon to:", resetFaviconPath);
+          favicon.href = resetFaviconPath;
+          pageTitle.textContent = originalTitle;
         }
-      }
-      .animate-fade-in {
-        animation: fadeIn 0.5s ease-in;
-      }
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
+      });
+
+      // Single Page Apps for GitHub Pages
+      // MIT License
+      // https://github.com/rafgraph/spa-github-pages
+      (function (l) {
+        console.log("🔄 Initializing SPA GitHub Pages Handler");
+        if (l.search[1] === "/") {
+          var decoded = l.search
+            .slice(1)
+            .split("&")
+            .map(function (s) {
+              return s.replace(/~and~/g, "&");
+            })
+            .join("?");
+          window.history.replaceState(
+            null,
+            null,
+            l.pathname.slice(0, -1) + decoded + l.hash
+          );
+          console.log("✅ SPA GitHub Pages Handler: URL Processed");
         }
-        to {
-          opacity: 1;
-        }
-      }
-    </style>
+      })(window.location);
+    </script>
+    <script type="module" crossorigin src="/kodekenobi.github.io/assets/main.C1zcwaOf.js"></script>
+    <link rel="stylesheet" crossorigin href="/kodekenobi.github.io/assets/main.yY_u_rFi.css">
   </head>
   <body>
-    <div class="min-h-screen">
-      <div class="terminal-window">
-        <div class="terminal-header">
-          <div style="display: flex; align-items: center">
-            <div class="terminal-button bg-terminal-red"></div>
-            <div class="terminal-button bg-terminal-yellow"></div>
-            <div class="terminal-button bg-terminal-green"></div>
-          </div>
-          <div
-            style="color: #e0e0e0; font-family: monospace; font-size: 0.875rem"
-          >
-            kode@kenobi:~
-          </div>
-        </div>
-        <div class="terminal-content">
-          <div class="animate-fade-in">
-            <div
-              style="
-                text-align: center;
-                font-size: 1.5rem;
-                font-weight: bold;
-                color: #4ade80;
-                margin-bottom: 1.5rem;
-              "
-            >
-              Kode Kenobi<span class="animate-blink">_</span>
-            </div>
+    <div id="root"></div>
+    <script>
+      console.log("🔄 React Application Script Loading Started");
+      // Check if root element exists
+      const rootElement = document.getElementById("root");
+      console.log(
+        "✅ Root Element Status:",
+        rootElement ? "Found" : "Not Found"
+      );
 
-            <div class="topic-header">COMPANY NAME</div>
-            <div class="topic-text">Kode Kenobi</div>
+      // Monitor for any errors in the React application
+      window.addEventListener("error", (event) => {
+        console.error("❌ Global Error Caught:", event.error);
+        console.error("Error Source:", event.filename);
+        console.error("Line Number:", event.lineno);
+        console.error("Column Number:", event.colno);
+      });
 
-            <div class="topic-header">DEVELOPER NICK(S)</div>
-            <div class="topic-text">
-              Kenobi, General Kenobi, Kobe, Kopenikus
-            </div>
+      // Monitor script loading errors
+      window.addEventListener("unhandledrejection", (event) => {
+        console.error("❌ Unhandled Promise Rejection:", event.reason);
+      });
 
-            <div class="topic-header">DESCRIPTION</div>
-            <div class="topic-text">
-              MERN Stack Specialist · React.js, React Native, Redux, Next.js,
-              TypeScript, Tailwind CSS, Material UI, AWS, Firebase, MongoDB,
-              REST, GraphQL, SQL, Node.js, Docker, Kubernetes, Cognito, Expo,
-              Supabase, CI/CD, GitHub Actions, Vercel, Linux, Bash, Agile,
-              Figma, OpenAI API, and more.
-            </div>
-
-            <div class="topic-header">CONTACT METHODS</div>
-            <div class="topic-text">
-              <a
-                href="mailto:kodekenobi@gmail.com"
-                style="color: #4ade80; text-decoration: none"
-              >
-                E-mail
-              </a>
-              - This would be the best way to contact me.
-            </div>
-
-            <div class="topic-header">WEBSITE</div>
-            <div class="topic-text">
-              Now, introductions aside, kindly visit my website
-              <a href="/home.html" style="color: #4ade80; text-decoration: none"
-                >here</a
-              >.
-            </div>
-
-            <div class="topic-header">My C.V</div>
-            <div class="topic-text">
-              You can download my C.V
-              <a
-                href="/assets/docs/cv.pdf"
-                style="color: #4ade80; text-decoration: none"
-                download
-              >
-                here </a
-              >.
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+      // Monitor resource loading
+      const observer = new PerformanceObserver((list) => {
+        for (const entry of list.getEntries()) {
+          if (entry.initiatorType === "script") {
+            console.log(`📦 Script Load: ${entry.name}`, {
+              duration: entry.duration,
+              size: entry.transferSize,
+              type: entry.initiatorType,
+            });
+          }
+        }
+      });
+      observer.observe({ entryTypes: ["resource"] });
+    </script>
   </body>
 </html>
