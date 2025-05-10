@@ -11,7 +11,7 @@ import NusuruPage from "./components/NusuruPage.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <BrowserRouter basename="/">
+    <BrowserRouter basename="/kodekenobi.github.io">
       <Routes>
         <Route path="/" element={<App />} />
         <Route path="/home" element={<Home />} />
