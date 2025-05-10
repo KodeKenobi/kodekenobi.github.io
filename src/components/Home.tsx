@@ -4,42 +4,14 @@ import {
   FaNodeJs,
   FaDatabase,
   FaDocker,
-  FaAws,
-  FaPython,
-  FaGitAlt,
-  FaMobile,
-  FaServer,
   FaCloud,
-  FaCode,
   FaTools,
-  FaInstagram,
-  FaTwitter,
-  FaFacebook,
-  FaGithub,
 } from "react-icons/fa";
-import {
-  SiTypescript,
-  SiTailwindcss,
-  SiMongodb,
-  SiGraphql,
-  SiKubernetes,
-} from "react-icons/si";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 
 function Home() {
   const [isInstalling, setIsInstalling] = useState(false);
-  const [installStep, setInstallStep] = useState(0);
-  const [progress, setProgress] = useState(0);
-
-  const installMessages = [
-    "Loading website... ",
-    "Initializing components... ",
-    "Setting up environment... ",
-    "Configuring styles... ",
-    "Building interface... ",
-    "Done!",
-  ];
 
   useEffect(() => {
     setIsInstalling(true);
@@ -47,35 +19,13 @@ function Home() {
 
   useEffect(() => {
     if (isInstalling) {
-      const stepTimeout = setInterval(() => {
-        setInstallStep((prev) =>
-          prev < installMessages.length - 1 ? prev + 1 : prev
-        );
-      }, 400);
-
       const installTimeout = setTimeout(() => {
         setIsInstalling(false);
-        clearInterval(stepTimeout);
       }, 2500);
 
       return () => {
         clearTimeout(installTimeout);
-        clearInterval(stepTimeout);
       };
-    }
-  }, [isInstalling]);
-
-  useEffect(() => {
-    if (isInstalling) {
-      const interval = setInterval(() => {
-        setProgress((old) => {
-          if (old >= 100) return 100;
-          return old + 4 + Math.random() * 6;
-        });
-      }, 60);
-      return () => clearInterval(interval);
-    } else {
-      setProgress(100);
     }
   }, [isInstalling]);
 
