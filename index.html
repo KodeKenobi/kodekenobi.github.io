@@ -159,8 +159,12 @@
   </head>
   <body>
     <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+    <script type="module" id="mainScript"></script>
     <script>
+      // Set the module source dynamically
+      const mainScript = document.getElementById("mainScript");
+      mainScript.src = `${basePath}/src/main.tsx`;
+
       console.log("🔄 React Application Script Loading Started");
       // Check if root element exists
       const rootElement = document.getElementById("root");
