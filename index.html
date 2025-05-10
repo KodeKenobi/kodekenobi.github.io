@@ -10,6 +10,10 @@
         if (pathSegments[1] === "kodekenobi.github.io") {
           return "/kodekenobi.github.io";
         }
+        // Also check if we're at the root of the GitHub Pages site
+        if (window.location.hostname === "kodekenobi.github.io") {
+          return "/kodekenobi.github.io";
+        }
         return "";
       };
 
@@ -163,7 +167,9 @@
     <script>
       // Set the module source dynamically
       const mainScript = document.getElementById("mainScript");
-      mainScript.src = `${basePath}/assets/main.B5Qt9EMX.js`;
+      const scriptPath = `${basePath}/assets/main.B5Qt9EMX.js`;
+      console.log("📦 Loading script from:", scriptPath);
+      mainScript.src = scriptPath;
 
       console.log("🔄 React Application Script Loading Started");
       // Check if root element exists
