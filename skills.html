@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Skills - Kode Kenobi</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <style>
+      /* Base styles */
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+        background: linear-gradient(to bottom right, #1a1a1a, #2d2d2d, #1a1a1a);
+        color: #e0e0e0;
+      }
+
+      /* Navbar styles */
+      .navbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 50;
+        background-color: rgba(17, 24, 39, 0.8);
+        backdrop-filter: blur(8px);
+        border-bottom: 1px solid #1f2937;
+      }
+
+      .nav-container {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 0 1rem;
+      }
+
+      .nav-content {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 4rem;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      @media (min-width: 768px) {
+        .nav-links {
+          display: flex;
+          gap: 2rem;
+        }
+      }
+
+      .nav-link {
+        color: #d1d5db;
+        text-decoration: none;
+        padding: 0.5rem 0.75rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        transition: color 0.2s;
+      }
+
+      .nav-link:hover {
+        color: #4ade80;
+      }
+
+      .nav-link.active {
+        color: #4ade80;
+        border-bottom: 2px solid #4ade80;
+      }
+
+      .mobile-menu-button {
+        display: block;
+        color: #d1d5db;
+        background: none;
+        border: none;
+        padding: 0.5rem;
+        cursor: pointer;
+      }
+
+      @media (min-width: 768px) {
+        .mobile-menu-button {
+          display: none;
+        }
+      }
+
+      /* Main content styles */
+      .main-content {
+        min-height: 100vh;
+        padding-top: 4rem;
+      }
+
+      .terminal-window {
+        max-width: 800px;
+        margin: 1rem auto;
+        border: 1px solid #4a4a4a;
+        border-radius: 0.75rem;
+        background: linear-gradient(to bottom right, #1a1a1a, #2d2d2d, #1a1a1a);
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        padding: 1rem;
+      }
+
+      .terminal-content {
+        font-family: "Courier New", Courier, monospace;
+        padding: 1rem;
+      }
+
+      /* Skills grid */
+      .skills-grid {
+        display: grid;
+        grid-template-columns: repeat(1, 1fr);
+        gap: 1rem;
+        margin-top: 1rem;
+      }
+
+      @media (min-width: 768px) {
+        .skills-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      @media (min-width: 1024px) {
+        .skills-grid {
+          grid-template-columns: repeat(3, 1fr);
+        }
+      }
+
+      .skill-category {
+        position: relative;
+        background: linear-gradient(to bottom right, #1f2937, #111827);
+        border-radius: 0.75rem;
+        padding: 1.5rem;
+        border: 1px solid #374151;
+        transition: all 0.3s;
+      }
+
+      .skill-category:hover {
+        border-color: #4ade80;
+        transform: translateY(-2px);
+      }
+
+      .skill-category:hover::before {
+        opacity: 1;
+      }
+
+      .skill-category::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          to right,
+          rgba(74, 222, 128, 0.1),
+          rgba(59, 130, 246, 0.1)
+        );
+        border-radius: 0.75rem;
+        opacity: 0;
+        transition: opacity 0.5s;
+      }
+
+      .skill-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1rem;
+      }
+
+      .skill-icon {
+        color: #4ade80;
+        font-size: 2rem;
+        transition: transform 0.3s;
+      }
+
+      .skill-category:hover .skill-icon {
+        transform: scale(1.1);
+      }
+
+      .skill-title {
+        font-size: 1.25rem;
+        font-weight: bold;
+        background: linear-gradient(to right, #4ade80, #3b82f6);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .skill-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+
+      .skill-tag {
+        padding: 0.375rem 0.75rem;
+        background-color: rgba(31, 41, 55, 0.5);
+        backdrop-filter: blur(4px);
+        border-radius: 9999px;
+        font-size: 0.875rem;
+        color: #d1d5db;
+        border: 1px solid #374151;
+        transition: all 0.3s;
+      }
+
+      .skill-tag:hover {
+        border-color: rgba(74, 222, 128, 0.5);
+        color: #4ade80;
+      }
+
+      .animate-blink {
+        animation: blink 1s infinite;
+      }
+
+      @keyframes blink {
+        50% {
+          opacity: 0;
+        }
+      }
+
+      .animate-fade-in {
+        animation: fadeIn 0.5s ease-in;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      /* Mobile menu */
+      .mobile-menu {
+        display: none;
+        background-color: #1f2937;
+        padding: 1rem;
+      }
+
+      .mobile-menu.active {
+        display: block;
+      }
+
+      .mobile-nav-link {
+        display: block;
+        color: #d1d5db;
+        text-decoration: none;
+        padding: 0.75rem 1rem;
+        border-radius: 0.375rem;
+        transition: all 0.2s;
+      }
+
+      .mobile-nav-link:hover {
+        background-color: #374151;
+        color: #4ade80;
+      }
+
+      .mobile-nav-link.active {
+        background-color: #374151;
+        color: #4ade80;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar">
+      <div class="nav-container">
+        <div class="nav-content">
+          <div class="nav-links">
+            <a href="/home" class="nav-link">Home</a>
+            <a href="/about" class="nav-link">About</a>
+            <a href="/skills" class="nav-link active">Skills</a>
+            <a href="/projects" class="nav-link">Projects</a>
+          </div>
+          <button class="mobile-menu-button" onclick="toggleMobileMenu()">
+            ☰
+          </button>
+        </div>
+      </div>
+      <div class="mobile-menu" id="mobileMenu">
+        <a href="/home" class="mobile-nav-link">Home</a>
+        <a href="/about" class="mobile-nav-link">About</a>
+        <a href="/skills" class="mobile-nav-link active">Skills</a>
+        <a href="/projects" class="mobile-nav-link">Projects</a>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <div class="terminal-window">
+        <div class="terminal-content">
+          <div class="animate-fade-in">
+            <div
+              style="
+                text-align: center;
+                font-size: 1.5rem;
+                font-weight: bold;
+                color: #4ade80;
+                margin-bottom: 1.5rem;
+              "
+            >
+              Skills & Expertise<span class="animate-blink">_</span>
+            </div>
+
+            <div class="skills-grid">
+              <!-- Frontend -->
+              <div class="skill-category">
+                <div class="skill-header">
+                  <i class="fab fa-react skill-icon"></i>
+                  <h3 class="skill-title">Frontend</h3>
+                </div>
+                <div class="skill-tags">
+                  <span class="skill-tag">React.js</span>
+                  <span class="skill-tag">React Native</span>
+                  <span class="skill-tag">TypeScript</span>
+                  <span class="skill-tag">Tailwind CSS</span>
+                  <span class="skill-tag">Material UI</span>
+                </div>
+              </div>
+
+              <!-- Backend -->
+              <div class="skill-category">
+                <div class="skill-header">
+                  <i class="fab fa-node-js skill-icon"></i>
+                  <h3 class="skill-title">Backend</h3>
+                </div>
+                <div class="skill-tags">
+                  <span class="skill-tag">Node.js</span>
+                  <span class="skill-tag">Express</span>
+                  <span class="skill-tag">REST</span>
+                  <span class="skill-tag">GraphQL</span>
+                  <span class="skill-tag">Python</span>
+                </div>
+              </div>
+
+              <!-- Database -->
+              <div class="skill-category">
+                <div class="skill-header">
+                  <i class="fas fa-database skill-icon"></i>
+                  <h3 class="skill-title">Database</h3>
+                </div>
+                <div class="skill-tags">
+                  <span class="skill-tag">MongoDB</span>
+                  <span class="skill-tag">SQL</span>
+                  <span class="skill-tag">Firebase</span>
+                  <span class="skill-tag">Supabase</span>
+                </div>
+              </div>
+
+              <!-- DevOps -->
+              <div class="skill-category">
+                <div class="skill-header">
+                  <i class="fab fa-docker skill-icon"></i>
+                  <h3 class="skill-title">DevOps</h3>
+                </div>
+                <div class="skill-tags">
+                  <span class="skill-tag">Docker</span>
+                  <span class="skill-tag">Kubernetes</span>
+                  <span class="skill-tag">AWS</span>
+                  <span class="skill-tag">CI/CD</span>
+                  <span class="skill-tag">GitHub Actions</span>
+                </div>
+              </div>
+
+              <!-- Cloud -->
+              <div class="skill-category">
+                <div class="skill-header">
+                  <i class="fas fa-cloud skill-icon"></i>
+                  <h3 class="skill-title">Cloud</h3>
+                </div>
+                <div class="skill-tags">
+                  <span class="skill-tag">AWS</span>
+                  <span class="skill-tag">Firebase</span>
+                  <span class="skill-tag">Vercel</span>
+                  <span class="skill-tag">Cloud Functions</span>
+                </div>
+              </div>
+
+              <!-- Tools -->
+              <div class="skill-category">
+                <div class="skill-header">
+                  <i class="fas fa-tools skill-icon"></i>
+                  <h3 class="skill-title">Tools</h3>
+                </div>
+                <div class="skill-tags">
+                  <span class="skill-tag">Git</span>
+                  <span class="skill-tag">Figma</span>
+                  <span class="skill-tag">VS Code</span>
+                  <span class="skill-tag">Postman</span>
+                  <span class="skill-tag">Jira</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function toggleMobileMenu() {
+        const mobileMenu = document.getElementById("mobileMenu");
+        mobileMenu.classList.toggle("active");
+      }
+    </script>
+  </body>
+</html>

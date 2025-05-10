@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>About - Kode Kenobi</title>
+    <style>
+      /* Base styles */
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+        background: linear-gradient(to bottom right, #1a1a1a, #2d2d2d, #1a1a1a);
+        color: #e0e0e0;
+      }
+
+      /* Navbar styles */
+      .navbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 50;
+        background-color: rgba(17, 24, 39, 0.8);
+        backdrop-filter: blur(8px);
+        border-bottom: 1px solid #1f2937;
+      }
+
+      .nav-container {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 0 1rem;
+      }
+
+      .nav-content {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 4rem;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      @media (min-width: 768px) {
+        .nav-links {
+          display: flex;
+          gap: 2rem;
+        }
+      }
+
+      .nav-link {
+        color: #d1d5db;
+        text-decoration: none;
+        padding: 0.5rem 0.75rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        transition: color 0.2s;
+      }
+
+      .nav-link:hover {
+        color: #4ade80;
+      }
+
+      .nav-link.active {
+        color: #4ade80;
+        border-bottom: 2px solid #4ade80;
+      }
+
+      .mobile-menu-button {
+        display: block;
+        color: #d1d5db;
+        background: none;
+        border: none;
+        padding: 0.5rem;
+        cursor: pointer;
+      }
+
+      @media (min-width: 768px) {
+        .mobile-menu-button {
+          display: none;
+        }
+      }
+
+      /* Main content styles */
+      .main-content {
+        min-height: 100vh;
+        padding-top: 4rem;
+      }
+
+      .terminal-window {
+        max-width: 800px;
+        margin: 1rem auto;
+        border: 1px solid #4a4a4a;
+        border-radius: 0.75rem;
+        background: linear-gradient(to bottom right, #1a1a1a, #2d2d2d, #1a1a1a);
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        padding: 1rem;
+      }
+
+      .terminal-content {
+        font-family: "Courier New", Courier, monospace;
+        padding: 1rem;
+      }
+
+      .topic-header {
+        color: #4ade80;
+        font-weight: bold;
+        margin-top: 1.5rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .topic-text {
+        color: #e0e0e0;
+        margin-bottom: 1rem;
+        line-height: 1.6;
+      }
+
+      .about-section {
+        background: linear-gradient(to right, #1f2937, #111827);
+        padding: 1.5rem;
+        border-radius: 0.75rem;
+        border: 1px solid #374151;
+        margin-bottom: 1.5rem;
+        transition: all 0.3s;
+      }
+
+      .about-section:hover {
+        border-color: #4ade80;
+        transform: translateY(-2px);
+      }
+
+      .timeline {
+        position: relative;
+        padding-left: 2rem;
+        margin: 2rem 0;
+      }
+
+      .timeline::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: #4ade80;
+      }
+
+      .timeline-item {
+        position: relative;
+        margin-bottom: 2rem;
+      }
+
+      .timeline-item::before {
+        content: "";
+        position: absolute;
+        left: -2.5rem;
+        top: 0.25rem;
+        width: 1rem;
+        height: 1rem;
+        border-radius: 50%;
+        background: #4ade80;
+      }
+
+      .timeline-date {
+        color: #4ade80;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+      }
+
+      .animate-blink {
+        animation: blink 1s infinite;
+      }
+
+      @keyframes blink {
+        50% {
+          opacity: 0;
+        }
+      }
+
+      .animate-fade-in {
+        animation: fadeIn 0.5s ease-in;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      /* Mobile menu */
+      .mobile-menu {
+        display: none;
+        background-color: #1f2937;
+        padding: 1rem;
+      }
+
+      .mobile-menu.active {
+        display: block;
+      }
+
+      .mobile-nav-link {
+        display: block;
+        color: #d1d5db;
+        text-decoration: none;
+        padding: 0.75rem 1rem;
+        border-radius: 0.375rem;
+        transition: all 0.2s;
+      }
+
+      .mobile-nav-link:hover {
+        background-color: #374151;
+        color: #4ade80;
+      }
+
+      .mobile-nav-link.active {
+        background-color: #374151;
+        color: #4ade80;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar">
+      <div class="nav-container">
+        <div class="nav-content">
+          <div class="nav-links">
+            <a href="/home" class="nav-link">Home</a>
+            <a href="/about" class="nav-link active">About</a>
+            <a href="/skills" class="nav-link">Skills</a>
+            <a href="/projects" class="nav-link">Projects</a>
+          </div>
+          <button class="mobile-menu-button" onclick="toggleMobileMenu()">
+            ☰
+          </button>
+        </div>
+      </div>
+      <div class="mobile-menu" id="mobileMenu">
+        <a href="/home" class="mobile-nav-link">Home</a>
+        <a href="/about" class="mobile-nav-link active">About</a>
+        <a href="/skills" class="mobile-nav-link">Skills</a>
+        <a href="/projects" class="mobile-nav-link">Projects</a>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <div class="terminal-window">
+        <div class="terminal-content">
+          <div class="animate-fade-in">
+            <div
+              style="
+                text-align: center;
+                font-size: 1.5rem;
+                font-weight: bold;
+                color: #4ade80;
+                margin-bottom: 1.5rem;
+              "
+            >
+              About Me<span class="animate-blink">_</span>
+            </div>
+
+            <div class="about-section">
+              <div class="topic-header">WHO AM I?</div>
+              <div class="topic-text">
+                I'm a passionate Full Stack Developer with a keen eye for design
+                and a love for creating seamless user experiences. My journey in
+                tech began with a curiosity about how things work on the web,
+                which evolved into a deep passion for building innovative
+                solutions that make a difference.
+              </div>
+            </div>
+
+            <div class="about-section">
+              <div class="topic-header">MY JOURNEY</div>
+              <div class="timeline">
+                <div class="timeline-item">
+                  <div class="timeline-date">2020 - Present</div>
+                  <div class="topic-text">
+                    Full Stack Developer at Kode Kenobi<br />
+                    Building modern web applications and mobile solutions using
+                    React, Node.js, and cloud technologies.
+                  </div>
+                </div>
+                <div class="timeline-item">
+                  <div class="timeline-date">2018 - 2020</div>
+                  <div class="topic-text">
+                    Frontend Developer<br />
+                    Specialized in creating responsive and interactive user
+                    interfaces using React and modern CSS frameworks.
+                  </div>
+                </div>
+                <div class="timeline-item">
+                  <div class="timeline-date">2016 - 2018</div>
+                  <div class="topic-text">
+                    Web Development Bootcamp<br />
+                    Intensive training in full-stack development, focusing on
+                    JavaScript, HTML, CSS, and various frameworks.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="about-section">
+              <div class="topic-header">MY PHILOSOPHY</div>
+              <div class="topic-text">
+                I believe in writing clean, maintainable code and creating
+                intuitive user experiences. Every project is an opportunity to
+                learn and grow, and I'm constantly exploring new technologies
+                and methodologies to stay at the forefront of web development.
+              </div>
+            </div>
+
+            <div class="about-section">
+              <div class="topic-header">BEYOND CODING</div>
+              <div class="topic-text">
+                When I'm not coding, you can find me exploring new technologies,
+                contributing to open-source projects, or sharing my knowledge
+                through technical writing and mentoring. I'm also passionate
+                about AI and machine learning, constantly exploring ways to
+                integrate these technologies into my work.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function toggleMobileMenu() {
+        const mobileMenu = document.getElementById("mobileMenu");
+        mobileMenu.classList.toggle("active");
+      }
+    </script>
+  </body>
+</html>
