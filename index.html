@@ -11,6 +11,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title id="pageTitle">Kode Kenobi</title>
 
+    <!-- Debug logging -->
+    <script>
+      console.log("🔄 HTML Document Loading Started");
+      window.addEventListener("DOMContentLoaded", () => {
+        console.log("✅ DOM Content Loaded");
+      });
+      window.addEventListener("load", () => {
+        console.log("🚀 Window Load Event Fired");
+      });
+    </script>
+
     <!-- Meta tags -->
     <meta
       name="description"
@@ -48,6 +59,7 @@
     />
 
     <script>
+      console.log("🔄 Initializing Page Title and Favicon Scripts");
       // Attention-grabbing effect when tab is not active
       const favicon = document.getElementById("favicon");
       const pageTitle = document.getElementById("pageTitle");
@@ -57,6 +69,7 @@
 
       document.addEventListener("visibilitychange", () => {
         if (document.hidden) {
+          console.log("👁️ Tab visibility changed: Hidden");
           // Start blinking when tab is not active
           let isVisible = true;
 
@@ -72,6 +85,7 @@
             pageTitle.textContent = isVisible ? alertTitle : originalTitle;
           }, 2000); // Blink every half second
         } else {
+          console.log("👁️ Tab visibility changed: Visible");
           // Stop blinking and reset to original when tab is active
           clearInterval(blinkInterval);
           favicon.href =
@@ -84,6 +98,7 @@
       // MIT License
       // https://github.com/rafgraph/spa-github-pages
       (function (l) {
+        console.log("🔄 Initializing SPA GitHub Pages Handler");
         if (l.search[1] === "/") {
           var decoded = l.search
             .slice(1)
@@ -97,6 +112,7 @@
             null,
             l.pathname.slice(0, -1) + decoded + l.hash
           );
+          console.log("✅ SPA GitHub Pages Handler: URL Processed");
         }
       })(window.location);
     </script>
@@ -104,5 +120,19 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    <script>
+      console.log("🔄 React Application Script Loading Started");
+      // Check if root element exists
+      const rootElement = document.getElementById("root");
+      console.log(
+        "✅ Root Element Status:",
+        rootElement ? "Found" : "Not Found"
+      );
+
+      // Monitor for any errors in the React application
+      window.addEventListener("error", (event) => {
+        console.error("❌ Global Error Caught:", event.error);
+      });
+    </script>
   </body>
 </html>
