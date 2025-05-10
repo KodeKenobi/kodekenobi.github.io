@@ -1,220 +1,39 @@
-import { useEffect, useState } from "react";
-import {
-  FaReact,
-  FaNodeJs,
-  FaDatabase,
-  FaDocker,
-  FaAws,
-  FaPython,
-  FaGitAlt,
-  FaMobile,
-  FaServer,
-  FaCloud,
-  FaCode,
-  FaTools,
-  FaInstagram,
-  FaTwitter,
-  FaFacebook,
-  FaGithub,
-} from "react-icons/fa";
-import {
-  SiTypescript,
-  SiTailwindcss,
-  SiMongodb,
-  SiGraphql,
-  SiKubernetes,
-} from "react-icons/si";
-import Navbar from "./Navbar";
+import { Link } from "react-router-dom";
 import Footer from "./Footer";
 
-function Home() {
-  const [isInstalling, setIsInstalling] = useState(false);
-  const [installStep, setInstallStep] = useState(0);
-  const [progress, setProgress] = useState(0);
-
-  const installMessages = [
-    "Loading website... ",
-    "Initializing components... ",
-    "Setting up environment... ",
-    "Configuring styles... ",
-    "Building interface... ",
-    "Done!",
-  ];
-
-  useEffect(() => {
-    setIsInstalling(true);
-  }, []);
-
-  useEffect(() => {
-    if (isInstalling) {
-      const stepTimeout = setInterval(() => {
-        setInstallStep((prev) =>
-          prev < installMessages.length - 1 ? prev + 1 : prev
-        );
-      }, 400);
-
-      const installTimeout = setTimeout(() => {
-        setIsInstalling(false);
-        clearInterval(stepTimeout);
-      }, 2500);
-
-      return () => {
-        clearTimeout(installTimeout);
-        clearInterval(stepTimeout);
-      };
-    }
-  }, [isInstalling]);
-
-  useEffect(() => {
-    if (isInstalling) {
-      const interval = setInterval(() => {
-        setProgress((old) => {
-          if (old >= 100) return 100;
-          return old + 4 + Math.random() * 6;
-        });
-      }, 60);
-      return () => clearInterval(interval);
-    } else {
-      setProgress(100);
-    }
-  }, [isInstalling]);
-
-  const skillCategories = [
-    {
-      title: "Frontend",
-      icon: <FaReact className="w-8 h-8" />,
-      skills: [
-        "React.js",
-        "React Native",
-        "TypeScript",
-        "Tailwind CSS",
-        "Material UI",
-      ],
-    },
-    {
-      title: "Backend",
-      icon: <FaNodeJs className="w-8 h-8" />,
-      skills: ["Node.js", "Express", "REST", "GraphQL", "Python"],
-    },
-    {
-      title: "Database",
-      icon: <FaDatabase className="w-8 h-8" />,
-      skills: ["MongoDB", "SQL", "Firebase", "Supabase"],
-    },
-    {
-      title: "DevOps",
-      icon: <FaDocker className="w-8 h-8" />,
-      skills: ["Docker", "Kubernetes", "AWS", "CI/CD", "GitHub Actions"],
-    },
-    {
-      title: "Cloud",
-      icon: <FaCloud className="w-8 h-8" />,
-      skills: ["AWS", "Firebase", "Vercel", "Cloud Functions"],
-    },
-    {
-      title: "Tools",
-      icon: <FaTools className="w-8 h-8" />,
-      skills: ["Git", "Figma", "VS Code", "Postman", "Jira"],
-    },
-  ];
-
+const Home = () => {
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 relative overflow-hidden">
-      <Navbar />
-
-      {/* Main Content - Add padding-top to account for fixed navbar */}
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
       <div className="flex-1 pt-16">
-        {/* Animated Background */}
-        <div className="absolute inset-0 bg-gradient-to-r from-green-900 via-blue-900 to-purple-900 opacity-20 animate-gradient"></div>
-        <div className="w-full relative">
-          {/* Terminal Window */}
-          <div className="mt-4 terminal-window mx-auto shadow-2xl rounded-xl bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 animate-fade-in px-4 sm:px-8 py-4 sm:py-6">
-            <div className="terminal-content font-mono animate-slide-up px-1 sm:px-4 py-2 sm:py-6 text-[0.97rem] sm:text-base overflow-x-auto break-words">
-              {/* Main Content */}
-              <div className="animate-fade-in">
-                <div className="text-xl sm:text-2xl font-bold text-green-400 mb-6 text-center">
-                  Welcome to My Website
-                  <span className="animate-blink">_</span>
-                </div>
-
-                <div id="about" className="topic-header mt-20">
-                  ABOUT ME
-                </div>
-                <div className="topic-text">
-                  I'm a passionate Full Stack Developer with expertise in modern
-                  web technologies. My journey in tech is driven by creativity
-                  and a love for building innovative solutions.
-                </div>
-
-                <div id="skills" className="topic-header">
-                  SKILLS & EXPERTISE
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
-                  {skillCategories.map((category) => (
-                    <div
-                      key={category.title}
-                      className="group relative bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 hover:scale-105 border border-gray-700 hover:border-green-500/50"
-                    >
-                      {/* Glow effect */}
-                      <div className="absolute inset-0 bg-gradient-to-r from-green-500/10 to-blue-500/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-
-                      {/* Content */}
-                      <div className="relative z-10">
-                        <div className="flex items-center space-x-4 mb-4">
-                          <div className="text-green-400 transform group-hover:scale-110 transition-transform duration-300">
-                            {category.icon}
-                          </div>
-                          <h3 className="text-xl font-bold bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent">
-                            {category.title}
-                          </h3>
-                        </div>
-                        <div className="flex flex-wrap gap-2">
-                          {category.skills.map((skill) => (
-                            <span
-                              key={skill}
-                              className="px-3 py-1.5 bg-gray-800/50 backdrop-blur-sm rounded-full text-sm text-gray-300 border border-gray-700 hover:border-green-500/50 hover:text-green-400 transition-all duration-300"
-                            >
-                              {skill}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                <div id="focus" className="topic-header mt-12">
-                  CURRENT FOCUS
-                </div>
-                <div className="topic-text bg-gradient-to-r from-gray-800 to-gray-900 p-6 rounded-xl border border-gray-700 hover:border-green-500/50 transition-all duration-300">
-                  Exploring the frontiers of AI and Machine Learning while
-                  building scalable web applications. Always learning, always
-                  growing.
-                </div>
-
-                <div id="contact" className="topic-header mt-12">
-                  GET IN TOUCH
-                </div>
-                <div className="topic-text bg-gradient-to-r from-gray-800 to-gray-900 p-6 rounded-xl border border-gray-700 hover:border-green-500/50 transition-all duration-300">
-                  Let's connect and create something amazing together.{" "}
-                  <a
-                    href="mailto:kodekenobi@gmail.com"
-                    className="text-green-400 hover:text-green-300 font-semibold hover:underline transition-all duration-300"
-                  >
-                    Send me an email
-                  </a>
-                  .
-                </div>
-
-                {/* Footer */}
-                <Footer />
-              </div>
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div className="text-center">
+            <h1 className="text-4xl sm:text-5xl font-bold text-white mb-8">
+              Welcome to My Portfolio
+            </h1>
+            <p className="text-xl text-gray-300 mb-12">
+              Full-stack developer specializing in React, Node.js, and cloud
+              technologies
+            </p>
+            <div className="flex flex-col sm:flex-row justify-center gap-4">
+              <Link
+                to="/about"
+                className="px-8 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
+              >
+                About Me
+              </Link>
+              <Link
+                to="/projects"
+                className="px-8 py-3 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors"
+              >
+                View Projects
+              </Link>
             </div>
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
-}
+};
 
 export default Home;

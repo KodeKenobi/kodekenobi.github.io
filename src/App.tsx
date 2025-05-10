@@ -1,11 +1,4 @@
-import {
-  FaGithub,
-  FaFacebook,
-  FaTwitter,
-  FaInstagram,
-  FaDribbble,
-  FaBehance,
-} from "react-icons/fa";
+import { FaGithub, FaFacebook, FaTwitter, FaInstagram } from "react-icons/fa";
 import { useEffect, useRef, useState } from "react";
 
 function App() {
@@ -14,7 +7,6 @@ function App() {
   const inputRef = useRef<HTMLInputElement>(null);
   const ghostRef = useRef<HTMLSpanElement>(null);
   const [input, setInput] = useState("");
-  const [inputWidth, setInputWidth] = useState(16); // px
   const [showContent, setShowContent] = useState(false);
   const [error, setError] = useState("");
   const [isInstalling, setIsInstalling] = useState(false);
@@ -46,7 +38,8 @@ function App() {
 
   useEffect(() => {
     if (ghostRef.current) {
-      setInputWidth(ghostRef.current.offsetWidth + 2); // +2 for caret
+      // +2 for caret
+      ghostRef.current.style.width = `${ghostRef.current.offsetWidth + 2}px`;
     }
   }, [input]);
 

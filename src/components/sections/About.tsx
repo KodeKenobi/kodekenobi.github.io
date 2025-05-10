@@ -1,74 +1,7 @@
-import {
-  FaUser,
-  FaGraduationCap,
-  FaBriefcase,
-  FaCode,
-  FaLaptopCode,
-  FaServer,
-  FaCloud,
-  FaLinkedin,
-  FaDownload,
-  FaInstagram,
-  FaTwitter,
-  FaFacebook,
-  FaGithub,
-  FaReact,
-  FaNodeJs,
-  FaDatabase,
-  FaDocker,
-  FaAws,
-  FaPython,
-  FaTools,
-} from "react-icons/fa";
-import {
-  SiTypescript,
-  SiTailwindcss,
-  SiMongodb,
-  SiGraphql,
-  SiKubernetes,
-} from "react-icons/si";
+import { FaLinkedin } from "react-icons/fa";
 import Footer from "../Footer";
 
 const About = () => {
-  const skillCategories = [
-    {
-      title: "Frontend",
-      icon: <FaReact className="w-8 h-8" />,
-      skills: [
-        "React.js",
-        "React Native",
-        "TypeScript",
-        "Tailwind CSS",
-        "Material UI",
-      ],
-    },
-    {
-      title: "Backend",
-      icon: <FaNodeJs className="w-8 h-8" />,
-      skills: ["Node.js", "Express", "REST", "GraphQL", "Python"],
-    },
-    {
-      title: "Database",
-      icon: <FaDatabase className="w-8 h-8" />,
-      skills: ["MongoDB", "SQL", "Firebase", "Supabase"],
-    },
-    {
-      title: "DevOps",
-      icon: <FaDocker className="w-8 h-8" />,
-      skills: ["Docker", "Kubernetes", "AWS", "CI/CD", "GitHub Actions"],
-    },
-    {
-      title: "Cloud",
-      icon: <FaCloud className="w-8 h-8" />,
-      skills: ["AWS", "Firebase", "Vercel", "Cloud Functions"],
-    },
-    {
-      title: "Tools",
-      icon: <FaTools className="w-8 h-8" />,
-      skills: ["Git", "Figma", "VS Code", "Postman", "Jira"],
-    },
-  ];
-
   return (
     <div className="max-w-4xl mx-auto px-6 py-12">
       {/* Action Buttons */}
@@ -87,7 +20,7 @@ const About = () => {
           download
           className="flex items-center space-x-2 px-4 py-2 bg-gray-700 text-gray-200 rounded-lg hover:bg-gray-600 transition-colors duration-200"
         >
-          <FaDownload className="text-xl" />
+          <FaLinkedin className="text-xl" />
           <span>Download CV</span>
         </a>
       </div>
@@ -103,7 +36,7 @@ const About = () => {
         {/* Professional Experience Section */}
         <section>
           <div className="flex items-center space-x-4 mb-8">
-            <FaBriefcase className="text-2xl text-green-400" />
+            <FaLinkedin className="text-2xl text-green-400" />
             <h3 className="text-2xl font-bold text-green-400 tracking-wide">
               PROFESSIONAL EXPERIENCE
             </h3>
@@ -118,24 +51,24 @@ const About = () => {
               </p>
               <ul className="list-none text-gray-200 space-y-3">
                 <li className="flex items-start space-x-3">
-                  <FaCode className="text-green-400 mt-1 flex-shrink-0" />
+                  <FaLinkedin className="text-green-400 mt-1 flex-shrink-0" />
                   <span>
                     Full-stack development using React.js, Next.js, and Tailwind
                     CSS
                   </span>
                 </li>
                 <li className="flex items-start space-x-3">
-                  <FaLaptopCode className="text-green-400 mt-1 flex-shrink-0" />
+                  <FaLinkedin className="text-green-400 mt-1 flex-shrink-0" />
                   <span>
                     Cross-platform mobile development with React Native and Expo
                   </span>
                 </li>
                 <li className="flex items-start space-x-3">
-                  <FaServer className="text-green-400 mt-1 flex-shrink-0" />
+                  <FaLinkedin className="text-green-400 mt-1 flex-shrink-0" />
                   <span>Backend development with RESTful APIs and GraphQL</span>
                 </li>
                 <li className="flex items-start space-x-3">
-                  <FaCloud className="text-green-400 mt-1 flex-shrink-0" />
+                  <FaLinkedin className="text-green-400 mt-1 flex-shrink-0" />
                   <span>
                     Security implementation using AWS Cognito, NextAuth, and
                     OAuth
@@ -153,11 +86,11 @@ const About = () => {
               </p>
               <ul className="list-none text-gray-200 space-y-3">
                 <li className="flex items-start space-x-3">
-                  <FaCode className="text-green-400 mt-1 flex-shrink-0" />
+                  <FaLinkedin className="text-green-400 mt-1 flex-shrink-0" />
                   <span>Developed conversational agents and chatbots</span>
                 </li>
                 <li className="flex items-start space-x-3">
-                  <FaCloud className="text-green-400 mt-1 flex-shrink-0" />
+                  <FaLinkedin className="text-green-400 mt-1 flex-shrink-0" />
                   <span>
                     Worked with NLP, AWS, Kubernetes, and various cloud
                     technologies
@@ -175,14 +108,14 @@ const About = () => {
               </p>
               <ul className="list-none text-gray-200 space-y-3">
                 <li className="flex items-start space-x-3">
-                  <FaCode className="text-green-400 mt-1 flex-shrink-0" />
+                  <FaLinkedin className="text-green-400 mt-1 flex-shrink-0" />
                   <span>
                     Full-stack development with React, Vue.js, Angular, and
                     Ionic
                   </span>
                 </li>
                 <li className="flex items-start space-x-3">
-                  <FaLaptopCode className="text-green-400 mt-1 flex-shrink-0" />
+                  <FaLinkedin className="text-green-400 mt-1 flex-shrink-0" />
                   <span>Mobile app development using Flutter and Dart</span>
                 </li>
               </ul>
@@ -197,11 +130,11 @@ const About = () => {
               </p>
               <ul className="list-none text-gray-200 space-y-3">
                 <li className="flex items-start space-x-3">
-                  <FaCode className="text-green-400 mt-1 flex-shrink-0" />
+                  <FaLinkedin className="text-green-400 mt-1 flex-shrink-0" />
                   <span>Web design and WordPress development</span>
                 </li>
                 <li className="flex items-start space-x-3">
-                  <FaServer className="text-green-400 mt-1 flex-shrink-0" />
+                  <FaLinkedin className="text-green-400 mt-1 flex-shrink-0" />
                   <span>Managed and maintained multiple client websites</span>
                 </li>
               </ul>
@@ -212,7 +145,7 @@ const About = () => {
         {/* Education Section */}
         <section>
           <div className="flex items-center space-x-4 mb-8">
-            <FaGraduationCap className="text-2xl text-green-400" />
+            <FaLinkedin className="text-2xl text-green-400" />
             <h3 className="text-2xl font-bold text-green-400 tracking-wide">
               EDUCATION
             </h3>
