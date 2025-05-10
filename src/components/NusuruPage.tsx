@@ -1,12 +1,5 @@
-import { useEffect } from "react";
 import Navbar from "./Navbar";
-import {
-  FaMobile,
-  FaUsers,
-  FaStore,
-  FaHandshake,
-  FaDownload,
-} from "react-icons/fa";
+import { FaUsers, FaStore, FaHandshake, FaDownload } from "react-icons/fa";
 import Footer from "./Footer";
 
 const NusuruPage = () => {
