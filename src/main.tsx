@@ -1,6 +1,6 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { HashRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./index.css";
 import App from "./App.tsx";
 import Home from "./components/Home.tsx";
@@ -11,7 +11,7 @@ import NusuruPage from "./components/NusuruPage.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <HashRouter>
+    <BrowserRouter basename="/kodekenobi.github.io">
       <Routes>
         <Route path="/" element={<App />} />
         <Route path="/home" element={<Home />} />
@@ -20,6 +20,6 @@ createRoot(document.getElementById("root")!).render(
         <Route path="/projects" element={<ProjectsPage />} />
         <Route path="/projects/nusuru" element={<NusuruPage />} />
       </Routes>
-    </HashRouter>
+    </BrowserRouter>
   </StrictMode>
 );

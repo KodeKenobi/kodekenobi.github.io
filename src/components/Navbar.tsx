@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { FaBars, FaTimes } from "react-icons/fa";
-import { useLocation } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -21,9 +21,9 @@ const Navbar = () => {
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-8">
             {navItems.map((item) => (
-              <a
+              <Link
                 key={item.name}
-                href={item.path}
+                to={item.path}
                 className={`${
                   location.pathname === item.path
                     ? "text-green-400 border-b-2 border-green-400"
@@ -31,7 +31,7 @@ const Navbar = () => {
                 } px-3 py-2 text-sm font-medium transition-colors duration-200`}
               >
                 {item.name}
-              </a>
+              </Link>
             ))}
           </div>
 
@@ -56,9 +56,9 @@ const Navbar = () => {
         <div className="md:hidden">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
             {navItems.map((item) => (
-              <a
+              <Link
                 key={item.name}
-                href={item.path}
+                to={item.path}
                 className={`${
                   location.pathname === item.path
                     ? "bg-gray-800 text-green-400"
@@ -67,7 +67,7 @@ const Navbar = () => {
                 onClick={() => setIsOpen(false)}
               >
                 {item.name}
-              </a>
+              </Link>
             ))}
           </div>
         </div>

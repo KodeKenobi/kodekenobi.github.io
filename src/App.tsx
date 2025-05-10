@@ -1,5 +1,6 @@
 import { FaGithub, FaFacebook, FaTwitter, FaInstagram } from "react-icons/fa";
 import { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 
 function App() {
   // For blinking cursor animation
@@ -280,12 +281,12 @@ function App() {
                 <div className="topic-header">WEBSITE</div>
                 <div className="topic-text">
                   Now, introductions aside, kindly visit my website{" "}
-                  <a
-                    href="/home"
+                  <Link
+                    to="/home"
                     className="text-green-400 hover:text-green-300"
                   >
                     here
-                  </a>
+                  </Link>
                   .
                 </div>
 
