@@ -9,6 +9,8 @@ import SkillsPage from "./components/SkillsPage.tsx";
 import ProjectsPage from "./components/ProjectsPage.tsx";
 import NusuruPage from "./components/NusuruPage.tsx";
 
+console.log("🚀 main.tsx: Starting React application initialization");
+
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <BrowserRouter basename="/kodekenobi.github.io">
@@ -23,3 +25,5 @@ createRoot(document.getElementById("root")!).render(
     </BrowserRouter>
   </StrictMode>
 );
+
+console.log("✅ main.tsx: React application initialized");
