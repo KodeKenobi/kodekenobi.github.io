@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <script>
+      // Dynamic base path detection
+      const getBasePath = () => {
+        const pathSegments = window.location.pathname.split("/");
+        // Check if we're in a GitHub Pages environment
+        if (pathSegments[1] === "kodekenobi.github.io") {
+          return "/kodekenobi.github.io";
+        }
+        // Also check if we're at the root of the GitHub Pages site
+        if (window.location.hostname === "kodekenobi.github.io") {
+          return "/kodekenobi.github.io";
+        }
+        return "";
+      };
+
+      const basePath = getBasePath();
+      console.log("🔍 Detected Base Path:", basePath);
+    </script>
+    <link
+      rel="icon"
+      type="image/png"
+      href="https://raw.githubusercontent.com/KodeKenobi/kodekenobi.github.io/refs/heads/main/public/assets/images/favicon-transparent.png"
+      id="favicon"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title id="pageTitle">Kode Kenobi</title>
+
+    <!-- Debug logging -->
+    <script>
+      console.log("🔄 HTML Document Loading Started");
+
+      // Set favicon path dynamically
+      const faviconElement = document.getElementById("favicon");
+      const faviconPath =
+        "https://raw.githubusercontent.com/KodeKenobi/kodekenobi.github.io/refs/heads/main/public/assets/images/favicon-transparent.png";
+      faviconElement.href = faviconPath;
+
+      console.log("🔍 Favicon Element:", faviconElement);
+      console.log("🔍 Favicon Path:", faviconPath);
+
+      // Check if favicon exists
+      fetch(faviconPath)
+        .then((response) => {
+          console.log("✅ Favicon Status:", response.status);
+          console.log(
+            "✅ Favicon Content-Type:",
+            response.headers.get("content-type")
+          );
+        })
+        .catch((error) => {
+          console.error("❌ Favicon Error:", error);
+        });
+
+      window.addEventListener("DOMContentLoaded", () => {
+        console.log("✅ DOM Content Loaded");
+      });
+      window.addEventListener("load", () => {
+        console.log("🚀 Window Load Event Fired");
+      });
+    </script>
+
+    <!-- Meta tags -->
+    <meta
+      name="description"
+      content="I am a programmer and multi-disciplinary visual designer, coding and designing from Wakanda in Johannesburg, South Africa. I am a Full Stack Developer with intermediate experience in Python, C++, C#, Java, HTML, PHP, CSS, JavaScript, Django and Ruby. I am currently learning Data Science, CyberSecurity, Machine Learning and AI."
+    />
+    <meta
+      name="keywords"
+      content="kode kenobi, kode, kenobi, graphic designer, website developer, website designer, johannesburg website developer, johannesburg website designer, johannesburg graphic designer"
+    />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://kodekenobi.github.io/" />
+    <meta property="og:title" content="Kode Kenobi" />
+    <meta
+      property="og:description"
+      content="I am a programmer and multi-disciplinary visual designer, coding and designing from Wakanda in Johannesburg, South Africa."
+    />
+    <meta
+      property="og:image"
+      content="https://kodekenobi.github.io/portfolio/images/graphic10.jpg"
+    />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://kodekenobi.github.io/" />
+    <meta property="twitter:title" content="Kode Kenobi" />
+    <meta
+      property="twitter:description"
+      content="I am a programmer and multi-disciplinary visual designer, coding and designing from Wakanda in Johannesburg, South Africa."
+    />
+    <meta
+      property="twitter:image"
+      content="https://kodekenobi.github.io/portfolio/images/graphic10.jpg"
+    />
+
+    <script>
+      console.log("🔄 Initializing Page Title and Favicon Scripts");
+      // Attention-grabbing effect when tab is not active
+      const favicon = document.getElementById("favicon");
+      const pageTitle = document.getElementById("pageTitle");
+      let blinkInterval;
+      const originalTitle = "Kode Kenobi";
+      const alertTitle = "🌟 Vibes this side ⚡";
+
+      document.addEventListener("visibilitychange", () => {
+        if (document.hidden) {
+          console.log("👁️ Tab visibility changed: Hidden");
+          // Start blinking when tab is not active
+          let isVisible = true;
+
+          blinkInterval = setInterval(() => {
+            isVisible = !isVisible;
+
+            // Update favicon with logging
+            const newFaviconPath =
+              "https://raw.githubusercontent.com/KodeKenobi/kodekenobi.github.io/refs/heads/main/public/assets/images/favicon-transparent.png";
+            console.log("🔄 Updating favicon to:", newFaviconPath);
+            favicon.href = newFaviconPath;
+
+            // Update title with warning emojis
+            pageTitle.textContent = isVisible ? alertTitle : originalTitle;
+          }, 2000); // Blink every half second
+        } else {
+          console.log("👁️ Tab visibility changed: Visible");
+          // Stop blinking and reset to original when tab is active
+          clearInterval(blinkInterval);
+          const resetFaviconPath =
+            "https://raw.githubusercontent.com/KodeKenobi/kodekenobi.github.io/refs/heads/main/public/assets/images/favicon-transparent.png";
+          console.log("🔄 Resetting favicon to:", resetFaviconPath);
+          favicon.href = resetFaviconPath;
+          pageTitle.textContent = originalTitle;
+        }
+      });
+
+      // Single Page Apps for GitHub Pages
+      // MIT License
+      // https://github.com/rafgraph/spa-github-pages
+      (function (l) {
+        console.log("🔄 Initializing SPA GitHub Pages Handler");
+        if (l.search[1] === "/") {
+          var decoded = l.search
+            .slice(1)
+            .split("&")
+            .map(function (s) {
+              return s.replace(/~and~/g, "&");
+            })
+            .join("?");
+          window.history.replaceState(
+            null,
+            null,
+            l.pathname.slice(0, -1) + decoded + l.hash
+          );
+          console.log("✅ SPA GitHub Pages Handler: URL Processed");
+        }
+      })(window.location);
+    </script>
+    <script type="module" crossorigin src="/kodekenobi.github.io/assets/main.CdexWir4.js"></script>
+    <link rel="stylesheet" crossorigin href="/kodekenobi.github.io/assets/main.BHnccNn_.css">
+  </head>
+  <body>
+    <div id="root"></div>
+    <script>
+      console.log("🔄 React Application Script Loading Started");
+      // Check if root element exists
+      const rootElement = document.getElementById("root");
+      console.log(
+        "✅ Root Element Status:",
+        rootElement ? "Found" : "Not Found"
+      );
+
+      // Monitor for any errors in the React application
+      window.addEventListener("error", (event) => {
+        console.error("❌ Global Error Caught:", event.error);
+        console.error("Error Source:", event.filename);
+        console.error("Line Number:", event.lineno);
+        console.error("Column Number:", event.colno);
+      });
+
+      // Monitor script loading errors
+      window.addEventListener("unhandledrejection", (event) => {
+        console.error("❌ Unhandled Promise Rejection:", event.reason);
+      });
+
+      // Monitor resource loading
+      const observer = new PerformanceObserver((list) => {
+        for (const entry of list.getEntries()) {
+          if (entry.initiatorType === "script") {
+            console.log(`📦 Script Load: ${entry.name}`, {
+              duration: entry.duration,
+              size: entry.transferSize,
+              type: entry.initiatorType,
+            });
+          }
+        }
+      });
+      observer.observe({ entryTypes: ["resource"] });
+    </script>
+  </body>
+</html>
