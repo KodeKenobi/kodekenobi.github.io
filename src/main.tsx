@@ -6,7 +6,7 @@ import "./index.css";
 import Home from "./components/Home";
 import SkillsPage from "./components/SkillsPage";
 import NusuruPage from "./components/NusuruPage";
-import About from "./components/sections/About";
+import AboutPage from "./components/AboutPage";
 import ProjectsPage from "./components/ProjectsPage";
 
 console.log("🚀 [main.tsx] Application initializing");
@@ -32,7 +32,7 @@ root.render(
       <Routes>
         <Route path="/" element={<App />} />
         <Route path="/home" element={<Home />} />
-        <Route path="/about" element={<About />} />
+        <Route path="/about" element={<AboutPage />} />
         <Route path="/skills" element={<SkillsPage />} />
         <Route path="/projects" element={<ProjectsPage />} />
         <Route path="/projects/nusuru" element={<NusuruPage />} />
