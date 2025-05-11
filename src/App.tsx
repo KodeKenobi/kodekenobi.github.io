@@ -2,7 +2,7 @@ import { FaGithub, FaFacebook, FaTwitter, FaInstagram } from "react-icons/fa";
 import { useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 
-console.log("🚀 [App.tsx] Component starting to load");
+console.log("🚀 [App.tsx] Component module loaded");
 
 function App() {
   console.log("🔄 [App.tsx] Component rendering");
@@ -126,6 +126,7 @@ function App() {
     }
   };
 
+  console.log("🎨 [App.tsx] Rendering component JSX");
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 px-1 sm:px-2 pb-0">
       <div className="w-full max-w-lg sm:max-w-2xl md:max-w-3xl lg:max-w-4xl">
