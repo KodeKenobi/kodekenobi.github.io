@@ -1,11 +1,14 @@
 import { FaGithub, FaFacebook, FaTwitter, FaInstagram } from "react-icons/fa";
 import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
-console.log("🚀 App.tsx: Component starting to load");
+console.log("🚀 [App.tsx] Component starting to load");
 
 function App() {
-  console.log("🔄 App.tsx: Component rendering");
+  console.log("🔄 [App.tsx] Component rendering");
+  const location = useLocation();
+  console.log("🔍 [App.tsx] Current route:", location.pathname);
+
   // For blinking cursor animation
   const cursorRef = useRef<HTMLSpanElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -15,6 +18,14 @@ function App() {
   const [error, setError] = useState("");
   const [isInstalling, setIsInstalling] = useState(false);
   const [installStep, setInstallStep] = useState(0);
+
+  console.log("🔍 [App.tsx] Current state:", {
+    showContent,
+    error,
+    isInstalling,
+    installStep,
+    inputLength: input.length,
+  });
 
   const installMessages = [
     "Installing packages... ",
@@ -26,8 +37,15 @@ function App() {
   ];
 
   useEffect(() => {
-    console.log("✅ App.tsx: Component mounted");
+    console.log("✅ [App.tsx] Component mounted");
+    console.log("🔍 [App.tsx] Refs status:", {
+      cursorRef: !!cursorRef.current,
+      inputRef: !!inputRef.current,
+      ghostRef: !!ghostRef.current,
+    });
+
     if (cursorRef.current) {
+      console.log("🔄 [App.tsx] Starting cursor animation");
       cursorRef.current.animate(
         [{ opacity: 1 }, { opacity: 0 }, { opacity: 1 }],
         {
@@ -37,12 +55,14 @@ function App() {
       );
     }
     if (inputRef.current) {
+      console.log("🔄 [App.tsx] Focusing input element");
       inputRef.current.focus();
     }
   }, [showContent]);
 
   useEffect(() => {
     if (ghostRef.current) {
+      console.log("🔄 [App.tsx] Updating ghost element width");
       // +2 for caret
       ghostRef.current.style.width = `${ghostRef.current.offsetWidth + 2}px`;
     }
@@ -52,21 +72,26 @@ function App() {
     let installTimeout: NodeJS.Timeout;
     let stepTimeout: NodeJS.Timeout;
     if (isInstalling) {
+      console.log("🔄 [App.tsx] Starting installation process");
       setInstallStep(0);
       // Animate steps
       stepTimeout = setInterval(() => {
-        setInstallStep((prev) =>
-          prev < installMessages.length - 1 ? prev + 1 : prev
-        );
+        setInstallStep((prev) => {
+          const next = prev < installMessages.length - 1 ? prev + 1 : prev;
+          console.log(`🔄 [App.tsx] Installation step: ${next}`);
+          return next;
+        });
       }, 400);
       // After 2.5s, show content
       installTimeout = setTimeout(() => {
+        console.log("✅ [App.tsx] Installation complete, showing content");
         setIsInstalling(false);
         setShowContent(true);
         clearInterval(stepTimeout);
       }, 2500);
     }
     return () => {
+      console.log("🧹 [App.tsx] Cleaning up installation timeouts");
       clearTimeout(installTimeout);
       clearInterval(stepTimeout);
     };
@@ -74,21 +99,27 @@ function App() {
 
   useEffect(() => {
     return () => {
-      console.log("👋 App.tsx: Component unmounting");
+      console.log("👋 [App.tsx] Component unmounting");
     };
   }, []);
 
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log("🔄 [App.tsx] Input changed:", e.target.value);
     setInput(e.target.value);
     setError("");
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
+      console.log("🔍 [App.tsx] Enter key pressed, input:", input);
       if (input.trim() === "npm run dev") {
+        console.log(
+          "✅ [App.tsx] Valid command entered, starting installation"
+        );
         setIsInstalling(true);
         setError("");
       } else {
+        console.log("❌ [App.tsx] Invalid command:", input);
         setError(`command not found: ${input}`);
         setInput("");
       }

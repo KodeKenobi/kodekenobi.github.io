@@ -30,4 +30,9 @@ export default defineConfig({
   optimizeDeps: {
     include: ["react", "react-dom"],
   },
+  experimental: {
+    renderBuiltUrl(filename, { hostType, type, hostId }) {
+      return `/kodekenobi.github.io/${filename}`;
+    },
+  },
 });

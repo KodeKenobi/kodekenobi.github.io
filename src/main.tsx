@@ -11,16 +11,27 @@ import NusuruPage from "./components/NusuruPage.tsx";
 import { Component } from "react";
 import type { ErrorInfo, ReactNode } from "react";
 
-console.log("🚀 main.tsx: Starting React application initialization");
+console.log("🚀 [main.tsx] Starting React application initialization");
+console.log("🔍 [main.tsx] Current window location:", window.location.href);
+console.log("🔍 [main.tsx] Current pathname:", window.location.pathname);
 
 // Get base path from window location
 const getBasePath = () => {
+  console.log("🔄 [main.tsx] Calculating base path");
+  console.log(
+    "🔍 [main.tsx] Path segments:",
+    window.location.pathname.split("/")
+  );
+  console.log("🔍 [main.tsx] Hostname:", window.location.hostname);
+
   // Since we're using GitHub Pages, we need to use the repository name as the base path
-  return "/kodekenobi.github.io";
+  const basePath = "/kodekenobi.github.io";
+  console.log("✅ [main.tsx] Base path determined:", basePath);
+  return basePath;
 };
 
 const basePath = getBasePath();
-console.log("🔍 Detected Base Path for Router:", basePath);
+console.log("🔍 [main.tsx] Final Base Path for Router:", basePath);
 
 interface Props {
   children: ReactNode;
@@ -35,19 +46,26 @@ interface State {
 class ErrorBoundary extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
+    console.log("🔄 [ErrorBoundary] Initializing");
     this.state = { hasError: false, error: null };
   }
 
   static getDerivedStateFromError(error: Error): State {
+    console.error("❌ [ErrorBoundary] Error caught:", error);
     return { hasError: true, error };
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
-    console.error("React Error:", error, errorInfo);
+    console.error("❌ [ErrorBoundary] Error details:", error);
+    console.error(
+      "❌ [ErrorBoundary] Component stack:",
+      errorInfo.componentStack
+    );
   }
 
   render(): ReactNode {
     if (this.state.hasError) {
+      console.log("⚠️ [ErrorBoundary] Rendering error state");
       return (
         <div style={{ color: "white", padding: "20px", textAlign: "center" }}>
           <h1>Something went wrong.</h1>
@@ -55,17 +73,24 @@ class ErrorBoundary extends Component<Props, State> {
         </div>
       );
     }
+    console.log("✅ [ErrorBoundary] Rendering children");
     return this.props.children;
   }
 }
 
 try {
+  console.log("🔄 [main.tsx] Attempting to mount React application");
   const rootElement = document.getElementById("root");
+  console.log("🔍 [main.tsx] Root element found:", !!rootElement);
+
   if (!rootElement) {
     throw new Error("Root element not found");
   }
 
   const root = createRoot(rootElement);
+  console.log("✅ [main.tsx] Root created successfully");
+
+  console.log("🔄 [main.tsx] Starting render process");
   root.render(
     <StrictMode>
       <ErrorBoundary>
@@ -83,9 +108,9 @@ try {
     </StrictMode>
   );
 
-  console.log("✅ main.tsx: React application initialized");
+  console.log("✅ [main.tsx] React application initialized successfully");
 } catch (error) {
-  console.error("❌ Error initializing React app:", error);
+  console.error("❌ [main.tsx] Critical error during initialization:", error);
   document.getElementById("root")!.innerHTML = `
     <div style="color: white; padding: 20px; text-align: center;">
       <h1>Failed to load application</h1>
