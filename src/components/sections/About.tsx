@@ -2,7 +2,7 @@ import { FaLinkedin, FaDownload } from "react-icons/fa";
 
 const About = () => {
   return (
-    <div className="max-w-4xl mx-auto px-6 py-12">
+    <div className="w-full px-4 sm:px-6 lg:px-8">
       {/* Action Buttons */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-4 sm:space-y-0 sm:space-x-4 mb-12">
         <a
