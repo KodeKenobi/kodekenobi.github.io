@@ -90,12 +90,14 @@ function Home() {
                 <div id="about" className="topic-header mt-20">
                   ABOUT ME
                 </div>
-                <div className="topic-text">
-                  I'm a passionate Full Stack Developer with expertise in modern
-                  web technologies. My journey in tech is driven by creativity
-                  and a love for building innovative solutions.
+                <div className="">
+                  I'm a passionate developer specializing in modern web and
+                  mobile technologies. With a strong foundation in the MERN
+                  stack and experience across cloud platforms, databases, and
+                  DevOps tools, I build scalable, user-focused solutions.
+                  Whether it's web apps, mobile experiences, or backend systems,
+                  I enjoy turning ideas into reliable, intuitive products.
                 </div>
-
                 <div id="skills" className="topic-header">
                   SKILLS & EXPERTISE
                 </div>
