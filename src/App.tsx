@@ -310,15 +310,15 @@ function App() {
                   {showContent && (
                     <div className="animate-fade-in">
                       <div className="topic-header">COMPANY NAME</div>
-                      <div className="">Kode Kenobi</div>
+                      <div className="topic-text text-left">Kode Kenobi</div>
 
                       <div className="topic-header">DEVELOPER NICK(S)</div>
-                      <div className="">
+                      <div className="topic-text text-left">
                         Kenobi, General Kenobi, Kobe, Kopenikus
                       </div>
 
                       <div className="topic-header">DESCRIPTION</div>
-                      <div className="">
+                      <div className="topic-text text-left">
                         MERN Stack Specialist · React.js, React Native, Redux,
                         Next.js, TypeScript, Tailwind CSS, Material UI, AWS,
                         Firebase, MongoDB, REST, GraphQL, SQL, Node.js, Docker,
@@ -328,18 +328,18 @@ function App() {
                       </div>
 
                       <div className="topic-header">CONTACT METHODS</div>
-                      <div className="">
+                      <div className="topic-text text-left">
                         <a
                           href="mailto:kodekenobi@gmail.com"
                           className="text-green-400 hover:text-green-300"
                         >
                           E-mail
-                        </a>
+                        </a>{" "}
                         - This would be the best way to contact me.
                       </div>
 
                       <div className="topic-header">WEBSITE</div>
-                      <div className="">
+                      <div className="topic-text text-left">
                         Now, introductions aside, kindly visit my website{" "}
                         <Link
                           to="/home"
@@ -351,7 +351,7 @@ function App() {
                       </div>
 
                       <div className="topic-header">My C.V</div>
-                      <div className="">
+                      <div className="topic-text text-left">
                         You can download my C.V{" "}
                         <a
                           href="/assets/docs/cv.pdf"
