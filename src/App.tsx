@@ -134,7 +134,7 @@ function App() {
       <Route
         path="/"
         element={
-          <div className="min-h-screen flex bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 px-1 sm:px-2 pb-0 overflow-y-auto">
+          <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 px-1 sm:px-2 pb-0">
             <div className="w-full max-w-lg sm:max-w-2xl md:max-w-3xl lg:max-w-4xl">
               {/* Terminal Window */}
               <div className="mt-4 terminal-window mx-auto border border-gray-700 shadow-2xl rounded-xl bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 animate-fade-in px-2 sm:px-6 py-2 sm:py-4">
@@ -318,7 +318,7 @@ function App() {
                       </div>
 
                       <div className="topic-header">DESCRIPTION</div>
-                      <div className="">
+                      <div className="topic-text text-left">
                         MERN Stack Specialist · React.js, React Native, Redux,
                         Next.js, TypeScript, Tailwind CSS, Material UI, AWS,
                         Firebase, MongoDB, REST, GraphQL, SQL, Node.js, Docker,
@@ -328,7 +328,7 @@ function App() {
                       </div>
 
                       <div className="topic-header">CONTACT METHODS</div>
-                      <div className="">
+                      <div className="topic-text text-left">
                         <a
                           href="mailto:kodekenobi@gmail.com"
                           className="text-green-400 hover:text-green-300"
@@ -339,7 +339,7 @@ function App() {
                       </div>
 
                       <div className="topic-header">WEBSITE</div>
-                      <div className="">
+                      <div className="topic-text text-left">
                         Now, introductions aside, kindly visit my website{" "}
                         <Link
                           to="/home"
@@ -351,7 +351,7 @@ function App() {
                       </div>
 
                       <div className="topic-header">My C.V</div>
-                      <div className="">
+                      <div className="topic-text text-left">
                         You can download my C.V{" "}
                         <a
                           href="/assets/docs/cv.pdf"
