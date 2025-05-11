@@ -318,7 +318,7 @@ function App() {
                       </div>
 
                       <div className="topic-header">DESCRIPTION</div>
-                      <div className="topic-text text-left">
+                      <div className="">
                         MERN Stack Specialist · React.js, React Native, Redux,
                         Next.js, TypeScript, Tailwind CSS, Material UI, AWS,
                         Firebase, MongoDB, REST, GraphQL, SQL, Node.js, Docker,
@@ -328,18 +328,18 @@ function App() {
                       </div>
 
                       <div className="topic-header">CONTACT METHODS</div>
-                      <div className="topic-text text-left">
+                      <div className="">
                         <a
                           href="mailto:kodekenobi@gmail.com"
                           className="text-green-400 hover:text-green-300"
                         >
                           E-mail
-                        </a>{" "}
+                        </a>
                         - This would be the best way to contact me.
                       </div>
 
                       <div className="topic-header">WEBSITE</div>
-                      <div className="topic-text text-left">
+                      <div className="">
                         Now, introductions aside, kindly visit my website{" "}
                         <Link
                           to="/home"
@@ -351,7 +351,7 @@ function App() {
                       </div>
 
                       <div className="topic-header">My C.V</div>
-                      <div className="topic-text text-left">
+                      <div className="">
                         You can download my C.V{" "}
                         <a
                           href="/assets/docs/cv.pdf"
