@@ -9,6 +9,9 @@ export default defineConfig({
   server: {
     port: 5173,
     host: false,
+    headers: {
+      "Content-Type": "application/javascript",
+    },
   },
   build: {
     outDir: "dist",
