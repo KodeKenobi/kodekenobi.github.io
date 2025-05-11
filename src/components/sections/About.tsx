@@ -4,7 +4,7 @@ const About = () => {
   return (
     <div className="w-full px-2 sm:px-4 lg:px-6">
       {/* Action Buttons */}
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-4 sm:space-y-0 sm:space-x-4 mb-12">
+      <div className="items-center flex flex-col sm:flex-row items-stretch sm:items-center space-y-4 sm:space-y-0 sm:space-x-4 mb-12 justify-center">
         <a
           href="https://www.linkedin.com/in/ignatius-mutizwa-7662b5229/"
           target="_blank"
@@ -35,14 +35,14 @@ const About = () => {
       <div className="space-y-12">
         {/* Professional Experience Section */}
         <section>
-          <div className="flex items-center space-x-4 mb-8">
-            <FaLinkedin className="text-2xl text-green-400" />
+          <div className="flex flex-col items-center mb-8 text-center">
+            <FaLinkedin className="text-2xl text-green-400 mb-2" />
             <h3 className="text-2xl font-bold text-green-400 tracking-wide">
               PROFESSIONAL EXPERIENCE
             </h3>
           </div>
           <div className="space-y-8">
-            <div className="border-l-2 border-green-400 pl-6">
+            <div className="border-l-2 border-green-400 pl-6 text-center">
               <h4 className="text-xl font-semibold text-green-400 mb-2">
                 Software Engineer - Fluff Software
               </h4>
@@ -50,24 +50,24 @@ const About = () => {
                 Sep 2023 - Present · Remote (Swindon, England)
               </p>
               <ul className="list-none text-gray-200 space-y-3">
-                <li className="flex items-start space-x-3">
+                <li className="flex flex-col items-center space-y-2">
                   <FaLinkedin className="text-green-400 mt-1 flex-shrink-0" />
                   <span>
                     Full-stack development using React.js, Next.js, and Tailwind
                     CSS
                   </span>
                 </li>
-                <li className="flex items-start space-x-3">
+                <li className="flex flex-col items-center space-y-2">
                   <FaLinkedin className="text-green-400 mt-1 flex-shrink-0" />
                   <span>
                     Cross-platform mobile development with React Native and Expo
                   </span>
                 </li>
-                <li className="flex items-start space-x-3">
+                <li className="flex flex-col items-center space-y-2">
                   <FaLinkedin className="text-green-400 mt-1 flex-shrink-0" />
                   <span>Backend development with RESTful APIs and GraphQL</span>
                 </li>
-                <li className="flex items-start space-x-3">
+                <li className="flex flex-col items-center space-y-2">
                   <FaLinkedin className="text-green-400 mt-1 flex-shrink-0" />
                   <span>
                     Security implementation using AWS Cognito, NextAuth, and
@@ -77,7 +77,7 @@ const About = () => {
               </ul>
             </div>
 
-            <div className="border-l-2 border-green-400 pl-6">
+            <div className="border-l-2 border-green-400 pl-6 text-center">
               <h4 className="text-xl font-semibold text-green-400 mb-2">
                 Senior Software Engineer - GotBot.Ai
               </h4>
@@ -85,11 +85,11 @@ const About = () => {
                 2023 · Contract (South Africa)
               </p>
               <ul className="list-none text-gray-200 space-y-3">
-                <li className="flex items-start space-x-3">
+                <li className="flex flex-col items-center space-y-2">
                   <FaLinkedin className="text-green-400 mt-1 flex-shrink-0" />
                   <span>Developed conversational agents and chatbots</span>
                 </li>
-                <li className="flex items-start space-x-3">
+                <li className="flex flex-col items-center space-y-2">
                   <FaLinkedin className="text-green-400 mt-1 flex-shrink-0" />
                   <span>
                     Worked with NLP, AWS, Kubernetes, and various cloud
@@ -99,7 +99,7 @@ const About = () => {
               </ul>
             </div>
 
-            <div className="border-l-2 border-green-400 pl-6">
+            <div className="border-l-2 border-green-400 pl-6 text-center">
               <h4 className="text-xl font-semibold text-green-400 mb-2">
                 Full Stack Developer - MfundoPedia
               </h4>
@@ -107,21 +107,21 @@ const About = () => {
                 2021 - 2022 · Hybrid (South Africa)
               </p>
               <ul className="list-none text-gray-200 space-y-3">
-                <li className="flex items-start space-x-3">
+                <li className="flex flex-col items-center space-y-2">
                   <FaLinkedin className="text-green-400 mt-1 flex-shrink-0" />
                   <span>
                     Full-stack development with React, Vue.js, Angular, and
                     Ionic
                   </span>
                 </li>
-                <li className="flex items-start space-x-3">
+                <li className="flex flex-col items-center space-y-2">
                   <FaLinkedin className="text-green-400 mt-1 flex-shrink-0" />
                   <span>Mobile app development using Flutter and Dart</span>
                 </li>
               </ul>
             </div>
 
-            <div className="border-l-2 border-green-400 pl-6">
+            <div className="border-l-2 border-green-400 pl-6 text-center">
               <h4 className="text-xl font-semibold text-green-400 mb-2">
                 Frontend Web Developer - Digileads
               </h4>
@@ -129,11 +129,11 @@ const About = () => {
                 Jan 2018 - Feb 2021 · Remote (South Africa)
               </p>
               <ul className="list-none text-gray-200 space-y-3">
-                <li className="flex items-start space-x-3">
+                <li className="flex flex-col items-center space-y-2">
                   <FaLinkedin className="text-green-400 mt-1 flex-shrink-0" />
                   <span>Web design and WordPress development</span>
                 </li>
-                <li className="flex items-start space-x-3">
+                <li className="flex flex-col items-center space-y-2">
                   <FaLinkedin className="text-green-400 mt-1 flex-shrink-0" />
                   <span>Managed and maintained multiple client websites</span>
                 </li>
@@ -144,14 +144,14 @@ const About = () => {
 
         {/* Education Section */}
         <section>
-          <div className="flex items-center space-x-4 mb-8">
-            <FaLinkedin className="text-2xl text-green-400" />
+          <div className="flex flex-col items-center mb-8 text-center">
+            <FaLinkedin className="text-2xl text-green-400 mb-2" />
             <h3 className="text-2xl font-bold text-green-400 tracking-wide">
               EDUCATION
             </h3>
           </div>
           <div className="space-y-8">
-            <div className="border-l-2 border-green-400 pl-6">
+            <div className="border-l-2 border-green-400 pl-6 text-center">
               <h4 className="text-xl font-semibold text-green-400 mb-4">
                 Harvard Online
               </h4>
@@ -174,7 +174,7 @@ const About = () => {
               </div>
             </div>
 
-            <div className="border-l-2 border-green-400 pl-6">
+            <div className="border-l-2 border-green-400 pl-6 text-center">
               <h4 className="text-xl font-semibold text-green-400 mb-4">
                 freeCodeCamp
               </h4>
