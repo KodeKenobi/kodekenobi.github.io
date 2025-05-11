@@ -157,10 +157,10 @@ function Home() {
                   <span className="animate-blink">_</span>
                 </div>
 
-                <div id="about" className="topic-header mt-20">
+                <div id="about" className="topic-header mt-20 text-center">
                   ABOUT ME
                 </div>
-                <div className="">
+                <div className="text-center">
                   I'm a passionate developer specializing in modern web and
                   mobile technologies. With a strong foundation in the MERN
                   stack and experience across cloud platforms, databases, and
@@ -168,7 +168,7 @@ function Home() {
                   Whether it's web apps, mobile experiences, or backend systems,
                   I enjoy turning ideas into reliable, intuitive products.
                 </div>
-                <div id="skills" className="topic-header">
+                <div id="skills" className="topic-header text-center">
                   SKILLS & EXPERTISE
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
@@ -208,27 +208,43 @@ function Home() {
                   ))}
                 </div>
 
-                <div id="focus" className="topic-header mt-12">
+                <div id="focus" className="topic-header mt-12 text-center">
                   CURRENT FOCUS
                 </div>
-                <div className="bg-gradient-to-r from-gray-800 to-gray-900 p-6 rounded-xl border border-gray-700 hover:border-green-500/50 transition-all duration-300">
-                  Exploring the frontiers of AI and Machine Learning while
-                  building scalable web applications. Always learning, always
-                  growing.
+                <div className="relative bg-gradient-to-r from-gray-800/90 to-gray-900/90 p-6 rounded-xl border border-gray-700 hover:border-green-500/50 transition-all duration-300 overflow-hidden">
+                  {/* Animated gradient background */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-green-500/10 via-blue-500/10 to-purple-500/10 rounded-xl animate-gradient-x"></div>
+
+                  {/* Pulsing glow effect */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-green-500/15 via-blue-500/15 to-purple-500/15 rounded-xl opacity-50 animate-pulse-slow"></div>
+
+                  <div className="relative z-10 text-center">
+                    Exploring the frontiers of AI and Machine Learning while
+                    building scalable web applications. Always learning, always
+                    growing.
+                  </div>
                 </div>
 
-                <div id="contact" className="topic-header mt-12">
+                <div id="contact" className="topic-header mt-12 text-center">
                   GET IN TOUCH
                 </div>
-                <div className="bg-gradient-to-r from-gray-800 to-gray-900 p-6 rounded-xl border border-gray-700 hover:border-green-500/50 transition-all duration-300">
-                  Let's connect and create something amazing together.{" "}
-                  <a
-                    href="mailto:kodekenobi@gmail.com"
-                    className="text-green-400 hover:text-green-300 font-semibold hover:underline transition-all duration-300"
-                  >
-                    Send me an email
-                  </a>
-                  .
+                <div className="relative bg-gradient-to-r from-gray-800/90 to-gray-900/90 p-6 rounded-xl border border-gray-700 hover:border-green-500/50 transition-all duration-300 overflow-hidden">
+                  {/* Animated gradient background */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-green-500/10 via-blue-500/10 to-purple-500/10 rounded-xl animate-gradient-x"></div>
+
+                  {/* Pulsing glow effect */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-green-500/15 via-blue-500/15 to-purple-500/15 rounded-xl opacity-50 animate-pulse-slow"></div>
+
+                  <div className="relative z-10 text-center">
+                    Let's connect and create something amazing together.{" "}
+                    <a
+                      href="mailto:kodekenobi@gmail.com"
+                      className="text-green-400 hover:text-green-300 font-semibold hover:underline transition-all duration-300"
+                    >
+                      Send me an email
+                    </a>
+                    .
+                  </div>
                 </div>
 
                 {/* Footer */}
