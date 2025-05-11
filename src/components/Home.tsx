@@ -96,6 +96,27 @@ function Home() {
     },
   ];
 
+  // Add mouse move effect for 3D cards
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const card = e.currentTarget;
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+
+    const rotateX = (y - centerY) / 10;
+    const rotateY = (centerX - x) / 10;
+
+    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.05, 1.05, 1.05)`;
+  };
+
+  const handleMouseLeave = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.currentTarget.style.transform =
+      "perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)";
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 relative overflow-hidden">
       <Navbar />
@@ -106,11 +127,11 @@ function Home() {
         <div className="absolute inset-0 bg-gradient-to-r from-green-900 via-blue-900 to-purple-900 opacity-20 animate-gradient"></div>
         <div className="w-full relative">
           {/* Terminal Window */}
-          <div className="mt-4 terminal-window mx-auto shadow-2xl rounded-xl bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 animate-fade-in px-4 sm:px-8 py-4 sm:py-6">
+          <div className="mt-4 terminal-window mx-auto shadow-2xl rounded-xl bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 animate-fade-in px-4 sm:px-8 py-4 sm:py-6 glow-border">
             <div className="terminal-content font-mono animate-slide-up px-1 sm:px-4 py-2 sm:py-6 text-[0.97rem] sm:text-base overflow-x-auto break-words">
               {/* Main Content */}
               <div className="animate-fade-in">
-                <div className="text-xl sm:text-2xl font-bold text-green-400 mb-6 text-center">
+                <div className="text-xl sm:text-2xl font-bold text-green-400 mb-6 text-center float">
                   Welcome to My Website
                   <span className="animate-blink">_</span>
                 </div>
@@ -118,7 +139,7 @@ function Home() {
                 <div id="about" className="topic-header mt-20">
                   ABOUT ME
                 </div>
-                <div className="topic-text">
+                <div className="topic-text glow-border p-4 rounded-xl">
                   I'm a passionate developer specializing in modern web and
                   mobile technologies. With a strong foundation in the MERN
                   stack and experience across cloud platforms, databases, and
@@ -135,11 +156,13 @@ function Home() {
                     <div
                       key={category.title}
                       ref={(el) => (cardsRef.current[index] = el)}
-                      className="group relative bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-4 sm:p-6 
+                      className="card-3d group relative bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-4 sm:p-6 
                         transform transition-all duration-500 ease-out
                         animate-out opacity-0 translate-y-8 scale-95
                         hover:shadow-2xl hover:-translate-y-2 hover:scale-105
                         border border-gray-700 hover:border-green-500/50"
+                      onMouseMove={handleMouseMove}
+                      onMouseLeave={handleMouseLeave}
                     >
                       {/* Glow effect */}
                       <div className="absolute inset-0 bg-gradient-to-r from-green-500/10 to-blue-500/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
@@ -147,7 +170,7 @@ function Home() {
                       {/* Content */}
                       <div className="relative z-10">
                         <div className="flex items-center space-x-4 mb-4">
-                          <div className="text-green-400 transform group-hover:scale-110 transition-transform duration-300">
+                          <div className="text-green-400 transform group-hover:scale-110 transition-transform duration-300 float">
                             {category.icon}
                           </div>
                           <h3 className="text-xl font-bold bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent">
@@ -158,7 +181,7 @@ function Home() {
                           {category.skills.map((skill) => (
                             <span
                               key={skill}
-                              className="px-3 py-1.5 bg-gray-800/50 backdrop-blur-sm rounded-full text-sm text-gray-300 
+                              className="skill-tag px-3 py-1.5 bg-gray-800/50 backdrop-blur-sm rounded-full text-sm text-gray-300 
                                 border border-gray-700 hover:border-green-500/50 hover:text-green-400 
                                 transition-all duration-300 transform hover:scale-105"
                             >
@@ -177,7 +200,7 @@ function Home() {
                 <div
                   className="topic-text bg-gradient-to-r from-gray-800 to-gray-900 p-4 sm:p-6 rounded-xl 
                   border border-gray-700 hover:border-green-500/50 transition-all duration-300
-                  transform hover:scale-[1.02] hover:-translate-y-1"
+                  transform hover:scale-[1.02] hover:-translate-y-1 glow-border"
                 >
                   Exploring the frontiers of AI and Machine Learning while
                   building scalable web applications. Always learning, always
@@ -190,7 +213,7 @@ function Home() {
                 <div
                   className="topic-text bg-gradient-to-r from-gray-800 to-gray-900 p-4 sm:p-6 rounded-xl 
                   border border-gray-700 hover:border-green-500/50 transition-all duration-300
-                  transform hover:scale-[1.02] hover:-translate-y-1"
+                  transform hover:scale-[1.02] hover:-translate-y-1 glow-border"
                 >
                   Let's connect and create something amazing together.{" "}
                   <a
