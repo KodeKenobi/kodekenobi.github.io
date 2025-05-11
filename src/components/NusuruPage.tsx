@@ -1,5 +1,5 @@
 import Navbar from "./Navbar";
-import { FaUsers, FaStore, FaHandshake, FaDownload } from "react-icons/fa";
+import { FaUsers, FaStore, FaHandshake, FaAndroid } from "react-icons/fa";
 import Footer from "./Footer";
 
 const NusuruPage = () => {
@@ -53,10 +53,8 @@ const NusuruPage = () => {
                     rel="noopener noreferrer"
                     className="inline-flex items-center space-x-3 bg-green-500 hover:bg-green-600 text-white px-8 py-4 rounded-lg transition-all duration-300 shadow-lg hover:shadow-green-500/25 hover:-translate-y-1"
                   >
-                    <FaDownload className="w-6 h-6" />
-                    <span className="text-lg font-semibold">
-                      Download Nusuru for Android
-                    </span>
+                    <FaAndroid className="w-6 h-6" />
+                    <span className="text-lg font-semibold">Download App</span>
                   </a>
                 </div>
 
