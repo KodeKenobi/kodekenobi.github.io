@@ -3,22 +3,36 @@
   <head>
     <meta charset="UTF-8" />
     <script>
+      // Debug logging setup
+      const DEBUG = true;
+      const log = (...args) => {
+        if (DEBUG) {
+          console.log("[DEBUG]", ...args);
+        }
+      };
+
       // Dynamic base path detection
       const getBasePath = () => {
+        log("Calculating base path");
         const pathSegments = window.location.pathname.split("/");
+        log("Path segments:", pathSegments);
+
         // Check if we're in a GitHub Pages environment
         if (pathSegments[1] === "kodekenobi.github.io") {
+          log("GitHub Pages path detected");
           return "/kodekenobi.github.io";
         }
         // Also check if we're at the root of the GitHub Pages site
         if (window.location.hostname === "kodekenobi.github.io") {
+          log("GitHub Pages hostname detected");
           return "/kodekenobi.github.io";
         }
+        log("No GitHub Pages environment detected");
         return "";
       };
 
       const basePath = getBasePath();
-      console.log("🔍 Detected Base Path:", basePath);
+      log("Base path determined:", basePath);
     </script>
     <link
       rel="icon"
@@ -31,7 +45,7 @@
 
     <!-- Debug logging -->
     <script>
-      console.log("🔄 HTML Document Loading Started");
+      log("HTML Document Loading Started");
 
       // Set favicon path dynamically
       const faviconElement = document.getElementById("favicon");
@@ -39,27 +53,24 @@
         "https://raw.githubusercontent.com/KodeKenobi/kodekenobi.github.io/refs/heads/main/public/assets/images/favicon-transparent.png";
       faviconElement.href = faviconPath;
 
-      console.log("🔍 Favicon Element:", faviconElement);
-      console.log("🔍 Favicon Path:", faviconPath);
+      log("Favicon Element:", faviconElement);
+      log("Favicon Path:", faviconPath);
 
       // Check if favicon exists
       fetch(faviconPath)
         .then((response) => {
-          console.log("✅ Favicon Status:", response.status);
-          console.log(
-            "✅ Favicon Content-Type:",
-            response.headers.get("content-type")
-          );
+          log("Favicon Status:", response.status);
+          log("Favicon Content-Type:", response.headers.get("content-type"));
         })
         .catch((error) => {
-          console.error("❌ Favicon Error:", error);
+          console.error("Favicon Error:", error);
         });
 
       window.addEventListener("DOMContentLoaded", () => {
-        console.log("✅ DOM Content Loaded");
+        log("DOM Content Loaded");
       });
       window.addEventListener("load", () => {
-        console.log("🚀 Window Load Event Fired");
+        log("Window Load Event Fired");
       });
     </script>
 
@@ -100,7 +111,7 @@
     />
 
     <script>
-      console.log("🔄 Initializing Page Title and Favicon Scripts");
+      log("Initializing Page Title and Favicon Scripts");
       // Attention-grabbing effect when tab is not active
       const favicon = document.getElementById("favicon");
       const pageTitle = document.getElementById("pageTitle");
@@ -110,7 +121,7 @@
 
       document.addEventListener("visibilitychange", () => {
         if (document.hidden) {
-          console.log("👁️ Tab visibility changed: Hidden");
+          log("Tab visibility changed: Hidden");
           // Start blinking when tab is not active
           let isVisible = true;
 
@@ -120,19 +131,19 @@
             // Update favicon with logging
             const newFaviconPath =
               "https://raw.githubusercontent.com/KodeKenobi/kodekenobi.github.io/refs/heads/main/public/assets/images/favicon-transparent.png";
-            console.log("🔄 Updating favicon to:", newFaviconPath);
+            log("Updating favicon to:", newFaviconPath);
             favicon.href = newFaviconPath;
 
             // Update title with warning emojis
             pageTitle.textContent = isVisible ? alertTitle : originalTitle;
           }, 2000); // Blink every half second
         } else {
-          console.log("👁️ Tab visibility changed: Visible");
+          log("Tab visibility changed: Visible");
           // Stop blinking and reset to original when tab is active
           clearInterval(blinkInterval);
           const resetFaviconPath =
             "https://raw.githubusercontent.com/KodeKenobi/kodekenobi.github.io/refs/heads/main/public/assets/images/favicon-transparent.png";
-          console.log("🔄 Resetting favicon to:", resetFaviconPath);
+          log("Resetting favicon to:", resetFaviconPath);
           favicon.href = resetFaviconPath;
           pageTitle.textContent = originalTitle;
         }
@@ -142,7 +153,7 @@
       // MIT License
       // https://github.com/rafgraph/spa-github-pages
       (function (l) {
-        console.log("🔄 Initializing SPA GitHub Pages Handler");
+        log("Initializing SPA GitHub Pages Handler");
         if (l.search[1] === "/") {
           var decoded = l.search
             .slice(1)
@@ -156,27 +167,23 @@
             null,
             l.pathname.slice(0, -1) + decoded + l.hash
           );
-          console.log("✅ SPA GitHub Pages Handler: URL Processed");
+          log("SPA GitHub Pages Handler: URL Processed");
         }
       })(window.location);
     </script>
-    <script type="module" crossorigin src="/kodekenobi.github.io/assets/main.BKqDKtbm.js"></script>
-    <link rel="stylesheet" crossorigin href="/kodekenobi.github.io/assets/main.BHnccNn_.css">
+    <script type="module" crossorigin src="/kodekenobi.github.io/assets/main.C97cd3Gy.js"></script>
   </head>
   <body>
     <div id="root"></div>
     <script>
-      console.log("🔄 React Application Script Loading Started");
+      log("React Application Script Loading Started");
       // Check if root element exists
       const rootElement = document.getElementById("root");
-      console.log(
-        "✅ Root Element Status:",
-        rootElement ? "Found" : "Not Found"
-      );
+      log("Root Element Status:", rootElement ? "Found" : "Not Found");
 
       // Monitor for any errors in the React application
       window.addEventListener("error", (event) => {
-        console.error("❌ Global Error Caught:", event.error);
+        console.error("Global Error Caught:", event.error);
         console.error("Error Source:", event.filename);
         console.error("Line Number:", event.lineno);
         console.error("Column Number:", event.colno);
@@ -184,14 +191,14 @@
 
       // Monitor script loading errors
       window.addEventListener("unhandledrejection", (event) => {
-        console.error("❌ Unhandled Promise Rejection:", event.reason);
+        console.error("Unhandled Promise Rejection:", event.reason);
       });
 
       // Monitor resource loading
       const observer = new PerformanceObserver((list) => {
         for (const entry of list.getEntries()) {
           if (entry.initiatorType === "script") {
-            console.log(`📦 Script Load: ${entry.name}`, {
+            log(`Script Load: ${entry.name}`, {
               duration: entry.duration,
               size: entry.transferSize,
               type: entry.initiatorType,
