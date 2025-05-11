@@ -1,5 +1,4 @@
 import { FaLinkedin } from "react-icons/fa";
-import Footer from "../Footer";
 
 const About = () => {
   return (
@@ -215,7 +214,6 @@ const About = () => {
           </p>
         </section>
       </div>
-      <Footer />
     </div>
   );
 };

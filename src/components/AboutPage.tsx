@@ -39,8 +39,8 @@ function AboutPage() {
                   <span className="animate-blink">_</span>
                 </div>
                 <About />
+                <Footer />
               </div>
-              <Footer />
             </div>
           </div>
         </div>
