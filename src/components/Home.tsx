@@ -221,7 +221,7 @@ function Home() {
       <div className="flex-1 pt-16">
         <div className="absolute inset-0 bg-gradient-to-r from-green-900 via-blue-900 to-purple-900 opacity-20 animate-gradient"></div>
         <div className="w-full relative px-4 sm:px-8">
-          <div className="mt-4 terminal-window mx-auto shadow-2xl rounded-xl bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 animate-fade-in px-4 sm:px-8 py-4 sm:py-6 glow-border">
+          <div className="mt-4 terminal-window mx-auto shadow-2xl rounded-xl bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 animate-fade-in px-4 sm:px-8 py-4 sm:py-6 glow-border w-full">
             <div className="terminal-content font-mono animate-slide-up px-1 sm:px-4 py-2 sm:py-6 text-[0.97rem] sm:text-base overflow-x-auto break-words">
               <div className="animate-fade-in">
                 <div className="text-xl sm:text-2xl font-bold text-green-400 mb-6 text-center float glitch-text">
@@ -232,7 +232,7 @@ function Home() {
                 <div id="about" className="topic-header mt-20">
                   ABOUT ME
                 </div>
-                <div className="topic-text glow-border p-4 rounded-xl">
+                <div className="topic-text glow-border p-4 rounded-xl w-full">
                   I'm a passionate developer specializing in modern web and
                   mobile technologies. With a strong foundation in the MERN
                   stack and experience across cloud platforms, databases, and
@@ -250,7 +250,7 @@ function Home() {
                       key={category.title}
                       ref={(el) => (cardsRef.current[index] = el)}
                       className="card-3d group relative bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-4 sm:p-6 
-                        transform transition-all duration-300 ease-out
+                        transform transition-all duration-300 ease-out animate-float
                         border border-gray-700 hover:border-green-500/50"
                     >
                       <div className="content">
@@ -285,7 +285,7 @@ function Home() {
                 <div
                   className="topic-text bg-gradient-to-r from-gray-800 to-gray-900 p-4 sm:p-6 rounded-xl 
                   border border-gray-700 hover:border-green-500/50 transition-all duration-300
-                  transform hover:scale-[1.02] hover:-translate-y-1 glow-border"
+                  transform hover:scale-[1.02] hover:-translate-y-1 glow-border w-full"
                 >
                   Exploring the frontiers of AI and Machine Learning while
                   building scalable web applications. Always learning, always
