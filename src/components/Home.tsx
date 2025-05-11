@@ -159,7 +159,7 @@ function Home() {
 
                 <div
                   id="about"
-                  className="topic-header mt-24 sm:mt-24 md:mt-20 text-center"
+                  className="topic-header mt-32 sm:mt-32 md:mt-20 text-center"
                 >
                   ABOUT ME
                 </div>
@@ -173,7 +173,7 @@ function Home() {
                 </div>
                 <div
                   id="skills"
-                  className="topic-header mt-16 sm:mt-16 md:mt-12 text-center"
+                  className="topic-header mt-24 sm:mt-24 md:mt-12 text-center"
                 >
                   SKILLS & EXPERTISE
                 </div>
@@ -216,7 +216,7 @@ function Home() {
 
                 <div
                   id="focus"
-                  className="topic-header mt-16 sm:mt-16 md:mt-12 text-center"
+                  className="topic-header mt-24 sm:mt-24 md:mt-12 text-center"
                 >
                   CURRENT FOCUS
                 </div>
@@ -236,7 +236,7 @@ function Home() {
 
                 <div
                   id="contact"
-                  className="topic-header mt-16 sm:mt-16 md:mt-12 text-center"
+                  className="topic-header mt-24 sm:mt-24 md:mt-12 text-center"
                 >
                   GET IN TOUCH
                 </div>
