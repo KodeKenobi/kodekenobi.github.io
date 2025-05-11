@@ -5,19 +5,25 @@ import Footer from "./Footer";
 const NusuruPage = () => {
   const features = [
     {
-      icon: <FaUsers className="w-8 h-8" />,
+      icon: (
+        <FaUsers className="w-8 h-8 animate-float text-green-400 group-hover:text-green-300 transition-all duration-300" />
+      ),
       title: "For Service Providers",
       description:
         "A platform for local service providers to showcase their services and connect with potential clients. Whether you clean shoes, fix pipes, or offer any service, get noticed in your community.",
     },
     {
-      icon: <FaStore className="w-8 h-8" />,
+      icon: (
+        <FaStore className="w-8 h-8 animate-float text-green-400 group-hover:text-green-300 transition-all duration-300" />
+      ),
       title: "Marketplace",
       description:
         "A dedicated marketplace where people can post products for sale by category - from clothes to kitchenware. Perfect for those who need to sell items to make ends meet.",
     },
     {
-      icon: <FaHandshake className="w-8 h-8" />,
+      icon: (
+        <FaHandshake className="w-8 h-8 animate-float text-green-400 group-hover:text-green-300 transition-all duration-300" />
+      ),
       title: "Community First",
       description:
         "Built for the community, by the community. No middlemen, no complicated steps. Just direct connections between service providers and those who need their services.",
@@ -56,7 +62,7 @@ const NusuruPage = () => {
 
                 <div className="max-w-4xl mx-auto">
                   {/* Project Overview */}
-                  <div className="mb-12">
+                  <div className="mb-12 text-center">
                     <h2 className="text-2xl font-bold text-green-300 mb-4">
                       Project Overview
                     </h2>
@@ -78,46 +84,70 @@ const NusuruPage = () => {
                   </div>
 
                   {/* App Videos */}
-                  <div className="mb-12">
+                  <div className="mb-12 text-center">
                     <h2 className="text-2xl font-bold text-green-300 mb-6">
                       View App Videos
                     </h2>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                      <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 border border-gray-700/50">
-                        <h3 className="text-green-300 text-xl font-bold mb-4">
-                          User Dashboard
-                        </h3>
-                        <video
-                          className="w-full rounded-lg"
-                          controls
-                          src="https://fteifbqniqfmiuipvbug.supabase.co/storage/v1/object/public/website//user.mp4"
-                        />
+                      <div className="group relative bg-gradient-to-br from-gray-800/90 to-gray-900/90 rounded-xl p-6 transition-all duration-500 border border-gray-700 hover:border-green-500/50 overflow-hidden">
+                        {/* Animated gradient background */}
+                        <div className="absolute inset-0 bg-gradient-to-r from-green-500/20 via-blue-500/20 to-purple-500/20 rounded-xl animate-gradient-x"></div>
+
+                        {/* Pulsing glow effect */}
+                        <div className="absolute inset-0 bg-gradient-to-r from-green-500/30 via-blue-500/30 to-purple-500/30 rounded-xl opacity-70 animate-pulse-slow"></div>
+
+                        <div className="relative z-10">
+                          <h3 className="text-xl font-bold bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent group-hover:from-green-300 group-hover:to-blue-300 transition-all duration-300 mb-4">
+                            User Dashboard
+                          </h3>
+                          <video
+                            className="w-full rounded-lg"
+                            controls
+                            src="https://fteifbqniqfmiuipvbug.supabase.co/storage/v1/object/public/website//user.mp4"
+                          />
+                        </div>
                       </div>
-                      <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 border border-gray-700/50">
-                        <h3 className="text-green-300 text-xl font-bold mb-4">
-                          Seller Dashboard
-                        </h3>
-                        <video
-                          className="w-full rounded-lg"
-                          controls
-                          src="https://fteifbqniqfmiuipvbug.supabase.co/storage/v1/object/public/website//seller.mp4"
-                        />
+                      <div className="group relative bg-gradient-to-br from-gray-800/90 to-gray-900/90 rounded-xl p-6 transition-all duration-500 border border-gray-700 hover:border-green-500/50 overflow-hidden">
+                        {/* Animated gradient background */}
+                        <div className="absolute inset-0 bg-gradient-to-r from-green-500/20 via-blue-500/20 to-purple-500/20 rounded-xl animate-gradient-x"></div>
+
+                        {/* Pulsing glow effect */}
+                        <div className="absolute inset-0 bg-gradient-to-r from-green-500/30 via-blue-500/30 to-purple-500/30 rounded-xl opacity-70 animate-pulse-slow"></div>
+
+                        <div className="relative z-10">
+                          <h3 className="text-xl font-bold bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent group-hover:from-green-300 group-hover:to-blue-300 transition-all duration-300 mb-4">
+                            Seller Dashboard
+                          </h3>
+                          <video
+                            className="w-full rounded-lg"
+                            controls
+                            src="https://fteifbqniqfmiuipvbug.supabase.co/storage/v1/object/public/website//seller.mp4"
+                          />
+                        </div>
                       </div>
-                      <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 border border-gray-700/50">
-                        <h3 className="text-green-300 text-xl font-bold mb-4">
-                          Provider Dashboard
-                        </h3>
-                        <video
-                          className="w-full rounded-lg"
-                          controls
-                          src="https://fteifbqniqfmiuipvbug.supabase.co/storage/v1/object/public/website//provider.mp4"
-                        />
+                      <div className="group relative bg-gradient-to-br from-gray-800/90 to-gray-900/90 rounded-xl p-6 transition-all duration-500 border border-gray-700 hover:border-green-500/50 overflow-hidden">
+                        {/* Animated gradient background */}
+                        <div className="absolute inset-0 bg-gradient-to-r from-green-500/20 via-blue-500/20 to-purple-500/20 rounded-xl animate-gradient-x"></div>
+
+                        {/* Pulsing glow effect */}
+                        <div className="absolute inset-0 bg-gradient-to-r from-green-500/30 via-blue-500/30 to-purple-500/30 rounded-xl opacity-70 animate-pulse-slow"></div>
+
+                        <div className="relative z-10">
+                          <h3 className="text-xl font-bold bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent group-hover:from-green-300 group-hover:to-blue-300 transition-all duration-300 mb-4">
+                            Provider Dashboard
+                          </h3>
+                          <video
+                            className="w-full rounded-lg"
+                            controls
+                            src="https://fteifbqniqfmiuipvbug.supabase.co/storage/v1/object/public/website//provider.mp4"
+                          />
+                        </div>
                       </div>
                     </div>
                   </div>
 
                   {/* Key Features */}
-                  <div className="mb-12">
+                  <div className="mb-12 text-center">
                     <h2 className="text-2xl font-bold text-green-300 mb-6">
                       Key Features
                     </h2>
@@ -125,24 +155,35 @@ const NusuruPage = () => {
                       {features.map((feature) => (
                         <div
                           key={feature.title}
-                          className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 hover:shadow-lg hover:shadow-green-500/10 hover:-translate-y-1 transition-all duration-300 border border-gray-700/50"
+                          className="group relative bg-gradient-to-br from-gray-800/90 to-gray-900/90 rounded-xl p-6 transition-all duration-500 border border-gray-700 hover:border-green-500/50 overflow-hidden"
                         >
-                          <div className="text-green-400 bg-gray-800 p-3 rounded-lg w-fit mb-4">
-                            {feature.icon}
+                          {/* Animated gradient background */}
+                          <div className="absolute inset-0 bg-gradient-to-r from-green-500/20 via-blue-500/20 to-purple-500/20 rounded-xl animate-gradient-x"></div>
+
+                          {/* Pulsing glow effect */}
+                          <div className="absolute inset-0 bg-gradient-to-r from-green-500/30 via-blue-500/30 to-purple-500/30 rounded-xl opacity-70 animate-pulse-slow"></div>
+
+                          {/* Content */}
+                          <div className="relative z-10">
+                            <div className="flex items-center justify-center space-x-4 mb-4">
+                              <div className="text-green-400 transform group-hover:scale-110 transition-transform duration-300 group-hover:text-green-300">
+                                {feature.icon}
+                              </div>
+                            </div>
+                            <h3 className="text-xl font-bold bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent group-hover:from-green-300 group-hover:to-blue-300 transition-all duration-300 mb-3">
+                              {feature.title}
+                            </h3>
+                            <p className="text-gray-300 leading-relaxed">
+                              {feature.description}
+                            </p>
                           </div>
-                          <h3 className="text-green-300 text-xl font-bold mb-3">
-                            {feature.title}
-                          </h3>
-                          <p className="text-gray-300 leading-relaxed">
-                            {feature.description}
-                          </p>
                         </div>
                       ))}
                     </div>
                   </div>
 
                   {/* Mission Statement */}
-                  <div className="mb-12">
+                  <div className="mb-12 text-center">
                     <h2 className="text-2xl font-bold text-green-300 mb-4">
                       Our Mission
                     </h2>
@@ -160,11 +201,11 @@ const NusuruPage = () => {
                   </div>
 
                   {/* Tech Stack */}
-                  <div className="mb-12">
+                  <div className="mb-12 text-center">
                     <h2 className="text-2xl font-bold text-green-300 mb-4">
                       Tech Stack
                     </h2>
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-wrap justify-center gap-2">
                       {[
                         "React Native",
                         "Expo",
@@ -173,7 +214,7 @@ const NusuruPage = () => {
                       ].map((tech) => (
                         <span
                           key={tech}
-                          className="px-3 py-1 bg-gray-800 text-green-400 rounded-full text-sm"
+                          className="px-3 py-1.5 bg-gray-800/50 backdrop-blur-sm rounded-full text-sm text-gray-300 border border-gray-700 hover:border-green-500/50 hover:text-green-400 transition-all duration-300"
                         >
                           {tech}
                         </span>
