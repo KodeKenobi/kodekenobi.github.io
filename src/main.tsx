@@ -15,14 +15,8 @@ console.log("🚀 main.tsx: Starting React application initialization");
 
 // Get base path from window location
 const getBasePath = () => {
-  const pathSegments = window.location.pathname.split("/");
-  if (pathSegments[1] === "kodekenobi.github.io") {
-    return "/kodekenobi.github.io";
-  }
-  if (window.location.hostname === "kodekenobi.github.io") {
-    return "/kodekenobi.github.io";
-  }
-  return "";
+  // Since we're using GitHub Pages, we need to use the repository name as the base path
+  return "/kodekenobi.github.io";
 };
 
 const basePath = getBasePath();
