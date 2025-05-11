@@ -157,7 +157,10 @@ function Home() {
                   <span className="animate-blink">_</span>
                 </div>
 
-                <div id="about" className="topic-header mt-20 text-center">
+                <div
+                  id="about"
+                  className="topic-header mt-24 sm:mt-24 md:mt-20 text-center"
+                >
                   ABOUT ME
                 </div>
                 <div className="text-center">
@@ -168,7 +171,10 @@ function Home() {
                   Whether it's web apps, mobile experiences, or backend systems,
                   I enjoy turning ideas into reliable, intuitive products.
                 </div>
-                <div id="skills" className="topic-header text-center">
+                <div
+                  id="skills"
+                  className="topic-header mt-16 sm:mt-16 md:mt-12 text-center"
+                >
                   SKILLS & EXPERTISE
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
@@ -208,7 +214,10 @@ function Home() {
                   ))}
                 </div>
 
-                <div id="focus" className="topic-header mt-12 text-center">
+                <div
+                  id="focus"
+                  className="topic-header mt-16 sm:mt-16 md:mt-12 text-center"
+                >
                   CURRENT FOCUS
                 </div>
                 <div className="relative bg-gradient-to-r from-gray-800/90 to-gray-900/90 p-6 rounded-xl border border-gray-700 hover:border-green-500/50 transition-all duration-300 overflow-hidden">
@@ -225,7 +234,10 @@ function Home() {
                   </div>
                 </div>
 
-                <div id="contact" className="topic-header mt-12 text-center">
+                <div
+                  id="contact"
+                  className="topic-header mt-16 sm:mt-16 md:mt-12 text-center"
+                >
                   GET IN TOUCH
                 </div>
                 <div className="relative bg-gradient-to-r from-gray-800/90 to-gray-900/90 p-6 rounded-xl border border-gray-700 hover:border-green-500/50 transition-all duration-300 overflow-hidden">
