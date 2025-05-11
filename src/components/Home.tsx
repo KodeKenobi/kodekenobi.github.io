@@ -30,23 +30,19 @@ function Home() {
     }
   }, [isInstalling]);
 
-  // Intersection Observer for scroll animations
+  // Simplified Intersection Observer for scroll animations
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             entry.target.classList.add("animate-in");
-            entry.target.classList.remove("animate-out");
-          } else {
-            entry.target.classList.add("animate-out");
-            entry.target.classList.remove("animate-in");
           }
         });
       },
       {
-        threshold: 0.1,
-        rootMargin: "0px 0px -100px 0px",
+        threshold: 0.2,
+        rootMargin: "0px 0px -50px 0px",
       }
     );
 
@@ -96,40 +92,14 @@ function Home() {
     },
   ];
 
-  // Add mouse move effect for 3D cards
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const card = e.currentTarget;
-    const rect = card.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-
-    const centerX = rect.width / 2;
-    const centerY = rect.height / 2;
-
-    const rotateX = (y - centerY) / 10;
-    const rotateY = (centerX - x) / 10;
-
-    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.05, 1.05, 1.05)`;
-  };
-
-  const handleMouseLeave = (e: React.MouseEvent<HTMLDivElement>) => {
-    e.currentTarget.style.transform =
-      "perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)";
-  };
-
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 relative overflow-hidden">
       <Navbar />
-
-      {/* Main Content - Add padding-top to account for fixed navbar */}
       <div className="flex-1 pt-16">
-        {/* Animated Background */}
         <div className="absolute inset-0 bg-gradient-to-r from-green-900 via-blue-900 to-purple-900 opacity-20 animate-gradient"></div>
-        <div className="w-full relative">
-          {/* Terminal Window */}
+        <div className="w-full relative px-4 sm:px-8">
           <div className="mt-4 terminal-window mx-auto shadow-2xl rounded-xl bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 animate-fade-in px-4 sm:px-8 py-4 sm:py-6 glow-border">
             <div className="terminal-content font-mono animate-slide-up px-1 sm:px-4 py-2 sm:py-6 text-[0.97rem] sm:text-base overflow-x-auto break-words">
-              {/* Main Content */}
               <div className="animate-fade-in">
                 <div className="text-xl sm:text-2xl font-bold text-green-400 mb-6 text-center float">
                   Welcome to My Website
@@ -157,15 +127,11 @@ function Home() {
                       key={category.title}
                       ref={(el) => (cardsRef.current[index] = el)}
                       className="card-3d group relative bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-4 sm:p-6 
-                        transform transition-all duration-500 ease-out
-                        animate-out opacity-0 translate-y-8 scale-95
-                        hover:shadow-2xl hover:-translate-y-2 hover:scale-105
+                        transform transition-all duration-300 ease-out
                         border border-gray-700 hover:border-green-500/50"
-                      onMouseMove={handleMouseMove}
-                      onMouseLeave={handleMouseLeave}
                     >
                       {/* Glow effect */}
-                      <div className="absolute inset-0 bg-gradient-to-r from-green-500/10 to-blue-500/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                      <div className="absolute inset-0 bg-gradient-to-r from-green-500/10 to-blue-500/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
                       {/* Content */}
                       <div className="relative z-10">
@@ -183,7 +149,7 @@ function Home() {
                               key={skill}
                               className="skill-tag px-3 py-1.5 bg-gray-800/50 backdrop-blur-sm rounded-full text-sm text-gray-300 
                                 border border-gray-700 hover:border-green-500/50 hover:text-green-400 
-                                transition-all duration-300 transform hover:scale-105"
+                                transition-all duration-300"
                             >
                               {skill}
                             </span>
@@ -225,7 +191,6 @@ function Home() {
                   .
                 </div>
 
-                {/* Footer */}
                 <Footer />
               </div>
             </div>
