@@ -22,4 +22,9 @@ export default defineConfig({
     },
   },
   publicDir: "public",
+  server: {
+    headers: {
+      "Content-Type": "application/javascript",
+    },
+  },
 });
