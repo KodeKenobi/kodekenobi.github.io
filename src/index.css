@@ -107,61 +107,65 @@
 
 /* Scroll Animation Classes */
 .animate-in {
-  animation: slideIn3D 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  opacity: 0;
+  transform: translateY(20px);
 }
 
 .animate-out {
-  animation: slideOut3D 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.3s ease-out, transform 0.3s ease-out;
 }
 
-@keyframes slideIn3D {
+@keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: perspective(1000px) rotateX(30deg) translateY(100px) scale(0.8);
+    transform: translateY(20px);
   }
   to {
     opacity: 1;
-    transform: perspective(1000px) rotateX(0) translateY(0) scale(1);
-  }
-}
-
-@keyframes slideOut3D {
-  from {
-    opacity: 1;
-    transform: perspective(1000px) rotateX(0) translateY(0) scale(1);
-  }
-  to {
-    opacity: 0;
-    transform: perspective(1000px) rotateX(-30deg) translateY(-100px) scale(0.8);
+    transform: translateY(0);
   }
 }
 
 /* Floating Animation */
 .float {
   animation: floating 3s ease-in-out infinite;
+  will-change: transform;
 }
 
 @keyframes floating {
   0% {
-    transform: translateY(0px) rotate(0deg);
+    transform: translateY(0px);
   }
   50% {
-    transform: translateY(-10px) rotate(2deg);
+    transform: translateY(-8px);
   }
   100% {
-    transform: translateY(0px) rotate(0deg);
+    transform: translateY(0px);
   }
 }
 
 /* Skill Tag Animations */
 .skill-tag {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  transform-style: preserve-3d;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+  -webkit-tap-highlight-color: transparent;
+  padding: 0.75rem 1rem;
+  min-height: 2.5rem;
 }
 
-.skill-tag:hover {
-  transform: translateZ(20px) scale(1.1);
-  box-shadow: 0 0 20px rgba(74, 222, 128, 0.3);
+@media (hover: hover) {
+  .skill-tag:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(74, 222, 128, 0.2);
+  }
+}
+
+.skill-tag:active {
+  transform: scale(0.95);
+  transition: transform 0.1s ease;
 }
 
 /* Magnetic Effect */
@@ -202,6 +206,33 @@
   .skill-tag:hover {
     transform: translateZ(10px) scale(1.05);
   }
+
+  .grid {
+    gap: 1rem;
+  }
+
+  .card-3d {
+    padding: 1rem;
+  }
+
+  .topic-header {
+    font-size: 1.25rem;
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .topic-text {
+    font-size: 1rem;
+    line-height: 1.6;
+    padding: 1rem;
+  }
+
+  button,
+  a {
+    min-height: 44px;
+    min-width: 44px;
+    padding: 0.75rem 1rem;
+  }
 }
 
 /* Smooth Scrolling */
@@ -227,11 +258,21 @@ html {
 .card-3d {
   transform-style: preserve-3d;
   perspective: 1000px;
-  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+  -webkit-tap-highlight-color: transparent;
 }
 
-.card-3d:hover {
-  transform: rotateX(10deg) rotateY(10deg) scale(1.05);
+@media (hover: hover) {
+  .card-3d:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  }
+}
+
+.card-3d:active {
+  transform: scale(0.98);
+  transition: transform 0.1s ease;
 }
 
 .card-3d::before {
@@ -252,6 +293,7 @@ html {
 /* Glowing Border Effect */
 .glow-border {
   position: relative;
+  transition: all 0.3s ease;
 }
 
 .glow-border::after {
@@ -269,7 +311,7 @@ html {
 }
 
 .glow-border:hover::after {
-  opacity: 1;
+  opacity: 0.5;
 }
 
 @keyframes glowing {
@@ -281,5 +323,33 @@ html {
   }
   100% {
     background-position: 0 0;
+  }
+}
+
+/* Mobile-First Animations */
+@media (hover: none) {
+  .card-3d:hover {
+    transform: none;
+  }
+
+  .skill-tag:hover {
+    transform: none;
+  }
+
+  .glow-border:hover::after {
+    opacity: 0;
+  }
+}
+
+/* Performance optimizations */
+@media (prefers-reduced-motion: reduce) {
+  .animate-in,
+  .animate-out,
+  .float,
+  .card-3d,
+  .skill-tag {
+    animation: none;
+    transition: none;
+    transform: none;
   }
 }
