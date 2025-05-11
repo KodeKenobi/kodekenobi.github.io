@@ -5,13 +5,16 @@ import Navbar from "./Navbar";
 import { FaMobile, FaGithub } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import Footer from "./Footer";
+
 const ProjectsPage = () => {
   const navigate = useNavigate();
 
   const projects = [
     {
       title: "Nusuru App",
-      icon: <FaMobile className="w-8 h-8" />,
+      icon: (
+        <FaMobile className="w-8 h-8 animate-float text-green-400 group-hover:text-green-300 transition-all duration-300" />
+      ),
       description:
         "A mobile app for everyday hustlers - connecting service providers with those who need their services. Built with React Native (Expo) and Supabase.",
       tags: ["React Native", "Expo", "Supabase", "Marketplace"],
@@ -70,35 +73,44 @@ const ProjectsPage = () => {
                   </a>
                 </div>
 
-                <div className="grid grid-cols-1 gap-6 mt-8">
+                <div className="grid grid-cols-1 gap-6">
                   {projects.map((project, index) => (
                     <div
                       key={project.title}
-                      className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 hover:shadow-lg hover:shadow-green-500/10 hover:-translate-y-1 transition-all duration-300 border border-gray-700/50 cursor-pointer"
+                      className="group relative bg-gradient-to-br from-gray-800/90 to-gray-900/90 rounded-xl p-6 transition-all duration-500 border border-gray-700 hover:border-green-500/50 overflow-hidden cursor-pointer"
                       data-aos="flip-up"
                       data-aos-delay={index * 100}
                       onClick={project.onClick}
                     >
-                      <div className="flex items-center space-x-4 mb-4">
-                        <div className="text-green-400 bg-gray-800 p-3 rounded-lg">
-                          {project.icon}
+                      {/* Animated gradient background */}
+                      <div className="absolute inset-0 bg-gradient-to-r from-green-500/20 via-blue-500/20 to-purple-500/20 rounded-xl animate-gradient-x"></div>
+
+                      {/* Pulsing glow effect */}
+                      <div className="absolute inset-0 bg-gradient-to-r from-green-500/30 via-blue-500/30 to-purple-500/30 rounded-xl opacity-70 animate-pulse-slow"></div>
+
+                      {/* Content */}
+                      <div className="relative z-10">
+                        <div className="flex items-center space-x-4 mb-4">
+                          <div className="text-green-400 transform group-hover:scale-110 transition-transform duration-300 group-hover:text-green-300">
+                            {project.icon}
+                          </div>
+                          <h3 className="text-xl font-bold bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent group-hover:from-green-300 group-hover:to-blue-300 transition-all duration-300">
+                            {project.title}
+                          </h3>
                         </div>
-                        <h3 className="text-green-300 text-xl font-bold">
-                          {project.title}
-                        </h3>
-                      </div>
-                      <p className="text-gray-300 leading-relaxed mb-4">
-                        {project.description}
-                      </p>
-                      <div className="flex flex-wrap gap-2">
-                        {project.tags.map((tag) => (
-                          <span
-                            key={tag}
-                            className="px-3 py-1 bg-gray-800 text-green-400 rounded-full text-sm"
-                          >
-                            {tag}
-                          </span>
-                        ))}
+                        <p className="text-gray-300 leading-relaxed mb-4">
+                          {project.description}
+                        </p>
+                        <div className="flex flex-wrap gap-2">
+                          {project.tags.map((tag) => (
+                            <span
+                              key={tag}
+                              className="px-3 py-1.5 bg-gray-800/50 backdrop-blur-sm rounded-full text-sm text-gray-300 border border-gray-700 hover:border-green-500/50 hover:text-green-400 transition-all duration-300"
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
                       </div>
                     </div>
                   ))}
