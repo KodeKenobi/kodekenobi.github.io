@@ -24,7 +24,7 @@ const About = () => {
         </a>
       </div>
 
-      <div className="text-gray-200 mb-12">
+      <div className="text-gray-200 mb-12 text-center">
         I am a developer who specializes in building scalable, high-impact web
         and mobile applications. I tackle complex challenges and create
         solutions that improve user experiences and drive real results. With a
@@ -204,7 +204,7 @@ const About = () => {
 
         {/* Summary Section */}
         <section>
-          <p className="text-gray-200">
+          <p className="text-gray-200 text-center">
             With over 6 years of experience in software development, I've built
             a strong foundation in both frontend and backend technologies. My
             expertise spans from web development to mobile applications, with a
