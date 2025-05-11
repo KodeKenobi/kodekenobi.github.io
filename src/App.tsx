@@ -362,10 +362,6 @@ function App() {
                         </a>
                         .
                       </div>
-
-                      <div className="mt-8 text-xs sm:text-sm text-gray-500 text-center">
-                        Latest Update - 05/22/2021 V-21.5.22
-                      </div>
                     </div>
                   )}
                 </div>
