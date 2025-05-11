@@ -309,10 +309,6 @@ function App() {
                   {/* Main Content */}
                   {showContent && (
                     <div className="animate-fade-in">
-                      <div className="text-xl sm:text-2xl font-bold text-green-400 mb-6 text-center">
-                        Kode Kenobi<span className="animate-blink">_</span>
-                      </div>
-
                       <div className="topic-header">COMPANY NAME</div>
                       <div className="topic-text">Kode Kenobi</div>
 
