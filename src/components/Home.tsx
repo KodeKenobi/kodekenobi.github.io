@@ -39,7 +39,9 @@ function Home() {
   const skillCategories = [
     {
       title: "Frontend",
-      icon: <FaReact className="w-8 h-8" />,
+      icon: (
+        <FaReact className="w-8 h-8 animate-float text-green-400 group-hover:text-green-300 transition-all duration-300" />
+      ),
       skills: [
         "React.js",
         "React Native",
@@ -50,27 +52,37 @@ function Home() {
     },
     {
       title: "Backend",
-      icon: <FaNodeJs className="w-8 h-8" />,
+      icon: (
+        <FaNodeJs className="w-8 h-8 animate-float text-green-400 group-hover:text-green-300 transition-all duration-300" />
+      ),
       skills: ["Node.js", "Express", "REST", "GraphQL", "Python"],
     },
     {
       title: "Database",
-      icon: <FaDatabase className="w-8 h-8" />,
+      icon: (
+        <FaDatabase className="w-8 h-8 animate-float text-green-400 group-hover:text-green-300 transition-all duration-300" />
+      ),
       skills: ["MongoDB", "SQL", "Firebase", "Supabase"],
     },
     {
       title: "DevOps",
-      icon: <FaDocker className="w-8 h-8" />,
+      icon: (
+        <FaDocker className="w-8 h-8 animate-float text-green-400 group-hover:text-green-300 transition-all duration-300" />
+      ),
       skills: ["Docker", "Kubernetes", "AWS", "CI/CD", "GitHub Actions"],
     },
     {
       title: "Cloud",
-      icon: <FaCloud className="w-8 h-8" />,
+      icon: (
+        <FaCloud className="w-8 h-8 animate-float text-green-400 group-hover:text-green-300 transition-all duration-300" />
+      ),
       skills: ["AWS", "Firebase", "Vercel", "Cloud Functions"],
     },
     {
       title: "Tools",
-      icon: <FaTools className="w-8 h-8" />,
+      icon: (
+        <FaTools className="w-8 h-8 animate-float text-green-400 group-hover:text-green-300 transition-all duration-300" />
+      ),
       skills: ["Git", "Figma", "VS Code", "Postman", "Jira"],
     },
   ];
@@ -202,7 +214,7 @@ function Home() {
                 <div id="focus" className="topic-header mt-12">
                   CURRENT FOCUS
                 </div>
-                <div className="topic-text bg-gradient-to-r from-gray-800 to-gray-900 p-6 rounded-xl border border-gray-700 hover:border-green-500/50 transition-all duration-300">
+                <div className="bg-gradient-to-r from-gray-800 to-gray-900 p-6 rounded-xl border border-gray-700 hover:border-green-500/50 transition-all duration-300">
                   Exploring the frontiers of AI and Machine Learning while
                   building scalable web applications. Always learning, always
                   growing.
@@ -211,7 +223,7 @@ function Home() {
                 <div id="contact" className="topic-header mt-12">
                   GET IN TOUCH
                 </div>
-                <div className="topic-text bg-gradient-to-r from-gray-800 to-gray-900 p-6 rounded-xl border border-gray-700 hover:border-green-500/50 transition-all duration-300">
+                <div className="bg-gradient-to-r from-gray-800 to-gray-900 p-6 rounded-xl border border-gray-700 hover:border-green-500/50 transition-all duration-300">
                   Let's connect and create something amazing together.{" "}
                   <a
                     href="mailto:kodekenobi@gmail.com"
