@@ -4,12 +4,12 @@ const About = () => {
   return (
     <div className="max-w-4xl mx-auto px-6 py-12">
       {/* Action Buttons */}
-      <div className="flex items-center space-x-4 mb-12">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-4 sm:space-y-0 sm:space-x-4 mb-12">
         <a
           href="https://www.linkedin.com/in/ignatius-mutizwa-7662b5229/"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center space-x-2 px-4 py-2 bg-green-400 text-gray-900 rounded-lg hover:bg-green-300 transition-colors duration-200"
+          className="flex items-center justify-center space-x-2 px-4 py-2 bg-green-400 text-gray-900 rounded-lg hover:bg-green-300 transition-colors duration-200"
         >
           <FaLinkedin className="text-xl" />
           <span>LinkedIn</span>
@@ -17,7 +17,7 @@ const About = () => {
         <a
           href="/cv.pdf"
           download
-          className="flex items-center space-x-2 px-4 py-2 bg-gray-700 text-gray-200 rounded-lg hover:bg-gray-600 transition-colors duration-200"
+          className="flex items-center justify-center space-x-2 px-4 py-2 bg-gray-700 text-gray-200 rounded-lg hover:bg-gray-600 transition-colors duration-200"
         >
           <FaDownload className="text-xl" />
           <span>My CV</span>
