@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import {
   FaReact,
   FaNodeJs,
@@ -9,9 +9,16 @@ import {
 } from "react-icons/fa";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
+import Particles from "react-tsparticles";
+import { loadFull } from "tsparticles";
+import type { Engine } from "tsparticles-engine";
 
 function Home() {
   const [isInstalling, setIsInstalling] = useState(false);
+
+  const particlesInit = useCallback(async (engine: Engine) => {
+    await loadFull(engine as any);
+  }, []);
 
   useEffect(() => {
     setIsInstalling(true);
@@ -70,6 +77,57 @@ function Home() {
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 relative overflow-hidden">
+      <Particles
+        id="tsparticles"
+        init={particlesInit}
+        options={{
+          background: {
+            color: {
+              value: "transparent",
+            },
+          },
+          fpsLimit: 60,
+          particles: {
+            color: {
+              value: "#4ade80",
+            },
+            links: {
+              color: "#4ade80",
+              distance: 150,
+              enable: true,
+              opacity: 0.2,
+              width: 1,
+            },
+            move: {
+              enable: true,
+              outModes: {
+                default: "bounce",
+              },
+              random: false,
+              speed: 1,
+              straight: false,
+            },
+            number: {
+              density: {
+                enable: true,
+                area: 800,
+              },
+              value: 40,
+            },
+            opacity: {
+              value: 0.3,
+            },
+            shape: {
+              type: "circle",
+            },
+            size: {
+              value: { min: 1, max: 3 },
+            },
+          },
+          detectRetina: true,
+        }}
+        className="absolute inset-0"
+      />
       <Navbar />
 
       {/* Main Content - Add padding-top to account for fixed navbar */}
@@ -105,18 +163,24 @@ function Home() {
                   {skillCategories.map((category) => (
                     <div
                       key={category.title}
-                      className="group relative bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 hover:scale-105 border border-gray-700 hover:border-green-500/50"
+                      className="group relative bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 hover:scale-105 border border-gray-700 hover:border-green-500/50 overflow-hidden"
                     >
-                      {/* Glow effect */}
-                      <div className="absolute inset-0 bg-gradient-to-r from-green-500/10 to-blue-500/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                      {/* Enhanced glow effect */}
+                      <div className="absolute inset-0 bg-gradient-to-r from-green-500/10 via-blue-500/10 to-purple-500/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                      <div className="absolute inset-0 bg-gradient-to-r from-green-500/5 to-blue-500/5 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 animate-pulse"></div>
+
+                      {/* Animated border glow */}
+                      <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                        <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-green-500/20 to-blue-500/20 blur-xl"></div>
+                      </div>
 
                       {/* Content */}
                       <div className="relative z-10">
                         <div className="flex items-center space-x-4 mb-4">
-                          <div className="text-green-400 transform group-hover:scale-110 transition-transform duration-300">
+                          <div className="text-green-400 transform group-hover:scale-110 transition-transform duration-300 group-hover:text-green-300">
                             {category.icon}
                           </div>
-                          <h3 className="text-xl font-bold bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent">
+                          <h3 className="text-xl font-bold bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent group-hover:from-green-300 group-hover:to-blue-300 transition-all duration-300">
                             {category.title}
                           </h3>
                         </div>
@@ -124,7 +188,7 @@ function Home() {
                           {category.skills.map((skill) => (
                             <span
                               key={skill}
-                              className="px-3 py-1.5 bg-gray-800/50 backdrop-blur-sm rounded-full text-sm text-gray-300 border border-gray-700 hover:border-green-500/50 hover:text-green-400 transition-all duration-300"
+                              className="px-3 py-1.5 bg-gray-800/50 backdrop-blur-sm rounded-full text-sm text-gray-300 border border-gray-700 hover:border-green-500/50 hover:text-green-400 transition-all duration-300 hover:bg-gray-800/70"
                             >
                               {skill}
                             </span>
