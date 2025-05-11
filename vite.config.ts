@@ -6,36 +6,20 @@ import { resolve } from "path";
 export default defineConfig({
   plugins: [react()],
   base: "/kodekenobi.github.io/",
-  server: {
-    port: 5173,
-    host: false,
-    headers: {
-      "Content-Type": "application/javascript",
-    },
-  },
   build: {
     outDir: "dist",
-    sourcemap: true,
     assetsDir: "assets",
     rollupOptions: {
       input: {
         main: resolve(__dirname, "index.html"),
       },
       output: {
-        manualChunks: undefined,
-        assetFileNames: "assets/[name].[hash][extname]",
-        chunkFileNames: "assets/[name].[hash].js",
+        format: "iife",
         entryFileNames: "assets/[name].[hash].js",
+        chunkFileNames: "assets/[name].[hash].js",
+        assetFileNames: "assets/[name].[hash][extname]",
       },
     },
   },
   publicDir: "public",
-  optimizeDeps: {
-    include: ["react", "react-dom"],
-  },
-  experimental: {
-    renderBuiltUrl(filename, { hostType, type, hostId }) {
-      return `/kodekenobi.github.io/${filename}`;
-    },
-  },
 });
