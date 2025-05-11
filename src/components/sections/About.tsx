@@ -41,103 +41,108 @@ const About = () => {
               PROFESSIONAL EXPERIENCE
             </h3>
           </div>
-          <div className="space-y-8">
-            <div className="border-l-2 border-green-400 pl-6 text-center">
-              <h4 className="text-xl font-semibold text-green-400 mb-2">
-                Software Engineer - Fluff Software
-              </h4>
-              <p className="text-gray-400 mb-4">
-                Sep 2023 - Present · Remote (Swindon, England)
-              </p>
-              <ul className="list-none text-gray-200 space-y-3">
-                <li className="flex flex-col items-center space-y-2">
-                  <FaLinkedin className="text-green-400 mt-1 flex-shrink-0" />
-                  <span>
-                    Full-stack development using React.js, Next.js, and Tailwind
-                    CSS
-                  </span>
-                </li>
-                <li className="flex flex-col items-center space-y-2">
-                  <FaLinkedin className="text-green-400 mt-1 flex-shrink-0" />
-                  <span>
-                    Cross-platform mobile development with React Native and Expo
-                  </span>
-                </li>
-                <li className="flex flex-col items-center space-y-2">
-                  <FaLinkedin className="text-green-400 mt-1 flex-shrink-0" />
-                  <span>Backend development with RESTful APIs and GraphQL</span>
-                </li>
-                <li className="flex flex-col items-center space-y-2">
-                  <FaLinkedin className="text-green-400 mt-1 flex-shrink-0" />
-                  <span>
-                    Security implementation using AWS Cognito, NextAuth, and
-                    OAuth
-                  </span>
-                </li>
-              </ul>
-            </div>
+          <div className="flex flex-col items-center w-full">
+            <div className="space-y-8 max-w-2xl w-full">
+              <div className="border-l-2 border-green-400 pl-6 text-left">
+                <h4 className="text-xl font-semibold text-green-400 mb-2">
+                  Software Engineer - Fluff Software
+                </h4>
+                <p className="text-gray-400 mb-4">
+                  Sep 2023 - Present · Remote (Swindon, England)
+                </p>
+                <ul className="list-none text-gray-200 space-y-3">
+                  <li className="flex items-start space-x-3">
+                    <FaLinkedin className="text-green-400 mt-1 flex-shrink-0" />
+                    <span>
+                      Full-stack development using React.js, Next.js, and
+                      Tailwind CSS
+                    </span>
+                  </li>
+                  <li className="flex items-start space-x-3">
+                    <FaLinkedin className="text-green-400 mt-1 flex-shrink-0" />
+                    <span>
+                      Cross-platform mobile development with React Native and
+                      Expo
+                    </span>
+                  </li>
+                  <li className="flex items-start space-x-3">
+                    <FaLinkedin className="text-green-400 mt-1 flex-shrink-0" />
+                    <span>
+                      Backend development with RESTful APIs and GraphQL
+                    </span>
+                  </li>
+                  <li className="flex items-start space-x-3">
+                    <FaLinkedin className="text-green-400 mt-1 flex-shrink-0" />
+                    <span>
+                      Security implementation using AWS Cognito, NextAuth, and
+                      OAuth
+                    </span>
+                  </li>
+                </ul>
+              </div>
 
-            <div className="border-l-2 border-green-400 pl-6 text-center">
-              <h4 className="text-xl font-semibold text-green-400 mb-2">
-                Senior Software Engineer - GotBot.Ai
-              </h4>
-              <p className="text-gray-400 mb-4">
-                2023 · Contract (South Africa)
-              </p>
-              <ul className="list-none text-gray-200 space-y-3">
-                <li className="flex flex-col items-center space-y-2">
-                  <FaLinkedin className="text-green-400 mt-1 flex-shrink-0" />
-                  <span>Developed conversational agents and chatbots</span>
-                </li>
-                <li className="flex flex-col items-center space-y-2">
-                  <FaLinkedin className="text-green-400 mt-1 flex-shrink-0" />
-                  <span>
-                    Worked with NLP, AWS, Kubernetes, and various cloud
-                    technologies
-                  </span>
-                </li>
-              </ul>
-            </div>
+              <div className="border-l-2 border-green-400 pl-6 text-left">
+                <h4 className="text-xl font-semibold text-green-400 mb-2">
+                  Senior Software Engineer - GotBot.Ai
+                </h4>
+                <p className="text-gray-400 mb-4">
+                  2023 · Contract (South Africa)
+                </p>
+                <ul className="list-none text-gray-200 space-y-3">
+                  <li className="flex items-start space-x-3">
+                    <FaLinkedin className="text-green-400 mt-1 flex-shrink-0" />
+                    <span>Developed conversational agents and chatbots</span>
+                  </li>
+                  <li className="flex items-start space-x-3">
+                    <FaLinkedin className="text-green-400 mt-1 flex-shrink-0" />
+                    <span>
+                      Worked with NLP, AWS, Kubernetes, and various cloud
+                      technologies
+                    </span>
+                  </li>
+                </ul>
+              </div>
 
-            <div className="border-l-2 border-green-400 pl-6 text-center">
-              <h4 className="text-xl font-semibold text-green-400 mb-2">
-                Full Stack Developer - MfundoPedia
-              </h4>
-              <p className="text-gray-400 mb-4">
-                2021 - 2022 · Hybrid (South Africa)
-              </p>
-              <ul className="list-none text-gray-200 space-y-3">
-                <li className="flex flex-col items-center space-y-2">
-                  <FaLinkedin className="text-green-400 mt-1 flex-shrink-0" />
-                  <span>
-                    Full-stack development with React, Vue.js, Angular, and
-                    Ionic
-                  </span>
-                </li>
-                <li className="flex flex-col items-center space-y-2">
-                  <FaLinkedin className="text-green-400 mt-1 flex-shrink-0" />
-                  <span>Mobile app development using Flutter and Dart</span>
-                </li>
-              </ul>
-            </div>
+              <div className="border-l-2 border-green-400 pl-6 text-left">
+                <h4 className="text-xl font-semibold text-green-400 mb-2">
+                  Full Stack Developer - MfundoPedia
+                </h4>
+                <p className="text-gray-400 mb-4">
+                  2021 - 2022 · Hybrid (South Africa)
+                </p>
+                <ul className="list-none text-gray-200 space-y-3">
+                  <li className="flex items-start space-x-3">
+                    <FaLinkedin className="text-green-400 mt-1 flex-shrink-0" />
+                    <span>
+                      Full-stack development with React, Vue.js, Angular, and
+                      Ionic
+                    </span>
+                  </li>
+                  <li className="flex items-start space-x-3">
+                    <FaLinkedin className="text-green-400 mt-1 flex-shrink-0" />
+                    <span>Mobile app development using Flutter and Dart</span>
+                  </li>
+                </ul>
+              </div>
 
-            <div className="border-l-2 border-green-400 pl-6 text-center">
-              <h4 className="text-xl font-semibold text-green-400 mb-2">
-                Frontend Web Developer - Digileads
-              </h4>
-              <p className="text-gray-400 mb-4">
-                Jan 2018 - Feb 2021 · Remote (South Africa)
-              </p>
-              <ul className="list-none text-gray-200 space-y-3">
-                <li className="flex flex-col items-center space-y-2">
-                  <FaLinkedin className="text-green-400 mt-1 flex-shrink-0" />
-                  <span>Web design and WordPress development</span>
-                </li>
-                <li className="flex flex-col items-center space-y-2">
-                  <FaLinkedin className="text-green-400 mt-1 flex-shrink-0" />
-                  <span>Managed and maintained multiple client websites</span>
-                </li>
-              </ul>
+              <div className="border-l-2 border-green-400 pl-6 text-left">
+                <h4 className="text-xl font-semibold text-green-400 mb-2">
+                  Frontend Web Developer - Digileads
+                </h4>
+                <p className="text-gray-400 mb-4">
+                  Jan 2018 - Feb 2021 · Remote (South Africa)
+                </p>
+                <ul className="list-none text-gray-200 space-y-3">
+                  <li className="flex items-start space-x-3">
+                    <FaLinkedin className="text-green-400 mt-1 flex-shrink-0" />
+                    <span>Web design and WordPress development</span>
+                  </li>
+                  <li className="flex items-start space-x-3">
+                    <FaLinkedin className="text-green-400 mt-1 flex-shrink-0" />
+                    <span>Managed and maintained multiple client websites</span>
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
         </section>
@@ -150,52 +155,54 @@ const About = () => {
               EDUCATION
             </h3>
           </div>
-          <div className="space-y-8">
-            <div className="border-l-2 border-green-400 pl-6 text-center">
-              <h4 className="text-xl font-semibold text-green-400 mb-4">
-                Harvard Online
-              </h4>
-              <div className="space-y-6">
-                <div>
-                  <h5 className="text-lg font-medium text-green-400 mb-2">
-                    CS50x - Computer Science
-                  </h5>
-                  <p className="text-gray-400 mb-1">2019 - 2021</p>
-                  <p className="text-gray-200">
-                    CS50 Certificate in Computer Science
-                  </p>
-                </div>
-                <div>
-                  <h5 className="text-lg font-medium text-green-400 mb-2">
-                    CS50AI - Artificial Intelligence
-                  </h5>
-                  <p className="text-gray-400">2020 - 2022</p>
+          <div className="flex flex-col items-center w-full">
+            <div className="space-y-8 max-w-2xl w-full">
+              <div className="border-l-2 border-green-400 pl-6 text-left">
+                <h4 className="text-xl font-semibold text-green-400 mb-4">
+                  Harvard Online
+                </h4>
+                <div className="space-y-6">
+                  <div>
+                    <h5 className="text-lg font-medium text-green-400 mb-2">
+                      CS50x - Computer Science
+                    </h5>
+                    <p className="text-gray-400 mb-1">2019 - 2021</p>
+                    <p className="text-gray-200">
+                      CS50 Certificate in Computer Science
+                    </p>
+                  </div>
+                  <div>
+                    <h5 className="text-lg font-medium text-green-400 mb-2">
+                      CS50AI - Artificial Intelligence
+                    </h5>
+                    <p className="text-gray-400">2020 - 2022</p>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div className="border-l-2 border-green-400 pl-6 text-center">
-              <h4 className="text-xl font-semibold text-green-400 mb-4">
-                freeCodeCamp
-              </h4>
-              <div className="space-y-6">
-                <div>
-                  <h5 className="text-lg font-medium text-green-400 mb-2">
-                    Scientific Computing with Python
-                  </h5>
-                  <p className="text-gray-400">2020 - 2021</p>
-                </div>
-                <div>
-                  <h5 className="text-lg font-medium text-green-400 mb-2">
-                    Responsive Web Design
-                  </h5>
-                  <p className="text-gray-400">2020 - 2021</p>
-                </div>
-                <div>
-                  <h5 className="text-lg font-medium text-green-400 mb-2">
-                    JavaScript Algorithms and Data Structures
-                  </h5>
-                  <p className="text-gray-400">2021 - 2022</p>
+              <div className="border-l-2 border-green-400 pl-6 text-left">
+                <h4 className="text-xl font-semibold text-green-400 mb-4">
+                  freeCodeCamp
+                </h4>
+                <div className="space-y-6">
+                  <div>
+                    <h5 className="text-lg font-medium text-green-400 mb-2">
+                      Scientific Computing with Python
+                    </h5>
+                    <p className="text-gray-400">2020 - 2021</p>
+                  </div>
+                  <div>
+                    <h5 className="text-lg font-medium text-green-400 mb-2">
+                      Responsive Web Design
+                    </h5>
+                    <p className="text-gray-400">2020 - 2021</p>
+                  </div>
+                  <div>
+                    <h5 className="text-lg font-medium text-green-400 mb-2">
+                      JavaScript Algorithms and Data Structures
+                    </h5>
+                    <p className="text-gray-400">2021 - 2022</p>
+                  </div>
                 </div>
               </div>
             </div>
