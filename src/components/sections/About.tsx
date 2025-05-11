@@ -2,7 +2,7 @@ import { FaLinkedin, FaDownload } from "react-icons/fa";
 
 const About = () => {
   return (
-    <div className="w-full px-4 sm:px-6 lg:px-8">
+    <div className="w-full px-2 sm:px-4 lg:px-6">
       {/* Action Buttons */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-4 sm:space-y-0 sm:space-x-4 mb-12">
         <a
@@ -24,11 +24,12 @@ const About = () => {
         </a>
       </div>
 
-      <div className="text-gray-200 text-lg leading-relaxed mb-12">
-        I am a Software Engineer with extensive experience in full-stack
-        development, specializing in web and mobile applications. Currently
-        working at Fluff Software, I focus on creating innovative solutions
-        using modern technologies.
+      <div className="text-gray-200 leading-relaxed mb-12">
+        I am a developer who specializes in building scalable, high-impact web
+        and mobile applications. I tackle complex challenges and create
+        solutions that improve user experiences and drive real results. With a
+        focus on both the front-end and back-end, I bring ideas to life with
+        technology that makes a difference.
       </div>
 
       <div className="space-y-12">
