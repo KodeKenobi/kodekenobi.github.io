@@ -177,14 +177,9 @@ function Home() {
                       key={category.title}
                       className="group relative bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 hover:scale-105 border border-gray-700 hover:border-green-500/50 overflow-hidden"
                     >
-                      {/* Enhanced glow effect */}
-                      <div className="absolute inset-0 bg-gradient-to-r from-green-500/10 via-blue-500/10 to-purple-500/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                      <div className="absolute inset-0 bg-gradient-to-r from-green-500/5 to-blue-500/5 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 animate-pulse"></div>
-
-                      {/* Animated border glow */}
-                      <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                        <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-green-500/20 to-blue-500/20 blur-xl"></div>
-                      </div>
+                      {/* Constant glow effect */}
+                      <div className="absolute inset-0 bg-gradient-to-r from-green-500/10 via-blue-500/10 to-purple-500/10 rounded-xl opacity-50"></div>
+                      <div className="absolute inset-0 bg-gradient-to-r from-green-500/5 to-blue-500/5 rounded-xl opacity-50 animate-pulse"></div>
 
                       {/* Content */}
                       <div className="relative z-10">
@@ -200,7 +195,7 @@ function Home() {
                           {category.skills.map((skill) => (
                             <span
                               key={skill}
-                              className="px-3 py-1.5 bg-gray-800/50 backdrop-blur-sm rounded-full text-sm text-gray-300 border border-gray-700 hover:border-green-500/50 hover:text-green-400 transition-all duration-300 hover:bg-gray-800/70"
+                              className="px-3 py-1.5 bg-gray-800/50 backdrop-blur-sm rounded-full text-sm text-gray-300 border border-gray-700 hover:border-green-500/50 hover:text-green-400 transition-all duration-300"
                             >
                               {skill}
                             </span>
