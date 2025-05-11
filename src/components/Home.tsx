@@ -80,91 +80,71 @@ function Home() {
           {/* Terminal Window */}
           <div className="mt-4 terminal-window mx-auto shadow-2xl rounded-xl bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 animate-fade-in px-4 sm:px-8 py-4 sm:py-6">
             <div className="terminal-content font-mono animate-slide-up px-1 sm:px-4 py-2 sm:py-6 text-[0.97rem] sm:text-base overflow-x-auto break-words">
-              {/* Main Content */}
               <div className="animate-fade-in">
                 <div className="text-xl sm:text-2xl font-bold text-green-400 mb-6 text-center">
                   Welcome to My Website
                   <span className="animate-blink">_</span>
                 </div>
 
-                <div id="about" className="topic-header mt-20">
-                  ABOUT ME
+                <div className="mb-12">
+                  <div className="text-xl sm:text-2xl font-bold text-green-400 mb-6 text-center">
+                    About Me
+                  </div>
+                  <div className="text-gray-200 text-lg leading-relaxed">
+                    I'm a passionate developer specializing in modern web and
+                    mobile technologies. With a strong foundation in the MERN
+                    stack and experience across cloud platforms, databases, and
+                    DevOps tools, I build scalable, user-focused solutions.
+                    Whether it's web apps, mobile experiences, or backend
+                    systems, I enjoy turning ideas into reliable, intuitive
+                    products.
+                  </div>
                 </div>
-                <div className="">
-                  I'm a passionate developer specializing in modern web and
-                  mobile technologies. With a strong foundation in the MERN
-                  stack and experience across cloud platforms, databases, and
-                  DevOps tools, I build scalable, user-focused solutions.
-                  Whether it's web apps, mobile experiences, or backend systems,
-                  I enjoy turning ideas into reliable, intuitive products.
-                </div>
-                <div id="skills" className="topic-header">
-                  SKILLS & EXPERTISE
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
-                  {skillCategories.map((category) => (
-                    <div
-                      key={category.title}
-                      className="group relative bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 hover:scale-105 border border-gray-700 hover:border-green-500/50"
-                    >
-                      {/* Glow effect */}
-                      <div className="absolute inset-0 bg-gradient-to-r from-green-500/10 to-blue-500/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
 
-                      {/* Content */}
-                      <div className="relative z-10">
-                        <div className="flex items-center space-x-4 mb-4">
-                          <div className="text-green-400 transform group-hover:scale-110 transition-transform duration-300">
-                            {category.icon}
+                <div className="mb-12">
+                  <div className="text-xl sm:text-2xl font-bold text-green-400 mb-6 text-center">
+                    Skills & Expertise
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {skillCategories.map((category) => (
+                      <div
+                        key={category.title}
+                        className="group relative bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 hover:scale-105 border border-gray-700 hover:border-green-500/50"
+                      >
+                        {/* Glow effect */}
+                        <div className="absolute inset-0 bg-gradient-to-r from-green-500/10 to-blue-500/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+
+                        {/* Content */}
+                        <div className="relative z-10">
+                          <div className="flex items-center space-x-4 mb-4">
+                            <div className="text-green-400 transform group-hover:scale-110 transition-transform duration-300">
+                              {category.icon}
+                            </div>
+                            <h3 className="text-xl font-bold bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent">
+                              {category.title}
+                            </h3>
                           </div>
-                          <h3 className="text-xl font-bold bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent">
-                            {category.title}
-                          </h3>
-                        </div>
-                        <div className="flex flex-wrap gap-2">
-                          {category.skills.map((skill) => (
-                            <span
-                              key={skill}
-                              className="px-3 py-1.5 bg-gray-800/50 backdrop-blur-sm rounded-full text-sm text-gray-300 border border-gray-700 hover:border-green-500/50 hover:text-green-400 transition-all duration-300"
-                            >
-                              {skill}
-                            </span>
-                          ))}
+                          <div className="flex flex-wrap gap-2">
+                            {category.skills.map((skill) => (
+                              <span
+                                key={skill}
+                                className="px-3 py-1.5 bg-gray-800/50 backdrop-blur-sm rounded-full text-sm text-gray-300 border border-gray-700 hover:border-green-500/50 hover:text-green-400 transition-all duration-300"
+                              >
+                                {skill}
+                              </span>
+                            ))}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
-
-                <div id="focus" className="topic-header mt-12">
-                  CURRENT FOCUS
-                </div>
-                <div className="topic-text bg-gradient-to-r from-gray-800 to-gray-900 p-6 rounded-xl border border-gray-700 hover:border-green-500/50 transition-all duration-300">
-                  Exploring the frontiers of AI and Machine Learning while
-                  building scalable web applications. Always learning, always
-                  growing.
-                </div>
-
-                <div id="contact" className="topic-header mt-12">
-                  GET IN TOUCH
-                </div>
-                <div className="topic-text bg-gradient-to-r from-gray-800 to-gray-900 p-6 rounded-xl border border-gray-700 hover:border-green-500/50 transition-all duration-300">
-                  Let's connect and create something amazing together.{" "}
-                  <a
-                    href="mailto:kodekenobi@gmail.com"
-                    className="text-green-400 hover:text-green-300 font-semibold hover:underline transition-all duration-300"
-                  >
-                    Send me an email
-                  </a>
-                  .
-                </div>
-
-                {/* Footer */}
-                <Footer />
               </div>
             </div>
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }
