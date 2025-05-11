@@ -262,34 +262,13 @@ html {
   will-change: transform;
   -webkit-tap-highlight-color: transparent;
   position: relative;
-  animation: float-card 6s ease-in-out infinite;
-}
-
-@keyframes float-card {
-  0% {
-    transform: translateY(0) rotateX(0) rotateY(0);
-  }
-  25% {
-    transform: translateY(-8px) rotateX(2deg) rotateY(2deg);
-  }
-  50% {
-    transform: translateY(0) rotateX(0) rotateY(0);
-  }
-  75% {
-    transform: translateY(8px) rotateX(-2deg) rotateY(-2deg);
-  }
-  100% {
-    transform: translateY(0) rotateX(0) rotateY(0);
-  }
+  transform: translateY(-5px) rotateX(5deg) rotateY(5deg);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 0 20px rgba(74, 222, 128, 0.2);
 }
 
 .card-3d .content {
-  transform: translateZ(20px);
-  transition: transform 0.3s ease;
-}
-
-.card-3d:hover .content {
   transform: translateZ(30px);
+  transition: transform 0.3s ease;
 }
 
 /* Mouse Move Effect */
@@ -304,9 +283,8 @@ html {
 
 @media (hover: hover) {
   .card-3d:hover {
-    animation: none;
-    transform: translateY(-5px) rotateX(5deg) rotateY(5deg);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 0 20px rgba(74, 222, 128, 0.2);
+    transform: translateY(-8px) rotateX(8deg) rotateY(8deg);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4), 0 0 30px rgba(74, 222, 128, 0.3);
   }
 }
 
