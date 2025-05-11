@@ -40,8 +40,8 @@ function AboutPage() {
                 </div>
                 <About />
               </div>
+              <Footer />
             </div>
-            <Footer />
           </div>
         </div>
       </div>
