@@ -310,15 +310,15 @@ function App() {
                   {showContent && (
                     <div className="animate-fade-in">
                       <div className="topic-header">COMPANY NAME</div>
-                      <div className="topic-text">Kode Kenobi</div>
+                      <div className="">Kode Kenobi</div>
 
                       <div className="topic-header">DEVELOPER NICK(S)</div>
-                      <div className="topic-text">
+                      <div className="">
                         Kenobi, General Kenobi, Kobe, Kopenikus
                       </div>
 
                       <div className="topic-header">DESCRIPTION</div>
-                      <div className="topic-text">
+                      <div className="">
                         MERN Stack Specialist · React.js, React Native, Redux,
                         Next.js, TypeScript, Tailwind CSS, Material UI, AWS,
                         Firebase, MongoDB, REST, GraphQL, SQL, Node.js, Docker,
@@ -328,7 +328,7 @@ function App() {
                       </div>
 
                       <div className="topic-header">CONTACT METHODS</div>
-                      <div className="topic-text">
+                      <div className="">
                         <a
                           href="mailto:kodekenobi@gmail.com"
                           className="text-green-400 hover:text-green-300"
@@ -339,7 +339,7 @@ function App() {
                       </div>
 
                       <div className="topic-header">WEBSITE</div>
-                      <div className="topic-text">
+                      <div className="">
                         Now, introductions aside, kindly visit my website{" "}
                         <Link
                           to="/home"
@@ -351,7 +351,7 @@ function App() {
                       </div>
 
                       <div className="topic-header">My C.V</div>
-                      <div className="topic-text">
+                      <div className="">
                         You can download my C.V{" "}
                         <a
                           href="/assets/docs/cv.pdf"
