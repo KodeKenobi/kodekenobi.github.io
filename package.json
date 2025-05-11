@@ -20,7 +20,10 @@
     "react-dom": "^18.2.0",
     "react-icons": "^5.0.1",
     "react-router-dom": "^6.22.3",
-    "three": "^0.176.0"
+    "react-tsparticles": "^2.12.2",
+    "three": "^0.176.0",
+    "tsparticles": "^3.8.1",
+    "tsparticles-engine": "^2.12.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.25.0",
