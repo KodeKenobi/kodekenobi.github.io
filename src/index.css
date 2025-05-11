@@ -104,3 +104,75 @@
 .animate-blink-cursor {
   animation: blink-cursor 1.1s steps(1) infinite;
 }
+
+/* Scroll Animation Classes */
+.animate-in {
+  animation: slideIn 0.5s ease-out forwards;
+}
+
+.animate-out {
+  animation: slideOut 0.5s ease-out forwards;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(2rem) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes slideOut {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-2rem) scale(0.95);
+  }
+}
+
+/* Mobile Optimizations */
+@media (max-width: 640px) {
+  .terminal-window {
+    margin: 0.5rem;
+    padding: 0.75rem;
+  }
+
+  .terminal-content {
+    padding: 0.5rem;
+  }
+
+  .topic-header {
+    font-size: 1.1rem;
+    margin-top: 1.5rem;
+  }
+
+  .topic-text {
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+}
+
+/* Smooth Scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Card Hover Effects */
+.group:hover .group-hover\:scale-110 {
+  transform: scale(1.1);
+}
+
+/* Improved Touch Targets for Mobile */
+@media (max-width: 640px) {
+  button,
+  a {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}

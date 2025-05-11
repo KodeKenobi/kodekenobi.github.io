@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import {
   FaReact,
   FaNodeJs,
@@ -12,6 +12,7 @@ import Footer from "./Footer";
 
 function Home() {
   const [isInstalling, setIsInstalling] = useState(false);
+  const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
     setIsInstalling(true);
@@ -28,6 +29,33 @@ function Home() {
       };
     }
   }, [isInstalling]);
+
+  // Intersection Observer for scroll animations
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("animate-in");
+            entry.target.classList.remove("animate-out");
+          } else {
+            entry.target.classList.add("animate-out");
+            entry.target.classList.remove("animate-in");
+          }
+        });
+      },
+      {
+        threshold: 0.1,
+        rootMargin: "0px 0px -100px 0px",
+      }
+    );
+
+    cardsRef.current.forEach((card) => {
+      if (card) observer.observe(card);
+    });
+
+    return () => observer.disconnect();
+  }, []);
 
   const skillCategories = [
     {
@@ -91,19 +119,27 @@ function Home() {
                   ABOUT ME
                 </div>
                 <div className="topic-text">
-                  I'm a passionate Full Stack Developer with expertise in modern
-                  web technologies. My journey in tech is driven by creativity
-                  and a love for building innovative solutions.
+                  I'm a passionate developer specializing in modern web and
+                  mobile technologies. With a strong foundation in the MERN
+                  stack and experience across cloud platforms, databases, and
+                  DevOps tools, I build scalable, user-focused solutions.
+                  Whether it's web apps, mobile experiences, or backend systems,
+                  I enjoy turning ideas into reliable, intuitive products.
                 </div>
 
                 <div id="skills" className="topic-header">
                   SKILLS & EXPERTISE
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
-                  {skillCategories.map((category) => (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mt-6">
+                  {skillCategories.map((category, index) => (
                     <div
                       key={category.title}
-                      className="group relative bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 hover:scale-105 border border-gray-700 hover:border-green-500/50"
+                      ref={(el) => (cardsRef.current[index] = el)}
+                      className="group relative bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-4 sm:p-6 
+                        transform transition-all duration-500 ease-out
+                        animate-out opacity-0 translate-y-8 scale-95
+                        hover:shadow-2xl hover:-translate-y-2 hover:scale-105
+                        border border-gray-700 hover:border-green-500/50"
                     >
                       {/* Glow effect */}
                       <div className="absolute inset-0 bg-gradient-to-r from-green-500/10 to-blue-500/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
@@ -122,7 +158,9 @@ function Home() {
                           {category.skills.map((skill) => (
                             <span
                               key={skill}
-                              className="px-3 py-1.5 bg-gray-800/50 backdrop-blur-sm rounded-full text-sm text-gray-300 border border-gray-700 hover:border-green-500/50 hover:text-green-400 transition-all duration-300"
+                              className="px-3 py-1.5 bg-gray-800/50 backdrop-blur-sm rounded-full text-sm text-gray-300 
+                                border border-gray-700 hover:border-green-500/50 hover:text-green-400 
+                                transition-all duration-300 transform hover:scale-105"
                             >
                               {skill}
                             </span>
@@ -136,7 +174,11 @@ function Home() {
                 <div id="focus" className="topic-header mt-12">
                   CURRENT FOCUS
                 </div>
-                <div className="topic-text bg-gradient-to-r from-gray-800 to-gray-900 p-6 rounded-xl border border-gray-700 hover:border-green-500/50 transition-all duration-300">
+                <div
+                  className="topic-text bg-gradient-to-r from-gray-800 to-gray-900 p-4 sm:p-6 rounded-xl 
+                  border border-gray-700 hover:border-green-500/50 transition-all duration-300
+                  transform hover:scale-[1.02] hover:-translate-y-1"
+                >
                   Exploring the frontiers of AI and Machine Learning while
                   building scalable web applications. Always learning, always
                   growing.
@@ -145,7 +187,11 @@ function Home() {
                 <div id="contact" className="topic-header mt-12">
                   GET IN TOUCH
                 </div>
-                <div className="topic-text bg-gradient-to-r from-gray-800 to-gray-900 p-6 rounded-xl border border-gray-700 hover:border-green-500/50 transition-all duration-300">
+                <div
+                  className="topic-text bg-gradient-to-r from-gray-800 to-gray-900 p-4 sm:p-6 rounded-xl 
+                  border border-gray-700 hover:border-green-500/50 transition-all duration-300
+                  transform hover:scale-[1.02] hover:-translate-y-1"
+                >
                   Let's connect and create something amazing together.{" "}
                   <a
                     href="mailto:kodekenobi@gmail.com"
