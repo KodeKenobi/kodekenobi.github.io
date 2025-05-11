@@ -175,11 +175,13 @@ function Home() {
                   {skillCategories.map((category) => (
                     <div
                       key={category.title}
-                      className="group relative bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 hover:scale-105 border border-gray-700 hover:border-green-500/50 overflow-hidden"
+                      className="group relative bg-gradient-to-br from-gray-800/90 to-gray-900/90 rounded-xl p-6 transition-all duration-500 border border-gray-700 hover:border-green-500/50 overflow-hidden"
                     >
-                      {/* Constant glow effect */}
-                      <div className="absolute inset-0 bg-gradient-to-r from-green-500/10 via-blue-500/10 to-purple-500/10 rounded-xl opacity-50"></div>
-                      <div className="absolute inset-0 bg-gradient-to-r from-green-500/5 to-blue-500/5 rounded-xl opacity-50 animate-pulse"></div>
+                      {/* Animated gradient background */}
+                      <div className="absolute inset-0 bg-gradient-to-r from-green-500/20 via-blue-500/20 to-purple-500/20 rounded-xl animate-gradient-x"></div>
+
+                      {/* Pulsing glow effect */}
+                      <div className="absolute inset-0 bg-gradient-to-r from-green-500/30 via-blue-500/30 to-purple-500/30 rounded-xl opacity-70 animate-pulse-slow"></div>
 
                       {/* Content */}
                       <div className="relative z-10">
