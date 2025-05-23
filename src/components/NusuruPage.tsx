@@ -48,7 +48,7 @@ const NusuruPage = () => {
                 {/* Download Button */}
                 <div className="flex justify-center mb-12">
                   <a
-                    href="https://github.com/KodeKenobi/kodekenobi.github.io/releases/download/v2.0.0/nusuru-v2.0.0.apk"
+                    href="https://github.com/KodeKenobi/kodekenobi.github.io/releases/download/v2.0.1/nusuru-v2.0.1.apk"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center space-x-3 bg-green-500 hover:bg-green-600 text-white px-8 py-4 rounded-lg transition-all duration-300 shadow-lg hover:shadow-green-500/25 hover:-translate-y-1"
