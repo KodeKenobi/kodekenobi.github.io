@@ -5,6 +5,7 @@ import { Sphere } from '../math/Sphere.js';
 import { Vector3 } from '../math/Vector3.js';
 import { Vector4 } from '../math/Vector4.js';
 import { Ray } from '../math/Ray.js';
+import { AttachedBindMode, DetachedBindMode } from '../constants.js';
 
 const _basePosition = /*@__PURE__*/ new Vector3();
 
@@ -19,25 +20,90 @@ const _sphere = /*@__PURE__*/ new Sphere();
 const _inverseMatrix = /*@__PURE__*/ new Matrix4();
 const _ray = /*@__PURE__*/ new Ray();
 
+/**
+ * A mesh that has a {@link Skeleton} that can then be used to animate the
+ * vertices of the geometry with skinning/skeleton animation.
+ *
+ * Next to a valid skeleton, the skinned mesh requires skin indices and weights
+ * as buffer attributes in its geometry. These attribute define which bones affect a single
+ * vertex to a certain extend.
+ *
+ * Typically skinned meshes are not created manually but loaders like {@link GLTFLoader}
+ * or {@link FBXLoader } import respective models.
+ *
+ * @augments Mesh
+ */
 class SkinnedMesh extends Mesh {
 
+	/**
+	 * Constructs a new skinned mesh.
+	 *
+	 * @param {BufferGeometry} [geometry] - The mesh geometry.
+	 * @param {Material|Array<Material>} [material] - The mesh material.
+	 */
 	constructor( geometry, material ) {
 
 		super( geometry, material );
 
+		/**
+		 * This flag can be used for type testing.
+		 *
+		 * @type {boolean}
+		 * @readonly
+		 * @default true
+		 */
 		this.isSkinnedMesh = true;
 
 		this.type = 'SkinnedMesh';
 
-		this.bindMode = 'attached';
+		/**
+		 * `AttachedBindMode` means the skinned mesh shares the same world space as the skeleton.
+		 * This is not true when using `DetachedBindMode` which is useful when sharing a skeleton
+		 * across multiple skinned meshes.
+		 *
+		 * @type {(AttachedBindMode|DetachedBindMode)}
+		 * @default AttachedBindMode
+		 */
+		this.bindMode = AttachedBindMode;
+
+		/**
+		 * The base matrix that is used for the bound bone transforms.
+		 *
+		 * @type {Matrix4}
+		 */
 		this.bindMatrix = new Matrix4();
+
+		/**
+		 * The base matrix that is used for resetting the bound bone transforms.
+		 *
+		 * @type {Matrix4}
+		 */
 		this.bindMatrixInverse = new Matrix4();
 
+		/**
+		 * The bounding box of the skinned mesh. Can be computed via {@link SkinnedMesh#computeBoundingBox}.
+		 *
+		 * @type {?Box3}
+		 * @default null
+		 */
 		this.boundingBox = null;
+
+		/**
+		 * The bounding sphere of the skinned mesh. Can be computed via {@link SkinnedMesh#computeBoundingSphere}.
+		 *
+		 * @type {?Sphere}
+		 * @default null
+		 */
 		this.boundingSphere = null;
 
 	}
 
+	/**
+	 * Computes the bounding box of the skinned mesh, and updates {@link SkinnedMesh#boundingBox}.
+	 * The bounding box is not automatically computed by the engine; this method must be called by your app.
+	 * If the skinned mesh is animated, the bounding box should be recomputed per frame in order to reflect
+	 * the current animation state.
+	 */
 	computeBoundingBox() {
 
 		const geometry = this.geometry;
@@ -54,14 +120,19 @@ class SkinnedMesh extends Mesh {
 
 		for ( let i = 0; i < positionAttribute.count; i ++ ) {
 
-			_vertex.fromBufferAttribute( positionAttribute, i );
-			this.applyBoneTransform( i, _vertex );
+			this.getVertexPosition( i, _vertex );
 			this.boundingBox.expandByPoint( _vertex );
 
 		}
 
 	}
 
+	/**
+	 * Computes the bounding sphere of the skinned mesh, and updates {@link SkinnedMesh#boundingSphere}.
+	 * The bounding sphere is automatically computed by the engine once when it is needed, e.g., for ray casting
+	 * and view frustum culling. If the skinned mesh is animated, the bounding sphere should be recomputed
+	 * per frame in order to reflect the current animation state.
+	 */
 	computeBoundingSphere() {
 
 		const geometry = this.geometry;
@@ -78,8 +149,7 @@ class SkinnedMesh extends Mesh {
 
 		for ( let i = 0; i < positionAttribute.count; i ++ ) {
 
-			_vertex.fromBufferAttribute( positionAttribute, i );
-			this.applyBoneTransform( i, _vertex );
+			this.getVertexPosition( i, _vertex );
 			this.boundingSphere.expandByPoint( _vertex );
 
 		}
@@ -148,6 +218,13 @@ class SkinnedMesh extends Mesh {
 
 	}
 
+	/**
+	 * Binds the given skeleton to the skinned mesh.
+	 *
+	 * @param {Skeleton} skeleton - The skeleton to bind.
+	 * @param {Matrix4} [bindMatrix] - The bind matrix. If no bind matrix is provided,
+	 * the skinned mesh's world matrix will be used instead.
+	 */
 	bind( skeleton, bindMatrix ) {
 
 		this.skeleton = skeleton;
@@ -167,12 +244,19 @@ class SkinnedMesh extends Mesh {
 
 	}
 
+	/**
+	 * This method sets the skinned mesh in the rest pose).
+	 */
 	pose() {
 
 		this.skeleton.pose();
 
 	}
 
+	/**
+	 * Normalizes the skin weights which are defined as a buffer attribute
+	 * in the skinned mesh's geometry.
+	 */
 	normalizeSkinWeights() {
 
 		const vector = new Vector4();
@@ -205,11 +289,11 @@ class SkinnedMesh extends Mesh {
 
 		super.updateMatrixWorld( force );
 
-		if ( this.bindMode === 'attached' ) {
+		if ( this.bindMode === AttachedBindMode ) {
 
 			this.bindMatrixInverse.copy( this.matrixWorld ).invert();
 
-		} else if ( this.bindMode === 'detached' ) {
+		} else if ( this.bindMode === DetachedBindMode ) {
 
 			this.bindMatrixInverse.copy( this.bindMatrix ).invert();
 
@@ -221,7 +305,16 @@ class SkinnedMesh extends Mesh {
 
 	}
 
-	applyBoneTransform( index, vector ) {
+	/**
+	 * Applies the bone transform associated with the given index to the given
+	 * vertex position. Returns the updated vector.
+	 *
+	 * @param {number} index - The vertex index.
+	 * @param {Vector3} target - The target object that is used to store the method's result.
+	 * the skinned mesh's world matrix will be used instead.
+	 * @return {Vector3} The updated vertex position.
+	 */
+	applyBoneTransform( index, target ) {
 
 		const skeleton = this.skeleton;
 		const geometry = this.geometry;
@@ -229,9 +322,9 @@ class SkinnedMesh extends Mesh {
 		_skinIndex.fromBufferAttribute( geometry.attributes.skinIndex, index );
 		_skinWeight.fromBufferAttribute( geometry.attributes.skinWeight, index );
 
-		_basePosition.copy( vector ).applyMatrix4( this.bindMatrix );
+		_basePosition.copy( target ).applyMatrix4( this.bindMatrix );
 
-		vector.set( 0, 0, 0 );
+		target.set( 0, 0, 0 );
 
 		for ( let i = 0; i < 4; i ++ ) {
 
@@ -243,23 +336,15 @@ class SkinnedMesh extends Mesh {
 
 				_matrix4.multiplyMatrices( skeleton.bones[ boneIndex ].matrixWorld, skeleton.boneInverses[ boneIndex ] );
 
-				vector.addScaledVector( _vector3.copy( _basePosition ).applyMatrix4( _matrix4 ), weight );
+				target.addScaledVector( _vector3.copy( _basePosition ).applyMatrix4( _matrix4 ), weight );
 
 			}
 
 		}
 
-		return vector.applyMatrix4( this.bindMatrixInverse );
+		return target.applyMatrix4( this.bindMatrixInverse );
 
 	}
-
-	boneTransform( index, vector ) { // @deprecated, r151
-
-		console.warn( 'THREE.SkinnedMesh: .boneTransform() was renamed to .applyBoneTransform() in r151.' );
-		return this.applyBoneTransform( index, vector );
-
-	}
-
 
 }
 

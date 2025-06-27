@@ -52,14 +52,11 @@ struct ReflectedLight {
 	vec3 indirectSpecular;
 };
 
-struct GeometricContext {
-	vec3 position;
-	vec3 normal;
-	vec3 viewDir;
-#ifdef USE_CLEARCOAT
-	vec3 clearcoatNormal;
+#ifdef USE_ALPHAHASH
+
+	varying vec3 vPosition;
+
 #endif
-};
 
 vec3 transformDirection( in vec3 dir, in mat4 matrix ) {
 
@@ -85,16 +82,6 @@ mat3 transposeMat3( const in mat3 m ) {
 	tmp[ 2 ] = vec3( m[ 0 ].z, m[ 1 ].z, m[ 2 ].z );
 
 	return tmp;
-
-}
-
-float luminance( const in vec3 rgb ) {
-
-	// assumes rgb is in linear color space with sRGB primaries and D65 white point
-
-	const vec3 weights = vec3( 0.2126729, 0.7151522, 0.0721750 );
-
-	return dot( weights, rgb );
 
 }
 

@@ -9,6 +9,20 @@ import {
 	Vector3
 } from 'three';
 
+/**
+ * @classdesc This module can be used to paint tube-like meshes
+ * along a sequence of points. This module is used in a XR
+ * painter demo.
+ *
+ * ```js
+ * const painter = new TubePainter();
+ * scene.add( painter.mesh );
+ * ```
+ *
+ * @name TubePainter
+ * @class
+ * @three_import import { TubePainter } from 'three/addons/misc/TubePainter.js';
+ */
 function TubePainter() {
 
 	const BUFFER_SIZE = 1000000 * 3;
@@ -176,16 +190,13 @@ function TubePainter() {
 
 		if ( start === end ) return;
 
-		positions.updateRange.offset = start * 3;
-		positions.updateRange.count = ( end - start ) * 3;
+		positions.addUpdateRange( start * 3, ( end - start ) * 3 );
 		positions.needsUpdate = true;
 
-		normals.updateRange.offset = start * 3;
-		normals.updateRange.count = ( end - start ) * 3;
+		normals.addUpdateRange( start * 3, ( end - start ) * 3 );
 		normals.needsUpdate = true;
 
-		colors.updateRange.offset = start * 3;
-		colors.updateRange.count = ( end - start ) * 3;
+		colors.addUpdateRange( start * 3, ( end - start ) * 3 );
 		colors.needsUpdate = true;
 
 		count = geometry.drawRange.count;
@@ -193,10 +204,50 @@ function TubePainter() {
 	}
 
 	return {
+		/**
+		 * The "painted" tube mesh. Must be added to the scene.
+		 *
+		 * @name TubePainter#mesh
+		 * @type {Mesh}
+		 */
 		mesh: mesh,
+
+		/**
+		 * Moves the current painting position to the given value.
+		 *
+		 * @method
+		 * @name TubePainter#moveTo
+		 * @param {Vector3} position The new painting position.
+		 */
 		moveTo: moveTo,
+
+		/**
+		 * Draw a stroke from the current position to the given one.
+		 * This method extends the tube while drawing with the XR
+		 * controllers.
+		 *
+		 * @method
+		 * @name TubePainter#lineTo
+		 * @param {Vector3} position The destination position.
+		 */
 		lineTo: lineTo,
+
+		/**
+		 * Sets the size of newly rendered tube segments.
+		 *
+		 * @method
+		 * @name TubePainter#setSize
+		 * @param {number} size The size.
+		 */
 		setSize: setSize,
+
+		/**
+		 * Updates the internal geometry buffers so the new painted
+		 * segments are rendered.
+		 *
+		 * @method
+		 * @name TubePainter#update
+		 */
 		update: update
 	};
 

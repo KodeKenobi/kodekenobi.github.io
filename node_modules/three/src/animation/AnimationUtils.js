@@ -1,26 +1,16 @@
 import { Quaternion } from '../math/Quaternion.js';
 import { AdditiveAnimationBlendMode } from '../constants.js';
 
-// same as Array.prototype.slice, but also works on typed arrays
-function arraySlice( array, from, to ) {
+/**
+ * Converts an array to a specific type.
+ *
+ * @param {TypedArray|Array} array - The array to convert.
+ * @param {TypedArray.constructor} type - The constructor of a typed array that defines the new type.
+ * @return {TypedArray} The converted array.
+ */
+function convertArray( array, type ) {
 
-	if ( isTypedArray( array ) ) {
-
-		// in ios9 array.subarray(from, undefined) will return empty array
-		// but array.subarray(from) or array.subarray(from, len) is correct
-		return new array.constructor( array.subarray( from, to !== undefined ? to : array.length ) );
-
-	}
-
-	return array.slice( from, to );
-
-}
-
-// converts an array to a specific type
-function convertArray( array, type, forceClone ) {
-
-	if ( ! array || // let 'undefined' and 'null' pass
-		! forceClone && array.constructor === type ) return array;
+	if ( ! array || array.constructor === type ) return array;
 
 	if ( typeof type.BYTES_PER_ELEMENT === 'number' ) {
 
@@ -32,14 +22,24 @@ function convertArray( array, type, forceClone ) {
 
 }
 
+/**
+ * Returns `true` if the given object is a typed array.
+ *
+ * @param {any} object - The object to check.
+ * @return {boolean} Whether the given object is a typed array.
+ */
 function isTypedArray( object ) {
 
-	return ArrayBuffer.isView( object ) &&
-		! ( object instanceof DataView );
+	return ArrayBuffer.isView( object ) && ! ( object instanceof DataView );
 
 }
 
-// returns an array by which times and values can be sorted
+/**
+ * Returns an array by which times and values can be sorted.
+ *
+ * @param {Array<number>} times - The keyframe time values.
+ * @return {Array<number>} The array.
+ */
 function getKeyframeOrder( times ) {
 
 	function compareTime( i, j ) {
@@ -58,7 +58,14 @@ function getKeyframeOrder( times ) {
 
 }
 
-// uses the array previously returned by 'getKeyframeOrder' to sort data
+/**
+ * Sorts the given array by the previously computed order via `getKeyframeOrder()`.
+ *
+ * @param {Array<number>} values - The values to sort.
+ * @param {number} stride - The stride.
+ * @param {Array<number>} order - The sort order.
+ * @return {Array<number>} The sorted values.
+ */
 function sortedArray( values, stride, order ) {
 
 	const nValues = values.length;
@@ -80,7 +87,14 @@ function sortedArray( values, stride, order ) {
 
 }
 
-// function for parsing AOS keyframe formats
+/**
+ * Used for parsing AOS keyframe formats.
+ *
+ * @param {Array<number>} jsonKeys - A list of JSON keyframes.
+ * @param {Array<number>} times - This array will be filled with keyframe times by this function.
+ * @param {Array<number>} values - This array will be filled with keyframe values by this function.
+ * @param {string} valuePropertyName - The name of the property to use.
+ */
 function flattenJSON( jsonKeys, times, values, valuePropertyName ) {
 
 	let i = 1, key = jsonKeys[ 0 ];
@@ -105,7 +119,7 @@ function flattenJSON( jsonKeys, times, values, valuePropertyName ) {
 			if ( value !== undefined ) {
 
 				times.push( key.time );
-				values.push.apply( values, value ); // push all elements
+				values.push( ...value ); // push all elements
 
 			}
 
@@ -155,6 +169,16 @@ function flattenJSON( jsonKeys, times, values, valuePropertyName ) {
 
 }
 
+/**
+ * Creates a new clip, containing only the segment of the original clip between the given frames.
+ *
+ * @param {AnimationClip} sourceClip - The values to sort.
+ * @param {string} name - The name of the clip.
+ * @param {number} startFrame - The start frame.
+ * @param {number} endFrame - The end frame.
+ * @param {number} [fps=30] - The FPS.
+ * @return {AnimationClip} The new sub clip.
+ */
 function subclip( sourceClip, name, startFrame, endFrame, fps = 30 ) {
 
 	const clip = sourceClip.clone();
@@ -226,6 +250,15 @@ function subclip( sourceClip, name, startFrame, endFrame, fps = 30 ) {
 
 }
 
+/**
+ * Converts the keyframes of the given animation clip to an additive format.
+ *
+ * @param {AnimationClip} targetClip - The clip to make additive.
+ * @param {number} [referenceFrame=0] - The reference frame.
+ * @param {AnimationClip} [referenceClip=targetClip] - The reference clip.
+ * @param {number} [fps=30] - The FPS.
+ * @return {AnimationClip} The updated clip which is now additive.
+ */
 function makeClipAdditive( targetClip, referenceFrame = 0, referenceClip = targetClip, fps = 30 ) {
 
 	if ( fps <= 0 ) fps = 30;
@@ -279,14 +312,14 @@ function makeClipAdditive( targetClip, referenceFrame = 0, referenceClip = targe
 			// Reference frame is earlier than the first keyframe, so just use the first keyframe
 			const startIndex = referenceOffset;
 			const endIndex = referenceValueSize - referenceOffset;
-			referenceValue = arraySlice( referenceTrack.values, startIndex, endIndex );
+			referenceValue = referenceTrack.values.slice( startIndex, endIndex );
 
 		} else if ( referenceTime >= referenceTrack.times[ lastIndex ] ) {
 
 			// Reference frame is after the last keyframe, so just use the last keyframe
 			const startIndex = lastIndex * referenceValueSize + referenceOffset;
 			const endIndex = startIndex + referenceValueSize - referenceOffset;
-			referenceValue = arraySlice( referenceTrack.values, startIndex, endIndex );
+			referenceValue = referenceTrack.values.slice( startIndex, endIndex );
 
 		} else {
 
@@ -295,7 +328,7 @@ function makeClipAdditive( targetClip, referenceFrame = 0, referenceClip = targe
 			const startIndex = referenceOffset;
 			const endIndex = referenceValueSize - referenceOffset;
 			interpolant.evaluate( referenceTime );
-			referenceValue = arraySlice( interpolant.resultBuffer, startIndex, endIndex );
+			referenceValue = interpolant.resultBuffer.slice( startIndex, endIndex );
 
 		}
 
@@ -349,19 +382,119 @@ function makeClipAdditive( targetClip, referenceFrame = 0, referenceClip = targe
 
 }
 
-const AnimationUtils = {
-	arraySlice: arraySlice,
-	convertArray: convertArray,
-	isTypedArray: isTypedArray,
-	getKeyframeOrder: getKeyframeOrder,
-	sortedArray: sortedArray,
-	flattenJSON: flattenJSON,
-	subclip: subclip,
-	makeClipAdditive: makeClipAdditive
-};
+/**
+ * A class with various methods to assist with animations.
+ *
+ * @hideconstructor
+ */
+class AnimationUtils {
+
+	/**
+	 * Converts an array to a specific type
+	 *
+	 * @static
+	 * @param {TypedArray|Array} array - The array to convert.
+	 * @param {TypedArray.constructor} type - The constructor of a type array.
+	 * @return {TypedArray} The converted array
+	 */
+	static convertArray( array, type ) {
+
+		return convertArray( array, type );
+
+	}
+
+	/**
+	 * Returns `true` if the given object is a typed array.
+	 *
+	 * @static
+	 * @param {any} object - The object to check.
+	 * @return {boolean} Whether the given object is a typed array.
+	 */
+	static isTypedArray( object ) {
+
+		return isTypedArray( object );
+
+	}
+
+	/**
+	 * Returns an array by which times and values can be sorted.
+	 *
+	 * @static
+	 * @param {Array<number>} times - The keyframe time values.
+	 * @return {Array<number>} The array.
+	 */
+	static getKeyframeOrder( times ) {
+
+		return getKeyframeOrder( times );
+
+	}
+
+	/**
+	 * Sorts the given array by the previously computed order via `getKeyframeOrder()`.
+	 *
+	 * @static
+	 * @param {Array<number>} values - The values to sort.
+	 * @param {number} stride - The stride.
+	 * @param {Array<number>} order - The sort order.
+	 * @return {Array<number>} The sorted values.
+	 */
+	static sortedArray( values, stride, order ) {
+
+		return sortedArray( values, stride, order );
+
+	}
+
+	/**
+	 * Used for parsing AOS keyframe formats.
+	 *
+	 * @static
+	 * @param {Array<number>} jsonKeys - A list of JSON keyframes.
+	 * @param {Array<number>} times - This array will be filled with keyframe times by this method.
+	 * @param {Array<number>} values - This array will be filled with keyframe values by this method.
+	 * @param {string} valuePropertyName - The name of the property to use.
+	 */
+	static flattenJSON( jsonKeys, times, values, valuePropertyName ) {
+
+		flattenJSON( jsonKeys, times, values, valuePropertyName );
+
+	}
+
+	/**
+	 * Creates a new clip, containing only the segment of the original clip between the given frames.
+	 *
+	 * @static
+	 * @param {AnimationClip} sourceClip - The values to sort.
+	 * @param {string} name - The name of the clip.
+	 * @param {number} startFrame - The start frame.
+	 * @param {number} endFrame - The end frame.
+	 * @param {number} [fps=30] - The FPS.
+	 * @return {AnimationClip} The new sub clip.
+	 */
+	static subclip( sourceClip, name, startFrame, endFrame, fps = 30 ) {
+
+		return subclip( sourceClip, name, startFrame, endFrame, fps );
+
+	}
+
+	/**
+	 * Converts the keyframes of the given animation clip to an additive format.
+	 *
+	 * @static
+	 * @param {AnimationClip} targetClip - The clip to make additive.
+	 * @param {number} [referenceFrame=0] - The reference frame.
+	 * @param {AnimationClip} [referenceClip=targetClip] - The reference clip.
+	 * @param {number} [fps=30] - The FPS.
+	 * @return {AnimationClip} The updated clip which is now additive.
+	 */
+	static makeClipAdditive( targetClip, referenceFrame = 0, referenceClip = targetClip, fps = 30 ) {
+
+		return makeClipAdditive( targetClip, referenceFrame, referenceClip, fps );
+
+	}
+
+}
 
 export {
-	arraySlice,
 	convertArray,
 	isTypedArray,
 	getKeyframeOrder,

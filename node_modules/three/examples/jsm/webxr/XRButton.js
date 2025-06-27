@@ -1,6 +1,29 @@
+/**
+ * A utility class for creating a button that allows to initiate
+ * immersive XR sessions based on WebXR. The button can be created
+ * with a factory method and then appended ot the website's DOM.
+ *
+ * ```js
+ * document.body.appendChild( XRButton.createButton( renderer ) );
+ * ```
+ *
+ * Compared to {@link ARButton} and {@link VRButton}, this class will
+ * try to offer an immersive AR session first. If the device does not
+ * support this type of session, it uses an immersive VR session.
+ *
+ * @hideconstructor
+ * @three_import import { XRButton } from 'three/addons/webxr/XRButton.js';
+ */
 class XRButton {
 
-	static createButton( renderer ) {
+	/**
+	 * Constructs a new XR button.
+	 *
+	 * @param {WebGLRenderer|WebGPURenderer} renderer - The renderer.
+	 * @param {XRSessionInit} [sessionInit] - The a configuration object for the AR session.
+	 * @return {HTMLElement} The button or an error message if WebXR isn't supported.
+	 */
+	static createButton( renderer, sessionInit = {} ) {
 
 		const button = document.createElement( 'button' );
 
@@ -40,6 +63,16 @@ class XRButton {
 
 			button.textContent = 'START XR';
 
+			const sessionOptions = {
+				...sessionInit,
+				optionalFeatures: [
+					'local-floor',
+					'bounded-floor',
+					'layers',
+					...( sessionInit.optionalFeatures || [] )
+				],
+			};
+
 			button.onmouseenter = function () {
 
 				button.style.opacity = '1.0';
@@ -56,25 +89,40 @@ class XRButton {
 
 				if ( currentSession === null ) {
 
-					const sessionInit = {
-						optionalFeatures: [
-							'local-floor',
-							'bounded-floor',
-							'hand-tracking',
-							'layers'
-						]
-					};
-
-					navigator.xr.requestSession( mode, sessionInit )
+					navigator.xr.requestSession( mode, sessionOptions )
 						.then( onSessionStarted );
 
 				} else {
 
 					currentSession.end();
 
+					if ( navigator.xr.offerSession !== undefined ) {
+
+						navigator.xr.offerSession( mode, sessionOptions )
+							.then( onSessionStarted )
+							.catch( ( err ) => {
+
+								console.warn( err );
+
+							} );
+
+					}
+
 				}
 
 			};
+
+			if ( navigator.xr.offerSession !== undefined ) {
+
+				navigator.xr.offerSession( mode, sessionOptions )
+					.then( onSessionStarted )
+					.catch( ( err ) => {
+
+						console.warn( err );
+
+					} );
+
+			}
 
 		}
 

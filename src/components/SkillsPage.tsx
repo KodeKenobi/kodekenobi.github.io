@@ -13,7 +13,9 @@ const Skills = () => {
   const skillCategories = [
     {
       title: "Frontend",
-      icon: <FaReact className="w-8 h-8" />,
+      icon: (
+        <FaReact className="w-8 h-8 animate-float text-green-400 group-hover:text-green-300 transition-all duration-300" />
+      ),
       skills: [
         "React.js",
         "React Native",
@@ -24,27 +26,37 @@ const Skills = () => {
     },
     {
       title: "Backend",
-      icon: <FaNodeJs className="w-8 h-8" />,
+      icon: (
+        <FaNodeJs className="w-8 h-8 animate-float text-green-400 group-hover:text-green-300 transition-all duration-300" />
+      ),
       skills: ["Node.js", "Express", "REST", "GraphQL", "Python"],
     },
     {
       title: "Database",
-      icon: <FaDatabase className="w-8 h-8" />,
+      icon: (
+        <FaDatabase className="w-8 h-8 animate-float text-green-400 group-hover:text-green-300 transition-all duration-300" />
+      ),
       skills: ["MongoDB", "SQL", "Firebase", "Supabase"],
     },
     {
       title: "DevOps",
-      icon: <FaDocker className="w-8 h-8" />,
+      icon: (
+        <FaDocker className="w-8 h-8 animate-float text-green-400 group-hover:text-green-300 transition-all duration-300" />
+      ),
       skills: ["Docker", "Kubernetes", "AWS", "CI/CD", "GitHub Actions"],
     },
     {
       title: "Cloud",
-      icon: <FaCloud className="w-8 h-8" />,
+      icon: (
+        <FaCloud className="w-8 h-8 animate-float text-green-400 group-hover:text-green-300 transition-all duration-300" />
+      ),
       skills: ["AWS", "Firebase", "Vercel", "Cloud Functions"],
     },
     {
       title: "Tools",
-      icon: <FaTools className="w-8 h-8" />,
+      icon: (
+        <FaTools className="w-8 h-8 animate-float text-green-400 group-hover:text-green-300 transition-all duration-300" />
+      ),
       skills: ["Git", "Figma", "VS Code", "Postman", "Jira"],
     },
   ];
@@ -68,18 +80,21 @@ const Skills = () => {
                   {skillCategories.map((category) => (
                     <div
                       key={category.title}
-                      className="group relative bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 hover:scale-105 border border-gray-700 hover:border-green-500/50"
+                      className="group relative bg-gradient-to-br from-gray-800/90 to-gray-900/90 rounded-xl p-6 transition-all duration-500 border border-gray-700 hover:border-green-500/50 overflow-hidden"
                     >
-                      {/* Glow effect */}
-                      <div className="absolute inset-0 bg-gradient-to-r from-green-500/10 to-blue-500/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                      {/* Animated gradient background */}
+                      <div className="absolute inset-0 bg-gradient-to-r from-green-500/20 via-blue-500/20 to-purple-500/20 rounded-xl animate-gradient-x"></div>
+
+                      {/* Pulsing glow effect */}
+                      <div className="absolute inset-0 bg-gradient-to-r from-green-500/30 via-blue-500/30 to-purple-500/30 rounded-xl opacity-70 animate-pulse-slow"></div>
 
                       {/* Content */}
                       <div className="relative z-10">
                         <div className="flex items-center space-x-4 mb-4">
-                          <div className="text-green-400 transform group-hover:scale-110 transition-transform duration-300">
+                          <div className="text-green-400 transform group-hover:scale-110 transition-transform duration-300 group-hover:text-green-300">
                             {category.icon}
                           </div>
-                          <h3 className="text-xl font-bold bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent">
+                          <h3 className="text-xl font-bold bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent group-hover:from-green-300 group-hover:to-blue-300 transition-all duration-300">
                             {category.title}
                           </h3>
                         </div>

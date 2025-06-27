@@ -7,18 +7,51 @@ import {
 } from 'three';
 
 /**
- * Break faces with edges longer than maxEdgeLength
+ * This class can be used to modify a geometry by breaking its edges if they
+ * are longer than maximum length.
+ *
+ * ```js
+ * const modifier = new TessellateModifier( 8, 6 );
+ * geometry = modifier.modify( geometry );
+ * ```
+ *
+ * @three_import import { TessellateModifier } from 'three/addons/modifiers/TessellateModifier.js';
  */
-
 class TessellateModifier {
 
+	/**
+	 * Constructs a new Tessellate modifier.
+	 *
+	 * @param {number} [maxEdgeLength=0.1] - The maximum edge length.
+	 * @param {number} [maxIterations=6] - The number of iterations.
+	 */
 	constructor( maxEdgeLength = 0.1, maxIterations = 6 ) {
 
+		/**
+		 * The maximum edge length.
+		 *
+		 * @type {number}
+		 * @default 0.1
+		 */
 		this.maxEdgeLength = maxEdgeLength;
+
+		/**
+		 * The maximum edge length.
+		 *
+		 * @type {number}
+		 * @default 0.1
+		 */
 		this.maxIterations = maxIterations;
 
 	}
 
+	/**
+	 * Returns a new, modified version of the given geometry by applying a tesselation.
+	 * Please note that the resulting geometry is always non-indexed.
+	 *
+	 * @param {BufferGeometry} geometry - The geometry to modify.
+	 * @return {BufferGeometry} A new, modified geometry.
+	 */
 	modify( geometry ) {
 
 		if ( geometry.index !== null ) {
@@ -111,9 +144,9 @@ class TessellateModifier {
 				const c2 = cs[ b ];
 				const c3 = cs[ c ];
 
-				colors2.push( c1.x, c1.y, c1.z );
-				colors2.push( c2.x, c2.y, c2.z );
-				colors2.push( c3.x, c3.y, c3.z );
+				colors2.push( c1.r, c1.g, c1.b );
+				colors2.push( c2.r, c2.g, c2.b );
+				colors2.push( c3.r, c3.g, c3.b );
 
 			}
 

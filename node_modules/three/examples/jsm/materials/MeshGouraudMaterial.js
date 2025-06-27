@@ -9,6 +9,8 @@ import { UniformsUtils, UniformsLib, ShaderMaterial, Color, MultiplyOperation } 
 
 const GouraudShader = {
 
+	name: 'GouraudShader',
+
 	uniforms: UniformsUtils.merge( [
 		UniformsLib.common,
 		UniformsLib.specularmap,
@@ -74,15 +76,11 @@ const GouraudShader = {
 
 			vec3 diffuse = vec3( 1.0 );
 
-			GeometricContext geometry;
-			geometry.position = mvPosition.xyz;
-			geometry.normal = normalize( transformedNormal );
-			geometry.viewDir = ( isOrthographic ) ? vec3( 0, 0, 1 ) : normalize( -mvPosition.xyz );
+			vec3 geometryPosition = mvPosition.xyz;
+			vec3 geometryNormal = normalize( transformedNormal );
+			vec3 geometryViewDir = ( isOrthographic ) ? vec3( 0, 0, 1 ) : normalize( -mvPosition.xyz );
 
-			GeometricContext backGeometry;
-			backGeometry.position = geometry.position;
-			backGeometry.normal = -geometry.normal;
-			backGeometry.viewDir = geometry.viewDir;
+			vec3 backGeometryNormal = - geometryNormal;
 
 			vLightFront = vec3( 0.0 );
 			vIndirectFront = vec3( 0.0 );
@@ -97,13 +95,21 @@ const GouraudShader = {
 
 			vIndirectFront += getAmbientLightIrradiance( ambientLightColor );
 
-			vIndirectFront += getLightProbeIrradiance( lightProbe, geometry.normal );
+			#if defined( USE_LIGHT_PROBES )
+
+				vIndirectFront += getLightProbeIrradiance( lightProbe, geometryNormal );
+
+			#endif
 
 			#ifdef DOUBLE_SIDED
 
 				vIndirectBack += getAmbientLightIrradiance( ambientLightColor );
 
-				vIndirectBack += getLightProbeIrradiance( lightProbe, backGeometry.normal );
+				#if defined( USE_LIGHT_PROBES )
+
+					vIndirectBack += getLightProbeIrradiance( lightProbe, backGeometryNormal );
+
+				#endif
 
 			#endif
 
@@ -112,9 +118,9 @@ const GouraudShader = {
 				#pragma unroll_loop_start
 				for ( int i = 0; i < NUM_POINT_LIGHTS; i ++ ) {
 
-					getPointLightInfo( pointLights[ i ], geometry, directLight );
+					getPointLightInfo( pointLights[ i ], geometryPosition, directLight );
 
-					dotNL = dot( geometry.normal, directLight.direction );
+					dotNL = dot( geometryNormal, directLight.direction );
 					directLightColor_Diffuse = directLight.color;
 
 					vLightFront += saturate( dotNL ) * directLightColor_Diffuse;
@@ -135,9 +141,9 @@ const GouraudShader = {
 				#pragma unroll_loop_start
 				for ( int i = 0; i < NUM_SPOT_LIGHTS; i ++ ) {
 
-					getSpotLightInfo( spotLights[ i ], geometry, directLight );
+					getSpotLightInfo( spotLights[ i ], geometryPosition, directLight );
 
-					dotNL = dot( geometry.normal, directLight.direction );
+					dotNL = dot( geometryNormal, directLight.direction );
 					directLightColor_Diffuse = directLight.color;
 
 					vLightFront += saturate( dotNL ) * directLightColor_Diffuse;
@@ -157,9 +163,9 @@ const GouraudShader = {
 				#pragma unroll_loop_start
 				for ( int i = 0; i < NUM_DIR_LIGHTS; i ++ ) {
 
-					getDirectionalLightInfo( directionalLights[ i ], geometry, directLight );
+					getDirectionalLightInfo( directionalLights[ i ], directLight );
 
-					dotNL = dot( geometry.normal, directLight.direction );
+					dotNL = dot( geometryNormal, directLight.direction );
 					directLightColor_Diffuse = directLight.color;
 
 					vLightFront += saturate( dotNL ) * directLightColor_Diffuse;
@@ -180,11 +186,11 @@ const GouraudShader = {
 				#pragma unroll_loop_start
 				for ( int i = 0; i < NUM_HEMI_LIGHTS; i ++ ) {
 
-					vIndirectFront += getHemisphereLightIrradiance( hemisphereLights[ i ], geometry.normal );
+					vIndirectFront += getHemisphereLightIrradiance( hemisphereLights[ i ], geometryNormal );
 
 					#ifdef DOUBLE_SIDED
 
-						vIndirectBack += getHemisphereLightIrradiance( hemisphereLights[ i ], backGeometry.normal );
+						vIndirectBack += getHemisphereLightIrradiance( hemisphereLights[ i ], backGeometryNormal );
 
 					#endif
 
@@ -264,7 +270,13 @@ const GouraudShader = {
 
 			#endif
 
-			#include <lightmap_fragment>
+			#ifdef USE_LIGHTMAP
+
+				vec4 lightMapTexel = texture2D( lightMap, vLightMapUv );
+				vec3 lightMapIrradiance = lightMapTexel.rgb * lightMapIntensity;
+				reflectedLight.indirectDiffuse += lightMapIrradiance;
+
+			#endif
 
 			reflectedLight.indirectDiffuse *= BRDF_Lambert( diffuseColor.rgb );
 
@@ -288,9 +300,9 @@ const GouraudShader = {
 
 			#include <envmap_fragment>
 
-			#include <output_fragment>
+			#include <opaque_fragment>
 			#include <tonemapping_fragment>
-			#include <encodings_fragment>
+			#include <colorspace_fragment>
 			#include <fog_fragment>
 			#include <premultiplied_alpha_fragment>
 			#include <dithering_fragment>
@@ -306,6 +318,8 @@ class MeshGouraudMaterial extends ShaderMaterial {
 	constructor( parameters ) {
 
 		super();
+
+		console.warn( 'THREE.MeshGouraudMaterial: MeshGouraudMaterial has been deprecated and will be removed with r183. Use THREE.MeshLambertMaterial instead.' ); // @deprecated r173
 
 		this.isMeshGouraudMaterial = true;
 

@@ -5,13 +5,30 @@ import {
 	SphericalHarmonics3,
 	Vector3,
 	SRGBColorSpace,
-	NoColorSpace
+	NoColorSpace,
+	HalfFloatType,
+	DataUtils,
+	WebGLCoordinateSystem
 } from 'three';
 
+/**
+ * Utility class for creating instances of {@link LightProbe}.
+ *
+ * @hideconstructor
+ * @three_import import { LightProbeGenerator } from 'three/addons/lights/LightProbeGenerator.js';
+ */
 class LightProbeGenerator {
 
-	// https://www.ppsloan.org/publications/StupidSH36.pdf
+	/**
+	 * Creates a light probe from the given (radiance) environment map.
+	 * The method expects that the environment map is represented as a cube texture.
+	 *
+	 * @param {CubeTexture} cubeTexture - The environment map.
+	 * @return {LightProbe} The created light probe.
+	 */
 	static fromCubeTexture( cubeTexture ) {
+
+		// https://www.ppsloan.org/publications/StupidSH36.pdf
 
 		let totalWeight = 0;
 
@@ -96,7 +113,7 @@ class LightProbeGenerator {
 				// evaluate SH basis functions in direction dir
 				SphericalHarmonics3.getBasisAt( dir, shBasis );
 
-				// accummuulate
+				// accumulate
 				for ( let j = 0; j < 9; j ++ ) {
 
 					shCoefficients[ j ].x += shBasis[ j ] * color.r * weight;
@@ -124,7 +141,21 @@ class LightProbeGenerator {
 
 	}
 
-	static fromCubeRenderTarget( renderer, cubeRenderTarget ) {
+	/**
+	 * Creates a light probe from the given (radiance) environment map.
+	 * The method expects that the environment map is represented as a cube render target.
+	 *
+	 * The cube render target must be in RGBA so `cubeRenderTarget.texture.format` must be
+	 * set to {@link RGBAFormat}.
+	 *
+	 * @async
+	 * @param {WebGPURenderer|WebGLRenderer} renderer - The renderer.
+	 * @param {CubeRenderTarget|WebGLCubeRenderTarget} cubeRenderTarget - The environment map.
+	 * @return {Promise<LightProbe>} A Promise that resolves with the created light probe.
+	 */
+	static async fromCubeRenderTarget( renderer, cubeRenderTarget ) {
+
+		const flip = renderer.coordinateSystem === WebGLCoordinateSystem ? - 1 : 1;
 
 		// The renderTarget must be set to RGBA in order to make readRenderTargetPixels works
 		let totalWeight = 0;
@@ -140,18 +171,61 @@ class LightProbeGenerator {
 		const sh = new SphericalHarmonics3();
 		const shCoefficients = sh.coefficients;
 
+		const dataType = cubeRenderTarget.texture.type;
+		const imageWidth = cubeRenderTarget.width; // assumed to be square
+
+		let data;
+
+		if ( renderer.isWebGLRenderer ) {
+
+			if ( dataType === HalfFloatType ) {
+
+				data = new Uint16Array( imageWidth * imageWidth * 4 );
+
+			} else {
+
+				// assuming UnsignedByteType
+
+				data = new Uint8Array( imageWidth * imageWidth * 4 );
+
+			}
+
+		}
+
 		for ( let faceIndex = 0; faceIndex < 6; faceIndex ++ ) {
 
-			const imageWidth = cubeRenderTarget.width; // assumed to be square
-			const data = new Uint8Array( imageWidth * imageWidth * 4 );
-			renderer.readRenderTargetPixels( cubeRenderTarget, 0, 0, imageWidth, imageWidth, data, faceIndex );
+			if ( renderer.isWebGLRenderer ) {
+
+				await renderer.readRenderTargetPixelsAsync( cubeRenderTarget, 0, 0, imageWidth, imageWidth, data, faceIndex );
+
+			} else {
+
+				data = await renderer.readRenderTargetPixelsAsync( cubeRenderTarget, 0, 0, imageWidth, imageWidth, 0, faceIndex );
+
+			}
 
 			const pixelSize = 2 / imageWidth;
 
 			for ( let i = 0, il = data.length; i < il; i += 4 ) { // RGBA assumed
 
+				let r, g, b;
+
+				if ( dataType === HalfFloatType ) {
+
+					r = DataUtils.fromHalfFloat( data[ i ] );
+					g = DataUtils.fromHalfFloat( data[ i + 1 ] );
+					b = DataUtils.fromHalfFloat( data[ i + 2 ] );
+
+				} else {
+
+					r = data[ i ] / 255;
+					g = data[ i + 1 ] / 255;
+					b = data[ i + 2 ] / 255;
+
+				}
+
 				// pixel color
-				color.setRGB( data[ i ] / 255, data[ i + 1 ] / 255, data[ i + 2 ] / 255 );
+				color.setRGB( r, g, b );
 
 				// convert to linear color space
 				convertColorToLinear( color, cubeRenderTarget.texture.colorSpace );
@@ -160,15 +234,15 @@ class LightProbeGenerator {
 
 				const pixelIndex = i / 4;
 
-				const col = - 1 + ( pixelIndex % imageWidth + 0.5 ) * pixelSize;
+				const col = ( 1 - ( pixelIndex % imageWidth + 0.5 ) * pixelSize ) * flip;
 
 				const row = 1 - ( Math.floor( pixelIndex / imageWidth ) + 0.5 ) * pixelSize;
 
 				switch ( faceIndex ) {
 
-					case 0: coord.set( 1, row, - col ); break;
+					case 0: coord.set( - 1 * flip, row, col * flip ); break;
 
-					case 1: coord.set( - 1, row, col ); break;
+					case 1: coord.set( 1 * flip, row, - col * flip ); break;
 
 					case 2: coord.set( col, 1, - row ); break;
 
@@ -194,7 +268,7 @@ class LightProbeGenerator {
 				// evaluate SH basis functions in direction dir
 				SphericalHarmonics3.getBasisAt( dir, shBasis );
 
-				// accummuulate
+				// accumulate
 				for ( let j = 0; j < 9; j ++ ) {
 
 					shCoefficients[ j ].x += shBasis[ j ] * color.r * weight;

@@ -1,0 +1,15 @@
+# Set correct MIME types
+AddType application/javascript .js
+AddType application/javascript .mjs
+AddType text/css .css
+
+# Enable CORS
+Header set Access-Control-Allow-Origin "*"
+
+# Handle client-side routing
+RewriteEngine On
+RewriteBase /kodekenobi.github.io/
+RewriteRule ^index\.html$ - [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /kodekenobi.github.io/index.html [L] 

@@ -5,27 +5,26 @@ import { resolve } from "path";
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base: "/kodekenobi.github.io",
+  base: "/",
   build: {
     outDir: "dist",
-    sourcemap: true,
     assetsDir: "assets",
     rollupOptions: {
       input: {
         main: resolve(__dirname, "index.html"),
       },
       output: {
-        manualChunks: undefined,
-        assetFileNames: "assets/[name].[hash][extname]",
-        chunkFileNames: "assets/[name].[hash].js",
+        format: "es",
         entryFileNames: "assets/[name].[hash].js",
+        chunkFileNames: "assets/[name].[hash].js",
+        assetFileNames: "assets/[name].[hash][extname]",
       },
     },
   },
-  server: {
-    port: 3000,
-    strictPort: true,
-    host: true,
-  },
   publicDir: "public",
+  server: {
+    headers: {
+      "Content-Type": "application/javascript",
+    },
+  },
 });

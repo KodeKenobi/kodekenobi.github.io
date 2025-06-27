@@ -3,14 +3,37 @@ import {
 	LinearMipmapLinearFilter
 } from 'three';
 
+/**
+ * A loader for the TGA texture format.
+ *
+ * ```js
+ * const loader = new TGALoader();
+ * const texture = await loader.loadAsync( 'textures/crate_color8.tga' );
+ * texture.colorSpace = THREE.SRGBColorSpace; // only for color textures
+ * ```
+ *
+ * @augments DataTextureLoader
+ * @three_import import { TGALoader } from 'three/addons/loaders/TGALoader.js';
+ */
 class TGALoader extends DataTextureLoader {
 
+	/**
+	 * Constructs a new TGA loader.
+	 *
+	 * @param {LoadingManager} [manager] - The loading manager.
+	 */
 	constructor( manager ) {
 
 		super( manager );
 
 	}
 
+	/**
+	 * Parses the given TGA texture data.
+	 *
+	 * @param {ArrayBuffer} buffer - The raw texture data.
+	 * @return {DataTextureLoader~TexData} An object representing the parsed texture data.
+	 */
 	parse( buffer ) {
 
 		// reference from vthibault, https://github.com/vthibault/roBrowser/blob/master/src/Loaders/Targa.js
@@ -25,7 +48,7 @@ class TGALoader extends DataTextureLoader {
 				case TGA_TYPE_RLE_INDEXED:
 					if ( header.colormap_length > 256 || header.colormap_size !== 24 || header.colormap_type !== 1 ) {
 
-						console.error( 'THREE.TGALoader: Invalid type colormap data for indexed type.' );
+						throw new Error( 'THREE.TGALoader: Invalid type colormap data for indexed type.' );
 
 					}
 
@@ -39,7 +62,7 @@ class TGALoader extends DataTextureLoader {
 				case TGA_TYPE_RLE_GREY:
 					if ( header.colormap_type ) {
 
-						console.error( 'THREE.TGALoader: Invalid type colormap data for colormap type.' );
+						throw new Error( 'THREE.TGALoader: Invalid type colormap data for colormap type.' );
 
 					}
 
@@ -48,12 +71,12 @@ class TGALoader extends DataTextureLoader {
 					// What the need of a file without data ?
 
 				case TGA_TYPE_NO_DATA:
-					console.error( 'THREE.TGALoader: No data.' );
+					throw new Error( 'THREE.TGALoader: No data.' );
 
 					// Invalid type ?
 
 				default:
-					console.error( 'THREE.TGALoader: Invalid type "%s".', header.image_type );
+					throw new Error( 'THREE.TGALoader: Invalid type ' + header.image_type );
 
 			}
 
@@ -61,7 +84,7 @@ class TGALoader extends DataTextureLoader {
 
 			if ( header.width <= 0 || header.height <= 0 ) {
 
-				console.error( 'THREE.TGALoader: Invalid image size.' );
+				throw new Error( 'THREE.TGALoader: Invalid image size.' );
 
 			}
 
@@ -70,7 +93,7 @@ class TGALoader extends DataTextureLoader {
 			if ( header.pixel_size !== 8 && header.pixel_size !== 16 &&
 				header.pixel_size !== 24 && header.pixel_size !== 32 ) {
 
-				console.error( 'THREE.TGALoader: Invalid pixel size "%s".', header.pixel_size );
+				throw new Error( 'THREE.TGALoader: Invalid pixel size ' + header.pixel_size );
 
 			}
 
@@ -365,7 +388,7 @@ class TGALoader extends DataTextureLoader {
 						break;
 
 					default:
-						console.error( 'THREE.TGALoader: Format not supported.' );
+						throw new Error( 'THREE.TGALoader: Format not supported.' );
 						break;
 
 				}
@@ -391,7 +414,7 @@ class TGALoader extends DataTextureLoader {
 						break;
 
 					default:
-						console.error( 'THREE.TGALoader: Format not supported.' );
+						throw new Error( 'THREE.TGALoader: Format not supported.' );
 						break;
 
 				}
@@ -422,7 +445,7 @@ class TGALoader extends DataTextureLoader {
 			TGA_ORIGIN_UL = 0x02,
 			TGA_ORIGIN_UR = 0x03;
 
-		if ( buffer.length < 19 ) console.error( 'THREE.TGALoader: Not enough data to contain header.' );
+		if ( buffer.length < 19 ) throw new Error( 'THREE.TGALoader: Not enough data to contain header.' );
 
 		let offset = 0;
 
@@ -450,7 +473,7 @@ class TGALoader extends DataTextureLoader {
 
 		if ( header.id_length + offset > buffer.length ) {
 
-			console.error( 'THREE.TGALoader: No data.' );
+			throw new Error( 'THREE.TGALoader: No data.' );
 
 		}
 

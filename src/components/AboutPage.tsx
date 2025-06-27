@@ -3,7 +3,7 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import Navbar from "./Navbar";
 import About from "./sections/About";
-
+import Footer from "./Footer";
 function AboutPage() {
   useEffect(() => {
     // Initialize AOS with modern settings
@@ -39,6 +39,7 @@ function AboutPage() {
                   <span className="animate-blink">_</span>
                 </div>
                 <About />
+                <Footer />
               </div>
             </div>
           </div>
