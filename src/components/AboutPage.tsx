@@ -1,9 +1,9 @@
 import { useEffect } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
-import Navbar from "./Navbar";
 import About from "./sections/About";
 import Footer from "./Footer";
+import AnimatedNavbar from "./AnimatedNavbar";
 function AboutPage() {
   useEffect(() => {
     // Initialize AOS with modern settings
@@ -19,7 +19,7 @@ function AboutPage() {
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 relative overflow-hidden">
-      <Navbar />
+      <AnimatedNavbar />
 
       {/* Main Content - Add padding-top to account for fixed navbar */}
       <div className="flex-1 pt-16">

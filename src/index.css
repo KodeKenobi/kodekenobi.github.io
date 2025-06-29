@@ -620,3 +620,35 @@ html {
 .animate-pulse-slow {
   animation: pulse-slow 4s ease-in-out infinite;
 }
+
+/* Ensure 3D Canvas is visible, interactive, and fades in */
+canvas {
+  opacity: 0;
+  animation: fade-in 1s ease 0.3s forwards;
+  position: relative;
+  z-index: 10;
+}
+canvas:active {
+  cursor: grabbing;
+}
+
+/* Ripple animation for nav glass splash */
+@layer utilities {
+  @keyframes ripple {
+    0% {
+      transform: scale(0.5);
+      opacity: 0.7;
+    }
+    80% {
+      transform: scale(2.5);
+      opacity: 0.3;
+    }
+    100% {
+      transform: scale(3.5);
+      opacity: 0;
+    }
+  }
+  .animate-ripple {
+    animation: ripple 0.6s linear;
+  }
+}
