@@ -90,19 +90,13 @@ const RollingGallery: React.FC<RollingGalleryProps> = ({
 }) => {
   const galleryImages = images.length > 0 ? images : LANG_IMGS;
 
-  const [isScreenSizeSm, setIsScreenSizeSm] = useState<boolean>(
-    window.innerWidth <= 640
-  );
-  useEffect(() => {
-    const handleResize = () => setIsScreenSizeSm(window.innerWidth <= 640);
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  const cylinderWidth: number = isScreenSizeSm ? 1100 : 1800;
+  const isScreenSizeSm = window.innerWidth <= 640;
+  const cylinderWidth: number = isScreenSizeSm ? 1280 : 1800;
   const faceCount: number = galleryImages.length;
-  const faceWidth: number = (cylinderWidth / faceCount) * 1.5;
-  const radius: number = cylinderWidth / (2 * Math.PI);
+  const faceWidth: number = isScreenSizeSm
+    ? 120
+    : (cylinderWidth / faceCount) * 1.5;
+  const radius: number = isScreenSizeSm ? 200 : cylinderWidth / (2 * Math.PI);
 
   const dragFactor: number = 0.05;
   const rotation = useMotionValue(0);
@@ -173,7 +167,7 @@ const RollingGallery: React.FC<RollingGalleryProps> = ({
   };
 
   return (
-    <div className="relative mt-16 w-full overflow-hidden">
+    <div className="relative mt-2 md:mt-16 w-full max-w-[360px] md:max-w-none mx-auto overflow-x-visible overflow-y-visible h-[110px] md:h-auto">
       <div
         className="absolute top-0 left-0 h-full w-[48px] z-10"
         // style={{
@@ -211,21 +205,21 @@ const RollingGallery: React.FC<RollingGalleryProps> = ({
               key={i}
               className={`group absolute flex h-fit items-center justify-center p-0 [backface-visibility:hidden] md:p-0`}
               style={{
-                width: `${faceWidth}px`,
+                width: isScreenSizeSm ? "80px" : `${faceWidth}px`,
                 transform: `rotateY(${
                   (360 / faceCount) * i
                 }deg) translateZ(${radius}px)`,
               }}
             >
               <div
-                className={`flex items-center justify-center h-[120px] w-[180px] sm:h-[100px] sm:w-[120px] rounded-2xl border-[3px] ${getLogoBorder(
+                className={`flex items-center justify-center h-[80px] w-[80px] md:h-[120px] md:w-[180px] rounded-2xl border-[3px] ${getLogoBorder(
                   url
                 )} shadow-md ${getLogoBg(url)}`}
               >
                 <img
                   src={url}
                   alt="gallery"
-                  className="pointer-events-none max-h-[70px] max-w-[120px] sm:max-h-[50px] sm:max-w-[80px] object-contain p-2 transition-transform duration-300 ease-out group-hover:scale-105"
+                  className="pointer-events-none max-h-[50px] max-w-[60px] md:max-h-[70px] md:max-w-[120px] object-contain p-1 md:p-2 transition-transform duration-300 ease-out group-hover:scale-105"
                 />
               </div>
             </div>

@@ -1,4 +1,4 @@
-import React, { useRef, useState, Suspense, useEffect } from "react";
+import React, { useRef, useState, useEffect, Suspense } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls, Html, Float, Sparkles } from "@react-three/drei";
 import * as THREE from "three";
@@ -52,11 +52,13 @@ function EnergyOrb({
   // Animate pulsating orb, hover grow, and energy layer
   useFrame(({ clock }) => {
     const t = clock.getElapsedTime();
-    // Handle hover grow
-    if (isHovered && !exploding) {
-      hoverScale.current = Math.min(hoverScale.current + 0.012, 1.6); // keep growing up to 1.6x
-    } else {
-      hoverScale.current = Math.max(hoverScale.current - 0.04, 1);
+    // Always grow, faster on hover
+    if (!exploding) {
+      const growRate = isHovered ? 0.002 : 0.001;
+      hoverScale.current += growRate;
+      if (hoverScale.current >= 2.15 && !exploding) {
+        explodeOrb();
+      }
     }
     if (!exploding) {
       mesh.current.rotation.y += 0.01;
@@ -231,70 +233,39 @@ function EnergyOrb({
         }, 1000);
         setTimeout(() => {
           if (onExplode) onExplode();
-          mesh.current.visible = false;
-          energyLayer.current.visible = false;
-          heatLayer.current.visible = false;
+          if (mesh.current) mesh.current.visible = false;
+          if (energyLayer.current) energyLayer.current.visible = false;
+          if (heatLayer.current) heatLayer.current.visible = false;
           setHidden(true);
         }, 600);
       },
     });
-    // Orb: scale up, squash/stretch, rotate
+    // Orb: implosion (shrink rapidly)
     tl.to(
       mesh.current.scale,
       {
-        x: 1.2,
-        y: 0.7,
-        z: 1.2,
-        duration: 0.18,
-        ease: "power1.in",
+        x: 0.01,
+        y: 0.01,
+        z: 0.01,
+        duration: 0.5,
+        ease: "power2.in",
       },
       0
-    )
-      .to(
-        mesh.current.scale,
-        {
-          x: 7,
-          y: 7.7,
-          z: 7,
-          duration: 1.1,
-          ease: "power2.inOut",
-        },
-        0.18
-      )
-      .to(
-        mesh.current.rotation,
-        {
-          y: "+=6.5",
-          x: "+=2.5",
-          duration: 1.2,
-          ease: "power2.inOut",
-        },
-        0.1
-      );
-    // Orb: emissive flash
-    tl.to(
-      meshMat,
-      {
-        emissiveIntensity: 7,
-        duration: 0.13,
-        ease: "power1.inOut",
-        onUpdate: () => {
-          meshMat.needsUpdate = true;
-        },
-      },
-      0
-    ).to(
-      meshMat,
-      {
-        emissiveIntensity: 2.5,
-        duration: 0.25,
-        ease: "power1.inOut",
-        onUpdate: () => {
-          meshMat.needsUpdate = true;
-        },
-      },
-      0.13
     );
+    // Heat layer: implosion (shrink rapidly)
+    if (heatLayer.current) {
+      tl.to(
+        heatLayer.current.scale,
+        {
+          x: 0.01,
+          y: 0.01,
+          z: 0.01,
+          duration: 0.5,
+          ease: "power2.in",
+        },
+        0
+      );
+    }
     // Energy layer: burst outward, fade, color shift
     tl.to(
       energyLayer.current.scale,
@@ -387,7 +358,7 @@ function EnergyOrb({
           onPointerOver={() => setIsHovered(true)}
           onPointerOut={() => setIsHovered(false)}
         >
-          <sphereGeometry ref={geometryRef} args={[1.3, 64, 64]} />
+          <sphereGeometry ref={geometryRef} args={[2.0, 64, 64]} />
           <meshPhysicalMaterial
             color="#00e0ff"
             emissive="#00fff7"
@@ -402,7 +373,7 @@ function EnergyOrb({
         </mesh>
         {/* Energy layer - INCREASED SIZE */}
         <mesh ref={energyLayer}>
-          <sphereGeometry ref={energyGeometryRef} args={[1.5, 64, 64]} />
+          <sphereGeometry ref={energyGeometryRef} args={[2.3, 64, 64]} />
           <meshPhysicalMaterial
             color="#00fff7"
             transparent
@@ -416,7 +387,7 @@ function EnergyOrb({
         {/* Heat reddish layer - NEW */}
         {showHeat && (
           <mesh ref={heatLayer} renderOrder={2}>
-            <sphereGeometry ref={heatGeometryRef} args={[2.2, 64, 64]} />
+            <sphereGeometry ref={heatGeometryRef} args={[3.2, 64, 64]} />
             <meshPhysicalMaterial
               color="#ff3c1a"
               transparent
@@ -646,6 +617,15 @@ interface EnergyOrbSceneProps {
   footerRef: React.RefObject<HTMLDivElement>;
   onExplosion?: () => void;
   resetKey?: number;
+  onClose?: () => void;
+}
+
+// Add a ref to bypass the exit modal
+const bypassExitModalRef = { current: false };
+
+// Expose a setter for the bypass flag
+export function setBypassExitModal(val: boolean) {
+  bypassExitModalRef.current = val;
 }
 
 const EnergyOrbScene: React.FC<EnergyOrbSceneProps> = ({
@@ -653,20 +633,30 @@ const EnergyOrbScene: React.FC<EnergyOrbSceneProps> = ({
   footerRef,
   onExplosion,
   resetKey,
+  onClose,
 }) => {
   const [exploded, setExploded] = useState(false);
   const [replayKey, setReplayKey] = useState(0);
   const [orbResetKey, setOrbResetKey] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
+  const [visiblePlanets, setVisiblePlanets] = useState(0);
+  const [planetOpacities, setPlanetOpacities] = useState<number[]>(
+    Array(planetConfigs.length).fill(0)
+  );
+  const [showExitModal, setShowExitModal] = useState(false);
+  const [pendingExit, setPendingExit] = useState(false);
 
   // Intersection Observer to reset orb if out of view
   useEffect(() => {
     const observer = new window.IntersectionObserver(
       ([entry]) => {
         if (!entry.isIntersecting) {
-          setExploded(false);
-          setReplayKey((k) => k + 1);
-          setOrbResetKey((k) => k + 1);
+          if (bypassExitModalRef.current) {
+            bypassExitModalRef.current = false;
+            return;
+          }
+          setShowExitModal(true);
+          setPendingExit(true);
         }
       },
       { threshold: 0.01 }
@@ -675,12 +665,34 @@ const EnergyOrbScene: React.FC<EnergyOrbSceneProps> = ({
     return () => observer.disconnect();
   }, []);
 
+  // Handle user choice in modal
+  const handleStay = () => {
+    setShowExitModal(false);
+    setPendingExit(false);
+    // Scroll back into view
+    if (containerRef.current) {
+      containerRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+  const handleLeave = () => {
+    setShowExitModal(false);
+    setPendingExit(false);
+    // Actually reset everything
+    setExploded(false);
+    setReplayKey((k) => k + 1);
+    setOrbResetKey((k) => k + 1);
+    setVisiblePlanets(0);
+    setPlanetOpacities(Array(planetConfigs.length).fill(0));
+  };
+
   // Reset orb from parent
   useEffect(() => {
     if (typeof resetKey === "number") {
       setExploded(false);
       setReplayKey((k) => k + 1);
       setOrbResetKey((k) => k + 1);
+      setVisiblePlanets(0);
+      setPlanetOpacities(Array(planetConfigs.length).fill(0));
     }
   }, [resetKey]);
 
@@ -696,6 +708,8 @@ const EnergyOrbScene: React.FC<EnergyOrbSceneProps> = ({
     setExploded(false);
     setReplayKey((k) => k + 1);
     setOrbResetKey((k) => k + 1);
+    setVisiblePlanets(0);
+    setPlanetOpacities(Array(planetConfigs.length).fill(0));
   };
 
   // Navbar height (adjust as needed)
@@ -704,6 +718,21 @@ const EnergyOrbScene: React.FC<EnergyOrbSceneProps> = ({
   useEffect(() => {
     if (exploded && onExplosion) {
       onExplosion();
+    }
+    // Stagger planet/orbit appearance after explosion
+    if (exploded) {
+      setVisiblePlanets(0);
+      setPlanetOpacities(Array(planetConfigs.length).fill(0));
+      planetConfigs.forEach((_, i) => {
+        setTimeout(() => {
+          setVisiblePlanets((prev) => Math.max(prev, i + 1));
+          setPlanetOpacities((prev) => {
+            const next = [...prev];
+            next[i] = 1;
+            return next;
+          });
+        }, 1200 + i * 1200);
+      });
     }
   }, [exploded, onExplosion]);
 
@@ -734,10 +763,14 @@ const EnergyOrbScene: React.FC<EnergyOrbSceneProps> = ({
 
         {/* Orbit lines for each planet */}
         {exploded &&
-          planetConfigs.map((p, i) => (
+          planetConfigs.slice(0, visiblePlanets).map((p, i) => (
             <mesh key={"orbit-" + i} rotation={[Math.PI / 2, 0, 0]}>
               <torusGeometry args={[p.radius, 0.012, 16, 128]} />
-              <meshBasicMaterial color="#aaa" transparent opacity={0.18} />
+              <meshBasicMaterial
+                color="#aaa"
+                transparent
+                opacity={0.18 * planetOpacities[i]}
+              />
             </mesh>
           ))}
 
@@ -753,15 +786,24 @@ const EnergyOrbScene: React.FC<EnergyOrbSceneProps> = ({
             <>
               <BlackHole onReplay={handleReplay} />
               <BigBangParticles trigger={true} />
-              {planetConfigs.map((p, i) => (
-                <OrbitingPlanet
-                  key={i}
-                  radius={p.radius}
-                  speed={p.speed}
-                  color={p.color}
-                  size={p.size}
-                  initialAngle={(i * Math.PI) / 4} // staggered start
-                />
+              {planetConfigs.slice(0, visiblePlanets).map((p, i) => (
+                <group key={i}>
+                  <OrbitingPlanet
+                    radius={p.radius}
+                    speed={p.speed}
+                    color={p.color}
+                    size={p.size}
+                    initialAngle={(i * Math.PI) / 4} // staggered start
+                  />
+                  {/* Fade-in for planet */}
+                  <mesh position={[0, 0, 0]} visible={false}>
+                    <sphereGeometry args={[0.01, 8, 8]} />
+                    <meshBasicMaterial
+                      opacity={planetOpacities[i]}
+                      transparent
+                    />
+                  </mesh>
+                </group>
               ))}
             </>
           )}
@@ -775,7 +817,7 @@ const EnergyOrbScene: React.FC<EnergyOrbSceneProps> = ({
           <div className="absolute bottom-8 left-0 w-full flex flex-row items-center justify-center gap-4 z-20">
             <div className="group flex flex-col items-center gap-0 relative">
               <button
-                onClick={handleReplay}
+                onClick={onClose ? onClose : handleReplay}
                 className="flex items-center justify-center w-12 h-12 rounded-full border border-cyan-400 bg-black/60 hover:bg-cyan-900/80 transition-all shadow-lg cursor-pointer"
                 aria-label="Big Bang"
                 tabIndex={0}
@@ -823,6 +865,33 @@ const EnergyOrbScene: React.FC<EnergyOrbSceneProps> = ({
             </div>
           </div>
         </>
+      )}
+      {/* Exit constellation modal */}
+      {showExitModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+          <div className="bg-gray-900 rounded-xl shadow-xl p-6 flex flex-col items-center gap-4 border border-cyan-400 min-w-[320px] max-w-[90vw]">
+            <div className="text-cyan-200 text-lg font-semibold mb-2 text-center">
+              Leave the Constellation?
+            </div>
+            <div className="text-cyan-100 text-sm mb-4 text-center">
+              Are you sure you want to exit this cosmic experience?
+            </div>
+            <div className="flex gap-4">
+              <button
+                className="px-5 py-2 rounded bg-cyan-700 hover:bg-cyan-500 text-white font-medium transition"
+                onClick={handleLeave}
+              >
+                Yes, Leave
+              </button>
+              <button
+                className="px-5 py-2 rounded bg-gray-700 hover:bg-cyan-800 text-cyan-200 font-medium transition"
+                onClick={handleStay}
+              >
+                Stay
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

@@ -72,11 +72,13 @@ const placeNow = (el: HTMLElement, slot: Slot, skew: number) =>
     force3D: true,
   });
 
+const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+
 const CardSwap: React.FC<CardSwapProps> = ({
-  width = 600,
-  height = 400,
-  cardDistance = 60,
-  verticalDistance = 70,
+  width = isMobile ? Math.min(window.innerWidth * 2.0, 940) : 600,
+  height = isMobile ? 360 : 400,
+  cardDistance = isMobile ? 84 : 60,
+  verticalDistance = isMobile ? 28 : 70,
   delay = 5000,
   pauseOnHover = false,
   onCardClick,

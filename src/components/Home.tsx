@@ -1,4 +1,10 @@
-import { useEffect, useState, useCallback, useRef } from "react";
+import {
+  useEffect,
+  useState,
+  useCallback,
+  useRef,
+  useLayoutEffect,
+} from "react";
 import {
   FaReact,
   FaNodeJs,
@@ -9,7 +15,6 @@ import {
   FaGitAlt,
   FaServer,
 } from "react-icons/fa";
-import Footer from "./Footer";
 import { Helmet } from "react-helmet";
 import Hero from "./Hero";
 // import ModelViewer from "./ModelViewer/ModelViewer";
@@ -20,8 +25,6 @@ import TrueFocus from "./TrueFocus/TrueFocus";
 import TiltCard from "./TiltCard";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import CardSwap, { Card } from "./CardSwap/CardSwap";
-import { HyperText } from "./HyperText/HyperText";
-import InfiniteScroll from "./InfiniteScroll/InfiniteScroll";
 import {
   SiMongodb,
   SiKubernetes,
@@ -37,108 +40,17 @@ import { Canvas } from "@react-three/fiber";
 import { Sparkles } from "@react-three/drei";
 import gsap from "gsap";
 import { ScrollToPlugin } from "gsap/ScrollToPlugin";
+import { setBypassExitModal } from "./EnergyOrbScene";
 gsap.registerPlugin(ScrollToPlugin);
 
-const items = [
-  {
-    content: (
-      <div className="flex items-center gap-3 text-white text-lg font-semibold">
-        <FaReact className="text-cyan-400 text-2xl" />
-        React.js
-      </div>
-    ),
-  },
-  {
-    content: (
-      <div className="flex items-center gap-3 text-green-400 text-lg font-semibold">
-        <FaNodeJs className="text-green-500 text-2xl" />
-        Node.js
-      </div>
-    ),
-  },
-  {
-    content: (
-      <div className="flex items-center gap-3 text-emerald-400 text-lg font-semibold">
-        <SiMongodb className="text-emerald-500 text-2xl" />
-        MongoDB
-      </div>
-    ),
-  },
-  {
-    content: (
-      <div className="flex items-center gap-3 text-yellow-300 text-lg font-semibold">
-        <SiJavascript className="text-yellow-300 text-2xl" />
-        JavaScript
-      </div>
-    ),
-  },
-  {
-    content: (
-      <div className="flex items-center gap-3 text-blue-400 text-lg font-semibold">
-        <SiTypescript className="text-blue-400 text-2xl" />
-        TypeScript
-      </div>
-    ),
-  },
-  {
-    content: (
-      <div className="flex items-center gap-3 text-orange-400 text-lg font-semibold">
-        <FaGitAlt className="text-orange-500 text-2xl" />
-        Git & GitHub
-      </div>
-    ),
-  },
-  {
-    content: (
-      <div className="flex items-center gap-3 text-indigo-400 text-lg font-semibold">
-        <FaDocker className="text-sky-400 text-2xl" />
-        Docker
-      </div>
-    ),
-  },
-  {
-    content: (
-      <div className="flex items-center gap-3 text-purple-400 text-lg font-semibold">
-        <SiKubernetes className="text-purple-500 text-2xl" />
-        Kubernetes
-      </div>
-    ),
-  },
-  {
-    content: (
-      <div className="flex items-center gap-3 text-pink-300 text-lg font-semibold">
-        <FaServer className="text-pink-400 text-2xl" />
-        CI/CD
-      </div>
-    ),
-  },
-  {
-    content: (
-      <div className="flex items-center gap-3 text-blue-300 text-lg font-semibold">
-        <SiAew className="text-blue-300 text-2xl" />
-        AWS
-      </div>
-    ),
-  },
-  {
-    content: (
-      <div className="flex items-center gap-3 text-white text-lg font-semibold">
-        <FaCloud className="text-white text-2xl" />
-        Cloud Architecture
-      </div>
-    ),
-  },
-  {
-    content: (
-      <div className="flex items-center gap-3 text-gray-200 text-lg font-semibold">
-        <SiVercel className="text-gray-200 text-2xl" />
-        Vercel
-      </div>
-    ),
-  },
-];
+declare global {
+  interface Window {
+    orbClickStart?: number;
+  }
+}
 
 function Home() {
+  console.log("[LOG][RENDER] Home component render at", performance.now());
   const [isInstalling, setIsInstalling] = useState(false);
   const [heroLoaded, setHeroLoaded] = useState(false);
   const mainContentRef = useRef<HTMLDivElement>(null);
@@ -161,6 +73,10 @@ function Home() {
   const [hasTriggeredOrbExit, setHasTriggeredOrbExit] = useState(false);
   const [orbLockDisabled, setOrbLockDisabled] = useState(false);
   const [showEnergyOrbSection, setShowEnergyOrbSection] = useState(false);
+  const [isSuckingIn, setIsSuckingIn] = useState(false);
+  const orbJustAppearedRef = useRef(false);
+  const [isSpittingOut, setIsSpittingOut] = useState(false);
+  const [isFadingOut, setIsFadingOut] = useState(false);
 
   useEffect(() => {
     setIsInstalling(true);
@@ -215,51 +131,6 @@ function Home() {
     if (featuredRef.current) observer.observe(featuredRef.current);
     return () => observer.disconnect();
   }, []);
-
-  useEffect(() => {
-    const section = energyOrbSectionRef.current;
-    if (!showEnergyOrbSection || !section || orbLockDisabled) return;
-
-    const isPartiallyInView = () => {
-      const rect = section.getBoundingClientRect();
-      return (
-        rect.top < window.innerHeight &&
-        rect.bottom > 0 &&
-        rect.left < window.innerWidth &&
-        rect.right > 0
-      );
-    };
-
-    // Remove all auto scroll on mount
-
-    // Observer for smooth scroll when in view
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.intersectionRatio > 0) {
-          setIsEnergyOrbInView(true);
-          const rect = section.getBoundingClientRect();
-          // Only scroll if not already at top (allowing a small margin)
-          if (Math.abs(rect.top) > 2 && !hasOrbScrolled) {
-            window.scrollTo({
-              top: window.scrollY + rect.top,
-              behavior: "smooth",
-            });
-            setHasOrbScrolled(true);
-          }
-        } else {
-          setIsEnergyOrbInView(false);
-          setHasOrbScrolled(false); // Reset for next entry
-        }
-      },
-      { threshold: 0.01 }
-    );
-
-    observer.observe(section);
-
-    return () => {
-      observer.disconnect();
-    };
-  }, [hasOrbScrolled, orbLockDisabled, showEnergyOrbSection]);
 
   // Lock/unlock scroll when exploded and in view
   useEffect(() => {
@@ -430,10 +301,10 @@ function Home() {
 
   const handleScrollDown = () => {
     if (mainContentRef.current) {
-      mainContentRef.current.scrollIntoView({ behavior: "smooth" });
-      setTimeout(() => {
-        ScrollTrigger.refresh();
-      }, 500);
+      mainContentRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
     }
   };
 
@@ -441,7 +312,6 @@ function Home() {
     const sections = [
       { name: "Skills", ref: skillsGridRef },
       { name: "Featured", ref: featuredRef },
-      // Only include Energy Orb if it's rendered
       ...(showEnergyOrbSection
         ? [{ name: "Energy Orb", ref: energyOrbSectionRef }]
         : []),
@@ -450,7 +320,7 @@ function Home() {
 
     let lastSection = "";
 
-    const onScroll = () => {
+    function onScroll() {
       let maxVisible = 0;
       let currentSection = "";
       for (const { name, ref } of sections) {
@@ -472,38 +342,12 @@ function Home() {
         console.log(`[Scroll] Currently in section: ${currentSection}`);
         // Log navbar blur state
         console.log(`[Navbar] Blurry: ${!isEnergyOrbInView}`);
-        // Log DOM-based orb visibility
-        const orbEl = energyOrbSectionRef.current;
-        if (showEnergyOrbSection && orbEl) {
-          const rect = orbEl.getBoundingClientRect();
-          const orbInView =
-            rect.top < window.innerHeight &&
-            rect.bottom > 0 &&
-            rect.left < window.innerWidth &&
-            rect.right > 0;
-          console.log(`[DOM] Energy Orb in view: ${orbInView}`);
-          if (orbInView !== isEnergyOrbInView) {
-            setIsEnergyOrbInView(orbInView);
-          }
-          // Snap and lock scroll if orb is in view
-          if (orbInView) {
-            if (Math.abs(rect.top) > 2) {
-              gsap.to(window, {
-                scrollTo: { y: window.scrollY + rect.top, autoKill: false },
-                duration: 0.8,
-                ease: "power3.out",
-              });
-            }
-            document.body.style.overflow = "hidden";
-          } else {
-            document.body.style.overflow = "";
-          }
-        }
+        // DOM-based orb visibility and navbar blur logic removed
       }
-    };
+    }
 
     window.addEventListener("scroll", onScroll, { passive: true });
-    onScroll(); // Initial check
+    onScroll();
 
     return () => window.removeEventListener("scroll", onScroll);
   }, [isEnergyOrbInView, showEnergyOrbSection]);
@@ -607,7 +451,6 @@ function Home() {
     setExplodedScrollUpCount(0);
     setExplodedScrollDownCount(0);
     setOrbResetKey((k) => k + 1); // Optionally reset orb scene
-    setShowEnergyOrbSection(false); // Hide the section
     document.body.style.overflow = ""; // Clean up scroll lock
   }, []);
 
@@ -677,10 +520,263 @@ function Home() {
   }, [hasExploded]);
 
   useEffect(() => {
-    if (showEnergyOrbSection && energyOrbSectionRef.current) {
-      energyOrbSectionRef.current.scrollIntoView({ behavior: "smooth" });
+    if (!showEnergyOrbSection || !energyOrbSectionRef.current) return;
+    const handleTransitionEnd = (e: TransitionEvent) => {
+      if (e.propertyName === "opacity") {
+        const rect = energyOrbSectionRef.current?.getBoundingClientRect();
+        console.log(
+          "[SuckIn] Orb opacity transition ended at",
+          performance.now()
+        );
+        console.log("[SuckIn] Navbar blurry:", !isEnergyOrbInView);
+        console.log("[SuckIn] isEnergyOrbInView:", isEnergyOrbInView);
+        console.log("[SuckIn] Orb section bounding rect:", rect);
+        console.log(
+          "[SuckIn] window.scrollY:",
+          window.scrollY,
+          "window.innerHeight:",
+          window.innerHeight
+        );
+        console.log("[SuckIn] isSuckingIn:", isSuckingIn);
+        console.log("[SuckIn] showEnergyOrbSection:", showEnergyOrbSection);
+        if (window.orbClickStart) {
+          console.log(
+            "[SuckIn] Time from user click to orb FULLY visible:",
+            (performance.now() - window.orbClickStart).toFixed(1),
+            "ms"
+          );
+          window.orbClickStart = undefined;
+        }
+      }
+    };
+    const node = energyOrbSectionRef.current;
+    node.addEventListener("transitionend", handleTransitionEnd);
+    return () => {
+      node.removeEventListener("transitionend", handleTransitionEnd);
+    };
+  }, [showEnergyOrbSection, isEnergyOrbInView, isSuckingIn]);
+
+  useEffect(() => {
+    if (showEnergyOrbSection) {
+      const rect = energyOrbSectionRef.current?.getBoundingClientRect();
+      console.log("[SuckIn] Orb section rendered at", performance.now());
+      console.log("[SuckIn] Orb section bounding rect:", rect);
+      console.log(
+        "[SuckIn] window.scrollY:",
+        window.scrollY,
+        "window.innerHeight:",
+        window.innerHeight
+      );
     }
   }, [showEnergyOrbSection]);
+
+  useEffect(() => {
+    console.log(
+      "[SuckIn] isSuckingIn changed:",
+      isSuckingIn,
+      "at",
+      performance.now()
+    );
+  }, [isSuckingIn]);
+
+  useEffect(() => {
+    if (showEnergyOrbSection && energyOrbSectionRef.current) {
+      energyOrbSectionRef.current.scrollIntoView({ behavior: "auto" });
+    }
+  }, [showEnergyOrbSection]);
+
+  // Simplify orb close handler
+  const handleCloseOrb = useCallback(() => {
+    setShowEnergyOrbSection(false);
+    setIsSpittingOut(false);
+    setIsEnergyOrbInView(false);
+    if (featuredRef.current) {
+      featuredRef.current.scrollIntoView({ behavior: "auto" });
+    }
+  }, []);
+
+  // EXTENSIVE LOGGING: State changes
+  useEffect(() => {
+    console.log(
+      `[LOG][STATE] showEnergyOrbSection:`,
+      showEnergyOrbSection,
+      "at",
+      performance.now()
+    );
+  }, [showEnergyOrbSection]);
+  useEffect(() => {
+    console.log(
+      `[LOG][STATE] isSpittingOut:`,
+      isSpittingOut,
+      "at",
+      performance.now()
+    );
+  }, [isSpittingOut]);
+  useEffect(() => {
+    console.log(
+      `[LOG][STATE] isSuckingIn:`,
+      isSuckingIn,
+      "at",
+      performance.now()
+    );
+  }, [isSuckingIn]);
+  useEffect(() => {
+    console.log(
+      `[LOG][STATE] isEnergyOrbInView:`,
+      isEnergyOrbInView,
+      "at",
+      performance.now()
+    );
+  }, [isEnergyOrbInView]);
+  useEffect(() => {
+    console.log(
+      `[LOG][STATE] hasExploded:`,
+      hasExploded,
+      "at",
+      performance.now()
+    );
+  }, [hasExploded]);
+  useEffect(() => {
+    console.log(
+      `[LOG][STATE] orbResetKey:`,
+      orbResetKey,
+      "at",
+      performance.now()
+    );
+  }, [orbResetKey]);
+  useEffect(() => {
+    console.log(
+      `[LOG][STATE] skills section visible:`,
+      !(showEnergyOrbSection || isSpittingOut),
+      "at",
+      performance.now()
+    );
+  }, [showEnergyOrbSection, isSpittingOut]);
+  useEffect(() => {
+    console.log(
+      `[LOG][STATE] featured section visible:`,
+      !(showEnergyOrbSection || isSpittingOut),
+      "at",
+      performance.now()
+    );
+  }, [showEnergyOrbSection, isSpittingOut]);
+  useEffect(() => {
+    console.log(
+      `[LOG][STATE] orb section rendered:`,
+      showEnergyOrbSection,
+      "at",
+      performance.now()
+    );
+  }, [showEnergyOrbSection]);
+
+  // EXTENSIVE LOGGING: Transitions
+  const logTransition = (msg: string) => {
+    console.log(`[LOG][TRANSITION] ${msg} at`, performance.now(), {
+      showEnergyOrbSection,
+      isSpittingOut,
+      isSuckingIn,
+      isEnergyOrbInView,
+      hasExploded,
+      orbResetKey,
+    });
+  };
+
+  // Instantly show the orb section, but fade out first
+  const startSuckIn = () => {
+    setBypassExitModal(true);
+    setIsFadingOut(true);
+    setTimeout(() => {
+      setShowEnergyOrbSection(true);
+      setIsEnergyOrbInView(true);
+      setIsFadingOut(false);
+      logTransition("Orb section shown after fade-out");
+    }, 300);
+  };
+
+  useEffect(() => {
+    const onScroll = () => {
+      console.log(
+        "[LOG][SCROLL] Scroll event at",
+        performance.now(),
+        "scrollY:",
+        window.scrollY
+      );
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // Failsafe: forcibly reset all transforms and opacity on children after orb closes
+  useEffect(() => {
+    if (!showEnergyOrbSection && !isSpittingOut) {
+      // Reset skills children
+      if (skillsGridRef.current) {
+        const skillChildren = Array.from(
+          skillsGridRef.current.querySelectorAll(":scope > *")
+        );
+        skillChildren.forEach((el) => {
+          (el as HTMLElement).style.transform = "";
+          (el as HTMLElement).style.opacity = "";
+        });
+        // Reset skills container
+        (skillsGridRef.current as HTMLElement).style.transform = "";
+        (skillsGridRef.current as HTMLElement).style.opacity = "";
+      }
+      // Reset featured children
+      if (featuredRef.current) {
+        const featuredChildren = Array.from(
+          document.querySelectorAll(".featured-content-anim > *")
+        );
+        featuredChildren.forEach((el) => {
+          (el as HTMLElement).style.transform = "";
+          (el as HTMLElement).style.opacity = "";
+        });
+        // Reset featured container
+        (featuredRef.current as HTMLElement).style.transform = "";
+        (featuredRef.current as HTMLElement).style.opacity = "";
+      }
+      // Log computed styles for featured section and children
+      if (featuredRef.current) {
+        const section = featuredRef.current;
+        const sectionStyles = window.getComputedStyle(section);
+        console.log("[LOG][DEBUG] Featured section computed styles:", {
+          opacity: sectionStyles.opacity,
+          transform: sectionStyles.transform,
+          display: sectionStyles.display,
+        });
+        const featuredChildren = Array.from(
+          section.querySelectorAll(":scope > *")
+        );
+        featuredChildren.forEach((el, i) => {
+          const styles = window.getComputedStyle(el as Element);
+          console.log(`[LOG][DEBUG] Featured child ${i} computed styles:`, {
+            opacity: styles.opacity,
+            transform: styles.transform,
+            display: styles.display,
+          });
+        });
+      }
+      console.log(
+        "[LOG][CLEANUP] Failsafe: Reset all transforms and opacity on skills and featured children and containers after orb closes at",
+        performance.now()
+      );
+    }
+  }, [showEnergyOrbSection, isSpittingOut]);
+
+  // Restore instantly when featuredRef is back in view
+  useEffect(() => {
+    if (!featuredRef.current) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsFadingOut(false);
+        }
+      },
+      { threshold: 0.1 }
+    );
+    observer.observe(featuredRef.current);
+    return () => observer.disconnect();
+  }, [featuredRef]);
 
   return (
     <>
@@ -731,7 +827,10 @@ function Home() {
           </div>
         )}
         {heroLoaded && (
-          <div ref={mainContentRef} className="flex-1 pt-8">
+          <div
+            ref={mainContentRef}
+            className="flex-1 pt-8 main-content-scroll-target"
+          >
             <div className="w-4/5 mx-auto">
               <TextPressure
                 text="Hello!"
@@ -783,14 +882,12 @@ function Home() {
             </div> */}
             <div
               ref={skillsGridRef}
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8 w-4/5 mx-auto"
-              // style={{
-              //   filter: hasBeenInView
-              //     ? "blur(0px)"
-              //     : `blur(${8 - 8 * skillsFocus}px)`,
-              //   opacity: hasBeenInView ? 1 : skillsFocus,
-              //   transition: "filter 0.3s, opacity 0.3s",
-              // }}
+              className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0 md:gap-6 mt-2 md:mt-8 w-full md:w-4/5 mx-auto${
+                showEnergyOrbSection || isSpittingOut || isFadingOut
+                  ? " opacity-0 pointer-events-none"
+                  : " opacity-100"
+              }`}
+              style={{ transition: "opacity 0.3s" }}
             >
               {skillCategories.map((category, idx) => (
                 <ScrollReveal
@@ -802,7 +899,7 @@ function Home() {
                   containerClassName="h-full"
                   wordAnimationEnd="top center"
                 >
-                  <TiltCard className="group relative overflow-visible">
+                  <TiltCard className="group relative overflow-visible border border-cyan-400 md:border-none">
                     {/* Foreground content floats on hover */}
                     <div
                       className="relative z-10 transition-all duration-700 ease-out group"
@@ -852,8 +949,12 @@ function Home() {
             </div>
             <div
               ref={featuredRef}
-              className="relative flex flex-col lg:flex-row items-center justify-center w-full rounded-2xl overflow-hidden gap-8 min-h-[400px] lg:min-h-[500px] py-8"
-              style={{ zIndex: 1 }}
+              className={`relative flex flex-col lg:flex-row items-center justify-center w-full rounded-2xl overflow-hidden gap-8 min-h-[400px] lg:min-h-[500px] py-8 featured-content-anim${
+                showEnergyOrbSection || isSpittingOut || isFadingOut
+                  ? " opacity-0 pointer-events-none"
+                  : " opacity-100"
+              }`}
+              style={{ zIndex: 1, transition: "opacity 0.3s" }}
             >
               {/* Sparkles background */}
               <div className="absolute inset-0 z-0 pointer-events-none">
@@ -884,197 +985,340 @@ function Home() {
                   />
                 </Canvas>
               </div>
-              {/* Special clickable particle overlay */}
-              <div
-                className="absolute z-20 group"
-                style={{
-                  left: "50%", // center horizontally
-                  top: "50%", // center vertically
-                  transform: "translate(-50%, -50%)",
-                  cursor: "pointer",
-                  pointerEvents: "auto",
-                }}
-                onClick={() => {
-                  setShowEnergyOrbSection(true);
-                  setTimeout(() => {
-                    if (energyOrbSectionRef.current) {
-                      energyOrbSectionRef.current.scrollIntoView({
-                        behavior: "smooth",
-                      });
-                    }
-                  }, 100);
-                }}
-                title="Click me!"
-              >
-                <div className="relative w-10 h-10 flex items-center justify-center">
-                  {/* Animated HUD label */}
-                  <span
-                    className="absolute left-1/2 -top-8 text-cyan-100 text-xs font-thin pointer-events-none select-none"
-                    style={{
-                      transform: "translateX(-50%)",
-                      animation: "hud-float-up 2.2s infinite",
-                      letterSpacing: "0.08em",
-                      textShadow: "0 2px 8px #0ff8",
-                    }}
+
+              {/* Mobile Layout: Vertical stack with proper spacing */}
+              <div className="w-full flex flex-col lg:hidden md:gap-8 gap-2 z-10">
+                {/* Gallery at top */}
+                <div className="flex-1 w-full">
+                  <RollingGallery autoplay={true} pauseOnHover={true} />
+                </div>
+
+                {/* Vertical space */}
+                <div className="h-8"></div>
+
+                {/* Special clickable particle in center */}
+                <div
+                  className="flex justify-center items-center py-8 group click-here-particle md:mb-8 mb-16"
+                  onClick={startSuckIn}
+                  title="Click me!"
+                >
+                  <div className="relative w-10 h-10 flex items-center justify-center">
+                    {/* Animated HUD label */}
+                    <span
+                      className="absolute left-1/2 -top-8 text-cyan-100 text-xs font-thin pointer-events-none select-none"
+                      style={{
+                        transform: "translateX(-50%)",
+                        animation: "hud-float-up 2.2s infinite",
+                        letterSpacing: "0.08em",
+                        textShadow: "0 2px 8px #0ff8",
+                      }}
+                    >
+                      click here
+                    </span>
+                    {/* Glowing effect */}
+                    <div
+                      className="absolute inset-0 rounded-full bg-cyan-300 opacity-70 blur-2xl animate-pulse"
+                      style={{
+                        animation:
+                          "energy-wobble 2.2s infinite cubic-bezier(.36,.07,.19,.97) both",
+                      }}
+                    ></div>
+                    {/* Main particle */}
+                    <div
+                      className="w-6 h-6 rounded-full bg-cyan-200 shadow-lg shadow-cyan-400/70 animate-ping"
+                      style={{
+                        animation:
+                          "energy-wobble 1.7s infinite cubic-bezier(.36,.07,.19,.97) both",
+                      }}
+                    ></div>
+                    {/* Extra sparkle on hover */}
+                    <div className="absolute inset-0 rounded-full border-2 border-cyan-200 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  </div>
+                </div>
+
+                {/* Vertical space */}
+                <div className="h-8 mb-20 "></div>
+
+                {/* Card swap at bottom */}
+                <div className="flex-1 flex justify-center">
+                  <CardSwap
+                    cardDistance={60}
+                    verticalDistance={70}
+                    delay={5000}
+                    pauseOnHover={false}
                   >
-                    click here
-                  </span>
-                  {/* Glowing effect */}
-                  <div
-                    className="absolute inset-0 rounded-full bg-cyan-300 opacity-70 blur-2xl animate-pulse"
-                    style={{
-                      animation:
-                        "energy-wobble 2.2s infinite cubic-bezier(.36,.07,.19,.97) both",
-                    }}
-                  ></div>
-                  {/* Main particle */}
-                  <div
-                    className="w-6 h-6 rounded-full bg-cyan-200 shadow-lg shadow-cyan-400/70 animate-ping"
-                    style={{
-                      animation:
-                        "energy-wobble 1.7s infinite cubic-bezier(.36,.07,.19,.97) both",
-                    }}
-                  ></div>
-                  {/* Extra sparkle on hover */}
-                  <div className="absolute inset-0 rounded-full border-2 border-cyan-200 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <Card>
+                      <ProgressiveImage
+                        src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=600&q=80"
+                        alt="Coding workspace"
+                        className="flex flex-col items-start justify-start h-full w-full p-4 pt-6 text-white space-y-3 relative rounded-xl overflow-hidden"
+                        style={{ minHeight: "100%" }}
+                      >
+                        {/* Overlay for readability */}
+                        <div
+                          className="absolute inset-0 bg-black/50 rounded-xl"
+                          style={{ zIndex: 0 }}
+                        />
+                        <div className="relative z-10 w-full p-4">
+                          <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-2xl">
+                            🧙‍♂️
+                          </div>
+                          <h3 className="text-xl font-bold leading-tight">
+                            Code Wizardry
+                          </h3>
+                          <p className="text-sm text-gray-300">
+                            Turning complex problems into elegant, magical
+                            solutions.
+                          </p>
+                          <button
+                            className="mt-2 px-4 py-1 rounded-full text-sm font-medium bg-white/10 hover:bg-white/20 transition"
+                            onClick={() => {
+                              setBypassExitModal(true);
+                              setShowEnergyOrbSection(true);
+                            }}
+                          >
+                            Cast a Spell
+                          </button>
+                        </div>
+                      </ProgressiveImage>
+                    </Card>
+                    <Card>
+                      <ProgressiveImage
+                        src="https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=600&q=80"
+                        alt="Developer at work"
+                        className="flex flex-col items-start justify-start h-full w-full p-4 pt-6 text-white space-y-3 relative rounded-xl overflow-hidden"
+                        style={{ minHeight: "100%" }}
+                      >
+                        <div
+                          className="absolute inset-0 bg-black/50 rounded-xl"
+                          style={{ zIndex: 0 }}
+                        />
+                        <div className="relative z-10 w-full p-4">
+                          <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-2xl">
+                            ⚡
+                          </div>
+                          <h3 className="text-xl font-bold leading-tight">
+                            Full Stack Power
+                          </h3>
+                          <p className="text-sm text-gray-300">
+                            Mastery across frontend, backend, and cloud—building
+                            seamless and scalable experiences.
+                          </p>
+                          <button
+                            className="mt-2 px-4 py-1 rounded-full text-sm font-medium bg-white/10 hover:bg-white/20 transition"
+                            onClick={() => {
+                              setBypassExitModal(true);
+                              setShowEnergyOrbSection(true);
+                            }}
+                          >
+                            Unleash Magic
+                          </button>
+                        </div>
+                      </ProgressiveImage>
+                    </Card>
+                    <Card>
+                      <ProgressiveImage
+                        src="https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=600&q=80"
+                        alt="Code on screen"
+                        className="flex flex-col items-start justify-start h-full w-full p-4 pt-6 text-white space-y-3 relative rounded-xl overflow-hidden"
+                        style={{ minHeight: "100%" }}
+                      >
+                        <div
+                          className="absolute inset-0 bg-black/50 rounded-xl"
+                          style={{ zIndex: 0 }}
+                        />
+                        <div className="relative z-10 w-full p-4">
+                          <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-2xl">
+                            🪄
+                          </div>
+                          <h3 className="text-xl font-bold leading-tight">
+                            UI/UX Enchanter
+                          </h3>
+                          <p className="text-sm text-gray-300">
+                            Crafting interfaces that delight and engage,
+                            blending design and code.
+                          </p>
+                          <button
+                            className="mt-2 px-4 py-1 rounded-full text-sm font-medium bg-white/10 hover:bg-white/20 transition"
+                            onClick={() => {
+                              setBypassExitModal(true);
+                              setShowEnergyOrbSection(true);
+                            }}
+                          >
+                            Reveal the Arcane
+                          </button>
+                        </div>
+                      </ProgressiveImage>
+                    </Card>
+                  </CardSwap>
                 </div>
               </div>
-              <div className="w-full lg:w-1/2 z-10 lg:mb-0">
-                <RollingGallery autoplay={true} pauseOnHover={true} />
-              </div>
-              <div className="flex-1 flex justify-center z-10">
-                <CardSwap
-                  cardDistance={60}
-                  verticalDistance={70}
-                  delay={5000}
-                  pauseOnHover={false}
+
+              {/* Desktop Layout: Horizontal with centered clickable particle */}
+              <div className="hidden lg:flex w-full flex-row items-center justify-center gap-8 z-10">
+                <div className="flex flex-1 w-1/2">
+                  <RollingGallery autoplay={true} pauseOnHover={true} />
+                </div>
+
+                {/* Special clickable particle overlay for desktop */}
+                <div
+                  className="group click-here-particle"
+                  style={{
+                    cursor: "pointer",
+                    pointerEvents: "auto",
+                  }}
+                  onClick={startSuckIn}
+                  title="Click me!"
                 >
-                  <Card>
-                    <ProgressiveImage
-                      src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=600&q=80"
-                      alt="Coding workspace"
-                      className="flex flex-col items-start justify-start h-full w-full p-4 pt-6 text-white space-y-3 relative rounded-xl overflow-hidden"
-                      style={{ minHeight: "100%" }}
+                  <div className="relative w-10 h-10 flex items-center justify-center">
+                    {/* Animated HUD label */}
+                    <span
+                      className="absolute left-1/2 -top-8 text-cyan-100 text-xs font-thin pointer-events-none select-none"
+                      style={{
+                        transform: "translateX(-50%)",
+                        animation: "hud-float-up 2.2s infinite",
+                        letterSpacing: "0.08em",
+                        textShadow: "0 2px 8px #0ff8",
+                      }}
                     >
-                      {/* Overlay for readability */}
-                      <div
-                        className="absolute inset-0 bg-black/50 rounded-xl"
-                        style={{ zIndex: 0 }}
-                      />
-                      <div className="relative z-10 w-full p-4">
-                        <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-2xl">
-                          🧙‍♂️
+                      click here
+                    </span>
+                    {/* Glowing effect */}
+                    <div
+                      className="absolute inset-0 rounded-full bg-cyan-300 opacity-70 blur-2xl animate-pulse"
+                      style={{
+                        animation:
+                          "energy-wobble 2.2s infinite cubic-bezier(.36,.07,.19,.97) both",
+                      }}
+                    ></div>
+                    {/* Main particle */}
+                    <div
+                      className="w-6 h-6 rounded-full bg-cyan-200 shadow-lg shadow-cyan-400/70 animate-ping"
+                      style={{
+                        animation:
+                          "energy-wobble 1.7s infinite cubic-bezier(.36,.07,.19,.97) both",
+                      }}
+                    ></div>
+                    {/* Extra sparkle on hover */}
+                    <div className="absolute inset-0 rounded-full border-2 border-cyan-200 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  </div>
+                </div>
+
+                <div className="flex-1 flex justify-center">
+                  <CardSwap
+                    cardDistance={60}
+                    verticalDistance={70}
+                    delay={5000}
+                    pauseOnHover={false}
+                  >
+                    <Card>
+                      <ProgressiveImage
+                        src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=600&q=80"
+                        alt="Coding workspace"
+                        className="flex flex-col items-start justify-start h-full w-full p-4 pt-6 text-white space-y-3 relative rounded-xl overflow-hidden"
+                        style={{ minHeight: "100%" }}
+                      >
+                        {/* Overlay for readability */}
+                        <div
+                          className="absolute inset-0 bg-black/50 rounded-xl"
+                          style={{ zIndex: 0 }}
+                        />
+                        <div className="relative z-10 w-full p-4">
+                          <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-2xl">
+                            🧙‍♂️
+                          </div>
+                          <h3 className="text-xl font-bold leading-tight">
+                            Code Wizardry
+                          </h3>
+                          <p className="text-sm text-gray-300">
+                            Turning complex problems into elegant, magical
+                            solutions with clean code and creativity.
+                          </p>
+                          <button
+                            className="mt-2 px-4 py-1 rounded-full text-sm font-medium bg-white/10 hover:bg-white/20 transition"
+                            onClick={() => {
+                              setBypassExitModal(true);
+                              setShowEnergyOrbSection(true);
+                            }}
+                          >
+                            Cast a Spell
+                          </button>
                         </div>
-                        <h3 className="text-xl font-bold leading-tight">
-                          Code Wizardry
-                        </h3>
-                        <p className="text-sm text-gray-300">
-                          Turning complex problems into elegant, magical
-                          solutions with clean code and creativity.
-                        </p>
-                        <button
-                          className="mt-2 px-4 py-1 rounded-full text-sm font-medium bg-white/10 hover:bg-white/20 transition"
-                          onClick={() => {
-                            setShowEnergyOrbSection(true);
-                            setTimeout(() => {
-                              if (energyOrbSectionRef.current) {
-                                energyOrbSectionRef.current.scrollIntoView({
-                                  behavior: "smooth",
-                                });
-                              }
-                            }, 100);
-                          }}
-                        >
-                          Cast a Spell
-                        </button>
-                      </div>
-                    </ProgressiveImage>
-                  </Card>
-                  <Card>
-                    <ProgressiveImage
-                      src="https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=600&q=80"
-                      alt="Developer at work"
-                      className="flex flex-col items-start justify-start h-full w-full p-4 pt-6 text-white space-y-3 relative rounded-xl overflow-hidden"
-                      style={{ minHeight: "100%" }}
-                    >
-                      <div
-                        className="absolute inset-0 bg-black/50 rounded-xl"
-                        style={{ zIndex: 0 }}
-                      />
-                      <div className="relative z-10 w-full p-4">
-                        <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-2xl">
-                          ⚡
+                      </ProgressiveImage>
+                    </Card>
+                    <Card>
+                      <ProgressiveImage
+                        src="https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=600&q=80"
+                        alt="Developer at work"
+                        className="flex flex-col items-start justify-start h-full w-full p-4 pt-6 text-white space-y-3 relative rounded-xl overflow-hidden"
+                        style={{ minHeight: "100%" }}
+                      >
+                        <div
+                          className="absolute inset-0 bg-black/50 rounded-xl"
+                          style={{ zIndex: 0 }}
+                        />
+                        <div className="relative z-10 w-full p-4">
+                          <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-2xl">
+                            ⚡
+                          </div>
+                          <h3 className="text-xl font-bold leading-tight">
+                            Full Stack Power
+                          </h3>
+                          <p className="text-sm text-gray-300">
+                            Mastery across frontend, backend, and cloud—building
+                            seamless, scalable experiences from pixel to
+                            production.
+                          </p>
+                          <button
+                            className="mt-2 px-4 py-1 rounded-full text-sm font-medium bg-white/10 hover:bg-white/20 transition"
+                            onClick={() => {
+                              setBypassExitModal(true);
+                              setShowEnergyOrbSection(true);
+                            }}
+                          >
+                            Unleash Magic
+                          </button>
                         </div>
-                        <h3 className="text-xl font-bold leading-tight">
-                          Full Stack Power
-                        </h3>
-                        <p className="text-sm text-gray-300">
-                          Mastery across frontend, backend, and cloud—building
-                          seamless, scalable experiences from pixel to
-                          production.
-                        </p>
-                        <button
-                          className="mt-2 px-4 py-1 rounded-full text-sm font-medium bg-white/10 hover:bg-white/20 transition"
-                          onClick={() => {
-                            setShowEnergyOrbSection(true);
-                            setTimeout(() => {
-                              if (energyOrbSectionRef.current) {
-                                energyOrbSectionRef.current.scrollIntoView({
-                                  behavior: "smooth",
-                                });
-                              }
-                            }, 100);
-                          }}
-                        >
-                          Unleash Magic
-                        </button>
-                      </div>
-                    </ProgressiveImage>
-                  </Card>
-                  <Card>
-                    <ProgressiveImage
-                      src="https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=600&q=80"
-                      alt="Code on screen"
-                      className="flex flex-col items-start justify-start h-full w-full p-4 pt-6 text-white space-y-3 relative rounded-xl overflow-hidden"
-                      style={{ minHeight: "100%" }}
-                    >
-                      <div
-                        className="absolute inset-0 bg-black/50 rounded-xl"
-                        style={{ zIndex: 0 }}
-                      />
-                      <div className="relative z-10 w-full p-4">
-                        <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-2xl">
-                          🪄
+                      </ProgressiveImage>
+                    </Card>
+                    <Card>
+                      <ProgressiveImage
+                        src="https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=600&q=80"
+                        alt="Code on screen"
+                        className="flex flex-col items-start justify-start h-full w-full p-4 pt-6 text-white space-y-3 relative rounded-xl overflow-hidden"
+                        style={{ minHeight: "100%" }}
+                      >
+                        <div
+                          className="absolute inset-0 bg-black/50 rounded-xl"
+                          style={{ zIndex: 0 }}
+                        />
+                        <div className="relative z-10 w-full p-4">
+                          <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-2xl">
+                            🪄
+                          </div>
+                          <h3 className="text-xl font-bold leading-tight">
+                            UI/UX Enchanter
+                          </h3>
+                          <p className="text-sm text-gray-300">
+                            Crafting interfaces that delight and engage,
+                            blending design and code for magical user journeys.
+                          </p>
+                          <button
+                            className="mt-2 px-4 py-1 rounded-full text-sm font-medium bg-white/10 hover:bg-white/20 transition"
+                            onClick={() => {
+                              setBypassExitModal(true);
+                              setShowEnergyOrbSection(true);
+                            }}
+                          >
+                            Reveal the Arcane
+                          </button>
                         </div>
-                        <h3 className="text-xl font-bold leading-tight">
-                          UI/UX Enchanter
-                        </h3>
-                        <p className="text-sm text-gray-300">
-                          Crafting interfaces that delight and engage, blending
-                          design and code for magical user journeys.
-                        </p>
-                        <button
-                          className="mt-2 px-4 py-1 rounded-full text-sm font-medium bg-white/10 hover:bg-white/20 transition"
-                          onClick={() => {
-                            setShowEnergyOrbSection(true);
-                            setTimeout(() => {
-                              if (energyOrbSectionRef.current) {
-                                energyOrbSectionRef.current.scrollIntoView({
-                                  behavior: "smooth",
-                                });
-                              }
-                            }, 100);
-                          }}
-                        >
-                          Reveal the Arcane
-                        </button>
-                      </div>
-                    </ProgressiveImage>
-                  </Card>
-                </CardSwap>
+                      </ProgressiveImage>
+                    </Card>
+                  </CardSwap>
+                </div>
               </div>
             </div>
-            {/* Only render Energy Orb section if showEnergyOrbSection is true */}
             {showEnergyOrbSection && (
               <div
                 ref={energyOrbSectionRef}
@@ -1086,6 +1330,7 @@ function Home() {
                   footerRef={footerRef}
                   onExplosion={() => setHasExploded(true)}
                   resetKey={orbResetKey}
+                  onClose={handleCloseOrb}
                 />
               </div>
             )}
@@ -1109,6 +1354,12 @@ function Home() {
   30% { opacity: 1; transform: translateX(-50%) translateY(0); }
   80% { opacity: 0.7; }
   100% { opacity: 0; transform: translateX(-50%) translateY(-16px); }
+}
+
+@media (max-width: 640px) {
+  .main-content-scroll-target {
+    scroll-margin-top: 60px;
+  }
 }
 `}
       </style>
