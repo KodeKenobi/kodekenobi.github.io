@@ -21,3 +21,35 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Large files and executables
+*.exe
+*.msi
+*.dmg
+*.pkg
+*.deb
+*.rpm
+*.zip
+*.tar.gz
+*.rar
+*.7z
+
+# Files larger than 50MB
+*.iso
+*.bin
+
+# IDE and editor files
+.cursor/
+.cursorrc
+*.cursor-*
+
+# OS generated files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.backup
