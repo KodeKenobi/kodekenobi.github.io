@@ -1,4 +1,6 @@
+# ==============================
 # Logs
+# ==============================
 logs
 *.log
 npm-debug.log*
@@ -7,22 +9,103 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist-ssr
+# ==============================
+# Node / JavaScript
+# ==============================
+node_modules/
+.pnpm-store/
+.npm/
+.yarn/
+.yarn/cache/
+.yarn/unplugged/
+.yarn/build-state.yml
+.yarn/install-state.gz
+
+dist/
+build/
+out/
+coverage/
+.tmp/
+.temp/
+
+# ==============================
+# Environment files
+# ==============================
+.env
+.env.*
+!.env.example
 *.local
 
+# ==============================
+# Expo / React Native
+# ==============================
+.expo/
+.expo-shared/
+.expo-web/
+web-build/
+android/.gradle/
+android/app/build/
+android/build/
+android/local.properties
+ios/Pods/
+ios/build/
+*.keystore
+*.jks
+
+# ==============================
+# Next / Vite / React
+# ==============================
+.next/
+.nuxt/
+.svelte-kit/
+dist-ssr/
+.vite/
+
+# ==============================
+# TypeScript
+# ==============================
+*.tsbuildinfo
+
+# ==============================
 # Editor directories and files
+# ==============================
 .vscode/*
 !.vscode/extensions.json
-.idea
+.idea/
 .DS_Store
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
+*.swp
+*.swo
 *.sw?
 
-# Large files and executables
+# ==============================
+# Cursor AI
+# ==============================
+.cursor/
+.cursorrc
+*.cursor-*
+
+# ==============================
+# OS Generated Files
+# ==============================
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# ==============================
+# Temporary files
+# ==============================
+*.tmp
+*.temp
+*.bak
+*.backup
+
+# ==============================
+# Large files / binaries
+# ==============================
 *.exe
 *.msi
 *.dmg
@@ -33,23 +116,26 @@ dist-ssr
 *.tar.gz
 *.rar
 *.7z
-
-# Files larger than 50MB
 *.iso
 *.bin
 
-# IDE and editor files
-.cursor/
-.cursorrc
-*.cursor-*
+# ==============================
+# Testing
+# ==============================
+coverage/
+.nyc_output/
 
-# OS generated files
-Thumbs.db
-ehthumbs.db
-Desktop.ini
+# ==============================
+# Database
+# ==============================
+*.sqlite
+*.sqlite3
+*.db
 
-# Temporary files
-*.tmp
-*.temp
-*.bak
-*.backup
+# ==============================
+# Misc
+# ==============================
+.cache/
+.parcel-cache/
+.eslintcache
+.stylelintcache

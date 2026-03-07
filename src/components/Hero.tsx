@@ -9,16 +9,23 @@ import { Level, Sudo, Camera, Cactus, Box } from "./Scene/Scene";
 import { useEffect } from "react";
 import { Suspense } from "react";
 
-export default function Hero({ onLoaded }: { onLoaded?: () => void }) {
-  // LoaderCallback ensures onLoaded is called after Suspense resolves
+export default function Hero({
+  onLoaded,
+  onScrollDown,
+}: {
+  onLoaded?: () => void;
+  onScrollDown?: () => void;
+}) {
   function LoaderCallback() {
     useEffect(() => {
       if (onLoaded) onLoaded();
     }, []);
     return null;
   }
+
   return (
-    <div className="w-full h-screen">
+    <div className="relative w-full h-screen">
+      {/* 3D Scene */}
       <Canvas flat>
         <Suspense fallback={null}>
           <Fisheye zoom={0}>
@@ -37,6 +44,19 @@ export default function Hero({ onLoaded }: { onLoaded?: () => void }) {
           </Fisheye>
         </Suspense>
       </Canvas>
+
+      {/* Scroll Down Button */}
+      <div
+        className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20 cursor-pointer pointer-events-auto flex flex-col items-center"
+        onClick={onScrollDown}
+      >
+        <div className="w-8 h-14 rounded-full border-2 border-white/60 flex items-start justify-center relative hover:border-white/80 transition-colors duration-300">
+          <div className="w-2 h-2 bg-white/60 rounded-full mt-2 animate-bounce hover:bg-white/80 transition-colors duration-300"></div>
+        </div>
+        <span className="block text-white/60 text-xs mt-2 text-center font-light tracking-wide hover:text-white/80 transition-colors duration-300">
+          Scroll Down
+        </span>
+      </div>
     </div>
   );
 }

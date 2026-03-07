@@ -23,8 +23,6 @@ export default defineConfig({
   },
   publicDir: "public",
   server: {
-    headers: {
-      "Content-Type": "application/javascript",
-    },
+    // Headers removed to prevent MIME type conflicts
   },
 });

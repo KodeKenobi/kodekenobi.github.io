@@ -109,7 +109,13 @@ export function Cactus() {
   );
 }
 
-export function Box({ scale = 1, ...props }) {
+export function Box({
+  scale = 1,
+  ...props
+}: {
+  scale?: number;
+  [key: string]: any;
+}) {
   const ref = useRef<THREE.Mesh>(null);
   const [hovered, hover] = useState(false);
   const [clicked, click] = useState(false);
