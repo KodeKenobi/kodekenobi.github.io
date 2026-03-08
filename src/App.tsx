@@ -348,9 +348,18 @@ export default function App() {
         if (!scrollingDown && container.scrollTop <= 5) {
           if (e.cancelable) e.preventDefault();
           scrollAccumulatorRef.current += deltaY;
-          if (scrollAccumulatorRef.current < -100) {
+          // More sensitive for mobile
+          if (scrollAccumulatorRef.current < -50) {
             scrollAccumulatorRef.current = 0;
             navigateSection(-1);
+          }
+        } else if (scrollingDown && container.scrollHeight - container.scrollTop - container.clientHeight <= 5) {
+          // At bottom, swipe up to next section
+          if (e.cancelable) e.preventDefault();
+          scrollAccumulatorRef.current += deltaY;
+          if (scrollAccumulatorRef.current > 50) {
+            scrollAccumulatorRef.current = 0;
+            navigateSection(1);
           }
         } else {
           // Reset accumulator if scrolling inside
@@ -359,34 +368,56 @@ export default function App() {
         return;
       }
 
+      // HOME — Vertical swipe triggers next section
+      if (current === "home") {
+        if (e.cancelable) e.preventDefault();
+        scrollAccumulatorRef.current += deltaY;
+        // Flick detection: if swipe is fast or long enough
+        if (Math.abs(deltaY) > 50 || Math.abs(scrollAccumulatorRef.current) > 50) {
+          if (scrollingDown) {
+            scrollAccumulatorRef.current = 0;
+            navigateSection(1);
+          }
+        }
+        return;
+      }
+
       if (current === "about") {
         if (e.cancelable) e.preventDefault();
         const slide = aboutSlideRef.current;
 
+        // Accumulate and check for transition
+        scrollAccumulatorRef.current += deltaY;
+        const threshold = 40; // High sensitivity for slides
+
         if (scrollingDown) {
           if (slide < ABOUT_TOTAL_SLIDES - 1) {
-            setAboutDirection(1);
-            const next = slide + 1;
-            setAboutSlide(next);
-            aboutSlideRef.current = next;
-            lockScroll(600);
+            if (scrollAccumulatorRef.current > threshold) {
+              setAboutDirection(1);
+              const next = slide + 1;
+              setAboutSlide(next);
+              aboutSlideRef.current = next;
+              scrollAccumulatorRef.current = 0;
+              lockScroll(500);
+            }
           } else {
-            scrollAccumulatorRef.current += deltaY;
-            if (scrollAccumulatorRef.current > 80) {
+            if (scrollAccumulatorRef.current > 60) {
               scrollAccumulatorRef.current = 0;
               navigateSection(1);
             }
           }
         } else {
           if (slide > 0) {
-            setAboutDirection(-1);
-            const prev = slide - 1;
-            setAboutSlide(prev);
-            aboutSlideRef.current = prev;
-            lockScroll(600);
+            if (scrollAccumulatorRef.current < -threshold) {
+              setAboutDirection(-1);
+              const prev = slide - 1;
+              setAboutSlide(prev);
+              aboutSlideRef.current = prev;
+              scrollAccumulatorRef.current = 0;
+              lockScroll(500);
+            }
           } else {
-            scrollAccumulatorRef.current += deltaY;
-            if (scrollAccumulatorRef.current < -80) {
+            if (scrollAccumulatorRef.current < -60) {
               scrollAccumulatorRef.current = 0;
               navigateSection(-1);
             }
@@ -400,60 +431,56 @@ export default function App() {
         const maxSlide = isMobileRef.current ? 3 : 2;
 
         if (e.cancelable) e.preventDefault();
+        scrollAccumulatorRef.current += deltaY;
+        const threshold = 40;
+
         if (scrollingDown) {
           if (slide < maxSlide) {
-            setSkillsDirection(1);
-            const nextSlide = slide + 1;
-            setSkillsSlide(nextSlide);
-            skillsSlideRef.current = nextSlide;
-            lockScroll(800);
+            if (scrollAccumulatorRef.current > threshold) {
+              setSkillsDirection(1);
+              const nextSlide = slide + 1;
+              setSkillsSlide(nextSlide);
+              skillsSlideRef.current = nextSlide;
+              scrollAccumulatorRef.current = 0;
+              lockScroll(800);
+            }
           } else {
             // Last slide: swipe to next section
-            scrollAccumulatorRef.current += deltaY;
-            if (scrollAccumulatorRef.current > 100) {
+            if (scrollAccumulatorRef.current > 60) {
               scrollAccumulatorRef.current = 0;
               navigateSection(1);
             }
           }
         } else {
           if (slide > 0) {
-            setSkillsDirection(-1);
-            const nextSlide = slide - 1;
-            setSkillsSlide(nextSlide);
-            skillsSlideRef.current = nextSlide;
-            lockScroll(800);
+            if (scrollAccumulatorRef.current < -threshold) {
+              setSkillsDirection(-1);
+              const nextSlide = slide - 1;
+              setSkillsSlide(nextSlide);
+              skillsSlideRef.current = nextSlide;
+              scrollAccumulatorRef.current = 0;
+              lockScroll(800);
+            }
           } else {
-            scrollAccumulatorRef.current += deltaY;
-            if (scrollAccumulatorRef.current < -100) {
+            if (scrollAccumulatorRef.current < -60) {
               scrollAccumulatorRef.current = 0;
               navigateSection(-1);
             }
           }
         }
+        return;
       }
 
       if (current === "experience") {
         const slide = experienceSlideRef.current;
 
-        // On mobile, we use native scroll for experience slide 1 (the timeline)
-        if (isMobileRef.current && slide === 1) {
-          // Native scroll should be handled by the component's overflow-y-auto
-          // We only intercept if we reach the top and swipe down to go back to slide 0
-          if (!scrollingDown) {
-            // We can't easily check internal scroll here without a ref to the component's scroller
-            // But Experience.tsx has stopPropagation on its container, so this code shouldn't even reach here
-            // if it's working correctly. 
-            return;
-          }
-          return;
-        }
-
         if (e.cancelable) e.preventDefault();
+        scrollAccumulatorRef.current += deltaY;
 
         if (slide === 0) {
           if (scrollingDown) {
-            scrollAccumulatorRef.current += deltaY;
-            if (scrollAccumulatorRef.current > 80) {
+            // Flick or long pull to next slide
+            if (scrollAccumulatorRef.current > 50 || Math.abs(deltaY) > 60) {
               scrollAccumulatorRef.current = 0;
               setExperienceDirection(1);
               setExperienceSlide(1);
@@ -461,8 +488,7 @@ export default function App() {
               lockScroll(600);
             }
           } else {
-            scrollAccumulatorRef.current += deltaY;
-            if (scrollAccumulatorRef.current < -80) {
+            if (scrollAccumulatorRef.current < -60) {
               scrollAccumulatorRef.current = 0;
               navigateSection(-1);
             }
@@ -470,18 +496,21 @@ export default function App() {
           return;
         }
 
-        // Desktop / manual progress logic for slide 1
+        // Timeline slide (slide 1) logic
+        // This slide allows native scroll, so we only intercept at boundaries
         const currentProgress = skillsExperienceProgressRef.current;
-        const deltaProgress = deltaY * 0.05;
-        const nextProgress = Math.min(Math.max(0, currentProgress + deltaProgress), 100);
+
+        // Use deltaY for progress change
+        const sensitivity = 0.05;
+        const nextProgress = Math.min(Math.max(0, currentProgress + deltaY * sensitivity), 100);
 
         if (scrollingDown) {
           if (currentProgress < 100) {
             setSkillsExperienceProgress(nextProgress);
             skillsExperienceProgressRef.current = nextProgress;
+            scrollAccumulatorRef.current = 0; // Reset as we are moving inside
           } else {
-            scrollAccumulatorRef.current += deltaY;
-            if (scrollAccumulatorRef.current > 100) {
+            if (scrollAccumulatorRef.current > 60) {
               scrollAccumulatorRef.current = 0;
               navigateSection(1);
             }
@@ -490,9 +519,9 @@ export default function App() {
           if (currentProgress > 0) {
             setSkillsExperienceProgress(nextProgress);
             skillsExperienceProgressRef.current = nextProgress;
+            scrollAccumulatorRef.current = 0;
           } else {
-            scrollAccumulatorRef.current += deltaY;
-            if (scrollAccumulatorRef.current < -100) {
+            if (scrollAccumulatorRef.current < -60) {
               scrollAccumulatorRef.current = 0;
               setExperienceDirection(-1);
               setExperienceSlide(0);
@@ -501,6 +530,7 @@ export default function App() {
             }
           }
         }
+        return;
       }
     };
 

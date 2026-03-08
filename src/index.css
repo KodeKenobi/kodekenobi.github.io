@@ -10,11 +10,14 @@
       "Roboto", sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    overflow-x: hidden;
+    overflow: hidden;
+    overscroll-behavior: none;
   }
 
   html {
     scroll-behavior: auto;
+    overscroll-behavior: none;
+    overflow: hidden;
   }
 
   * {

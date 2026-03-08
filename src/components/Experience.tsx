@@ -44,19 +44,8 @@ export const Experience: React.FC<{ isMobile: boolean; slideIndex: number; direc
     const scrollRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        const el = scrollRef.current;
-        if (!el) return;
-
-        const stopProp = (e: TouchEvent) => e.stopPropagation();
-        el.addEventListener('touchstart', stopProp, { passive: true });
-        el.addEventListener('touchmove', stopProp, { passive: true });
-        el.addEventListener('touchend', stopProp, { passive: true });
-
-        return () => {
-            el.removeEventListener('touchstart', stopProp);
-            el.removeEventListener('touchmove', stopProp);
-            el.removeEventListener('touchend', stopProp);
-        };
+        // We let events bubble to App.tsx for boundary detection now
+        return () => { };
     }, []);
 
     if (isMobile) {
@@ -69,7 +58,7 @@ export const Experience: React.FC<{ isMobile: boolean; slideIndex: number; direc
                 initial="enter"
                 animate="center"
                 exit="exit"
-                className="absolute inset-0 bg-black flex flex-col pt-24 px-8 overflow-y-auto"
+                className="absolute inset-0 bg-black flex flex-col pt-24 px-8 overflow-y-auto overscroll-none [will-change:scroll-position] [-webkit-overflow-scrolling:touch]"
             >
                 <div className="space-y-12 pb-12">
                     {experienceData.map((exp, i) => (
