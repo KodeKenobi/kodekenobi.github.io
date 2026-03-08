@@ -10,7 +10,8 @@
     "lint": "eslint src --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist"
+    "deploy": "gh-pages -d dist",
+    "update-repos": "node scripts/update-repos.cjs"
   },
   "dependencies": {
     "@react-spring/three": "^10.0.1",
@@ -19,6 +20,7 @@
     "aos": "^2.3.4",
     "classnames": "^2.5.1",
     "clsx": "^2.1.1",
+    "cobe": "^0.6.5",
     "framer-motion": "^12.23.12",
     "gsap": "^3.13.0",
     "lenis": "^1.3.8",
@@ -33,11 +35,13 @@
     "react-icons": "^5.0.1",
     "react-intersection-observer": "^9.16.0",
     "react-router-dom": "^6.22.3",
+    "react-spring": "^10.0.3",
     "react-tsparticles": "^2.12.2",
     "tailwind-merge": "^3.3.1",
     "three": "^0.157.0",
     "tsparticles": "^3.8.1",
-    "tsparticles-engine": "^2.12.0"
+    "tsparticles-engine": "^2.12.0",
+    "zustand": "^5.0.11"
   },
   "devDependencies": {
     "@eslint/js": "^9.25.0",

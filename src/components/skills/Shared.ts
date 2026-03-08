@@ -9,7 +9,7 @@ export const skillCategories: SkillCategory[] = [
   {
     title: "FRONTEND",
     index: "01",
-    skills: ["React.js", "React Native", "TypeScript", "Tailwind CSS", "Material UI"],
+    skills: ["JavaScript", "React", "TypeScript", "React Native", "Redux", "TailwindCSS", "Expo", "Next.js"],
     code: `// Frontend Architecture
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
@@ -35,7 +35,7 @@ export const Component = () => {
   {
     title: "BACKEND",
     index: "02",
-    skills: ["Node.js", "Express", "REST", "GraphQL", "Python"],
+    skills: ["Node.js", "Express", "REST APIs", "Python", "Flask", "Prisma", "Next Auth"],
     code: `// Express API Implementation
 import express from 'express';
 import { db } from './database';
@@ -53,9 +53,9 @@ app.get('/api/resource', async (req, res) => {
 });`
   },
   {
-    title: "DATABASE",
+    title: "DATABASE & AUTH",
     index: "03",
-    skills: ["MongoDB", "SQL", "Firebase", "Supabase"],
+    skills: ["MongoDB", "SQL", "Firebase", "GCP", "Supabase", "Cognito"],
     code: `-- Database Schema Example
 CREATE TABLE users (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -66,9 +66,9 @@ CREATE TABLE users (
 CREATE INDEX idx_users_email ON users(email);`
   },
   {
-    title: "DEVOPS",
+    title: "TOOLS & DEVOPS",
     index: "04",
-    skills: ["Docker", "Kubernetes", "AWS", "CI/CD", "GitHub Actions"],
+    skills: ["Docker", "Github Actions", "Payment Gateways", "MERN Stack", "CI/CD"],
     code: `# Dockerfile Example
 FROM node:18-alpine AS builder
 

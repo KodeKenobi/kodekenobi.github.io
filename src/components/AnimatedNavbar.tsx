@@ -313,13 +313,6 @@ export default function AnimatedNavbar({
                   )}
                 </motion.div>
               ))}
-              <motion.button
-                className="mt-12 text-sm text-blue-300 hover:text-white underline"
-                onClick={() => setOpen(false)}
-                whileHover={{ scale: 1.05 }}
-              >
-                Close
-              </motion.button>
             </motion.div>
           </>
         )}

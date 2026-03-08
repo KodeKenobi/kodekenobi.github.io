@@ -4,10 +4,10 @@ import { SplitText, ClipReveal, CINEMATIC_EASE } from "./Shared";
 
 const Slide1: React.FC = () => (
     <div className="relative z-10 w-full max-w-7xl mx-auto px-8 flex flex-col items-start justify-center h-full">
-        <h1 className="text-white text-5xl md:text-[10rem] font-black leading-[0.9] tracking-tighter">
+        <h1 className="text-white text-[18vw] md:text-[10rem] font-black leading-[0.9] tracking-tighter">
             <SplitText text="THE" startDelay={0.3} charDelay={0.05} />
         </h1>
-        <h1 className="text-white/20 text-5xl md:text-[10rem] font-black leading-[0.9] tracking-tighter">
+        <h1 className="text-white/20 text-[18vw] md:text-[10rem] font-black leading-[0.9] tracking-tighter">
             <SplitText text="ARCHITECT" startDelay={0.5} charDelay={0.04} />
             <motion.span
                 initial={{ y: -150, opacity: 0 }}

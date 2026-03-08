@@ -50,28 +50,72 @@ export const Experience: React.FC<{ isMobile: boolean; slideIndex: number; direc
 
     if (isMobile) {
         return (
-            <motion.div
-                ref={scrollRef}
-                key="mb-experience"
-                custom={direction}
-                variants={mobileSlideVariants}
-                initial="enter"
-                animate="center"
-                exit="exit"
-                className="absolute inset-0 bg-black flex flex-col pt-24 px-8 overflow-y-auto overscroll-none [will-change:scroll-position] [-webkit-overflow-scrolling:touch]"
-            >
-                <div className="space-y-12 pb-12">
-                    {experienceData.map((exp, i) => (
-                        <div key={i} className="relative pl-8 border-l border-[#c9a84c]/30">
-                            <div className="absolute left-[-5px] top-0 w-2.5 h-2.5 rounded-full bg-[#c9a84c]" />
-                            <span className="text-[#c9a84c] font-mono text-[10px] block mb-2">{exp.period}</span>
-                            <h3 className="text-white font-black text-xl mb-1">{exp.company}</h3>
-                            <p className="text-[#c9a84c] font-bold text-sm mb-4">{exp.role}</p>
-                            <p className="text-white/60 text-xs leading-relaxed whitespace-pre-line">{exp.desc}</p>
-                        </div>
-                    ))}
-                </div>
-            </motion.div>
+            <div className="absolute inset-0 w-full h-full bg-black overflow-hidden">
+                <AnimatePresence initial={false} custom={direction}>
+                    {slideIndex === 0 && (
+                        <motion.div
+                            key="mb-experience-0"
+                            custom={direction}
+                            variants={mobileSlideVariants}
+                            initial="enter"
+                            animate="center"
+                            exit="exit"
+                            transition={{ duration: 0.4, ease: CINEMATIC_EASE }}
+                            className="absolute inset-0 w-full h-full flex flex-col items-center justify-center px-8"
+                        >
+                            <div className="flex flex-col items-start translate-y-[-10%]">
+                                <h1 className="text-white text-[18vw] font-black leading-[0.9] tracking-tighter">
+                                    <SplitText text="THE" startDelay={0.1} charDelay={0.03} />
+                                </h1>
+                                <h1 className="text-white/40 text-[18vw] font-black leading-[0.9] tracking-tighter">
+                                    <SplitText text="JOURNEY" startDelay={0.2} charDelay={0.02} />
+                                    <span className="text-white/40">.</span>
+                                </h1>
+                                <div className="mt-8 flex items-center gap-4">
+                                    <motion.div
+                                        initial={{ scaleX: 0, transformOrigin: "left" }}
+                                        animate={{ scaleX: 1 }}
+                                        transition={{ duration: 0.6, ease: CINEMATIC_EASE, delay: 0.4 }}
+                                        className="h-px w-32 bg-[#c9a84c]/50"
+                                    />
+                                    <ClipReveal delay={0.3} duration={0.5}>
+                                        <span className="text-white/50 font-mono text-[10px] tracking-[0.3em] uppercase">
+                                            Experience
+                                        </span>
+                                    </ClipReveal>
+                                </div>
+                            </div>
+                        </motion.div>
+                    )}
+
+                    {slideIndex === 1 && (
+                        <motion.div
+                            ref={scrollRef}
+                            key="mb-experience-1"
+                            id="mobile-experience-timeline"
+                            custom={direction}
+                            variants={mobileSlideVariants}
+                            initial="enter"
+                            animate="center"
+                            exit="exit"
+                            transition={{ duration: 0.4, ease: CINEMATIC_EASE }}
+                            className="absolute inset-0 w-full h-full pt-24 px-8 overflow-y-auto overscroll-none [will-change:scroll-position] [-webkit-overflow-scrolling:touch]"
+                        >
+                            <div className="space-y-12 pb-32">
+                                {experienceData.map((exp, i) => (
+                                    <div key={i} className="relative pl-8 border-l border-[#c9a84c]/30">
+                                        <div className="absolute left-[-5px] top-0 w-2.5 h-2.5 rounded-full bg-[#c9a84c]" />
+                                        <span className="text-[#c9a84c] font-mono text-[10px] block mb-2">{exp.period}</span>
+                                        <h3 className="text-white font-black text-xl mb-1">{exp.company}</h3>
+                                        <p className="text-[#c9a84c] font-bold text-sm mb-4">{exp.role}</p>
+                                        <p className="text-white/60 text-xs leading-relaxed whitespace-pre-line">{exp.desc}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+            </div>
         );
     }
 

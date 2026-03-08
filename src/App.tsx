@@ -16,12 +16,14 @@ const sections = [
 ];
 
 const ABOUT_TOTAL_SLIDES = 5;
+const SKILLS_TOTAL_SLIDES = 3;
+const PROJECTS_TOTAL_SLIDES = 2; // NEW: Slide 0 (Intro), Slide 1 (Grid)
 
 export default function App() {
   const [isMobile, setIsMobile] = useState(false);
   const [currentSection, setCurrentSection] = useState("home");
   const [aboutSlide, setAboutSlide] = useState(0);
-  const [aboutDirection, setAboutDirection] = useState(1); // 1 = forward (from right), -1 = backward (from left)
+  const [aboutDirection, setAboutDirection] = useState(1);
 
   const [experienceSlide, setExperienceSlide] = useState(0);
   const [experienceDirection, setExperienceDirection] = useState(1);
@@ -29,12 +31,15 @@ export default function App() {
 
   const [skillsSlide, setSkillsSlide] = useState(0);
   const [skillsDirection, setSkillsDirection] = useState(1);
-  const [skillsExperienceProgress, setSkillsExperienceProgress] = useState(0); // 0 to 100
+  const [skillsExperienceProgress, setSkillsExperienceProgress] = useState(0);
   const skillsSlideRef = useRef(0);
   const skillsExperienceProgressRef = useRef(0);
-  const SKILLS_TOTAL_SLIDES = 3; // desktop; mobile uses 4 (Engineering split into 2)
-  const isMobileRef = useRef(false);
 
+  const [projectsSlide, setProjectsSlide] = useState(0);
+  const [projectsDirection, setProjectsDirection] = useState(1);
+  const projectsSlideRef = useRef(0);
+
+  const isMobileRef = useRef(false);
   const projectsContainerRef = useRef<HTMLDivElement>(null);
   const [isProjectsScrolled, setIsProjectsScrolled] = useState(false);
 
@@ -63,12 +68,10 @@ export default function App() {
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  // Keep ref in sync for event listener
   useEffect(() => {
     isPreviewInteractingRef.current = isPreviewInteracting;
   }, [isPreviewInteracting]);
 
-  // Unlock scrolling after hero animation completes
   useEffect(() => {
     const timer = setTimeout(() => {
       heroAnimDoneRef.current = true;
@@ -79,7 +82,6 @@ export default function App() {
   const showSection = (sectionId: string) => {
     setCurrentSection(sectionId);
     currentSectionRef.current = sectionId;
-    // Reset about slide when navigating to about via menu
     if (sectionId === "about") {
       setAboutSlide(0);
       aboutSlideRef.current = 0;
@@ -108,47 +110,38 @@ export default function App() {
       const nextSection = sections[nextIndex].id;
       setCurrentSection(nextSection);
       currentSectionRef.current = nextSection;
-      // Reset about slide when entering about
+
       if (nextSection === "about") {
         const slideTarget = direction > 0 ? 0 : ABOUT_TOTAL_SLIDES - 1;
         setAboutSlide(slideTarget);
         aboutSlideRef.current = slideTarget;
         setAboutDirection(direction);
       }
-
-      // Reset skills slide when entering skills
       if (nextSection === "skills") {
-        const maxSkillsSlide = isMobileRef.current ? 3 : 2;
-        const slideTarget = direction > 0 ? 0 : maxSkillsSlide;
+        const slideTarget = direction > 0 ? 0 : SKILLS_TOTAL_SLIDES - 1;
         setSkillsSlide(slideTarget);
         skillsSlideRef.current = slideTarget;
         setSkillsDirection(direction);
       }
-
-      // Reset experience slide when entering experience
       if (nextSection === "experience") {
         const slideTarget = direction > 0 ? 0 : 1;
         setExperienceSlide(slideTarget);
         experienceSlideRef.current = slideTarget;
         setExperienceDirection(direction);
       }
+      if (nextSection === "projects") {
+        const slideTarget = direction > 0 ? 0 : PROJECTS_TOTAL_SLIDES - 1;
+        setProjectsSlide(slideTarget);
+        projectsSlideRef.current = slideTarget;
+        setProjectsDirection(direction);
+      }
     }
   };
 
   useEffect(() => {
     const handleWheelEvent = (e: Event) => {
-      // Block during hero animation
-      if (!heroAnimDoneRef.current) {
-        e.preventDefault();
-        return;
-      }
-      // Block during transition
-      if (isScrollingRef.current) {
-        e.preventDefault();
-        return;
-      }
-      // Block if interacting with code preview
-      if (isPreviewInteractingRef.current) {
+      if (!heroAnimDoneRef.current || isScrollingRef.current || isPreviewInteractingRef.current) {
+        if (!isPreviewInteractingRef.current) e.preventDefault();
         return;
       }
 
@@ -163,55 +156,56 @@ export default function App() {
       lastWheelTimeRef.current = now;
       scrollAccumulatorRef.current += wheelEvent.deltaY;
 
-      // HOME — any scroll triggers section change
       if (current === "home") {
         e.preventDefault();
-        if (scrollingDown) {
-          navigateSection(1);
-        }
+        if (scrollingDown) navigateSection(1);
         return;
       }
 
-      // ABOUT — horizontal slides
       if (current === "about") {
         e.preventDefault();
         const slide = aboutSlideRef.current;
-
         if (scrollingDown) {
           if (slide < ABOUT_TOTAL_SLIDES - 1) {
-            // Next horizontal slide
             const next = slide + 1;
             setAboutDirection(1);
             setAboutSlide(next);
             aboutSlideRef.current = next;
             lockScroll(800);
           } else {
-            // Last slide, go to Skills
             navigateSection(1);
           }
         } else {
           if (slide > 0) {
-            // Previous horizontal slide
             const prev = slide - 1;
             setAboutDirection(-1);
             setAboutSlide(prev);
             aboutSlideRef.current = prev;
             lockScroll(800);
           } else {
-            // First slide, go to Home
             navigateSection(-1);
           }
         }
         return;
       }
 
-      // SKILLS — Slides 0 to 2 (desktop) or 0 to 3 (mobile)
       if (current === "skills") {
         const slide = skillsSlideRef.current;
-        const maxSlide = isMobileRef.current ? 3 : 2;
+        const maxSlide = SKILLS_TOTAL_SLIDES - 1;
+
+        if (slide > 0) {
+          const container = skillsContainerRef.current?.querySelector('.overflow-y-auto');
+          if (container) {
+            const { scrollTop, scrollHeight, clientHeight } = container as HTMLElement;
+            const isAtTop = scrollTop <= 2;
+            const isAtBottom = scrollTop + clientHeight >= scrollHeight - 2;
+
+            if (scrollingDown && !isAtBottom) return; // Let native scroll happen
+            if (!scrollingDown && !isAtTop) return; // Let native scroll happen
+          }
+        }
 
         e.preventDefault();
-
         if (scrollingDown) {
           if (slide < maxSlide) {
             setSkillsDirection(1);
@@ -220,7 +214,6 @@ export default function App() {
             skillsSlideRef.current = nextSlide;
             lockScroll(800);
           } else {
-            // End of section
             if (scrollAccumulatorRef.current > 120) {
               scrollAccumulatorRef.current = 0;
               navigateSection(1);
@@ -234,7 +227,6 @@ export default function App() {
             skillsSlideRef.current = nextSlide;
             lockScroll(800);
           } else {
-            // Start of section
             if (scrollAccumulatorRef.current < -120) {
               scrollAccumulatorRef.current = 0;
               navigateSection(-1);
@@ -244,12 +236,22 @@ export default function App() {
         return;
       }
 
-      // EXPERIENCE
       if (current === "experience") {
-        e.preventDefault();
         const slide = experienceSlideRef.current;
+        if (slide === 1 && isMobileRef.current) {
+          const container = document.getElementById('mobile-experience-timeline');
+          if (container) {
+            const { scrollTop, scrollHeight, clientHeight } = container as HTMLElement;
+            const atTop = scrollTop <= 5;
+            const atBottom = scrollTop + clientHeight >= scrollHeight - 5;
+
+            if (scrollingDown && !atBottom) return; // Let native scroll happen
+            if (!scrollingDown && !atTop) return; // Let native scroll happen
+          }
+        }
 
         if (slide === 0) {
+          e.preventDefault();
           if (scrollingDown) {
             if (scrollAccumulatorRef.current > 200) {
               scrollAccumulatorRef.current = 0;
@@ -267,55 +269,104 @@ export default function App() {
           return;
         }
 
-        // Timeline logic (slide 1)
-        const currentProgress = skillsExperienceProgressRef.current;
-        const delta = wheelEvent.deltaY * 0.05; // Sensitivity
-        const nextProgress = Math.min(Math.max(0, currentProgress + delta), 100);
+        if (isMobileRef.current) {
+          // Mobile native scroll boundary detection
+          const container = document.getElementById('mobile-experience-timeline');
+          if (container) {
+            const { scrollTop, scrollHeight, clientHeight } = container as HTMLElement;
+            const atTop = scrollTop <= 5;
+            const atBottom = scrollTop + clientHeight >= scrollHeight - 5;
 
-        if (scrollingDown) {
-          if (currentProgress < 100) {
-            setSkillsExperienceProgress(nextProgress);
-            skillsExperienceProgressRef.current = nextProgress;
-            return;
-          }
-          if (scrollAccumulatorRef.current > 250) {
-            scrollAccumulatorRef.current = 0;
-            navigateSection(1);
+            if (atTop && !scrollingDown) {
+              e.preventDefault();
+              if (scrollAccumulatorRef.current < -200) {
+                scrollAccumulatorRef.current = 0;
+                setExperienceDirection(-1);
+                setExperienceSlide(0);
+                experienceSlideRef.current = 0;
+                lockScroll(800);
+              }
+            } else if (atBottom && scrollingDown) {
+              e.preventDefault();
+              if (scrollAccumulatorRef.current > 200) {
+                scrollAccumulatorRef.current = 0;
+                navigateSection(1);
+              }
+            } else {
+              scrollAccumulatorRef.current = 0;
+            }
           }
         } else {
-          if (currentProgress > 0) {
-            setSkillsExperienceProgress(nextProgress);
-            skillsExperienceProgressRef.current = nextProgress;
-            return;
-          }
-          if (scrollAccumulatorRef.current < -250) {
-            scrollAccumulatorRef.current = 0;
-            setExperienceDirection(-1);
-            setExperienceSlide(0);
-            experienceSlideRef.current = 0;
-            lockScroll(800);
+          // Desktop virtual scroll
+          e.preventDefault();
+          const currentProgress = skillsExperienceProgressRef.current;
+          const delta = wheelEvent.deltaY * 0.05;
+          const nextProgress = Math.min(Math.max(0, currentProgress + delta), 100);
+          if (scrollingDown) {
+            if (currentProgress < 100) {
+              setSkillsExperienceProgress(nextProgress);
+              skillsExperienceProgressRef.current = nextProgress;
+              return;
+            }
+            if (scrollAccumulatorRef.current > 250) {
+              scrollAccumulatorRef.current = 0;
+              navigateSection(1);
+            }
+          } else {
+            if (currentProgress > 0) {
+              setSkillsExperienceProgress(nextProgress);
+              skillsExperienceProgressRef.current = nextProgress;
+              return;
+            }
+            if (scrollAccumulatorRef.current < -250) {
+              scrollAccumulatorRef.current = 0;
+              setExperienceDirection(-1);
+              setExperienceSlide(0);
+              experienceSlideRef.current = 0;
+              lockScroll(800);
+            }
           }
         }
         return;
       }
 
-      // PROJECTS — vertical scrolling
       if (current === "projects") {
-        const container = projectsContainerRef.current;
-        if (!container) return;
+        const slide = projectsSlideRef.current;
+        const threshold = 200; // Increased feel of intentionality
 
-        if (scrollingDown) {
-          // Native scroll
-          return;
+        if (slide === 1) {
+          const container = document.getElementById('projects-grid');
+          if (container) {
+            const { scrollTop, scrollHeight, clientHeight } = container as HTMLElement;
+            const atTop = scrollTop <= 5;
+            const atBottom = scrollTop + clientHeight >= scrollHeight - 5;
+
+            if (scrollingDown && !atBottom) return; // Let native scroll happen
+            if (!scrollingDown && !atTop) return; // Let native scroll happen
+
+            if (atTop && !scrollingDown) {
+              e.preventDefault();
+              if (scrollAccumulatorRef.current < -threshold) {
+                scrollAccumulatorRef.current = 0;
+                setProjectsDirection(-1);
+                setProjectsSlide(0);
+                projectsSlideRef.current = 0;
+                lockScroll(800);
+              }
+            }
+          }
         } else {
-          // Scroll up
-          if (container.scrollTop > 5) {
-            // Native scroll
-            return;
+          e.preventDefault();
+          if (scrollingDown) {
+            if (scrollAccumulatorRef.current > threshold) {
+              scrollAccumulatorRef.current = 0;
+              setProjectsDirection(1);
+              setProjectsSlide(1);
+              projectsSlideRef.current = 1;
+              lockScroll(800);
+            }
           } else {
-            // Reached the top, block scroll to trigger back navigation safely
-            e.preventDefault();
-            if (scrollAccumulatorRef.current < -200) {
+            if (scrollAccumulatorRef.current < -threshold) {
               scrollAccumulatorRef.current = 0;
               navigateSection(-1);
             }
@@ -340,39 +391,64 @@ export default function App() {
       const current = currentSectionRef.current;
 
       if (current === "projects") {
-        const container = projectsContainerRef.current;
-        if (!container) return;
-
-        // Allow native scrolling inside projects
-        // Only intercept if at top and swiping down to go back
-        if (!scrollingDown && container.scrollTop <= 5) {
+        const slide = projectsSlideRef.current;
+        const threshold = 60; // Sensitive but intentional for touch
+        if (slide === 0) {
           if (e.cancelable) e.preventDefault();
           scrollAccumulatorRef.current += deltaY;
-          // More sensitive for mobile
-          if (scrollAccumulatorRef.current < -50) {
-            scrollAccumulatorRef.current = 0;
-            navigateSection(-1);
-          }
-        } else if (scrollingDown && container.scrollHeight - container.scrollTop - container.clientHeight <= 5) {
-          // At bottom, swipe up to next section
-          if (e.cancelable) e.preventDefault();
-          scrollAccumulatorRef.current += deltaY;
-          if (scrollAccumulatorRef.current > 50) {
-            scrollAccumulatorRef.current = 0;
-            navigateSection(1);
+          if (scrollingDown) {
+            if (scrollAccumulatorRef.current > threshold) {
+              setProjectsDirection(1);
+              setProjectsSlide(1);
+              projectsSlideRef.current = 1;
+              scrollAccumulatorRef.current = 0;
+              lockScroll(600);
+            }
+          } else {
+            if (scrollAccumulatorRef.current < -threshold) {
+              scrollAccumulatorRef.current = 0;
+              navigateSection(-1);
+            }
           }
         } else {
-          // Reset accumulator if scrolling inside
-          scrollAccumulatorRef.current = 0;
+          const container = document.getElementById('projects-grid');
+          if (container) {
+            const { scrollTop, scrollHeight, clientHeight } = container as HTMLElement;
+            const atTop = scrollTop <= 5;
+            const atBottom = scrollTop + clientHeight >= scrollHeight - 5;
+
+            if (atTop && !scrollingDown) {
+              if (e.cancelable) e.preventDefault();
+              scrollAccumulatorRef.current += deltaY;
+              if (scrollAccumulatorRef.current < -threshold) {
+                setProjectsDirection(-1);
+                setProjectsSlide(0);
+                projectsSlideRef.current = 0;
+                scrollAccumulatorRef.current = 0;
+                lockScroll(600);
+              }
+            } else if (atBottom && scrollingDown) {
+              // Standard behavior: allow exit to next section if needed, 
+              // but user requested "vertical scroll on mobile and desktop", 
+              // implying they might want to stay in repos more easily.
+              // For now, let's keep it similar to Experience section's atBottom logic.
+              if (e.cancelable) e.preventDefault();
+              scrollAccumulatorRef.current += deltaY;
+              if (scrollAccumulatorRef.current > 80) { // Slightly harder to leave accidentally
+                scrollAccumulatorRef.current = 0;
+                navigateSection(1);
+              }
+            } else {
+              scrollAccumulatorRef.current = 0;
+            }
+          }
         }
         return;
       }
 
-      // HOME — Vertical swipe triggers next section
       if (current === "home") {
         if (e.cancelable) e.preventDefault();
         scrollAccumulatorRef.current += deltaY;
-        // Flick detection: if swipe is fast or long enough
         if (Math.abs(deltaY) > 50 || Math.abs(scrollAccumulatorRef.current) > 50) {
           if (scrollingDown) {
             scrollAccumulatorRef.current = 0;
@@ -385,11 +461,8 @@ export default function App() {
       if (current === "about") {
         if (e.cancelable) e.preventDefault();
         const slide = aboutSlideRef.current;
-
-        // Accumulate and check for transition
         scrollAccumulatorRef.current += deltaY;
-        const threshold = 40; // High sensitivity for slides
-
+        const threshold = 40;
         if (scrollingDown) {
           if (slide < ABOUT_TOTAL_SLIDES - 1) {
             if (scrollAccumulatorRef.current > threshold) {
@@ -428,43 +501,53 @@ export default function App() {
 
       if (current === "skills") {
         const slide = skillsSlideRef.current;
-        const maxSlide = isMobileRef.current ? 3 : 2;
-
-        if (e.cancelable) e.preventDefault();
-        scrollAccumulatorRef.current += deltaY;
+        const maxSlide = SKILLS_TOTAL_SLIDES - 1;
         const threshold = 40;
-
-        if (scrollingDown) {
-          if (slide < maxSlide) {
+        if (slide === 0) {
+          if (e.cancelable) e.preventDefault();
+          scrollAccumulatorRef.current += deltaY;
+          if (scrollingDown) {
             if (scrollAccumulatorRef.current > threshold) {
               setSkillsDirection(1);
-              const nextSlide = slide + 1;
-              setSkillsSlide(nextSlide);
-              skillsSlideRef.current = nextSlide;
+              setSkillsSlide(1);
+              skillsSlideRef.current = 1;
               scrollAccumulatorRef.current = 0;
-              lockScroll(800);
+              lockScroll(500);
             }
           } else {
-            // Last slide: swipe to next section
-            if (scrollAccumulatorRef.current > 60) {
+            if (scrollAccumulatorRef.current < -threshold) {
               scrollAccumulatorRef.current = 0;
-              navigateSection(1);
+              navigateSection(-1);
             }
           }
         } else {
-          if (slide > 0) {
-            if (scrollAccumulatorRef.current < -threshold) {
+          const container = skillsContainerRef.current?.querySelector('.overflow-y-auto');
+          if (container) {
+            const { scrollTop, scrollHeight, clientHeight } = container as HTMLElement;
+            const isAtTop = scrollTop <= 2;
+            const isAtBottom = scrollTop + clientHeight >= scrollHeight - 2;
+            if (isAtTop && !scrollingDown && deltaY < -threshold) {
               setSkillsDirection(-1);
-              const nextSlide = slide - 1;
-              setSkillsSlide(nextSlide);
-              skillsSlideRef.current = nextSlide;
+              setSkillsSlide(slide - 1);
+              skillsSlideRef.current = slide - 1;
               scrollAccumulatorRef.current = 0;
-              lockScroll(800);
-            }
-          } else {
-            if (scrollAccumulatorRef.current < -60) {
+              if (e.cancelable) e.preventDefault();
+              lockScroll(500);
+            } else if (isAtBottom && scrollingDown && deltaY > threshold) {
+              if (slide < maxSlide) {
+                setSkillsDirection(1);
+                setSkillsSlide(slide + 1);
+                skillsSlideRef.current = slide + 1;
+                scrollAccumulatorRef.current = 0;
+                if (e.cancelable) e.preventDefault();
+                lockScroll(500);
+              } else {
+                scrollAccumulatorRef.current = 0;
+                navigateSection(1);
+                if (e.cancelable) e.preventDefault();
+              }
+            } else {
               scrollAccumulatorRef.current = 0;
-              navigateSection(-1);
             }
           }
         }
@@ -473,13 +556,10 @@ export default function App() {
 
       if (current === "experience") {
         const slide = experienceSlideRef.current;
-
-        if (e.cancelable) e.preventDefault();
-        scrollAccumulatorRef.current += deltaY;
-
         if (slide === 0) {
+          if (e.cancelable) e.preventDefault();
+          scrollAccumulatorRef.current += deltaY;
           if (scrollingDown) {
-            // Flick or long pull to next slide
             if (scrollAccumulatorRef.current > 50 || Math.abs(deltaY) > 60) {
               scrollAccumulatorRef.current = 0;
               setExperienceDirection(1);
@@ -496,37 +576,66 @@ export default function App() {
           return;
         }
 
-        // Timeline slide (slide 1) logic
-        // This slide allows native scroll, so we only intercept at boundaries
-        const currentProgress = skillsExperienceProgressRef.current;
+        if (isMobileRef.current) {
+          // Mobile native scroll for Experience Timeline
+          const container = document.getElementById('mobile-experience-timeline');
+          if (container) {
+            const { scrollTop, scrollHeight, clientHeight } = container as HTMLElement;
+            const atTop = scrollTop <= 5;
+            const atBottom = scrollTop + clientHeight >= scrollHeight - 5;
 
-        // Use deltaY for progress change
-        const sensitivity = 0.05;
-        const nextProgress = Math.min(Math.max(0, currentProgress + deltaY * sensitivity), 100);
-
-        if (scrollingDown) {
-          if (currentProgress < 100) {
-            setSkillsExperienceProgress(nextProgress);
-            skillsExperienceProgressRef.current = nextProgress;
-            scrollAccumulatorRef.current = 0; // Reset as we are moving inside
-          } else {
-            if (scrollAccumulatorRef.current > 60) {
+            if (atTop && !scrollingDown) {
+              if (e.cancelable) e.preventDefault();
+              scrollAccumulatorRef.current += deltaY;
+              if (scrollAccumulatorRef.current < -60) {
+                scrollAccumulatorRef.current = 0;
+                setExperienceDirection(-1);
+                setExperienceSlide(0);
+                experienceSlideRef.current = 0;
+                lockScroll(600);
+              }
+            } else if (atBottom && scrollingDown) {
+              if (e.cancelable) e.preventDefault();
+              scrollAccumulatorRef.current += deltaY;
+              if (scrollAccumulatorRef.current > 60) {
+                scrollAccumulatorRef.current = 0;
+                navigateSection(1);
+              }
+            } else {
               scrollAccumulatorRef.current = 0;
-              navigateSection(1);
             }
           }
         } else {
-          if (currentProgress > 0) {
-            setSkillsExperienceProgress(nextProgress);
-            skillsExperienceProgressRef.current = nextProgress;
-            scrollAccumulatorRef.current = 0;
-          } else {
-            if (scrollAccumulatorRef.current < -60) {
+          // Desktop virtual scroll
+          if (e.cancelable) e.preventDefault();
+          scrollAccumulatorRef.current += deltaY;
+          const currentProgress = skillsExperienceProgressRef.current;
+          const sensitivity = 0.05;
+          const nextProgress = Math.min(Math.max(0, currentProgress + deltaY * sensitivity), 100);
+          if (scrollingDown) {
+            if (currentProgress < 100) {
+              setSkillsExperienceProgress(nextProgress);
+              skillsExperienceProgressRef.current = nextProgress;
               scrollAccumulatorRef.current = 0;
-              setExperienceDirection(-1);
-              setExperienceSlide(0);
-              experienceSlideRef.current = 0;
-              lockScroll(600);
+            } else {
+              if (scrollAccumulatorRef.current > 60) {
+                scrollAccumulatorRef.current = 0;
+                navigateSection(1);
+              }
+            }
+          } else {
+            if (currentProgress > 0) {
+              setSkillsExperienceProgress(nextProgress);
+              skillsExperienceProgressRef.current = nextProgress;
+              scrollAccumulatorRef.current = 0;
+            } else {
+              if (scrollAccumulatorRef.current < -60) {
+                scrollAccumulatorRef.current = 0;
+                setExperienceDirection(-1);
+                setExperienceSlide(0);
+                experienceSlideRef.current = 0;
+                lockScroll(600);
+              }
             }
           }
         }
@@ -546,50 +655,35 @@ export default function App() {
     };
   }, []);
 
-  // Monitor Skills container scroll for header blur
   useEffect(() => {
     const container = skillsContainerRef.current;
     if (!container) return;
-
     const handleContainerScroll = () => {
       setIsSkillsScrolled(container.scrollTop > 20);
     };
-
     container.addEventListener("scroll", handleContainerScroll);
     return () => container.removeEventListener("scroll", handleContainerScroll);
   }, [currentSection]);
 
-  // Monitor Projects container scroll for header blur
   useEffect(() => {
     const container = projectsContainerRef.current;
     if (!container) return;
-
     const handleContainerScroll = () => {
       setIsProjectsScrolled(container.scrollTop > 20);
     };
-
     container.addEventListener("scroll", handleContainerScroll);
     return () => container.removeEventListener("scroll", handleContainerScroll);
-  }, [currentSection]);
-
-  useEffect(() => {
-    // Section-specific logic
   }, [currentSection]);
 
   return (
     <div className="relative bg-[#050505] h-[100dvh] w-full overflow-hidden">
-
-      {/* Navigation */}
       <AnimatedNavbar
         currentSection={currentSection}
         onSectionChange={showSection}
         isScrolled={isSkillsScrolled || isProjectsScrolled}
         isGoldLineActive={isHeaderGoldLineActive}
       />
-
-      {/* Main Content */}
       <div className="scroll-container relative z-10 w-full h-full pt-20 overflow-hidden">
-        {/* Home Section */}
         <section
           className="absolute inset-0"
           style={{
@@ -600,8 +694,6 @@ export default function App() {
         >
           {isMobile ? <MobileAnimatedHero /> : <AnimatedHero />}
         </section>
-
-        {/* About Section — no overflow, horizontal slides handled internally */}
         <section
           className="absolute inset-0 bg-[#050505] overflow-hidden"
           style={{
@@ -622,9 +714,8 @@ export default function App() {
             onSlide5Action={setIsHeaderGoldLineActive}
           />
         </section>
-
         <section
-          className={`absolute inset-0 bg-[#050505] snap-start snap-always no-scrollbar overflow-hidden`}
+          className={`absolute inset-0 bg-[#050505] no-scrollbar overflow-hidden`}
           ref={skillsContainerRef}
           style={{
             opacity: currentSection === "skills" ? 1 : 0,
@@ -645,10 +736,8 @@ export default function App() {
             }}
           />
         </section>
-
-        {/* Experience Section */}
         <section
-          className={`absolute inset-0 bg-[#050505] snap-start snap-always no-scrollbar overflow-hidden`}
+          className={`absolute inset-0 bg-[#050505] no-scrollbar overflow-hidden`}
           style={{
             opacity: currentSection === "experience" ? 1 : 0,
             pointerEvents: currentSection === "experience" ? "auto" : "none",
@@ -662,10 +751,8 @@ export default function App() {
             progress={skillsExperienceProgress}
           />
         </section>
-
-        {/* Projects Section */}
         <section
-          className={`absolute inset-0 bg-[#050505] snap-start snap-always no-scrollbar overflow-y-auto`}
+          className={`absolute inset-0 bg-[#050505] no-scrollbar overflow-hidden`}
           ref={projectsContainerRef}
           style={{
             opacity: currentSection === "projects" ? 1 : 0,
@@ -673,9 +760,13 @@ export default function App() {
             transition: "opacity 0.6s ease-in-out",
           }}
         >
-          <Projects isActive={currentSection === "projects"} />
+          <Projects
+            isActive={currentSection === "projects"}
+            isMobile={isMobile}
+            slideIndex={projectsSlide}
+            direction={projectsDirection}
+          />
         </section>
-
       </div>
     </div>
   );

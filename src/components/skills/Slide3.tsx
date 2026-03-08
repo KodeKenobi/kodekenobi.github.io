@@ -37,15 +37,13 @@ const MobileTouchCard: React.FC<{
     };
 
     const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
-        e.stopPropagation();
+        // We removed stopPropagation so App.tsx can see the events for boundary detection
         isTouching.current = true;
-        // Start hold timer
         if (holdTimer.current) clearTimeout(holdTimer.current);
         holdTimer.current = setTimeout(() => {
             if (isTouching.current) setHeld(true);
         }, 500);
 
-        // Initial tilt from touch position
         const rect = cardRef.current?.getBoundingClientRect();
         if (rect) {
             const t = e.touches[0];
@@ -55,7 +53,6 @@ const MobileTouchCard: React.FC<{
     };
 
     const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
-        e.stopPropagation();
         const rect = cardRef.current?.getBoundingClientRect();
         if (!rect) return;
         const t = e.touches[0];
@@ -66,12 +63,10 @@ const MobileTouchCard: React.FC<{
     };
 
     const handleTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
-        e.stopPropagation();
         isTouching.current = false;
         if (holdTimer.current) clearTimeout(holdTimer.current);
         setHeld(false);
         resetTilt();
-        // Brief tap flash
         setTapped(true);
         if (tapTimeout.current) clearTimeout(tapTimeout.current);
         tapTimeout.current = setTimeout(() => setTapped(false), 700);
@@ -88,7 +83,7 @@ const MobileTouchCard: React.FC<{
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
-            className="relative overflow-hidden rounded-2xl cursor-pointer select-none"
+            className="relative overflow-hidden rounded-2xl cursor-pointer select-none min-h-[380px]"
             style={{
                 perspective: "1200px",
                 rotateX,
@@ -103,11 +98,9 @@ const MobileTouchCard: React.FC<{
                 transition: 'box-shadow 0.35s ease',
                 border: '1px solid transparent',
                 backgroundClip: 'padding-box',
-                flex: '1 1 0',
-                minHeight: 0,
+                flex: '0 0 auto',
             }}
         >
-            {/* Gradient border */}
             <div
                 className="absolute inset-0 rounded-2xl pointer-events-none"
                 style={{
@@ -124,13 +117,11 @@ const MobileTouchCard: React.FC<{
                 }}
             />
 
-            {/* Finger-tracked glare */}
             <motion.div
                 className="absolute inset-0 pointer-events-none rounded-2xl"
                 style={{ background: glare, opacity: isTouching.current ? 1 : 0, transition: 'opacity 0.3s' }}
             />
 
-            {/* Auto shimmer sweep */}
             <motion.div
                 className="absolute inset-0 pointer-events-none rounded-2xl"
                 animate={{ x: ['-110%', '210%'] }}
@@ -141,13 +132,11 @@ const MobileTouchCard: React.FC<{
                 }}
             />
 
-            {/* Scanlines */}
             <div
                 className="absolute inset-0 pointer-events-none rounded-2xl opacity-[0.025]"
                 style={{ backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(255,255,255,0.5) 4px)', backgroundSize: '100% 4px' }}
             />
 
-            {/* Hold pulse ring */}
             <AnimatePresence>
                 {held && (
                     <motion.div
@@ -161,7 +150,6 @@ const MobileTouchCard: React.FC<{
                 )}
             </AnimatePresence>
 
-            {/* Tap flash */}
             <AnimatePresence>
                 {tapped && (
                     <motion.div
@@ -175,12 +163,10 @@ const MobileTouchCard: React.FC<{
                 )}
             </AnimatePresence>
 
-            {/* Content — translateZ lifts above tilt plane */}
             <div
                 className={`relative p-5 flex flex-col gap-3 h-full ${isRight ? 'items-end text-right' : 'items-start text-left'}`}
                 style={{ transform: 'translateZ(40px)', transformStyle: 'preserve-3d' }}
             >
-                {/* Header */}
                 <div>
                     <div className="flex items-center gap-2 mb-1" style={{ flexDirection: isRight ? 'row-reverse' : 'row' }}>
                         <motion.div
@@ -202,7 +188,6 @@ const MobileTouchCard: React.FC<{
                     </h3>
                 </div>
 
-                {/* Metrics */}
                 <ul className="space-y-1.5 w-full flex-1">
                     {tech.metrics.map((m, mi) => (
                         <motion.li
@@ -226,7 +211,6 @@ const MobileTouchCard: React.FC<{
                     ))}
                 </ul>
 
-                {/* Code block */}
                 <div
                     className={`w-full rounded-xl p-3 font-mono text-[10px] ${isRight ? 'text-right' : 'text-left'}`}
                     style={{
@@ -246,7 +230,6 @@ const MobileTouchCard: React.FC<{
                     {tech.code}
                 </div>
 
-                {/* Gold bottom sweep */}
                 <AnimatePresence>
                     {isActive && (
                         <motion.div
@@ -272,15 +255,12 @@ const MobileTouchCard: React.FC<{
     );
 };
 
-
-
 const desktopVariants = {
     enter: (direction: number) => ({ x: direction > 0 ? "100%" : "-100%", opacity: 0 }),
     center: { x: 0, opacity: 1 },
     exit: (direction: number) => ({ x: direction > 0 ? "-100%" : "100%", opacity: 0 }),
 };
 
-// Global Audio Context so we don't spawn multiple contexts
 let audioCtx: AudioContext | null = null;
 const initAudio = () => {
     if (!audioCtx) {
@@ -305,7 +285,6 @@ const MagneticTiltCard = ({ tech, i, isAudioEnabled, toggleAudio }: { tech: any;
     const rotateX = useTransform(springY, [0, 1], ["15deg", "-15deg"]);
     const rotateY = useTransform(springX, [0, 1], ["-15deg", "15deg"]);
 
-    // Advanced Glare & Shimmer
     const glareX = useTransform(springX, [0, 1], ["0%", "100%"]);
     const glareY = useTransform(springY, [0, 1], ["0%", "100%"]);
     const shimmerX = useTransform(springX, [0, 1], ["-50%", "150%"]);
@@ -313,18 +292,15 @@ const MagneticTiltCard = ({ tech, i, isAudioEnabled, toggleAudio }: { tech: any;
     const background = useMotionTemplate`radial-gradient(400px circle at ${glareX} ${glareY}, rgba(201, 168, 76, 0.15), transparent 80%)`;
     const shimmer = useMotionTemplate`linear-gradient(115deg, transparent 40%, rgba(255,255,255,0.03) 45%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.03) 55%, transparent 60%)`;
 
-    // Web Audio Synthesis Hooks
     const osc1Ref = useRef<OscillatorNode | null>(null);
     const osc2Ref = useRef<OscillatorNode | null>(null);
-    const modGainRef = useRef<GainNode | null>(null); // Fast modulation (mouse)
-    const envGainRef = useRef<GainNode | null>(null); // Slow envelope (hover)
+    const modGainRef = useRef<GainNode | null>(null);
+    const envGainRef = useRef<GainNode | null>(null);
     const filterRef = useRef<BiquadFilterNode | null>(null);
 
-    // Warm midrange frequencies (180Hz, 210Hz, 240Hz)
     const baseFreq = 180 + (i * 30);
 
     useEffect(() => {
-        // Delayed entry guard to allow slide to settle
         const timer = setTimeout(() => {
             canPlay.current = true;
             if (isHovered.current) startTone();
@@ -340,7 +316,6 @@ const MagneticTiltCard = ({ tech, i, isAudioEnabled, toggleAudio }: { tech: any;
         };
     }, []);
 
-    // Reactive Audio Toggle
     useEffect(() => {
         if (isHovered.current && canPlay.current) {
             if (isAudioEnabled) {
@@ -353,45 +328,33 @@ const MagneticTiltCard = ({ tech, i, isAudioEnabled, toggleAudio }: { tech: any;
 
     const startTone = () => {
         if (!isAudioEnabled || !canPlay.current) return;
-
         const ctx = initAudio();
         if (ctx.state === 'suspended') return;
-
         if (!envGainRef.current) {
             envGainRef.current = ctx.createGain();
             modGainRef.current = ctx.createGain();
             filterRef.current = ctx.createBiquadFilter();
-
-            // Initialization: Absolute silence
             envGainRef.current.gain.setValueAtTime(0.0001, ctx.currentTime);
             modGainRef.current.gain.setValueAtTime(0.1, ctx.currentTime);
-
             filterRef.current.type = 'lowpass';
-            filterRef.current.Q.setValueAtTime(0.7, ctx.currentTime); // Standard Butterworth, no peak
-            filterRef.current.frequency.setValueAtTime(200, ctx.currentTime); // Dark start
-
-            // Pipeline: Oscs -> Filter -> modGain -> envGain -> Out
+            filterRef.current.Q.setValueAtTime(0.7, ctx.currentTime);
+            filterRef.current.frequency.setValueAtTime(200, ctx.currentTime);
             filterRef.current.connect(modGainRef.current);
             modGainRef.current.connect(envGainRef.current);
             envGainRef.current.connect(ctx.destination);
-
             osc1Ref.current = ctx.createOscillator();
             osc2Ref.current = ctx.createOscillator();
             osc1Ref.current.type = 'sine';
-            osc2Ref.current.type = 'sine'; // Double sine for maximum smoothness
-
+            osc2Ref.current.type = 'sine';
             osc1Ref.current.frequency.setValueAtTime(baseFreq, ctx.currentTime);
-            osc2Ref.current.frequency.setValueAtTime(baseFreq * 1.008, ctx.currentTime); // Slight detune
-
+            osc2Ref.current.frequency.setValueAtTime(baseFreq * 1.008, ctx.currentTime);
             osc1Ref.current.connect(filterRef.current);
             osc2Ref.current.connect(filterRef.current);
             osc1Ref.current.start();
             osc2Ref.current.start();
         }
-
         if (envGainRef.current) {
             envGainRef.current.gain.cancelScheduledValues(ctx.currentTime);
-            // Slow, organic exponential swell
             envGainRef.current.gain.exponentialRampToValueAtTime(1.0, ctx.currentTime + 0.8);
         }
     };
@@ -424,16 +387,11 @@ const MagneticTiltCard = ({ tech, i, isAudioEnabled, toggleAudio }: { tech: any;
             const freqOffset = (nx - 0.5) * 6;
             osc1Ref.current.frequency.setTargetAtTime(baseFreq + freqOffset, audioCtx.currentTime, 0.15);
             osc2Ref.current.frequency.setTargetAtTime((baseFreq + freqOffset) * 1.008, audioCtx.currentTime, 0.15);
-
             const filterFreq = 300 + (Math.max(0, 1 - ny) * 800);
             filterRef.current.frequency.setTargetAtTime(filterFreq, audioCtx.currentTime, 0.2);
-
             const distFromCenter = Math.abs(nx - 0.5) + Math.abs(ny - 0.5);
-            // Attenuate volume when near the top-right sound icon
             const distFromIcon = Math.sqrt(Math.pow(1 - nx, 2) + Math.pow(ny, 2));
-            const iconAttenuation = Math.max(0.2, Math.min(1, distFromIcon * 2)); // 0.2x minimum volume
-
-            // Base volume capped at 0.15 peak for safety
+            const iconAttenuation = Math.max(0.2, Math.min(1, distFromIcon * 2));
             const targetGain = (0.08 + (distFromCenter * 0.12)) * iconAttenuation;
             modGainRef.current.gain.setTargetAtTime(targetGain, audioCtx.currentTime, 0.1);
         }
@@ -450,21 +408,12 @@ const MagneticTiltCard = ({ tech, i, isAudioEnabled, toggleAudio }: { tech: any;
             className="group relative border border-white/10 bg-[#050505] p-8 flex flex-col justify-between overflow-visible cursor-crosshair rounded-2xl h-full shadow-[0_0_50px_-12px_rgba(0,0,0,0.5)]"
             style={{ perspective: "1500px", rotateX, rotateY, transformStyle: "preserve-3d" }}
         >
-            {/* Scanline Overlay */}
             <div className="absolute inset-0 z-[1] opacity-0 group-hover:opacity-[0.03] transition-opacity duration-500 pointer-events-none rounded-2xl overflow-hidden">
                 <div className="absolute inset-0" style={{ backgroundImage: "linear-gradient(90deg, #fff 1px, transparent 1px)", backgroundSize: "4px 100%" }} />
             </div>
-
-            {/* Shimmer / Refraction Layer */}
             <motion.div className="absolute inset-0 z-[2] opacity-0 group-hover:opacity-100 transition-opacity duration-700 rounded-2xl pointer-events-none" style={{ background: shimmer, x: shimmerX }} />
-
-            {/* Glare Layer */}
             <motion.div className="absolute inset-0 z-[3] opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl pointer-events-none" style={{ background }} />
-
-            {/* Parallax Content Container */}
             <div className="relative z-10 flex flex-col h-full transform-gpu" style={{ transformStyle: "preserve-3d" }}>
-
-                {/* Audio Toggle Icon - VISIBLE ONLY ON HOVER */}
                 <div
                     className="absolute top-0 right-0 z-[50] cursor-pointer p-2 opacity-0 group-hover:opacity-40 hover:!opacity-100 transition-opacity duration-300"
                     onClick={(e) => { e.stopPropagation(); toggleAudio(); stopTone(); }}
@@ -476,22 +425,12 @@ const MagneticTiltCard = ({ tech, i, isAudioEnabled, toggleAudio }: { tech: any;
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.3)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 5L6 9H2v6h4l5 4V5z"></path><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>
                     )}
                 </div>
-
-                {/* Title Layer */}
-                <div
-                    className="mt-8 mb-8 transform-gpu"
-                    style={{ transform: "translateZ(60px)" }}
-                >
+                <div className="mt-8 mb-8 transform-gpu" style={{ transform: "translateZ(60px)" }}>
                     <h3 className="text-white text-3xl xl:text-4xl font-black tracking-tighter leading-[0.9] group-hover:text-[#c9a84c] transition-all duration-500 max-w-[90%] group-hover:[text-shadow:2px_0_10px_rgba(201,168,76,0.3),-2px_0_10px_rgba(0,255,255,0.2)]">
                         {tech.title.replace('_', '\n')}
                     </h3>
                 </div>
-
-                {/* Metrics Layer */}
-                <ul
-                    className="space-y-5 mb-8 flex-1 transform-gpu"
-                    style={{ transform: "translateZ(90px)" }}
-                >
+                <ul className="space-y-5 mb-8 flex-1 transform-gpu" style={{ transform: "translateZ(90px)" }}>
                     {tech.metrics.map((m: string) => (
                         <li key={m} className="flex items-center gap-4 text-white/40 font-mono text-[10px] xl:text-xs tracking-[0.2em] group-hover:text-white/90 transition-all duration-300">
                             <div className="w-1.5 h-1.5 rounded-full bg-white/10 group-hover:bg-[#c9a84c] group-hover:scale-125 transition-all duration-300 shadow-[0_0_10px_rgba(201,168,76,0.5)]" />
@@ -499,8 +438,6 @@ const MagneticTiltCard = ({ tech, i, isAudioEnabled, toggleAudio }: { tech: any;
                         </li>
                     ))}
                 </ul>
-
-                {/* Code Snippet Layer */}
                 <div
                     className="bg-black/80 backdrop-blur-md border border-white/10 p-5 rounded-xl font-mono text-[9px] xl:text-[10px] text-white/40 select-none shadow-[0_20px_40px_-15px_rgba(0,0,0,0.7)] transform-gpu group-hover:border-[#c9a84c]/30 transition-colors duration-500"
                     style={{ transform: "translateZ(130px)" }}
@@ -512,10 +449,7 @@ const MagneticTiltCard = ({ tech, i, isAudioEnabled, toggleAudio }: { tech: any;
                     </div>
                     <code className="text-[#c9a84c]/60 group-hover:text-[#c9a84c] transition-colors duration-500">{tech.code}</code>
                 </div>
-
             </div>
-
-            {/* Animated Bottom Border */}
             <motion.div
                 initial={{ width: 0 }}
                 whileHover={{ width: '100%' }}
@@ -527,8 +461,9 @@ const MagneticTiltCard = ({ tech, i, isAudioEnabled, toggleAudio }: { tech: any;
     );
 };
 
-export const Slide3: React.FC<{ isMobile: boolean; direction: number; mobileSubSlide?: number }> = ({ isMobile, direction, mobileSubSlide = 0 }) => {
+export const Slide3: React.FC<{ isMobile: boolean; direction: number }> = ({ isMobile, direction }) => {
     const [isAudioEnabled, setIsAudioEnabled] = React.useState(true);
+    const scrollRef = useRef<HTMLDivElement>(null);
 
     const toggleAudio = () => setIsAudioEnabled(!isAudioEnabled);
 
@@ -554,42 +489,27 @@ export const Slide3: React.FC<{ isMobile: boolean; direction: number; mobileSubS
     ];
 
     if (isMobile) {
-        // Sub-slide 0: first two cards | Sub-slide 1: third card (large)
-        const isSecondSubSlide = mobileSubSlide === 1;
-        const cards = isSecondSubSlide ? techData.slice(2) : techData.slice(0, 2);
-
         return (
             <motion.div
-                key={`mb-skills-3-${mobileSubSlide}`}
+                ref={scrollRef}
+                key="mb-skills-3"
                 custom={direction}
                 variants={mobileSlideVariants}
                 initial="enter"
                 animate="center"
                 exit="exit"
                 transition={{ duration: 0.4, ease: CINEMATIC_EASE }}
-                className="absolute inset-0 w-full h-full overflow-hidden flex flex-col"
+                className="absolute inset-0 w-full h-full overflow-y-auto overscroll-none [will-change:scroll-position] [-webkit-overflow-scrolling:touch]"
             >
-                <div className="px-5 pt-20 pb-6 flex flex-col h-full">
-                    <div className="mb-4">
-                        <h2 className="text-white text-2xl font-black tracking-tighter">ENGINEERING</h2>
-                        <div className="flex items-center gap-3 mt-2">
-                            <div className="w-12 h-[2px] bg-[#c9a84c]" />
-                            <span className="text-white/20 font-mono text-[10px] tracking-widest">{isSecondSubSlide ? '2 / 2' : '1 / 2'}</span>
-                        </div>
-                    </div>
-                    <div className={`flex flex-col gap-4 min-h-0 ${isSecondSubSlide ? 'h-1/2 justify-center' : 'flex-1'}`}>
-                        {cards.map((tech, i) => {
-                            const isRight = isSecondSubSlide ? false : i % 2 !== 0;
-                            return (
-                                <MobileTouchCard
-                                    key={tech.title}
-                                    tech={tech}
-                                    i={i}
-                                    isRight={isRight}
-                                />
-                            );
-                        })}
-                    </div>
+                <div className="px-5 pt-20 pb-64 flex flex-col gap-6">
+                    {techData.map((tech, i) => (
+                        <MobileTouchCard
+                            key={tech.title}
+                            tech={tech}
+                            i={i}
+                            isRight={i % 2 !== 0}
+                        />
+                    ))}
                 </div>
             </motion.div>
         );
@@ -606,10 +526,6 @@ export const Slide3: React.FC<{ isMobile: boolean; direction: number; mobileSubS
             transition={{ duration: 0.3, ease: CINEMATIC_EASE }}
             className="absolute inset-0 w-full max-w-7xl mx-auto px-8 flex flex-col justify-center h-full overflow-hidden perspective-distant"
         >
-            <div className="mb-12 absolute top-12 left-8 md:top-24 md:left-12 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity">
-                <span className="text-[#c9a84c]/50 font-mono text-[10px] tracking-[0.4em] uppercase block">INTERACTIVE_AUDITORY_FEEDBACK_ENGAGED</span>
-            </div>
-
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 h-[65%] mt-12">
                 {techData.map((tech, i) => (
                     <MagneticTiltCard

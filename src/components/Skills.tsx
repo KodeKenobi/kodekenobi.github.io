@@ -245,10 +245,6 @@ export const Skills: React.FC<{
     };
 
     const slideLabels = ["Toolkit", "Expertise", "Engineering"];
-    // On mobile Engineering is split into 2 sub-slides (indices 2 and 3)
-    // Map visual pagination dot to label: 0=Toolkit,1=Expertise,2=Engineering (covers both sub-slides)
-    const mobilePaginationIndex = isMobile && slideIndex === 3 ? 2 : slideIndex;
-
     return (
         <div
             className="relative w-full h-full font-sans overflow-hidden"
@@ -260,8 +256,7 @@ export const Skills: React.FC<{
             <AnimatePresence initial={false} custom={direction}>
                 {isActive && slideIndex === 0 && <Slide1 key="slide0" isMobile={isMobile} direction={direction} />}
                 {isActive && slideIndex === 1 && <Slide2 key="slide1" isMobile={isMobile} direction={direction} activeCategory={activeCategory} handleRowClick={handleRowClick} />}
-                {isActive && slideIndex === 2 && <Slide3 key="slide2" isMobile={isMobile} direction={direction} mobileSubSlide={0} />}
-                {isActive && slideIndex === 3 && isMobile && <Slide3 key="slide3" isMobile={isMobile} direction={direction} mobileSubSlide={1} />}
+                {isActive && slideIndex === 2 && <Slide3 key="slide2" isMobile={isMobile} direction={direction} />}
             </AnimatePresence>
 
             {/* Desktop interaction only: */}
@@ -277,7 +272,7 @@ export const Skills: React.FC<{
 
             {/* Bottom Dynamic Navigation */}
             <DynamicPagination
-                activeIndex={mobilePaginationIndex}
+                activeIndex={slideIndex}
                 totalSlides={3}
                 labels={slideLabels}
                 onSlideChange={onSlideChange!}
