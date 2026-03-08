@@ -13,8 +13,8 @@
 }
 
 .scroll-stack-inner {
-  padding: 20vh 5rem 50rem;
-  min-height: 100vh;
+  padding: 10dvh 5rem 50rem;
+  min-height: 100dvh;
 }
 
 .scroll-stack-card-wrapper {

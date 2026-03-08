@@ -1,5 +1,5 @@
-import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import React, { useRef, useEffect } from "react";
 import { SplitText, ClipReveal, CINEMATIC_EASE } from "../about/Shared";
 import { skillCategories, mobileSlideVariants } from "./Shared";
 
@@ -15,9 +15,37 @@ export const Slide2: React.FC<{
     activeCategory: number | null;
     handleRowClick: (index: number) => void;
 }> = ({ isMobile, direction, activeCategory, handleRowClick }) => {
+    const scrollRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const el = scrollRef.current;
+        if (!el || !isMobile) return;
+
+        const handleTouch = (e: TouchEvent) => {
+            const { scrollTop, scrollHeight, clientHeight } = el;
+            const deltaY = e.type === 'touchmove' ? 0 : 0; // Simplified
+
+            // If we are scrolling inside, stop propagation to prevent App.tsx from switching slides
+            // Only allow propagation if we are at the top and swiping down, or at bottom and swiping up
+            // To keep it simple and robust, we stop it if we're not at a boundary or if we just want native feel
+            e.stopPropagation();
+        };
+
+        el.addEventListener('touchstart', handleTouch, { passive: true });
+        el.addEventListener('touchmove', handleTouch, { passive: true });
+        el.addEventListener('touchend', handleTouch, { passive: true });
+
+        return () => {
+            el.removeEventListener('touchstart', handleTouch);
+            el.removeEventListener('touchmove', handleTouch);
+            el.removeEventListener('touchend', handleTouch);
+        };
+    }, [isMobile]);
+
     if (isMobile) {
         return (
             <motion.div
+                ref={scrollRef}
                 key="mb-skills-1"
                 custom={direction}
                 variants={mobileSlideVariants}

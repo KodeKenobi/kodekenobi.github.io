@@ -28,7 +28,7 @@ export const MobileAnimatedHero: React.FC = () => {
     }, []);
 
     return (
-        <div className="relative w-full h-screen overflow-hidden bg-white font-sans">
+        <div className="relative w-full h-[100dvh] overflow-hidden bg-white font-sans">
             {/* 
         CINEMATIC WORLD (The Revealed Image)
       */}

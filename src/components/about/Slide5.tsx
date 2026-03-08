@@ -208,17 +208,17 @@ const Slide5: React.FC<{ onActionTriggered?: (triggered: boolean) => void }> = (
                         hidden: { opacity: 0, scale: 0.95 },
                         visible: { opacity: 1, scale: 1, transition: { duration: 1.5, ease: CINEMATIC_EASE, delay: 0.5 } }
                     }}
-                    className="group relative z-30 flex flex-col items-center justify-center cursor-pointer p-20"
+                    className="group relative z-30 flex flex-col items-center justify-center cursor-pointer p-10 md:p-20"
                 >
                     <motion.div
                         animate={isActionTriggered ? { opacity: 0.05, scale: 0.5 } : { opacity: 1, scale: 1 }}
                         transition={{ duration: 1, ease: CINEMATIC_EASE }}
                         className="relative z-40 flex flex-col items-center overflow-hidden"
                     >
-                        <span className="text-white/90 text-xl md:text-4xl font-black tracking-[1.2em] md:tracking-[1.5em] uppercase pl-5 md:pl-10">
+                        <span className="text-white/90 text-xl md:text-4xl font-black tracking-[0.8em] md:tracking-[1.5em] uppercase pl-4 md:pl-10">
                             REVEAL
                         </span>
-                        <div className="h-[2px] bg-[#c9a84c]/80 mt-10 w-24" />
+                        <div className="h-[1px] md:h-[2px] bg-[#c9a84c]/80 mt-6 md:mt-10 w-16 md:w-24" />
                     </motion.div>
                 </motion.div>
 
@@ -232,9 +232,9 @@ const Slide5: React.FC<{ onActionTriggered?: (triggered: boolean) => void }> = (
                         hidden: { opacity: 0, y: 30, scale: 1 },
                         visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 1.5, ease: CINEMATIC_EASE } }
                     }}
-                    className="absolute bottom-32 z-20 text-center flex flex-col items-center bg-transparent backdrop-blur-sm px-12 py-4 rounded-full"
+                    className="absolute bottom-16 md:bottom-32 z-20 text-center flex flex-col items-center bg-transparent backdrop-blur-sm px-6 md:px-12 py-4 rounded-full"
                 >
-                    <div className="flex gap-12 text-zinc-500 font-mono text-[9px] md:text-[10px] tracking-[0.5em] uppercase">
+                    <div className="flex flex-col md:flex-row gap-6 md:gap-12 text-zinc-500 font-mono text-[9px] md:text-[10px] tracking-[0.3em] md:tracking-[0.5em] uppercase">
                         <a href="https://www.linkedin.com/in/ignatius-mutizwa-7662b5229/" target="_blank" rel="noopener noreferrer" className="relative overflow-hidden group">
                             <span className="inline-block transition-transform duration-500 group-hover:-translate-y-full">LinkedIn</span>
                             <span className="absolute inset-0 text-[#c9a84c] transition-transform duration-500 translate-y-full group-hover:translate-y-0">LinkedIn</span>

@@ -342,6 +342,9 @@ export default function App() {
       if (current === "projects") {
         const container = projectsContainerRef.current;
         if (!container) return;
+
+        // Allow native scrolling inside projects
+        // Only intercept if at top and swiping down to go back
         if (!scrollingDown && container.scrollTop <= 5) {
           if (e.cancelable) e.preventDefault();
           scrollAccumulatorRef.current += deltaY;
@@ -349,7 +352,47 @@ export default function App() {
             scrollAccumulatorRef.current = 0;
             navigateSection(-1);
           }
+        } else {
+          // Reset accumulator if scrolling inside
+          scrollAccumulatorRef.current = 0;
         }
+        return;
+      }
+
+      if (current === "about") {
+        if (e.cancelable) e.preventDefault();
+        const slide = aboutSlideRef.current;
+
+        if (scrollingDown) {
+          if (slide < ABOUT_TOTAL_SLIDES - 1) {
+            setAboutDirection(1);
+            const next = slide + 1;
+            setAboutSlide(next);
+            aboutSlideRef.current = next;
+            lockScroll(600);
+          } else {
+            scrollAccumulatorRef.current += deltaY;
+            if (scrollAccumulatorRef.current > 80) {
+              scrollAccumulatorRef.current = 0;
+              navigateSection(1);
+            }
+          }
+        } else {
+          if (slide > 0) {
+            setAboutDirection(-1);
+            const prev = slide - 1;
+            setAboutSlide(prev);
+            aboutSlideRef.current = prev;
+            lockScroll(600);
+          } else {
+            scrollAccumulatorRef.current += deltaY;
+            if (scrollAccumulatorRef.current < -80) {
+              scrollAccumulatorRef.current = 0;
+              navigateSection(-1);
+            }
+          }
+        }
+        return;
       }
 
       if (current === "skills") {
@@ -390,22 +433,36 @@ export default function App() {
       }
 
       if (current === "experience") {
-        if (e.cancelable) e.preventDefault();
         const slide = experienceSlideRef.current;
+
+        // On mobile, we use native scroll for experience slide 1 (the timeline)
+        if (isMobileRef.current && slide === 1) {
+          // Native scroll should be handled by the component's overflow-y-auto
+          // We only intercept if we reach the top and swipe down to go back to slide 0
+          if (!scrollingDown) {
+            // We can't easily check internal scroll here without a ref to the component's scroller
+            // But Experience.tsx has stopPropagation on its container, so this code shouldn't even reach here
+            // if it's working correctly. 
+            return;
+          }
+          return;
+        }
+
+        if (e.cancelable) e.preventDefault();
 
         if (slide === 0) {
           if (scrollingDown) {
             scrollAccumulatorRef.current += deltaY;
-            if (scrollAccumulatorRef.current > 100) {
+            if (scrollAccumulatorRef.current > 80) {
               scrollAccumulatorRef.current = 0;
               setExperienceDirection(1);
               setExperienceSlide(1);
               experienceSlideRef.current = 1;
-              lockScroll(800);
+              lockScroll(600);
             }
           } else {
             scrollAccumulatorRef.current += deltaY;
-            if (scrollAccumulatorRef.current < -100) {
+            if (scrollAccumulatorRef.current < -80) {
               scrollAccumulatorRef.current = 0;
               navigateSection(-1);
             }
@@ -413,6 +470,7 @@ export default function App() {
           return;
         }
 
+        // Desktop / manual progress logic for slide 1
         const currentProgress = skillsExperienceProgressRef.current;
         const deltaProgress = deltaY * 0.05;
         const nextProgress = Math.min(Math.max(0, currentProgress + deltaProgress), 100);
@@ -439,7 +497,7 @@ export default function App() {
               setExperienceDirection(-1);
               setExperienceSlide(0);
               experienceSlideRef.current = 0;
-              lockScroll(800);
+              lockScroll(600);
             }
           }
         }
@@ -489,7 +547,7 @@ export default function App() {
   }, [currentSection]);
 
   return (
-    <div className="relative bg-[#050505] min-h-screen overflow-hidden">
+    <div className="relative bg-[#050505] h-[100dvh] w-full overflow-hidden">
 
       {/* Navigation */}
       <AnimatedNavbar
@@ -500,7 +558,7 @@ export default function App() {
       />
 
       {/* Main Content */}
-      <div className="scroll-container relative z-10 w-full h-screen pt-20 overflow-hidden">
+      <div className="scroll-container relative z-10 w-full h-full pt-20 overflow-hidden">
         {/* Home Section */}
         <section
           className="absolute inset-0"

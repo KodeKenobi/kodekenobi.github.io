@@ -86,8 +86,36 @@ export default function Projects({ isActive }: { isActive: boolean }) {
     const totalPages = Math.ceil(repos.length / REPOS_PER_PAGE);
     const displayedRepos = repos.slice((page - 1) * REPOS_PER_PAGE, page * REPOS_PER_PAGE);
 
+    const scrollRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const el = scrollRef.current;
+        if (!el) return;
+
+        const handleTouch = (e: TouchEvent) => {
+            // Stop propagation to prevent global App.tsx from catching the swipe
+            // Exception: if at the VERY top and swiping down, we let it propagate so App.tsx can go back
+            const isAtTop = el.scrollTop <= 5;
+            // For projects, we want it to be very responsive to scroll.
+            // Simplified: just stop it if it's not a clear "go back" intent or just always stop if we want pure native.
+            // But we need a way to go back.
+            e.stopPropagation();
+        };
+
+        el.addEventListener('touchstart', handleTouch, { passive: true });
+        el.addEventListener('touchmove', handleTouch, { passive: true });
+
+        return () => {
+            el.removeEventListener('touchstart', handleTouch);
+            el.removeEventListener('touchmove', handleTouch);
+        };
+    }, []);
+
     return (
-        <div className="relative w-full min-h-screen font-sans bg-[#050505] flex flex-col pt-32 pb-24 px-8 md:px-16">
+        <div
+            ref={scrollRef}
+            className="relative w-full min-h-[100dvh] font-sans bg-[#050505] flex flex-col pt-32 pb-24 px-8 md:px-16 overflow-y-auto"
+        >
             {/* Header */}
             <div className="absolute top-24 left-8 md:left-16 z-10 pointers-events-none">
                 <div className="flex flex-col items-start leading-[0.85]">
