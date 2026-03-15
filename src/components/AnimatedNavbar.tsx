@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import clsx from "classnames";
 import SplashCursor from "./Animations/SplashCursor";
+import { SoundToggle } from "./SoundToggle";
 
 const navItems = [
   { name: "HOME", id: "home" },
@@ -313,6 +314,9 @@ export default function AnimatedNavbar({
                   )}
                 </motion.div>
               ))}
+              <motion.div variants={itemVariants}>
+                <SoundToggle />
+              </motion.div>
             </motion.div>
           </>
         )}

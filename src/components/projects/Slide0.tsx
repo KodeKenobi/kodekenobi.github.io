@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { motion } from "framer-motion";
 import { SplitText, ClipReveal, CINEMATIC_EASE } from "../about/Shared";
+import { useSound } from "../../hooks/useSound";
 
 const variants = {
   enter: (direction: number) => ({
@@ -21,6 +22,21 @@ export const Slide0: React.FC<{ isMobile: boolean; direction: number }> = ({
   isMobile,
   direction,
 }) => {
+  const { playBounce } = useSound();
+
+  useEffect(() => {
+    // Timing matches Slide0.tsx dot animation: duration 2.2s, delay 0.8s
+    // Hits floor at [0.18, 0.45, 0.7, 1.0] times
+    const hit1 = setTimeout(() => playBounce(1.0), 800 + 396);
+    const hit2 = setTimeout(() => playBounce(0.6), 800 + 990);
+    const hit3 = setTimeout(() => playBounce(0.35), 800 + 1540);
+    const hit4 = setTimeout(() => playBounce(0.2), 800 + 2200);
+
+    return () => {
+      [hit1, hit2, hit3, hit4].forEach(clearTimeout);
+    };
+  }, [playBounce]);
+
   return (
     <motion.div
       key="projects-slide-0"

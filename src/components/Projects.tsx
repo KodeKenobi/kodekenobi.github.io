@@ -91,11 +91,11 @@ export default function Projects({ isActive, isMobile, slideIndex, direction }: 
     return (
         <div className="absolute inset-0 w-full h-full bg-[#050505] overflow-hidden">
             <AnimatePresence initial={false} custom={direction}>
-                {slideIndex === 0 && (
+                {isActive && slideIndex === 0 && (
                     <Slide0 isMobile={isMobile} direction={direction} />
                 )}
 
-                {slideIndex === 1 && (
+                {isActive && slideIndex === 1 && (
                     <motion.div
                         key="projects-grid"
                         id="projects-grid"

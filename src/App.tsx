@@ -6,6 +6,7 @@ import About from "./components/About";
 import Skills from "./components/Skills";
 import Experience from "./components/Experience";
 import Projects from "./components/Projects";
+import { soundEngine } from "./lib/SoundEngine";
 
 const sections = [
   { id: "home", name: "HOME" },
@@ -80,6 +81,10 @@ export default function App() {
   }, []);
 
   const showSection = (sectionId: string) => {
+    // Initialize sound engine on user gesture and play click
+    soundEngine.init();
+    soundEngine.playClick();
+
     setCurrentSection(sectionId);
     currentSectionRef.current = sectionId;
     if (sectionId === "about") {
@@ -107,6 +112,9 @@ export default function App() {
         : Math.max(currentIndex - 1, 0);
 
     if (nextIndex !== currentIndex) {
+      // Initialize sound engine on user gesture
+      soundEngine.init();
+      
       lockScroll(1200);
       const nextSection = sections[nextIndex].id;
       setCurrentSection(nextSection);
@@ -400,6 +408,9 @@ export default function App() {
     };
 
     const handleTouchMove = (e: TouchEvent) => {
+      // Initialize sound engine on user gesture
+      soundEngine.init();
+
       if (
         !heroAnimDoneRef.current ||
         isScrollingRef.current ||
@@ -782,6 +793,7 @@ export default function App() {
           }}
         >
           <Experience
+            isActive={currentSection === "experience"}
             isMobile={isMobile}
             slideIndex={experienceSlide}
             direction={experienceDirection}
