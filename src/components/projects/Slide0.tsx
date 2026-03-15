@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { motion } from "framer-motion";
 import { SplitText, ClipReveal, CINEMATIC_EASE } from "../about/Shared";
 import { useSound } from "../../hooks/useSound";
@@ -24,18 +24,8 @@ export const Slide0: React.FC<{ isMobile: boolean; direction: number }> = ({
 }) => {
   const { playBounce } = useSound();
 
-  useEffect(() => {
-    // Timing matches Slide0.tsx dot animation: duration 2.2s, delay 0.8s
-    // Hits floor at [0.18, 0.45, 0.7, 1.0] times
-    const hit1 = setTimeout(() => playBounce(1.0), 800 + 396);
-    const hit2 = setTimeout(() => playBounce(0.6), 800 + 990);
-    const hit3 = setTimeout(() => playBounce(0.35), 800 + 1540);
-    const hit4 = setTimeout(() => playBounce(0.2), 800 + 2200);
-
-    return () => {
-      [hit1, hit2, hit3, hit4].forEach(clearTimeout);
-    };
-  }, [playBounce]);
+  const prevY = React.useRef(-150);
+  const bounceIndex = React.useRef(0);
 
   return (
     <motion.div
@@ -60,6 +50,17 @@ export const Slide0: React.FC<{ isMobile: boolean; direction: number }> = ({
               animate={{
                 y: [null, 0, -50, 0, -20, 0, -6, 0],
                 opacity: 1,
+              }}
+              onUpdate={(latest) => {
+                const y = Number(latest.y);
+                if (prevY.current < 0 && y >= 0) {
+                  const volumes = [1.0, 0.6, 0.35, 0.2];
+                  if (bounceIndex.current < volumes.length) {
+                    playBounce(volumes[bounceIndex.current]);
+                    bounceIndex.current++;
+                  }
+                }
+                prevY.current = y;
               }}
               transition={{
                 y: {

@@ -28,19 +28,15 @@ export const Experience: React.FC<{ isActive: boolean; isMobile: boolean; slideI
 }) => {
     const { playBounce } = useSound();
 
+    const prevY = useRef(-150);
+    const bounceIndex = useRef(0);
+
     useEffect(() => {
         if (isActive && slideIndex === 0) {
-            const delay = isMobile ? 1000 : 800;
-            const hit1 = setTimeout(() => playBounce(1.0), delay + 396);
-            const hit2 = setTimeout(() => playBounce(0.6), delay + 990);
-            const hit3 = setTimeout(() => playBounce(0.35), delay + 1540);
-            const hit4 = setTimeout(() => playBounce(0.2), delay + 2200);
-
-            return () => {
-                [hit1, hit2, hit3, hit4].forEach(clearTimeout);
-            };
+            prevY.current = -150;
+            bounceIndex.current = 0;
         }
-    }, [playBounce, slideIndex, isMobile, isActive]);
+    }, [isActive, slideIndex]);
 
     const containerRef = useRef<HTMLDivElement>(null);
 
@@ -92,6 +88,17 @@ export const Experience: React.FC<{ isActive: boolean; isMobile: boolean; slideI
                                         animate={{
                                             y: [null, 0, -30, 0, -10, 0, -3, 0],
                                             opacity: 1,
+                                        }}
+                                        onUpdate={(latest) => {
+                                            const y = Number(latest.y);
+                                            if (prevY.current < 0 && y >= 0) {
+                                                const volumes = [1.0, 0.6, 0.35, 0.2];
+                                                if (bounceIndex.current < volumes.length) {
+                                                    playBounce(volumes[bounceIndex.current]);
+                                                    bounceIndex.current++;
+                                                }
+                                            }
+                                            prevY.current = y;
                                         }}
                                         transition={{
                                             y: { duration: 2.2, times: [0, 0.18, 0.32, 0.45, 0.58, 0.70, 0.82, 1], ease: ["easeIn", "easeOut", "easeIn", "easeOut", "easeIn", "easeOut", "easeIn"], delay: 1.0 },
@@ -185,6 +192,17 @@ export const Experience: React.FC<{ isActive: boolean; isMobile: boolean; slideI
                                         animate={{
                                             y: [null, 0, -50, 0, -20, 0, -6, 0],
                                             opacity: 1,
+                                        }}
+                                        onUpdate={(latest) => {
+                                            const y = Number(latest.y);
+                                            if (prevY.current < 0 && y >= 0) {
+                                                const volumes = [1.0, 0.6, 0.35, 0.2];
+                                                if (bounceIndex.current < volumes.length) {
+                                                    playBounce(volumes[bounceIndex.current]);
+                                                    bounceIndex.current++;
+                                                }
+                                            }
+                                            prevY.current = y;
                                         }}
                                         transition={{
                                             y: {

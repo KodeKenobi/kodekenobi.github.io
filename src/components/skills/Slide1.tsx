@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { motion } from "framer-motion";
 import { SplitText, ClipReveal, CINEMATIC_EASE } from "../about/Shared";
 import { mobileSlideVariants } from "./Shared";
@@ -23,20 +23,8 @@ const desktopVariants = {
 export const Slide1: React.FC<{ isMobile: boolean; direction: number }> = ({ isMobile, direction }) => {
     const { playBounce } = useSound();
 
-    useEffect(() => {
-        // Timing for mobile: delay 1.0s
-        // Timing for desktop: delay 0.2s (projects style) or 0.8s?
-        // Let's use 1.0s for both to be consistent with "The Architect"
-        const delay = isMobile ? 1000 : 800; // matching its animation delay
-        const hit1 = setTimeout(() => playBounce(1.0), delay + 396);
-        const hit2 = setTimeout(() => playBounce(0.6), delay + 990);
-        const hit3 = setTimeout(() => playBounce(0.35), delay + 1540);
-        const hit4 = setTimeout(() => playBounce(0.2), delay + 2200);
-
-        return () => {
-            [hit1, hit2, hit3, hit4].forEach(clearTimeout);
-        };
-    }, [playBounce, isMobile]);
+    const prevY = React.useRef(-150);
+    const bounceIndex = React.useRef(0);
 
     if (isMobile) {
 // ... existing mobile JSX
@@ -61,6 +49,17 @@ export const Slide1: React.FC<{ isMobile: boolean; direction: number }> = ({ isM
                         animate={{
                             y: [null, 0, -30, 0, -10, 0, -3, 0],
                             opacity: 1,
+                        }}
+                        onUpdate={(latest) => {
+                            const y = Number(latest.y);
+                            if (prevY.current < 0 && y >= 0) {
+                                const volumes = [1.0, 0.6, 0.35, 0.2];
+                                if (bounceIndex.current < volumes.length) {
+                                    playBounce(volumes[bounceIndex.current]);
+                                    bounceIndex.current++;
+                                }
+                            }
+                            prevY.current = y;
                         }}
                         transition={{
                             y: { duration: 2.2, times: [0, 0.18, 0.32, 0.45, 0.58, 0.70, 0.82, 1], ease: ["easeIn", "easeOut", "easeIn", "easeOut", "easeIn", "easeOut", "easeIn"], delay: 1.0 },
@@ -119,6 +118,17 @@ export const Slide1: React.FC<{ isMobile: boolean; direction: number }> = ({ isM
                             animate={{
                                 y: [null, 0, -50, 0, -20, 0, -6, 0],
                                 opacity: 1,
+                            }}
+                            onUpdate={(latest) => {
+                                const y = Number(latest.y);
+                                if (prevY.current < 0 && y >= 0) {
+                                    const volumes = [1.0, 0.6, 0.35, 0.2];
+                                    if (bounceIndex.current < volumes.length) {
+                                        playBounce(volumes[bounceIndex.current]);
+                                        bounceIndex.current++;
+                                    }
+                                }
+                                prevY.current = y;
                             }}
                             transition={{
                                 y: {
