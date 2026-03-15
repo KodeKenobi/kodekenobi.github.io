@@ -13,7 +13,7 @@ interface DecryptTextProps {
 export const DecryptText: React.FC<DecryptTextProps> = ({
   text,
   className = "",
-  speed = 30,
+  speed = 20,
   maxIterations = 10,
   trigger,
 }) => {
@@ -38,7 +38,7 @@ export const DecryptText: React.FC<DecryptTextProps> = ({
         clearInterval(interval);
       }
 
-      iteration += 1 / maxIterations;
+      iteration += 3 / maxIterations;
     }, speed);
 
     return () => clearInterval(interval);

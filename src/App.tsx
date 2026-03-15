@@ -57,7 +57,6 @@ export default function App() {
   const isPreviewInteractingRef = useRef(false);
   const [isSkillsScrolled, setIsSkillsScrolled] = useState(false);
   const [isHeaderGoldLineActive, setIsHeaderGoldLineActive] = useState(false);
-  const [homeTrigger, setHomeTrigger] = useState(0);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -89,7 +88,7 @@ export default function App() {
     setCurrentSection(sectionId);
     currentSectionRef.current = sectionId;
     if (sectionId === "home") {
-      setHomeTrigger(prev => prev + 1);
+      // No longer resetting homeTrigger to allow animation to persist
     }
     if (sectionId === "about") {
       setAboutSlide(0);
@@ -125,7 +124,7 @@ export default function App() {
       currentSectionRef.current = nextSection;
 
       if (nextSection === "home") {
-        setHomeTrigger(prev => prev + 1);
+        // No longer resetting homeTrigger to allow animation to persist
       }
       if (nextSection === "about") {
         const slideTarget = direction > 0 ? 0 : ABOUT_TOTAL_SLIDES - 1;
@@ -754,9 +753,9 @@ export default function App() {
           }}
         >
           {isMobile ? (
-            <MobileAnimatedHero key={`mobile-hero-${homeTrigger}`} />
+            <MobileAnimatedHero />
           ) : (
-            <AnimatedHero key={`desktop-hero-${homeTrigger}`} />
+            <AnimatedHero />
           )}
         </section>
         <section
