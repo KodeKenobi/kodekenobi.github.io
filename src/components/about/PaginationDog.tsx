@@ -43,7 +43,11 @@ export const DynamicPagination: React.FC<DynamicPaginationProps> = ({
             {Array.from({ length: totalSlides }).map((_, i) => (
                 <button
                     key={i}
-                    onClick={() => onSlideChange(i, i > activeIndex ? 1 : -1)}
+                    onClick={() => {
+                        onSlideChange(i, i > activeIndex ? 1 : -1);
+                        // Trigger shuffle sound for About section
+                        import("../../lib/SoundEngine").then(m => m.soundEngine.playShuffle());
+                    }}
                     onMouseEnter={() => setHoveredIndex(i)}
                     className="group relative flex flex-col items-center cursor-pointer py-2 outline-none"
                 >

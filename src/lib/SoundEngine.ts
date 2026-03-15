@@ -167,6 +167,44 @@ class SoundEngine {
   }
 
   /**
+   * Play a focus "charge" sound — rising cinematic hum.
+   */
+  private focusOsc: OscillatorNode | null = null;
+  private focusGain: GainNode | null = null;
+
+  playFocus(): void {
+    if (!this.ctx || !this.masterGain || this.state.isMuted) return;
+    if (this.focusOsc) return; // Already playing
+
+    const now = this.ctx.currentTime;
+    this.focusOsc = this.ctx.createOscillator();
+    this.focusGain = this.ctx.createGain();
+
+    this.focusOsc.type = 'sine';
+    this.focusOsc.frequency.setValueAtTime(110, now);
+    this.focusOsc.frequency.exponentialRampToValueAtTime(440, now + 2);
+
+    this.focusGain.gain.setValueAtTime(0, now);
+    this.focusGain.gain.linearRampToValueAtTime(0.12, now + 0.3);
+
+    this.focusOsc.connect(this.focusGain);
+    this.focusGain.connect(this.masterGain);
+    this.focusOsc.start(now);
+  }
+
+  stopFocus(): void {
+    if (!this.ctx || !this.focusGain || !this.focusOsc) return;
+    const now = this.ctx.currentTime;
+    this.focusGain.gain.setTargetAtTime(0, now, 0.1);
+    const osc = this.focusOsc;
+    setTimeout(() => {
+      try { osc.stop(); } catch { }
+    }, 500);
+    this.focusOsc = null;
+    this.focusGain = null;
+  }
+
+  /**
    * Play a click — soft, satisfying snap.
    */
   playClick(): void {
@@ -176,7 +214,7 @@ class SoundEngine {
     const osc = this.ctx.createOscillator();
     const gain = this.ctx.createGain();
 
-    osc.type = 'triangle';
+    osc.type = "triangle";
     osc.frequency.value = 800;
     osc.frequency.exponentialRampToValueAtTime(200, now + 0.08);
 
@@ -187,6 +225,51 @@ class SoundEngine {
     gain.connect(this.masterGain);
     osc.start(now);
     osc.stop(now + 0.12);
+  }
+
+  /**
+   * Play a subtle card shuffle sound — sequence of paper-like flicks.
+   */
+  playShuffle(): void {
+    if (!this.ctx || !this.masterGain || this.state.isMuted) return;
+
+    const now = this.ctx.currentTime;
+    const flicks = 8;
+    const interval = 0.04;
+
+    for (let i = 0; i < flicks; i++) {
+      const time = now + i * interval;
+      const duration = 0.06;
+
+      const bufferSize = this.ctx.sampleRate * duration;
+      const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+      const data = buffer.getChannelData(0);
+
+      // Grainy noise
+      for (let j = 0; j < bufferSize; j++) {
+        data[j] = (Math.random() * 2 - 1) * Math.pow(1 - j / bufferSize, 4);
+      }
+
+      const noise = this.ctx.createBufferSource();
+      noise.buffer = buffer;
+
+      const filter = this.ctx.createBiquadFilter();
+      filter.type = "highpass";
+      filter.frequency.value = 3000 + Math.random() * 2000;
+      filter.Q.value = 0.7;
+
+      const gain = this.ctx.createGain();
+      gain.gain.setValueAtTime(0, time);
+      gain.gain.linearRampToValueAtTime(0.02, time + 0.005);
+      gain.gain.exponentialRampToValueAtTime(0.001, time + duration);
+
+      noise.connect(filter);
+      filter.connect(gain);
+      gain.connect(this.masterGain);
+
+      noise.start(time);
+      noise.stop(time + duration);
+    }
   }
 
   /**

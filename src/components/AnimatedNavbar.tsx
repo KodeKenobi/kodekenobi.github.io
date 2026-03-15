@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import type { Variants } from "framer-motion";
 import clsx from "classnames";
 import SplashCursor from "./Animations/SplashCursor";
 import { SoundToggle } from "./SoundToggle";
@@ -12,7 +13,7 @@ const navItems = [
   { name: "PROJECTS", id: "projects" },
 ];
 
-const menuVariants = {
+const menuVariants: Variants = {
   hidden: { opacity: 0, y: "-100%" },
   visible: {
     opacity: 1,
@@ -26,7 +27,7 @@ const menuVariants = {
   exit: { opacity: 0, y: "-100%", transition: { duration: 0.3 } },
 };
 
-const itemVariants = {
+const itemVariants: Variants = {
   hidden: { opacity: 0, y: 20 },
   visible: {
     opacity: 1,

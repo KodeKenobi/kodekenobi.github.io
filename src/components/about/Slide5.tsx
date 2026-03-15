@@ -1,5 +1,5 @@
 import React from "react";
-import { motion, useMotionValue, useMotionTemplate, useSpring } from "framer-motion";
+import { motion, useMotionValue, useMotionTemplate, useSpring, AnimatePresence } from "framer-motion";
 import { CINEMATIC_EASE } from "./Shared";
 
 const CODE_SNIPPET = `import { createSystem } from "@core/engine";
@@ -93,13 +93,10 @@ const Slide5: React.FC<{ onActionTriggered?: (triggered: boolean) => void }> = (
     const hoverTimer = React.useRef<NodeJS.Timeout | null>(null);
 
     const handleInitiateHoverEnter = () => {
+        if (window.innerWidth < 768) return; // Ignore hover on mobile
         hoverTimer.current = setTimeout(() => {
-            setIsActionTriggered(true);
-            onActionTriggered?.(true);
-            maskRadiusX.set(1000);
-            maskRadiusY.set(600);
-            codeLayerOpacity.set(0.9);
-        }, 3000);
+            triggerReveal();
+        }, 1500); // Faster reveal on hover
     };
 
     const handleInitiateHoverLeave = () => {
@@ -122,29 +119,67 @@ const Slide5: React.FC<{ onActionTriggered?: (triggered: boolean) => void }> = (
     const handleSocialLeave = () => {
         isOverSocial.current = false;
     };
+    const resetReveal = () => {
+        setIsActionTriggered(false);
+        onActionTriggered?.(false);
+        maskRadiusX.set(130);
+        maskRadiusY.set(130);
+        codeLayerOpacity.set(0);
+        opacity.set(0); // Ensure the flashlight is hidden too
+    };
+
+    const triggerReveal = () => {
+        if (isActionTriggered) return;
+        setIsActionTriggered(true);
+        onActionTriggered?.(true);
+        maskRadiusX.set(1000);
+        maskRadiusY.set(600);
+        codeLayerOpacity.set(0.9);
+        
+        // Add a brief Haptic/Tactile feel if supported
+        if ('vibrate' in navigator) navigator.vibrate(50);
+    };
+
+    React.useEffect(() => {
+        return () => {
+            onActionTriggered?.(false);
+        };
+    }, [onActionTriggered]);
 
     // Sharper mask edge (95% to 100%) for a technical "cut" feel
     const maskImage = useMotionTemplate`radial-gradient(${maskRadiusX}px ${maskRadiusY}px at ${mouseX}px ${mouseY}px, black 95%, transparent 100%)`;
-
     return (
         <div
             className="relative z-10 w-full h-full flex flex-col justify-center items-center overflow-hidden bg-black"
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
         >
+            {/* 0. TAP-TO-CLOSE OVERLAY (Top Level) */}
+            <AnimatePresence>
+                {isActionTriggered && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        onClick={resetReveal}
+                        className="absolute inset-0 z-[100] cursor-pointer pointer-events-auto"
+                    />
+                )}
+            </AnimatePresence>
+
             {/* 1. LAYER ONE: Flashlight Code Reveal (Background) */}
             <motion.div
-                className="absolute inset-0 z-0 pointer-events-none flex overflow-hidden bg-[#050505]"
+                className={`absolute inset-0 z-0 flex overflow-hidden bg-[#050505] pointer-events-none`}
                 style={{ maskImage, WebkitMaskImage: maskImage, opacity }}
             >
-                <div className="flex w-full h-full text-zinc-500/40 font-mono text-[10px] md:text-xs pt-12 md:pt-16 uppercase">
+                <div className="flex w-full h-full text-zinc-500/40 font-mono text-[8px] md:text-xs pt-24 md:pt-16 uppercase">
                     <div className="w-48 md:w-64 border-r border-white/5 p-6 pt-4 hidden sm:block bg-black/40">
                         <div className="uppercase tracking-widest mb-6 text-zinc-400/40 text-[10px]">Explorer</div>
                         <div className="flex flex-col gap-3 lowercase">
                             <div className="flex items-center gap-2"><span className="text-[8px] uppercase">▼</span> KODEKENOBI-OS</div>
                             <div className="pl-4 flex flex-col gap-3">
                                 <div className="flex items-center gap-1"><span className="text-[8px] uppercase">▼</span> src</div>
-                                <div className="pl-4 flex flex-col gap-2">
+                                <div className="pl-4 flex flex-col gap-3">
                                     <div className="flex items-center gap-1"><span className="text-[8px] uppercase">▼</span> core</div>
                                     <div className="pl-4 text-zinc-500/50 hover:text-white transition-colors">engine.ts</div>
                                     <div className="pl-4 text-zinc-500/50 hover:text-white transition-colors">net.ts</div>
@@ -155,19 +190,19 @@ const Slide5: React.FC<{ onActionTriggered?: (triggered: boolean) => void }> = (
                         </div>
                     </div>
 
-                    <div className="flex-1 p-6 md:p-10 md:pt-14 overflow-hidden relative">
-                        <div className="flex gap-6 mb-6 text-zinc-500/30 border-b border-white/5 pb-3 text-xs w-full max-w-4xl relative z-10">
-                            <span className="text-blue-400 border-b border-blue-400 pb-3 -mb-[13px]">Slide5.tsx</span>
+                    <div className="flex-1 p-4 md:p-10 md:pt-14 overflow-hidden relative">
+                        <div className="flex gap-4 md:gap-6 mb-4 md:mb-6 text-zinc-500/30 border-b border-white/5 pb-2 md:pb-3 text-[9px] md:text-xs w-full max-w-4xl relative z-10">
+                            <span className="text-blue-400 border-b border-blue-400 pb-2 md:pb-3 -mb-[9px] md:-mb-[13px]">Slide5.tsx</span>
                             <span>engine.ts</span>
                             <span>net.ts</span>
                         </div>
-                        <div className="flex gap-4 relative z-10 lowercase">
+                        <div className="flex gap-2 md:gap-4 relative z-10 lowercase">
                             <div className="flex flex-col text-right text-zinc-500/20 select-none pb-20 mt-1">
                                 {Array.from({ length: 30 }).map((_, i) => (
                                     <span key={i} className="leading-relaxed">{i + 1}</span>
                                 ))}
                             </div>
-                            <pre className="leading-relaxed tracking-wider whitespace-pre-wrap select-none text-zinc-200/50 font-mono normal-case">
+                            <pre className="leading-relaxed tracking-wider whitespace-pre-wrap select-none text-zinc-200/50 font-mono normal-case text-[8px] md:text-sm">
                                 <HighlightedCode code={CODE_SNIPPET} />
                             </pre>
                         </div>
@@ -204,6 +239,7 @@ const Slide5: React.FC<{ onActionTriggered?: (triggered: boolean) => void }> = (
                 <motion.div
                     onMouseEnter={handleInitiateHoverEnter}
                     onMouseLeave={handleInitiateHoverLeave}
+                    onClick={triggerReveal}
                     variants={{
                         hidden: { opacity: 0, scale: 0.95 },
                         visible: { opacity: 1, scale: 1, transition: { duration: 1.5, ease: CINEMATIC_EASE, delay: 0.5 } }
@@ -211,15 +247,28 @@ const Slide5: React.FC<{ onActionTriggered?: (triggered: boolean) => void }> = (
                     className="group relative z-30 flex flex-col items-center justify-center cursor-pointer p-10 md:p-20"
                 >
                     <motion.div
-                        animate={isActionTriggered ? { opacity: 0.05, scale: 0.5 } : { opacity: 1, scale: 1 }}
-                        transition={{ duration: 1, ease: CINEMATIC_EASE }}
+                        animate={isActionTriggered ? { opacity: 0, scale: 2, filter: "blur(20px)" } : { opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.8, ease: CINEMATIC_EASE }}
                         className="relative z-40 flex flex-col items-center overflow-hidden"
                     >
-                        <span className="text-white/90 text-xl md:text-4xl font-black tracking-[0.8em] md:tracking-[1.5em] uppercase pl-4 md:pl-10">
-                            REVEAL
+                        <span className="text-white/90 text-xl md:text-4xl font-black tracking-[0.8em] md:tracking-[1.5em] uppercase pl-4 md:pl-10 relative">
+                            {isActionTriggered ? "INIT..." : "REVEAL"}
+                            {/* Glitch Overlay */}
+                            <AnimatePresence>
+                                {isActionTriggered && (
+                                    <motion.span
+                                        initial={{ opacity: 0, x: -10 }}
+                                        animate={{ opacity: [0, 1, 0], x: [0, 15, -15, 0] }}
+                                        className="absolute inset-0 text-cyan-400"
+                                    >
+                                        REVEAL
+                                    </motion.span>
+                                )}
+                            </AnimatePresence>
                         </span>
                         <div className="h-[1px] md:h-[2px] bg-[#c9a84c]/80 mt-6 md:mt-10 w-16 md:w-24" />
                     </motion.div>
+                    
                 </motion.div>
 
                 {/* Meta Links */}

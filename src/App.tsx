@@ -57,6 +57,7 @@ export default function App() {
   const isPreviewInteractingRef = useRef(false);
   const [isSkillsScrolled, setIsSkillsScrolled] = useState(false);
   const [isHeaderGoldLineActive, setIsHeaderGoldLineActive] = useState(false);
+  const [homeTrigger, setHomeTrigger] = useState(0);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -76,7 +77,7 @@ export default function App() {
   useEffect(() => {
     const timer = setTimeout(() => {
       heroAnimDoneRef.current = true;
-    }, 7500);
+    }, 2000); // Reduced from 7.5s for better responsiveness
     return () => clearTimeout(timer);
   }, []);
 
@@ -87,6 +88,9 @@ export default function App() {
 
     setCurrentSection(sectionId);
     currentSectionRef.current = sectionId;
+    if (sectionId === "home") {
+      setHomeTrigger(prev => prev + 1);
+    }
     if (sectionId === "about") {
       setAboutSlide(0);
       aboutSlideRef.current = 0;
@@ -114,12 +118,15 @@ export default function App() {
     if (nextIndex !== currentIndex) {
       // Initialize sound engine on user gesture
       soundEngine.init();
-      
-      lockScroll(1200);
+
+      lockScroll(isMobileRef.current ? 600 : 1000);
       const nextSection = sections[nextIndex].id;
       setCurrentSection(nextSection);
       currentSectionRef.current = nextSection;
 
+      if (nextSection === "home") {
+        setHomeTrigger(prev => prev + 1);
+      }
       if (nextSection === "about") {
         const slideTarget = direction > 0 ? 0 : ABOUT_TOTAL_SLIDES - 1;
         setAboutSlide(slideTarget);
@@ -184,7 +191,8 @@ export default function App() {
             setAboutDirection(1);
             setAboutSlide(next);
             aboutSlideRef.current = next;
-            lockScroll(800);
+            try { soundEngine.playShuffle(); } catch (e) { console.warn(e); }
+            lockScroll(isMobileRef.current ? 400 : 700);
           } else {
             navigateSection(1);
           }
@@ -194,7 +202,8 @@ export default function App() {
             setAboutDirection(-1);
             setAboutSlide(prev);
             aboutSlideRef.current = prev;
-            lockScroll(800);
+            try { soundEngine.playShuffle(); } catch (e) { console.warn(e); }
+            lockScroll(isMobileRef.current ? 400 : 700);
           } else {
             navigateSection(-1);
           }
@@ -227,7 +236,7 @@ export default function App() {
             const nextSlide = slide + 1;
             setSkillsSlide(nextSlide);
             skillsSlideRef.current = nextSlide;
-            lockScroll(800);
+            lockScroll(isMobileRef.current ? 400 : 700);
           } else {
             if (scrollAccumulatorRef.current > 120) {
               scrollAccumulatorRef.current = 0;
@@ -240,7 +249,7 @@ export default function App() {
             const nextSlide = slide - 1;
             setSkillsSlide(nextSlide);
             skillsSlideRef.current = nextSlide;
-            lockScroll(800);
+            lockScroll(isMobileRef.current ? 400 : 700);
           } else {
             if (scrollAccumulatorRef.current < -120) {
               scrollAccumulatorRef.current = 0;
@@ -276,7 +285,7 @@ export default function App() {
               setExperienceDirection(1);
               setExperienceSlide(1);
               experienceSlideRef.current = 1;
-              lockScroll(800);
+              lockScroll(isMobileRef.current ? 500 : 800);
             }
           } else {
             if (scrollAccumulatorRef.current < -200) {
@@ -305,7 +314,7 @@ export default function App() {
                 setExperienceDirection(-1);
                 setExperienceSlide(0);
                 experienceSlideRef.current = 0;
-                lockScroll(800);
+                lockScroll(isMobileRef.current ? 500 : 800);
               }
             } else if (atBottom && scrollingDown) {
               e.preventDefault();
@@ -347,7 +356,7 @@ export default function App() {
               setExperienceDirection(-1);
               setExperienceSlide(0);
               experienceSlideRef.current = 0;
-              lockScroll(800);
+              lockScroll(isMobileRef.current ? 500 : 800);
             }
           }
         }
@@ -376,7 +385,7 @@ export default function App() {
                 setProjectsDirection(-1);
                 setProjectsSlide(0);
                 projectsSlideRef.current = 0;
-                lockScroll(800);
+                lockScroll(isMobileRef.current ? 500 : 800);
               }
             }
           }
@@ -388,7 +397,7 @@ export default function App() {
               setProjectsDirection(1);
               setProjectsSlide(1);
               projectsSlideRef.current = 1;
-              lockScroll(800);
+              lockScroll(isMobileRef.current ? 500 : 800);
             }
           } else {
             if (scrollAccumulatorRef.current < -threshold) {
@@ -403,13 +412,14 @@ export default function App() {
 
     let touchStartY = 0;
     const handleTouchStart = (e: TouchEvent) => {
+      soundEngine.init(); // Initialize on start
+      heroAnimDoneRef.current = true; // Unlock scrolling on first touch
       touchStartY = e.touches[0].clientY;
       scrollAccumulatorRef.current = 0;
     };
 
     const handleTouchMove = (e: TouchEvent) => {
-      // Initialize sound engine on user gesture
-      soundEngine.init();
+      // Sound engine already initialized in touchstart
 
       if (
         !heroAnimDoneRef.current ||
@@ -508,6 +518,7 @@ export default function App() {
               const next = slide + 1;
               setAboutSlide(next);
               aboutSlideRef.current = next;
+              try { soundEngine.playShuffle(); } catch (e) { console.warn(e); }
               scrollAccumulatorRef.current = 0;
               lockScroll(500);
             }
@@ -524,6 +535,7 @@ export default function App() {
               const prev = slide - 1;
               setAboutSlide(prev);
               aboutSlideRef.current = prev;
+              try { soundEngine.playShuffle(); } catch (e) { console.warn(e); }
               scrollAccumulatorRef.current = 0;
               lockScroll(500);
             }
@@ -605,7 +617,7 @@ export default function App() {
               setExperienceDirection(1);
               setExperienceSlide(1);
               experienceSlideRef.current = 1;
-              lockScroll(600);
+              lockScroll(isMobileRef.current ? 400 : 600);
             }
           } else {
             if (scrollAccumulatorRef.current < -60) {
@@ -741,7 +753,11 @@ export default function App() {
             transition: "opacity 0.6s ease-in-out",
           }}
         >
-          {isMobile ? <MobileAnimatedHero /> : <AnimatedHero />}
+          {isMobile ? (
+            <MobileAnimatedHero key={`mobile-hero-${homeTrigger}`} />
+          ) : (
+            <AnimatedHero key={`desktop-hero-${homeTrigger}`} />
+          )}
         </section>
         <section
           className="absolute inset-0 bg-[#050505] overflow-hidden"

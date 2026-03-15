@@ -1,7 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
-import { motion, useMotionValue, useSpring, useTransform, useMotionTemplate, AnimatePresence } from "framer-motion";
+import { motion, useMotionValue, useSpring, useTransform, useMotionTemplate, AnimatePresence, useDragControls } from "framer-motion";
 import { CINEMATIC_EASE } from "../about/Shared";
 import { mobileSlideVariants } from "./Shared";
+
+import { soundEngine } from "../../lib/SoundEngine";
 
 // ─── MOBILE TOUCH CARD (full finger-driven tilt + glare) ───
 const MobileTouchCard: React.FC<{
@@ -10,6 +12,7 @@ const MobileTouchCard: React.FC<{
     isRight: boolean;
 }> = ({ tech, i, isRight }) => {
     const cardRef = useRef<HTMLDivElement>(null);
+    const dragControls = useDragControls();
 
     // 3D tilt motion values
     const rawX = useMotionValue(0.5);
@@ -26,6 +29,7 @@ const MobileTouchCard: React.FC<{
 
     // Press-and-hold state
     const holdTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const soundTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
     const [held, setHeld] = useState(false);
     const [tapped, setTapped] = useState(false);
     const tapTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -37,11 +41,19 @@ const MobileTouchCard: React.FC<{
     };
 
     const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
-        // We removed stopPropagation so App.tsx can see the events for boundary detection
+        // DO NOT stop propagation here for natural scroll access
         isTouching.current = true;
+        
         if (holdTimer.current) clearTimeout(holdTimer.current);
+        if (soundTimer.current) clearTimeout(soundTimer.current);
+
         holdTimer.current = setTimeout(() => {
-            if (isTouching.current) setHeld(true);
+            if (isTouching.current) {
+                setHeld(true);
+                soundEngine.playFocus();
+                // Add a small vibration feedback if supported
+                if ('vibrate' in navigator) navigator.vibrate(40);
+            }
         }, 500);
 
         const rect = cardRef.current?.getBoundingClientRect();
@@ -53,6 +65,13 @@ const MobileTouchCard: React.FC<{
     };
 
     const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+        // If we ARE held, lock scroll and start drag
+        if (held) {
+            if (e.cancelable) e.preventDefault();
+            e.stopPropagation();
+            dragControls.start(e);
+        }
+
         const rect = cardRef.current?.getBoundingClientRect();
         if (!rect) return;
         const t = e.touches[0];
@@ -64,8 +83,15 @@ const MobileTouchCard: React.FC<{
 
     const handleTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
         isTouching.current = false;
+        
         if (holdTimer.current) clearTimeout(holdTimer.current);
-        setHeld(false);
+        if (soundTimer.current) clearTimeout(soundTimer.current);
+        
+        if (held) {
+            soundEngine.stopFocus();
+            setHeld(false);
+        }
+        
         resetTilt();
         setTapped(true);
         if (tapTimeout.current) clearTimeout(tapTimeout.current);
@@ -80,10 +106,17 @@ const MobileTouchCard: React.FC<{
             initial={{ opacity: 0, x: isRight ? 50 : -50, y: 10 }}
             animate={{ opacity: 1, x: 0, y: 0 }}
             transition={{ duration: 0.6, delay: i * 0.12, ease: CINEMATIC_EASE }}
+            drag={held}
+            dragListener={false}
+            dragControls={dragControls}
+            dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
+            dragElastic={0.12}
+            dragTransition={{ bounceStiffness: 200, bounceDamping: 20 }}
+            whileTap={{ scale: 0.97 }}
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
-            className="relative overflow-hidden rounded-2xl cursor-pointer select-none min-h-[380px]"
+            className={`relative overflow-hidden rounded-2xl cursor-pointer select-none min-h-[380px] ${held ? 'touch-none' : 'touch-pan-y'}`}
             style={{
                 perspective: "1200px",
                 rotateX,
@@ -122,33 +155,8 @@ const MobileTouchCard: React.FC<{
                 style={{ background: glare, opacity: isTouching.current ? 1 : 0, transition: 'opacity 0.3s' }}
             />
 
-            <motion.div
-                className="absolute inset-0 pointer-events-none rounded-2xl"
-                animate={{ x: ['-110%', '210%'] }}
-                transition={{ duration: 2.8, repeat: Infinity, repeatDelay: 2.5 + i * 1.4, ease: 'linear' }}
-                style={{
-                    background: 'linear-gradient(115deg, transparent 30%, rgba(201,168,76,0.07) 45%, rgba(255,255,255,0.05) 50%, rgba(201,168,76,0.07) 55%, transparent 70%)',
-                    width: '100%',
-                }}
-            />
 
-            <div
-                className="absolute inset-0 pointer-events-none rounded-2xl opacity-[0.025]"
-                style={{ backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(255,255,255,0.5) 4px)', backgroundSize: '100% 4px' }}
-            />
 
-            <AnimatePresence>
-                {held && (
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.85 }}
-                        animate={{ opacity: [0.4, 0.1, 0.4], scale: [0.9, 1.05, 0.9] }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 1.2, repeat: Infinity }}
-                        className="absolute inset-0 rounded-2xl pointer-events-none"
-                        style={{ border: '2px solid rgba(201,168,76,0.5)', boxShadow: 'inset 0 0 30px rgba(201,168,76,0.1)' }}
-                    />
-                )}
-            </AnimatePresence>
 
             <AnimatePresence>
                 {tapped && (
@@ -230,26 +238,6 @@ const MobileTouchCard: React.FC<{
                     {tech.code}
                 </div>
 
-                <AnimatePresence>
-                    {isActive && (
-                        <motion.div
-                            initial={{ width: 0 }}
-                            animate={{ width: '100%' }}
-                            exit={{ opacity: 0, transition: { duration: 0.25 } }}
-                            transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-                            style={{
-                                position: 'absolute', bottom: 0, left: 0, height: held ? 3 : 2,
-                                background: held
-                                    ? 'linear-gradient(90deg, #8b5cf6, #c9a84c, #8b5cf6)'
-                                    : 'linear-gradient(90deg, #c9a84c, rgba(201,168,76,0.3))',
-                                borderRadius: '0 0 16px 16px',
-                                boxShadow: held ? '0 0 16px rgba(201,168,76,0.8)' : '0 0 10px rgba(201,168,76,0.5)',
-                                pointerEvents: 'none',
-                                transition: 'height 0.2s, box-shadow 0.2s',
-                            }}
-                        />
-                    )}
-                </AnimatePresence>
             </div>
         </motion.div>
     );

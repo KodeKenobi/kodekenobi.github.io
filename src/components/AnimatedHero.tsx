@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const CINEMATIC_EASE = [0.77, 0, 0.175, 1] as const;
+import DecryptText from "./Animations/DecryptText";
 
 export const AnimatedHero: React.FC = () => {
   const [scene, setScene] = useState(1);
@@ -181,10 +182,10 @@ export const AnimatedHero: React.FC = () => {
 
               <div className="flex flex-col items-center leading-none">
                 <h3 className="text-white text-5xl md:text-8xl font-black tracking-[0.2em] font-sans drop-shadow-2xl">
-                  KODE
+                  <DecryptText text="KODE" trigger={scene === 8} />
                 </h3>
                 <h3 className="text-white text-5xl md:text-8xl font-black tracking-[0.2em] font-sans drop-shadow-2xl">
-                  KENOBI
+                  <DecryptText text="KENOBI" trigger={scene === 8} />
                 </h3>
               </div>
 
