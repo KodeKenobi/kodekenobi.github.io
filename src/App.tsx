@@ -730,6 +730,7 @@ export default function App() {
         onSectionChange={showSection}
         isScrolled={isSkillsScrolled || isProjectsScrolled}
         isGoldLineActive={isHeaderGoldLineActive}
+        isMobile={isMobile}
       />
       <div className="scroll-container relative z-10 w-full h-full pt-20 overflow-hidden">
         <section

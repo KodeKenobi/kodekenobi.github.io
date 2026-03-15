@@ -18,20 +18,20 @@ const menuVariants = {
     opacity: 1,
     y: 0,
     transition: {
-      staggerChildren: 0.1,
-      duration: 0.5,
+      staggerChildren: 0.05,
+      duration: 0.4,
+      ease: [0.16, 1, 0.3, 1],
     },
   },
-  exit: { opacity: 0, y: "-100%", transition: { duration: 0.4 } },
+  exit: { opacity: 0, y: "-100%", transition: { duration: 0.3 } },
 };
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 60, rotateX: 90 },
+  hidden: { opacity: 0, y: 20 },
   visible: {
     opacity: 1,
     y: 0,
-    rotateX: 0,
-    transition: { duration: 0.5 },
+    transition: { duration: 0.4, ease: "easeOut" },
   },
 };
 
@@ -166,6 +166,7 @@ interface AnimatedNavbarProps {
   disableBlur?: boolean;
   isScrolled?: boolean;
   isGoldLineActive?: boolean;
+  isMobile?: boolean;
 }
 
 export default function AnimatedNavbar({
@@ -174,6 +175,7 @@ export default function AnimatedNavbar({
   disableBlur,
   isScrolled: externalScrolled,
   isGoldLineActive,
+  isMobile,
 }: AnimatedNavbarProps) {
   const [open, setOpen] = useState(false);
   const [hovered, setHovered] = useState(false);
@@ -286,21 +288,22 @@ export default function AnimatedNavbar({
         {open && (
           <>
             <motion.div
-              className="fixed inset-0 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center z-40"
+              className={`fixed inset-0 flex flex-col items-center justify-center z-40 transition-colors duration-300 ${isMobile ? 'bg-black' : 'bg-black/80 backdrop-blur-md'}`}
               initial="hidden"
               animate="visible"
               exit="exit"
               variants={menuVariants}
             >
-              <SplashCursor key={open ? "open" : "closed"} paused={!open} />
+              {!isMobile && <SplashCursor key={open ? "open" : "closed"} paused={!open} />}
               {navItems.map((item) => (
                 <motion.div
                   key={item.id}
                   variants={itemVariants}
-                  whileHover={{ scale: 1.2, rotateX: -10 }}
+                  whileHover={!isMobile ? { scale: 1.15, rotateX: -5 } : { scale: 1.05 }}
                   className={clsx(
-                    "text-4xl sm:text-5xl font-extrabold uppercase tracking-widest my-3",
-                    "transition-all hover:text-cyan-300 cursor-pointer"
+                    "relative text-4xl sm:text-5xl font-extrabold uppercase tracking-widest my-3",
+                    "transition-all hover:text-cyan-300 cursor-pointer",
+                    currentSection === item.id ? "text-cyan-400" : "text-white"
                   )}
                   onClick={() => {
                     onSectionChange(item.id);
@@ -314,7 +317,7 @@ export default function AnimatedNavbar({
                   )}
                 </motion.div>
               ))}
-              <motion.div variants={itemVariants}>
+              <motion.div variants={itemVariants} className="mt-8">
                 <SoundToggle />
               </motion.div>
             </motion.div>

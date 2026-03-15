@@ -15,7 +15,6 @@ export function useSound() {
 
   const playHover = useCallback(() => soundEngine.playHover(), []);
   const playClick = useCallback(() => soundEngine.playClick(), []);
-  const playBounce = useCallback((volume: number = 1.0) => soundEngine.playBounce(volume), []);
   const playTransition = useCallback(
     (direction: 'up' | 'down' = 'down') => soundEngine.playTransition(direction),
     []
@@ -27,7 +26,6 @@ export function useSound() {
     isMuted,
     playHover,
     playClick,
-    playBounce,
     playTransition,
     toggleMute,
     setSection,

@@ -246,67 +246,6 @@ class SoundEngine {
     sweep.stop(now + duration);
   }
 
-  /**
-   * Play a bouncing impact sound.
-   * @param volume Multiplier for the impact volume (usually 0.0 to 1.0)
-   */
-  playBounce(volume: number = 1.0): void {
-    if (!this.ctx || !this.masterGain || this.state.isMuted) return;
-
-    const now = this.ctx.currentTime;
-    const duration = 0.15;
-
-    const osc = this.ctx.createOscillator();
-    const gain = this.ctx.createGain();
-
-    osc.type = 'sine';
-    // Higher, clearer "ping" frequency
-    osc.frequency.setValueAtTime(400, now);
-    osc.frequency.exponentialRampToValueAtTime(60, now + duration);
-
-    gain.gain.setValueAtTime(0, now);
-    gain.gain.linearRampToValueAtTime(0.4 * volume, now + 0.01);
-    gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
-
-    osc.connect(gain);
-    gain.connect(this.masterGain);
-
-    osc.start(now);
-    osc.stop(now + duration);
-
-    // Add a tiny bit of noise "thud"
-    const noiseSize = this.ctx.sampleRate * 0.05;
-    const noiseBuffer = this.ctx.createBuffer(1, noiseSize, this.ctx.sampleRate);
-    const noiseData = noiseBuffer.getChannelData(0);
-    for (let i = 0; i < noiseSize; i++) {
-      noiseData[i] = Math.random() * 2 - 1;
-    }
-
-    const noiseSource = this.ctx.createBufferSource();
-    noiseSource.buffer = noiseBuffer;
-
-    const lpf = this.ctx.createBiquadFilter();
-    lpf.type = 'lowpass';
-    lpf.frequency.value = 400; // Let more noise through for the impact
-
-    const noiseGain = this.ctx.createGain();
-    noiseGain.gain.setValueAtTime(0.25 * volume, now);
-    noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
-
-    noiseSource.connect(lpf);
-    lpf.connect(noiseGain);
-    noiseGain.connect(this.masterGain);
-
-    noiseSource.start(now);
-    noiseSource.stop(now + 0.05);
-
-    // Subtle haptic feedback for mobile
-    if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
-      // Scale vibration duration with bounce volume (stronger hit = more tactile)
-      const duration = Math.max(5, Math.floor(15 * volume));
-      navigator.vibrate(duration);
-    }
-  }
 
   /**
    * Toggle mute state.

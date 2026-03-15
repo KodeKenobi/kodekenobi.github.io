@@ -1,7 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { SplitText, ClipReveal, CINEMATIC_EASE } from "../about/Shared";
-import { useSound } from "../../hooks/useSound";
 
 const variants = {
   enter: (direction: number) => ({
@@ -22,10 +21,7 @@ export const Slide0: React.FC<{ isMobile: boolean; direction: number }> = ({
   isMobile,
   direction,
 }) => {
-  const { playBounce } = useSound();
 
-  const prevY = React.useRef(-150);
-  const bounceIndex = React.useRef(0);
 
   return (
     <motion.div
@@ -50,17 +46,6 @@ export const Slide0: React.FC<{ isMobile: boolean; direction: number }> = ({
               animate={{
                 y: [null, 0, -50, 0, -20, 0, -6, 0],
                 opacity: 1,
-              }}
-              onUpdate={(latest) => {
-                const y = Number(latest.y);
-                if (prevY.current < 0 && y >= 0) {
-                  const volumes = [1.0, 0.6, 0.35, 0.2];
-                  if (bounceIndex.current < volumes.length) {
-                    playBounce(volumes[bounceIndex.current]);
-                    bounceIndex.current++;
-                  }
-                }
-                prevY.current = y;
               }}
               transition={{
                 y: {

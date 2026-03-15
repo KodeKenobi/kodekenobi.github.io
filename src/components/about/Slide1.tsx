@@ -1,13 +1,8 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { SplitText, ClipReveal, CINEMATIC_EASE } from "./Shared";
-import { useSound } from "../../hooks/useSound";
 
 const Slide1: React.FC = () => {
-  const { playBounce } = useSound();
-
-  const prevY = React.useRef(-150);
-  const bounceIndex = React.useRef(0);
 
   return (
     <div className="relative z-10 w-full max-w-7xl mx-auto px-8 flex flex-col items-start justify-center h-full">
@@ -21,17 +16,6 @@ const Slide1: React.FC = () => {
           animate={{
             y: [null, 0, -50, 0, -20, 0, -6, 0],
             opacity: 1,
-          }}
-          onUpdate={(latest) => {
-            const y = Number(latest.y);
-            if (prevY.current < 0 && y >= 0) {
-              const volumes = [1.0, 0.6, 0.35, 0.2];
-              if (bounceIndex.current < volumes.length) {
-                playBounce(volumes[bounceIndex.current]);
-                bounceIndex.current++;
-              }
-            }
-            prevY.current = y;
           }}
           transition={{
             y: {

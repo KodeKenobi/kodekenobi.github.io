@@ -1,8 +1,7 @@
 import React from "react";
-import { motion } from "framer-motion";
+import { motion, useMotionValue } from "framer-motion";
 import { SplitText, ClipReveal, CINEMATIC_EASE } from "../about/Shared";
 import { mobileSlideVariants } from "./Shared";
-import { useSound } from "../../hooks/useSound";
 
 const desktopVariants = {
 // ... existing variants
@@ -21,10 +20,7 @@ const desktopVariants = {
 };
 
 export const Slide1: React.FC<{ isMobile: boolean; direction: number }> = ({ isMobile, direction }) => {
-    const { playBounce } = useSound();
 
-    const prevY = React.useRef(-150);
-    const bounceIndex = React.useRef(0);
 
     if (isMobile) {
 // ... existing mobile JSX
@@ -49,17 +45,6 @@ export const Slide1: React.FC<{ isMobile: boolean; direction: number }> = ({ isM
                         animate={{
                             y: [null, 0, -30, 0, -10, 0, -3, 0],
                             opacity: 1,
-                        }}
-                        onUpdate={(latest) => {
-                            const y = Number(latest.y);
-                            if (prevY.current < 0 && y >= 0) {
-                                const volumes = [1.0, 0.6, 0.35, 0.2];
-                                if (bounceIndex.current < volumes.length) {
-                                    playBounce(volumes[bounceIndex.current]);
-                                    bounceIndex.current++;
-                                }
-                            }
-                            prevY.current = y;
                         }}
                         transition={{
                             y: { duration: 2.2, times: [0, 0.18, 0.32, 0.45, 0.58, 0.70, 0.82, 1], ease: ["easeIn", "easeOut", "easeIn", "easeOut", "easeIn", "easeOut", "easeIn"], delay: 1.0 },
@@ -118,17 +103,6 @@ export const Slide1: React.FC<{ isMobile: boolean; direction: number }> = ({ isM
                             animate={{
                                 y: [null, 0, -50, 0, -20, 0, -6, 0],
                                 opacity: 1,
-                            }}
-                            onUpdate={(latest) => {
-                                const y = Number(latest.y);
-                                if (prevY.current < 0 && y >= 0) {
-                                    const volumes = [1.0, 0.6, 0.35, 0.2];
-                                    if (bounceIndex.current < volumes.length) {
-                                        playBounce(volumes[bounceIndex.current]);
-                                        bounceIndex.current++;
-                                    }
-                                }
-                                prevY.current = y;
                             }}
                             transition={{
                                 y: {
