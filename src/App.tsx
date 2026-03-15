@@ -99,11 +99,12 @@ export default function App() {
 
   const navigateSection = (direction: number) => {
     const currentIndex = sections.findIndex(
-      (s) => s.id === currentSectionRef.current
+      (s) => s.id === currentSectionRef.current,
     );
-    const nextIndex = direction > 0
-      ? Math.min(currentIndex + 1, sections.length - 1)
-      : Math.max(currentIndex - 1, 0);
+    const nextIndex =
+      direction > 0
+        ? Math.min(currentIndex + 1, sections.length - 1)
+        : Math.max(currentIndex - 1, 0);
 
     if (nextIndex !== currentIndex) {
       lockScroll(1200);
@@ -140,7 +141,11 @@ export default function App() {
 
   useEffect(() => {
     const handleWheelEvent = (e: Event) => {
-      if (!heroAnimDoneRef.current || isScrollingRef.current || isPreviewInteractingRef.current) {
+      if (
+        !heroAnimDoneRef.current ||
+        isScrollingRef.current ||
+        isPreviewInteractingRef.current
+      ) {
         if (!isPreviewInteractingRef.current) e.preventDefault();
         return;
       }
@@ -194,9 +199,11 @@ export default function App() {
         const maxSlide = SKILLS_TOTAL_SLIDES - 1;
 
         if (slide > 0) {
-          const container = skillsContainerRef.current?.querySelector('.overflow-y-auto');
+          const container =
+            skillsContainerRef.current?.querySelector(".overflow-y-auto");
           if (container) {
-            const { scrollTop, scrollHeight, clientHeight } = container as HTMLElement;
+            const { scrollTop, scrollHeight, clientHeight } =
+              container as HTMLElement;
             const isAtTop = scrollTop <= 2;
             const isAtBottom = scrollTop + clientHeight >= scrollHeight - 2;
 
@@ -239,9 +246,12 @@ export default function App() {
       if (current === "experience") {
         const slide = experienceSlideRef.current;
         if (slide === 1 && isMobileRef.current) {
-          const container = document.getElementById('mobile-experience-timeline');
+          const container = document.getElementById(
+            "mobile-experience-timeline",
+          );
           if (container) {
-            const { scrollTop, scrollHeight, clientHeight } = container as HTMLElement;
+            const { scrollTop, scrollHeight, clientHeight } =
+              container as HTMLElement;
             const atTop = scrollTop <= 5;
             const atBottom = scrollTop + clientHeight >= scrollHeight - 5;
 
@@ -271,9 +281,12 @@ export default function App() {
 
         if (isMobileRef.current) {
           // Mobile native scroll boundary detection
-          const container = document.getElementById('mobile-experience-timeline');
+          const container = document.getElementById(
+            "mobile-experience-timeline",
+          );
           if (container) {
-            const { scrollTop, scrollHeight, clientHeight } = container as HTMLElement;
+            const { scrollTop, scrollHeight, clientHeight } =
+              container as HTMLElement;
             const atTop = scrollTop <= 5;
             const atBottom = scrollTop + clientHeight >= scrollHeight - 5;
 
@@ -301,7 +314,10 @@ export default function App() {
           e.preventDefault();
           const currentProgress = skillsExperienceProgressRef.current;
           const delta = wheelEvent.deltaY * 0.05;
-          const nextProgress = Math.min(Math.max(0, currentProgress + delta), 100);
+          const nextProgress = Math.min(
+            Math.max(0, currentProgress + delta),
+            100,
+          );
           if (scrollingDown) {
             if (currentProgress < 100) {
               setSkillsExperienceProgress(nextProgress);
@@ -335,9 +351,10 @@ export default function App() {
         const threshold = 200; // Increased feel of intentionality
 
         if (slide === 1) {
-          const container = document.getElementById('projects-grid');
+          const container = document.getElementById("projects-grid");
           if (container) {
-            const { scrollTop, scrollHeight, clientHeight } = container as HTMLElement;
+            const { scrollTop, scrollHeight, clientHeight } =
+              container as HTMLElement;
             const atTop = scrollTop <= 5;
             const atBottom = scrollTop + clientHeight >= scrollHeight - 5;
 
@@ -383,7 +400,12 @@ export default function App() {
     };
 
     const handleTouchMove = (e: TouchEvent) => {
-      if (!heroAnimDoneRef.current || isScrollingRef.current || isPreviewInteractingRef.current) return;
+      if (
+        !heroAnimDoneRef.current ||
+        isScrollingRef.current ||
+        isPreviewInteractingRef.current
+      )
+        return;
 
       const touchY = e.touches[0].clientY;
       const deltaY = touchStartY - touchY;
@@ -411,9 +433,10 @@ export default function App() {
             }
           }
         } else {
-          const container = document.getElementById('projects-grid');
+          const container = document.getElementById("projects-grid");
           if (container) {
-            const { scrollTop, scrollHeight, clientHeight } = container as HTMLElement;
+            const { scrollTop, scrollHeight, clientHeight } =
+              container as HTMLElement;
             const atTop = scrollTop <= 5;
             const atBottom = scrollTop + clientHeight >= scrollHeight - 5;
 
@@ -428,13 +451,14 @@ export default function App() {
                 lockScroll(600);
               }
             } else if (atBottom && scrollingDown) {
-              // Standard behavior: allow exit to next section if needed, 
-              // but user requested "vertical scroll on mobile and desktop", 
+              // Standard behavior: allow exit to next section if needed,
+              // but user requested "vertical scroll on mobile and desktop",
               // implying they might want to stay in repos more easily.
               // For now, let's keep it similar to Experience section's atBottom logic.
               if (e.cancelable) e.preventDefault();
               scrollAccumulatorRef.current += deltaY;
-              if (scrollAccumulatorRef.current > 80) { // Slightly harder to leave accidentally
+              if (scrollAccumulatorRef.current > 80) {
+                // Slightly harder to leave accidentally
                 scrollAccumulatorRef.current = 0;
                 navigateSection(1);
               }
@@ -449,7 +473,10 @@ export default function App() {
       if (current === "home") {
         if (e.cancelable) e.preventDefault();
         scrollAccumulatorRef.current += deltaY;
-        if (Math.abs(deltaY) > 50 || Math.abs(scrollAccumulatorRef.current) > 50) {
+        if (
+          Math.abs(deltaY) > 50 ||
+          Math.abs(scrollAccumulatorRef.current) > 50
+        ) {
           if (scrollingDown) {
             scrollAccumulatorRef.current = 0;
             navigateSection(1);
@@ -521,9 +548,11 @@ export default function App() {
             }
           }
         } else {
-          const container = skillsContainerRef.current?.querySelector('.overflow-y-auto');
+          const container =
+            skillsContainerRef.current?.querySelector(".overflow-y-auto");
           if (container) {
-            const { scrollTop, scrollHeight, clientHeight } = container as HTMLElement;
+            const { scrollTop, scrollHeight, clientHeight } =
+              container as HTMLElement;
             const isAtTop = scrollTop <= 2;
             const isAtBottom = scrollTop + clientHeight >= scrollHeight - 2;
             if (isAtTop && !scrollingDown && deltaY < -threshold) {
@@ -578,9 +607,12 @@ export default function App() {
 
         if (isMobileRef.current) {
           // Mobile native scroll for Experience Timeline
-          const container = document.getElementById('mobile-experience-timeline');
+          const container = document.getElementById(
+            "mobile-experience-timeline",
+          );
           if (container) {
-            const { scrollTop, scrollHeight, clientHeight } = container as HTMLElement;
+            const { scrollTop, scrollHeight, clientHeight } =
+              container as HTMLElement;
             const atTop = scrollTop <= 5;
             const atBottom = scrollTop + clientHeight >= scrollHeight - 5;
 
@@ -611,7 +643,10 @@ export default function App() {
           scrollAccumulatorRef.current += deltaY;
           const currentProgress = skillsExperienceProgressRef.current;
           const sensitivity = 0.05;
-          const nextProgress = Math.min(Math.max(0, currentProgress + deltaY * sensitivity), 100);
+          const nextProgress = Math.min(
+            Math.max(0, currentProgress + deltaY * sensitivity),
+            100,
+          );
           if (scrollingDown) {
             if (currentProgress < 100) {
               setSkillsExperienceProgress(nextProgress);
@@ -644,7 +679,9 @@ export default function App() {
     };
 
     document.addEventListener("wheel", handleWheelEvent, { passive: false });
-    document.addEventListener("touchstart", handleTouchStart, { passive: true });
+    document.addEventListener("touchstart", handleTouchStart, {
+      passive: true,
+    });
     document.addEventListener("touchmove", handleTouchMove, { passive: false });
 
     return () => {
