@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import DecryptText from "./Animations/DecryptText";
+import { soundEngine } from "../lib/SoundEngine";
 
 const CINEMATIC_EASE = [0.77, 0, 0.175, 1] as const;
 
 export const MobileAnimatedHero: React.FC = () => {
     const [scene, setScene] = useState(1);
+    const [isTapped, setIsTapped] = useState(false);
 
     // Scene Orchestration Timeline
     useEffect(() => {
@@ -27,6 +29,14 @@ export const MobileAnimatedHero: React.FC = () => {
             [s2Timer, s3Timer, s4Timer, s5Timer, s6Timer, s7Timer, s8Timer].forEach(clearTimeout);
         };
     }, []);
+
+    // Reset tap state so it reappears when user returns home
+    useEffect(() => {
+        if (isTapped) {
+            const timer = setTimeout(() => setIsTapped(false), 2000);
+            return () => clearTimeout(timer);
+        }
+    }, [isTapped]);
 
     return (
         <div className="relative w-full h-[100dvh] overflow-hidden bg-white font-sans">
@@ -213,26 +223,54 @@ export const MobileAnimatedHero: React.FC = () => {
                 )}
             </AnimatePresence>
 
-            {/* Scroll Down Mouse Indicator */}
+            {/* Tap Down Mouse Indicator */}
             <motion.div
                 initial={{ opacity: 0 }}
-                animate={{ opacity: scene >= 8 ? 1 : 0 }}
+                animate={{ opacity: scene >= 8 ? (isTapped ? 0 : 1) : 0 }}
                 transition={{ duration: 1.5, delay: 1 }}
-                className="absolute bottom-10 left-1/2 -translate-x-1/2 z-[90] flex flex-col items-center gap-2 pointer-events-none"
+                className="absolute bottom-10 left-1/2 -translate-x-1/2 z-[90] flex flex-col items-center gap-2 cursor-pointer"
+                onClick={() => {
+                    if (isTapped) return;
+                    setIsTapped(true);
+                    if (navigator.vibrate) navigator.vibrate(50);
+                    soundEngine.init();
+                    soundEngine.playIgnition();
+                    setTimeout(() => {
+                        const event = new WheelEvent("wheel", { deltaY: 100, bubbles: true });
+                        document.dispatchEvent(event);
+                    }, 400);
+                }}
             >
-                <div className="w-5 h-8 rounded-full border-2 border-white/40 flex justify-center pt-1.5">
+                {isTapped && (
                     <motion.div
-                        animate={{ y: [0, 8, 0] }}
-                        transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
-                        className="w-1 h-1 rounded-full bg-white/70"
+                        initial={{ opacity: 1, scale: 1 }}
+                        animate={{ opacity: 0, scale: 3 }}
+                        transition={{ duration: 0.6, ease: "easeOut" }}
+                        className="absolute inset-0 m-auto w-12 h-12 rounded-full border border-white/50 pointer-events-none"
                     />
-                </div>
+                )}
+                
+                <motion.div 
+                    whileTap={{ scale: 0.85, y: 5 }}
+                    className="relative flex flex-col items-center z-10"
+                >
+                    {/* The pointing hand is removed */}
+
+                    <div className="w-5 h-8 rounded-full border-2 border-white/40 flex justify-center pt-1.5 transition-colors shadow-[0_0_10px_rgba(255,255,255,0.1)]">
+                        <motion.div
+                            animate={{ y: [0, 8, 0] }}
+                            transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
+                            className="w-1 h-1 rounded-full bg-white/70"
+                        />
+                    </div>
+                </motion.div>
+                
                 <motion.span
                     animate={{ opacity: [0.3, 0.7, 0.3] }}
                     transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
                     className="text-white font-mono text-[8px] uppercase tracking-[0.2em]"
                 >
-                    Scroll
+                    Tap
                 </motion.span>
             </motion.div>
 

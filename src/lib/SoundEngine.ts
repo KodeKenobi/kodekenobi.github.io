@@ -49,7 +49,7 @@ class SoundEngine {
     if (this.ctx && this.ctx.state === 'suspended') {
       this.ctx.resume();
     }
-    
+
     if (this.state.isInitialized) return;
 
     try {
@@ -228,6 +228,56 @@ class SoundEngine {
   }
 
   /**
+   * Play an ignition sound — heavy mechanical clunk with a synth sweep
+   */
+  playIgnition(): void {
+    if (!this.ctx || !this.masterGain || this.state.isMuted) return;
+
+    const now = this.ctx.currentTime;
+    
+    // 1. Heavy Bass Thud
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = "sine";
+    osc.frequency.value = 150;
+    osc.frequency.exponentialRampToValueAtTime(30, now + 0.1);
+    gain.gain.value = 0.5;
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+    osc.connect(gain);
+    gain.connect(this.masterGain);
+    osc.start(now);
+    osc.stop(now + 0.3);
+
+    // 2. High-frequency electrical spark/snap
+    const snapOsc = this.ctx.createOscillator();
+    const snapGain = this.ctx.createGain();
+    snapOsc.type = "square";
+    snapOsc.frequency.value = 1500;
+    snapOsc.frequency.exponentialRampToValueAtTime(200, now + 0.05);
+    snapGain.gain.value = 0.1;
+    snapGain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+    snapOsc.connect(snapGain);
+    snapGain.connect(this.masterGain);
+    snapOsc.start(now);
+    snapOsc.stop(now + 0.1);
+    
+    // 3. Power-up Sweep
+    const sweepOsc = this.ctx.createOscillator();
+    const sweepGain = this.ctx.createGain();
+    sweepOsc.type = "sine";
+    sweepOsc.frequency.value = 50;
+    sweepOsc.frequency.linearRampToValueAtTime(400, now + 0.6);
+    sweepGain.gain.value = 0;
+    sweepGain.gain.linearRampToValueAtTime(0.15, now + 0.2);
+    sweepGain.gain.exponentialRampToValueAtTime(0.001, now + 0.7);
+    sweepOsc.connect(sweepGain);
+    sweepGain.connect(this.masterGain);
+    sweepOsc.start(now);
+    sweepOsc.stop(now + 0.7);
+  }
+
+  /**
+
    * Play a subtle card shuffle sound — sequence of paper-like flicks.
    */
   playShuffle(): void {
