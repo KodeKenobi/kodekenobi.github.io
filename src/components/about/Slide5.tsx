@@ -104,11 +104,14 @@ const Slide5: React.FC<{ onActionTriggered?: (triggered: boolean) => void }> = (
             clearTimeout(hoverTimer.current);
             hoverTimer.current = null;
         }
-        setIsActionTriggered(false);
-        onActionTriggered?.(false);
-        maskRadiusX.set(130);
-        maskRadiusY.set(130);
-        codeLayerOpacity.set(0);
+        // Only reset if we HAVEN'T successfully triggered the full reveal yet
+        if (!isActionTriggered) {
+            setIsActionTriggered(false);
+            onActionTriggered?.(false);
+            maskRadiusX.set(130);
+            maskRadiusY.set(130);
+            codeLayerOpacity.set(0);
+        }
     };
 
     const handleSocialEnter = () => {
@@ -172,9 +175,9 @@ const Slide5: React.FC<{ onActionTriggered?: (triggered: boolean) => void }> = (
                 className={`absolute inset-0 z-0 flex overflow-hidden bg-[#050505] pointer-events-none`}
                 style={{ maskImage, WebkitMaskImage: maskImage, opacity }}
             >
-                <div className="flex w-full h-full text-zinc-500/40 font-mono text-[8px] md:text-xs pt-24 md:pt-16 uppercase">
+                <div className="flex w-full h-full text-zinc-500/40 font-roboto text-[8px] md:text-xs pt-24 md:pt-16 uppercase">
                     <div className="w-48 md:w-64 border-r border-white/5 p-6 pt-4 hidden sm:block bg-black/40">
-                        <div className="uppercase tracking-widest mb-6 text-zinc-400/40 text-[10px]">Explorer</div>
+                        <div className="uppercase tracking-widest mb-6 text-zinc-400/40 text-[10px] font-montserrat font-semibold">Explorer</div>
                         <div className="flex flex-col gap-3 lowercase">
                             <div className="flex items-center gap-2"><span className="text-[8px] uppercase">▼</span> KODEKENOBI-OS</div>
                             <div className="pl-4 flex flex-col gap-3">
@@ -202,7 +205,7 @@ const Slide5: React.FC<{ onActionTriggered?: (triggered: boolean) => void }> = (
                                     <span key={i} className="leading-relaxed">{i + 1}</span>
                                 ))}
                             </div>
-                            <pre className="leading-relaxed tracking-wider whitespace-pre-wrap select-none text-zinc-200/50 font-mono normal-case text-[8px] md:text-sm">
+                            <pre className="leading-relaxed tracking-wider whitespace-pre-wrap select-none text-zinc-200/50 font-roboto normal-case text-[8px] md:text-sm">
                                 <HighlightedCode code={CODE_SNIPPET} />
                             </pre>
                         </div>
@@ -251,7 +254,7 @@ const Slide5: React.FC<{ onActionTriggered?: (triggered: boolean) => void }> = (
                         transition={{ duration: 0.8, ease: CINEMATIC_EASE }}
                         className="relative z-40 flex flex-col items-center overflow-hidden"
                     >
-                        <span className="text-white/90 text-xl md:text-4xl font-black tracking-[0.8em] md:tracking-[1.5em] uppercase pl-4 md:pl-10 relative">
+                        <span className="text-white/90 text-xl md:text-4xl font-montserrat font-black tracking-[0.8em] md:tracking-[1.5em] uppercase pl-4 md:pl-10 relative">
                             {isActionTriggered ? "INIT..." : "REVEAL"}
                             {/* Glitch Overlay */}
                             <AnimatePresence>
@@ -259,7 +262,7 @@ const Slide5: React.FC<{ onActionTriggered?: (triggered: boolean) => void }> = (
                                     <motion.span
                                         initial={{ opacity: 0, x: -10 }}
                                         animate={{ opacity: [0, 1, 0], x: [0, 15, -15, 0] }}
-                                        className="absolute inset-0 text-cyan-400"
+                                        className="absolute inset-0 text-cyan-400 font-montserrat font-black tracking-[0.8em] md:tracking-[1.5em] pl-4 md:pl-10"
                                     >
                                         REVEAL
                                     </motion.span>
@@ -283,7 +286,7 @@ const Slide5: React.FC<{ onActionTriggered?: (triggered: boolean) => void }> = (
                     }}
                     className="absolute bottom-16 md:bottom-32 z-20 text-center flex flex-col items-center bg-transparent backdrop-blur-sm px-6 md:px-12 py-4 rounded-full"
                 >
-                    <div className="flex flex-col md:flex-row gap-6 md:gap-12 text-zinc-500 font-mono text-[9px] md:text-[10px] tracking-[0.3em] md:tracking-[0.5em] uppercase">
+                    <div className="flex flex-col md:flex-row gap-6 md:gap-12 text-zinc-500 font-montserrat font-semibold text-[9px] md:text-[10px] tracking-[0.3em] md:tracking-[0.5em] uppercase">
                         <a href="https://www.linkedin.com/in/ignatius-mutizwa-7662b5229/" target="_blank" rel="noopener noreferrer" className="relative overflow-hidden group">
                             <span className="inline-block transition-transform duration-500 group-hover:-translate-y-full">LinkedIn</span>
                             <span className="absolute inset-0 text-[#c9a84c] transition-transform duration-500 translate-y-full group-hover:translate-y-0">LinkedIn</span>

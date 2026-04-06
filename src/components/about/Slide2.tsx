@@ -9,13 +9,13 @@ const Slide2: React.FC = () => (
             <StationaryText
                 text="I bridge the gap between technical precision and creative expression,"
                 startDelay={0.2}
-                className="text-white text-2xl md:text-6xl font-light leading-snug md:leading-tight"
+                className="text-white text-2xl md:text-6xl font-roboto font-light leading-snug md:leading-tight"
             />
             <div className="mt-4">
                 <StationaryText
                     text="building digital experiences that feel as good as they look."
                     startDelay={0.6}
-                    className="text-white text-2xl md:text-6xl font-light leading-snug md:leading-tight"
+                    className="text-white text-2xl md:text-6xl font-roboto font-light leading-snug md:leading-tight"
                 />
             </div>
         </div>
@@ -27,7 +27,7 @@ const Slide2: React.FC = () => (
             className="mt-8 md:mt-16 flex items-center gap-4"
         >
             <div className="h-px w-16 bg-white/10" />
-            <span className="text-zinc-600 font-mono text-[10px] tracking-[0.5em] uppercase">
+            <span className="text-zinc-600 font-montserrat font-semibold text-[10px] tracking-[0.5em] uppercase">
                 Philosophy
             </span>
         </motion.div>

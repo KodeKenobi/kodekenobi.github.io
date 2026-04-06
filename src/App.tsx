@@ -17,7 +17,7 @@ const sections = [
 ];
 
 const ABOUT_TOTAL_SLIDES = 5;
-const SKILLS_TOTAL_SLIDES = 3;
+const SKILLS_TOTAL_SLIDES = 2;
 const PROJECTS_TOTAL_SLIDES = 2; // NEW: Slide 0 (Intro), Slide 1 (Grid)
 
 export default function App() {

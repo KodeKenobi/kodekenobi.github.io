@@ -92,7 +92,7 @@ const TrueFocus: React.FC<TrueFocusProps> = ({
             ref={(el) => (wordRefs.current[index] = el)}
             className={[
               "relative cursor-pointer",
-              className || "text-[3rem] font-black",
+              className || "text-[3rem] font-inter font-black",
             ].join(" ")}
             style={
               {

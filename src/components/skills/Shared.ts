@@ -53,7 +53,7 @@ app.get('/api/resource', async (req, res) => {
 });`
   },
   {
-    title: "DATABASE & AUTH",
+    title: "DATABASE",
     index: "03",
     skills: ["MongoDB", "SQL", "Firebase", "GCP", "Supabase", "Cognito"],
     code: `-- Database Schema Example
@@ -66,7 +66,7 @@ CREATE TABLE users (
 CREATE INDEX idx_users_email ON users(email);`
   },
   {
-    title: "TOOLS & DEVOPS",
+    title: "DEVOPS",
     index: "04",
     skills: ["Docker", "Github Actions", "Payment Gateways", "MERN Stack", "CI/CD"],
     code: `# Dockerfile Example

@@ -6,10 +6,10 @@ const Slide1: React.FC = () => {
 
   return (
     <div className="relative z-10 w-full max-w-7xl mx-auto px-8 flex flex-col items-start justify-center h-full">
-      <h1 className="text-white text-[15vw] md:text-[10rem] font-black leading-[0.9] tracking-tighter">
+      <h1 className="text-white text-[15vw] md:text-[10rem] font-inter font-black leading-[0.9] tracking-tighter">
         <SplitText text="THE" startDelay={0.3} charDelay={0.05} />
       </h1>
-      <h1 className="text-white/20 text-[15vw] md:text-[10rem] font-black leading-[0.9] tracking-tighter">
+      <h1 className="text-white/20 text-[15vw] md:text-[10rem] font-inter font-black leading-[0.9] tracking-tighter">
         <SplitText text="ARCHITECT" startDelay={0.5} charDelay={0.04} />
         <motion.span
           initial={{ y: -150, opacity: 0 }}
@@ -42,7 +42,7 @@ const Slide1: React.FC = () => {
 
       <div className="mt-4 md:mt-8 flex items-center gap-4">
         <ClipReveal delay={1.4} duration={0.8}>
-          <span className="text-zinc-500 font-mono text-xs tracking-[0.5em] uppercase">
+          <span className="text-zinc-500 font-montserrat font-semibold text-xs tracking-[0.5em] uppercase">
             Creative Engineering
           </span>
         </ClipReveal>

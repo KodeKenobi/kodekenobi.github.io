@@ -39,7 +39,7 @@ export const MobileAnimatedHero: React.FC = () => {
     }, [isTapped]);
 
     return (
-        <div className="relative w-full h-[100dvh] overflow-hidden bg-white font-sans">
+        <div className="relative w-full h-[100dvh] overflow-hidden bg-white font-roboto">
             {/* 
         CINEMATIC WORLD (The Revealed Image)
       */}
@@ -83,7 +83,7 @@ export const MobileAnimatedHero: React.FC = () => {
                             initial={{ y: "110%" }}
                             animate={scene >= 3 ? { y: 0 } : { y: "110%" }}
                             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                            className="text-white text-[11vw] font-bold leading-[1] tracking-tighter"
+                            className="text-white text-[11vw] font-inter font-black leading-[1] tracking-tighter"
                         >
                             <motion.span
                                 animate={scene >= 3 ? { letterSpacing: "-0.05em" } : { letterSpacing: "0.05em" }}
@@ -121,10 +121,10 @@ export const MobileAnimatedHero: React.FC = () => {
                                 animate={scene >= 5 ? { opacity: 1, y: 0 } : {}}
                                 transition={{ duration: 0.8 }}
                             >
-                                <span className="text-zinc-400 font-mono text-[9px] uppercase tracking-[0.4em] mb-4 block">
+                                <span className="text-zinc-400 font-montserrat font-semibold text-[9px] uppercase tracking-[0.4em] mb-4 block">
                                     Core Architecture
                                 </span>
-                                <h2 className="text-black text-[7vw] font-light leading-tight">
+                                <h2 className="text-black text-[7vw] font-montserrat font-light leading-tight">
                                     Built on Data.<br />
                                     Driven by Discipline.
                                 </h2>
@@ -180,17 +180,17 @@ export const MobileAnimatedHero: React.FC = () => {
                             />
 
                             <div className="flex flex-col items-center leading-none">
-                                <h3 className="text-white text-[13vw] font-black tracking-[0.2em] font-sans drop-shadow-2xl">
+                                <h3 className="text-white text-[13vw] font-inter font-black tracking-[0.2em] drop-shadow-2xl">
                                     <DecryptText text="KODE" trigger={scene === 8} />
                                 </h3>
-                                <h3 className="text-white text-[13vw] font-black tracking-[0.2em] font-sans drop-shadow-2xl">
+                                <h3 className="text-white text-[13vw] font-inter font-black tracking-[0.2em] drop-shadow-2xl">
                                     <DecryptText text="KENOBI" trigger={scene === 8} />
                                 </h3>
                             </div>
 
                             <div className="flex items-center justify-center gap-3 mt-6">
                                 <div className="h-px w-6 accent-line-gold" />
-                                <p className="text-zinc-400 font-mono text-[8px] sm:text-[9px] tracking-[0.3em] uppercase">
+                                <p className="text-zinc-400 font-montserrat font-medium text-[8px] sm:text-[9px] tracking-[0.3em] uppercase">
                                     Creative Engineering
                                 </p>
                                 <div className="h-px w-6 accent-line-gold" />
@@ -213,7 +213,7 @@ export const MobileAnimatedHero: React.FC = () => {
                         className="absolute inset-0 z-30 flex items-center justify-center pointer-events-none px-6"
                     >
                         <div className="relative p-6 w-full max-w-sm mt-4 border border-white/10 bg-black/40 backdrop-blur-sm rounded-lg">
-                            <h2 className="text-lg sm:text-xl font-sans font-bold leading-tight tracking-tighter relative z-10 text-center">
+                            <h2 className="text-lg sm:text-xl font-roboto font-bold leading-tight tracking-tighter relative z-10 text-center">
                                 <span className="text-white">COMPLEX PROBLEMS.</span>
                                 <br />
                                 <span className="text-white/70 block mt-1">SIMPLE SOLUTIONS.</span>
@@ -268,7 +268,7 @@ export const MobileAnimatedHero: React.FC = () => {
                 <motion.span
                     animate={{ opacity: [0.3, 0.7, 0.3] }}
                     transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                    className="text-white font-mono text-[8px] uppercase tracking-[0.2em]"
+                    className="text-white font-montserrat font-medium text-[8px] uppercase tracking-[0.2em]"
                 >
                     Tap
                 </motion.span>

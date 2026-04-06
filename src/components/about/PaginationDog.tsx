@@ -69,7 +69,7 @@ export const DynamicPagination: React.FC<DynamicPaginationProps> = ({
 
                     {/* Label */}
                     <span
-                        className={`absolute -top-6 left-1/2 -translate-x-1/2 whitespace-nowrap text-[9px] font-mono tracking-[0.3em] uppercase transition-all duration-300 pointer-events-none ${activeIndex === i ? 'text-white/0' : 'text-white/0 group-hover:text-white/40'}`}
+                        className={`absolute -top-6 left-1/2 -translate-x-1/2 whitespace-nowrap text-[9px] font-montserrat font-semibold tracking-[0.3em] uppercase transition-all duration-300 pointer-events-none ${activeIndex === i ? 'text-white/0' : 'text-white/0 group-hover:text-white/40'}`}
                     >
                         {labels[i] || `Step ${i + 1}`}
                     </span>

@@ -154,7 +154,7 @@ function GameFocusBorder({ children }: { children: React.ReactNode }) {
           />
         </motion.span>
       </span>
-      <span className="relative z-10 flex items-center justify-center text-center font-extrabold text-4xl">
+      <span className="relative z-10 flex items-center justify-center text-center font-black text-4xl font-montserrat">
         {children}
       </span>
     </span>
@@ -201,7 +201,7 @@ export default function AnimatedNavbar({
   }, []);
 
   return (
-    <div className="relative z-50 font-sans text-white">
+    <div className="relative z-50 font-montserrat text-white">
       {/* Intro Fade-In Wrapper */}
       <motion.div
         initial={{ opacity: 0 }}
@@ -302,7 +302,7 @@ export default function AnimatedNavbar({
                   variants={itemVariants}
                   whileHover={!isMobile ? { scale: 1.15, rotateX: -5 } : { scale: 1.05 }}
                   className={clsx(
-                    "relative text-4xl sm:text-5xl font-extrabold uppercase tracking-widest my-3",
+                    "relative text-4xl sm:text-5xl font-black font-montserrat uppercase tracking-widest my-3",
                     "transition-all hover:text-cyan-300 cursor-pointer",
                     currentSection === item.id ? "text-cyan-400" : "text-white"
                   )}
@@ -344,7 +344,7 @@ export default function AnimatedNavbar({
             aria-label={`Scroll to ${item.name}`}
           >
             {/* Label on Hover */}
-            <span className="mr-4 text-xs font-mono tracking-widest text-white/0 group-hover:text-white/70 transition-all duration-300 -translate-x-2 group-hover:translate-x-0">
+            <span className="mr-4 text-xs font-montserrat font-medium tracking-widest text-white/0 group-hover:text-white/70 transition-all duration-300 -translate-x-2 group-hover:translate-x-0">
               {item.name}
             </span>
 

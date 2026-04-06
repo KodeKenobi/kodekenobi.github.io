@@ -35,10 +35,10 @@ export const Slide1: React.FC<{ isMobile: boolean; direction: number }> = ({ isM
                 transition={{ duration: 0.4, ease: CINEMATIC_EASE }}
                 className="absolute inset-0 z-10 w-full px-8 flex flex-col items-start justify-center h-full"
             >
-                <h1 className="text-white text-[18vw] font-black leading-[0.9] tracking-tighter">
+                <h1 className="text-white text-[18vw] font-inter font-black leading-[0.9] tracking-tighter">
                     <SplitText text="THE" startDelay={0.3} charDelay={0.05} />
                 </h1>
-                <h1 className="text-white/20 text-[18vw] font-black leading-[0.9] tracking-tighter">
+                <h1 className="text-white/20 text-[18vw] font-inter font-black leading-[0.9] tracking-tighter">
                     <SplitText text="TOOLKIT" startDelay={0.5} charDelay={0.04} />
                     <motion.span
                         initial={{ y: -100, opacity: 0 }}
@@ -59,7 +59,7 @@ export const Slide1: React.FC<{ isMobile: boolean; direction: number }> = ({ isM
 
                 <div className="mt-8 flex items-center gap-4">
                     <ClipReveal delay={1.4} duration={0.8}>
-                        <span className="text-zinc-500 font-mono text-[10px] tracking-[0.5em] uppercase w-[120px] block">
+                        <span className="text-zinc-500 font-montserrat font-semibold text-[10px] tracking-[0.5em] uppercase w-[120px] block">
                             Skills & Expertise
                         </span>
                     </ClipReveal>
@@ -93,10 +93,10 @@ export const Slide1: React.FC<{ isMobile: boolean; direction: number }> = ({ isM
                 className="relative z-10 w-full flex flex-col items-end justify-center h-full"
             >
                 <div className="flex flex-col items-start leading-[0.85]">
-                    <h1 className="text-white text-6xl md:text-[10rem] font-black leading-[0.9] tracking-tighter">
+                    <h1 className="text-white text-6xl md:text-[10rem] font-inter font-black leading-[0.9] tracking-tighter">
                         <SplitText text="THE" startDelay={0.1} charDelay={0.03} />
                     </h1>
-                    <h1 className="text-white/40 text-6xl md:text-[10rem] font-black leading-[0.9] tracking-tighter">
+                    <h1 className="text-white/40 text-6xl md:text-[10rem] font-inter font-black leading-[0.9] tracking-tighter">
                         <SplitText text="TOOLKIT" startDelay={0.2} charDelay={0.02} />
                         <motion.span
                             initial={{ y: -150, opacity: 0 }}
@@ -136,7 +136,7 @@ export const Slide1: React.FC<{ isMobile: boolean; direction: number }> = ({ isM
                             className="h-px w-48 bg-[#c9a84c]/50"
                         />
                         <ClipReveal delay={0.3} duration={0.5}>
-                            <span className="text-white/50 font-mono text-xs tracking-[0.5em] uppercase pl-4">
+                            <span className="text-white/50 font-montserrat font-semibold text-xs tracking-[0.5em] uppercase pl-4">
                                 Skills & Expertise
                             </span>
                         </ClipReveal>

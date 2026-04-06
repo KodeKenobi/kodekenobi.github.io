@@ -1,6 +1,6 @@
-import React, { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { SplitText, ClipReveal, CINEMATIC_EASE } from "./about/Shared";
+import { CINEMATIC_EASE } from "./about/Shared";
 import Slide0 from "./projects/Slide0";
 import Globe from "./Globe";
 import { HiArrowLongRight, HiOutlineArrowDownTray } from "react-icons/hi2";
@@ -106,19 +106,19 @@ export default function Projects({ isActive, isMobile, slideIndex, direction }: 
                         exit="exit"
                         transition={{ duration: 0.6, ease: CINEMATIC_EASE }}
                         ref={scrollRef}
-                        className="absolute inset-0 w-full h-full font-sans bg-[#050505] flex flex-col pt-24 pb-20 px-6 md:px-12 overflow-y-auto overflow-x-hidden"
+                        className="absolute inset-0 w-full h-full font-roboto bg-[#050505] flex flex-col pt-24 pb-20 px-6 md:px-12 overflow-y-auto no-scrollbar overflow-x-hidden"
                     >
                         <div className="flex-1 w-full max-w-7xl mx-auto mt-12 relative z-10">
                             {/* Stats Header */}
                             {!loading && repos.length > 0 && (
                                 <div className="flex justify-between items-end mb-12">
                                     <div className="space-y-1">
-                                        <h2 className="text-[#c9a84c] text-[10px] font-mono tracking-[0.3em] uppercase opacity-50">Neural Archives</h2>
+                                        <h2 className="text-[#c9a84c] text-[10px] font-montserrat font-semibold tracking-[0.3em] uppercase opacity-50">Neural Archives</h2>
                                         <div className="flex items-baseline gap-2">
-                                            <span className="text-4xl font-bold text-white tracking-tighter">
+                                            <span className="text-4xl font-inter font-black text-white tracking-tighter">
                                                 {String((currentPage - 1) * reposPerPage + 1).padStart(2, '0')}
                                             </span>
-                                            <span className="text-lg font-mono text-white/20">/ {repos.length}</span>
+                                            <span className="text-lg font-roboto text-white/20">/ {repos.length}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -184,23 +184,23 @@ export default function Projects({ isActive, isMobile, slideIndex, direction }: 
                                                                 {/* Languages */}
                                                                 <div className="flex flex-wrap gap-2 opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-4 group-hover:translate-y-0">
                                                                     {repo.languages?.map(lang => (
-                                                                        <span key={lang} className="text-[9px] font-mono px-2 py-0.5 rounded-full bg-white/5 border border-white/10 text-[#c9a84c] tracking-widest uppercase">
+                                                                        <span key={lang} className="text-[9px] font-roboto px-2 py-0.5 rounded-full bg-white/5 border border-white/10 text-[#c9a84c] tracking-widest uppercase">
                                                                             {lang}
                                                                         </span>
                                                                     ))}
                                                                 </div>
 
                                                                 <div className="space-y-1 transform transition-transform duration-500 group-hover:-translate-y-4">
-                                                                    <h3 className="text-xl font-bold text-white tracking-tight group-hover:text-[#c9a84c] transition-colors duration-300">
+                                                                    <h3 className="text-xl font-montserrat font-bold text-white tracking-tight group-hover:text-[#c9a84c] transition-colors duration-300">
                                                                         {repo.name}
                                                                     </h3>
-                                                                    <p className="text-xs font-mono text-white/40 leading-relaxed line-clamp-2 max-w-[80%]">
+                                                                    <p className="text-xs font-roboto text-white/40 leading-relaxed line-clamp-2 max-w-[80%]">
                                                                         {repo.description || "Experimental architecture and codebase."}
                                                                     </p>
                                                                 </div>
 
                                                                 <div className="flex items-center justify-between pt-2">
-                                                                    <div className="flex gap-4 text-[10px] font-mono text-white/30 uppercase tracking-tighter">
+                                                                    <div className="flex gap-4 text-[10px] font-roboto text-white/30 uppercase tracking-tighter">
                                                                         <span>★ {repo.stargazers_count}</span>
                                                                         <span>⑂ {repo.forks_count}</span>
                                                                     </div>
@@ -218,7 +218,7 @@ export default function Projects({ isActive, isMobile, slideIndex, direction }: 
                                                                             href={repo.html_url}
                                                                             target="_blank"
                                                                             rel="noreferrer"
-                                                                            className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-[0.2em] text-[#c9a84c] transition-all duration-300"
+                                                                            className="flex items-center gap-2 text-[10px] font-montserrat font-semibold uppercase tracking-[0.2em] text-[#c9a84c] transition-all duration-300"
                                                                         >
                                                                             <span>Source</span>
                                                                             <HiArrowLongRight className="h-4 w-4" />
@@ -236,7 +236,7 @@ export default function Projects({ isActive, isMobile, slideIndex, direction }: 
                                             })
                                         ) : (
                                             <div className="col-span-full py-20 text-center">
-                                                <p className="text-[#c9a84c] font-mono text-xs tracking-[0.3em] uppercase animate-pulse">
+                                                <p className="text-[#c9a84c] font-roboto text-xs tracking-[0.3em] uppercase animate-pulse">
                                                     Establishing Neural Link...
                                                 </p>
                                             </div>
@@ -249,7 +249,7 @@ export default function Projects({ isActive, isMobile, slideIndex, direction }: 
                                             <button
                                                 onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                                                 disabled={currentPage === 1}
-                                                className="group flex items-center gap-3 text-[10px] font-mono tracking-[0.4em] uppercase text-white/30 hover:text-[#c9a84c] disabled:opacity-0 transition-all duration-300"
+                                                className="group flex items-center gap-3 text-[10px] font-montserrat font-semibold tracking-[0.4em] uppercase text-white/30 hover:text-[#c9a84c] disabled:opacity-0 transition-all duration-300"
                                             >
                                                 <HiArrowLongRight className="h-4 w-4 transition-transform group-hover:-translate-x-1 rotate-180" />
                                                 Prev
@@ -268,7 +268,7 @@ export default function Projects({ isActive, isMobile, slideIndex, direction }: 
                                             <button
                                                 onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                                                 disabled={currentPage === totalPages}
-                                                className="group flex items-center gap-3 text-[10px] font-mono tracking-[0.4em] uppercase text-white/30 hover:text-[#c9a84c] disabled:opacity-0 transition-all duration-300"
+                                                className="group flex items-center gap-3 text-[10px] font-montserrat font-semibold tracking-[0.4em] uppercase text-white/30 hover:text-[#c9a84c] disabled:opacity-0 transition-all duration-300"
                                             >
                                                 Next
                                                 <HiArrowLongRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />

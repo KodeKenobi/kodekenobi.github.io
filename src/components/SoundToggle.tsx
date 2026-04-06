@@ -52,7 +52,7 @@ export const SoundToggle: React.FC = () => {
           </svg>
         )}
       </div>
-      <span className="text-white font-mono text-[10px] uppercase tracking-[0.2em]">
+      <span className="text-white font-montserrat font-semibold text-[10px] uppercase tracking-[0.2em]">
         {isMuted ? "Sound Off" : "Sound On"}
       </span>
     </motion.button>

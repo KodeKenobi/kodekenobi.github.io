@@ -65,10 +65,10 @@ export const Experience: React.FC<{ isActive: boolean; isMobile: boolean; slideI
                             className="absolute inset-0 w-full h-full flex flex-col items-center justify-center px-8"
                         >
                             <div className="flex flex-col items-start translate-y-[-10%]">
-                                <h1 className="text-white text-[18vw] font-black leading-[0.9] tracking-tighter">
+                                <h1 className="text-white text-[18vw] font-inter font-black leading-[0.9] tracking-tighter">
                                     <SplitText text="THE" startDelay={0.1} charDelay={0.03} />
                                 </h1>
-                                <h1 className="text-white/40 text-[18vw] font-black leading-[0.9] tracking-tighter">
+                                <h1 className="text-white/40 text-[18vw] font-inter font-black leading-[0.9] tracking-tighter">
                                     <SplitText text="JOURNEY" startDelay={0.2} charDelay={0.02} />
                                     <motion.span
                                         initial={{ y: -100, opacity: 0 }}
@@ -94,7 +94,7 @@ export const Experience: React.FC<{ isActive: boolean; isMobile: boolean; slideI
                                         className="h-px w-32 bg-[#c9a84c]/50"
                                     />
                                     <ClipReveal delay={0.3} duration={0.5}>
-                                        <span className="text-white/50 font-mono text-[10px] tracking-[0.3em] uppercase">
+                                        <span className="text-white/50 font-montserrat font-semibold text-[10px] tracking-[0.3em] uppercase">
                                             Experience
                                         </span>
                                     </ClipReveal>
@@ -114,16 +114,16 @@ export const Experience: React.FC<{ isActive: boolean; isMobile: boolean; slideI
                             animate="center"
                             exit="exit"
                             transition={{ duration: 0.4, ease: CINEMATIC_EASE }}
-                            className="absolute inset-0 w-full h-full pt-24 px-8 overflow-y-auto overscroll-none [will-change:scroll-position] [-webkit-overflow-scrolling:touch]"
+                            className="absolute inset-0 w-full h-full pt-24 px-8 overflow-y-auto no-scrollbar overscroll-none [will-change:scroll-position] [-webkit-overflow-scrolling:touch]"
                         >
                             <div className="space-y-12 pb-32">
                                 {experienceData.map((exp, i) => (
                                     <div key={i} className="relative pl-8 border-l border-[#c9a84c]/30">
                                         <div className="absolute left-[-5px] top-0 w-2.5 h-2.5 rounded-full bg-[#c9a84c]" />
-                                        <span className="text-[#c9a84c] font-mono text-[10px] block mb-2">{exp.period}</span>
-                                        <h3 className="text-white font-black text-xl mb-1">{exp.company}</h3>
-                                        <p className="text-[#c9a84c] font-bold text-sm mb-4">{exp.role}</p>
-                                        <p className="text-white/60 text-xs leading-relaxed whitespace-pre-line">{exp.desc}</p>
+                                        <span className="text-[#c9a84c] font-montserrat font-medium text-[10px] block mb-2">{exp.period}</span>
+                                        <h3 className="text-white font-montserrat font-black text-xl mb-1">{exp.company}</h3>
+                                        <p className="text-[#c9a84c] font-montserrat font-bold text-sm mb-4">{exp.role}</p>
+                                        <p className="text-white/60 font-roboto text-xs leading-relaxed whitespace-pre-line">{exp.desc}</p>
                                     </div>
                                 ))}
                             </div>
@@ -158,10 +158,10 @@ export const Experience: React.FC<{ isActive: boolean; isMobile: boolean; slideI
                             className="relative z-10 w-full flex flex-col items-start justify-center h-full"
                         >
                             <div className="flex flex-col items-start">
-                                <h1 className="text-white text-6xl md:text-[10rem] font-black leading-[0.9] tracking-tighter">
+                                <h1 className="text-white text-6xl md:text-[10rem] font-inter font-black leading-[0.9] tracking-tighter">
                                     <SplitText text="THE" startDelay={0.1} charDelay={0.03} />
                                 </h1>
-                                <h1 className="text-white/40 text-6xl md:text-[10rem] font-black leading-[0.9] tracking-tighter">
+                                <h1 className="text-white/40 text-6xl md:text-[10rem] font-inter font-black leading-[0.9] tracking-tighter">
                                     <SplitText text="JOURNEY" startDelay={0.2} charDelay={0.02} />
                                     <motion.span
                                         initial={{ y: -150, opacity: 0 }}
@@ -201,7 +201,7 @@ export const Experience: React.FC<{ isActive: boolean; isMobile: boolean; slideI
                                         className="h-px w-48 bg-[#c9a84c]/50"
                                     />
                                     <ClipReveal delay={0.3} duration={0.5}>
-                                        <span className="text-white/50 font-mono text-xs tracking-[0.5em] uppercase pl-4">
+                                        <span className="text-white/50 font-montserrat font-semibold text-xs tracking-[0.5em] uppercase pl-4">
                                             Professional Experience
                                         </span>
                                     </ClipReveal>
@@ -224,7 +224,7 @@ export const Experience: React.FC<{ isActive: boolean; isMobile: boolean; slideI
                     >
                         {/* BACKGROUND TEXT DECORATION */}
                         <div className="absolute inset-0 opacity-[0.02] pointer-events-none select-none z-0">
-                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[40rem] font-black text-white whitespace-nowrap">
+                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[40rem] font-inter font-black text-white whitespace-nowrap">
                                 JOURNEY
                             </div>
                         </div>
@@ -278,11 +278,11 @@ const TimelineCard = ({ exp, index, progress, totalCards }: { exp: any, index: n
                         transition={{ duration: 0.8, ease: CINEMATIC_EASE }}
                         className="flex flex-col items-start text-left pr-12 group"
                     >
-                        <span className="text-[#c9a84c] font-mono text-[10px] tracking-[0.3em] mb-4 opacity-50 group-hover:opacity-100 transition-opacity">{exp.period}</span>
-                        <h3 className="text-white text-3xl font-black tracking-tighter mb-1 group-hover:text-[#c9a84c] transition-colors">{exp.company}</h3>
-                        <div className="text-white/40 font-mono text-[11px] mb-6 tracking-widest uppercase">{exp.role}</div>
+                        <span className="text-[#c9a84c] font-montserrat font-medium text-[10px] tracking-[0.3em] mb-4 opacity-50 group-hover:opacity-100 transition-opacity">{exp.period}</span>
+                        <h3 className="text-white text-3xl font-montserrat font-black tracking-tighter mb-1 group-hover:text-[#c9a84c] transition-colors">{exp.company}</h3>
+                        <div className="text-white/40 font-montserrat font-bold text-[11px] mb-6 tracking-widest uppercase">{exp.role}</div>
                         <div className="p-6 border border-white/5 bg-white/[0.01] rounded-sm group-hover:border-[#c9a84c]/20 transition-colors">
-                            <p className="text-white/60 text-xs leading-relaxed font-light whitespace-pre-line">{exp.desc}</p>
+                            <p className="text-white/60 text-xs leading-relaxed font-roboto font-light whitespace-pre-line">{exp.desc}</p>
                         </div>
                     </motion.div>
                 )}
@@ -310,11 +310,11 @@ const TimelineCard = ({ exp, index, progress, totalCards }: { exp: any, index: n
                         transition={{ duration: 0.8, ease: CINEMATIC_EASE }}
                         className="flex flex-col items-start text-left pl-12 group"
                     >
-                        <span className="text-[#c9a84c] font-mono text-[10px] tracking-[0.3em] mb-4 opacity-50 group-hover:opacity-100 transition-opacity">{exp.period}</span>
-                        <h3 className="text-white text-3xl font-black tracking-tighter mb-1 group-hover:text-[#c9a84c] transition-colors">{exp.company}</h3>
-                        <div className="text-white/40 font-mono text-[11px] mb-6 tracking-widest uppercase">{exp.role}</div>
+                        <span className="text-[#c9a84c] font-montserrat font-medium text-[10px] tracking-[0.3em] mb-4 opacity-50 group-hover:opacity-100 transition-opacity">{exp.period}</span>
+                        <h3 className="text-white text-3xl font-montserrat font-black tracking-tighter mb-1 group-hover:text-[#c9a84c] transition-colors">{exp.company}</h3>
+                        <div className="text-white/40 font-montserrat font-bold text-[11px] mb-6 tracking-widest uppercase">{exp.role}</div>
                         <div className="p-6 border border-white/5 bg-white/[0.01] rounded-sm group-hover:border-[#c9a84c]/20 transition-colors">
-                            <p className="text-white/60 text-xs leading-relaxed font-light whitespace-pre-line">{exp.desc}</p>
+                            <p className="text-white/60 text-xs leading-relaxed font-roboto font-light whitespace-pre-line">{exp.desc}</p>
                         </div>
                     </motion.div>
                 )}

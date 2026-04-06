@@ -39,7 +39,7 @@ export const AnimatedHero: React.FC = () => {
   }, []);
 
   return (
-    <div className="relative w-full h-screen overflow-hidden bg-white font-sans">
+    <div className="relative w-full h-screen overflow-hidden bg-white font-roboto">
 
       {/* 
         CINEMATIC WORLD (The Revealed Image)
@@ -87,7 +87,7 @@ export const AnimatedHero: React.FC = () => {
               initial={{ y: "110%" }}
               animate={scene >= 3 ? { y: 0 } : { y: "110%" }}
               transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-              className="text-white text-6xl md:text-[8rem] font-bold leading-[0.85] tracking-tighter"
+              className="text-white text-6xl md:text-[8rem] font-inter font-black leading-[0.85] tracking-tighter"
             >
               <motion.span
                 animate={scene >= 3 ? { letterSpacing: "-0.05em" } : { letterSpacing: "0.05em" }}
@@ -123,7 +123,7 @@ export const AnimatedHero: React.FC = () => {
                 animate={scene >= 5 ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.8 }}
               >
-                <h2 className="text-black text-3xl md:text-5xl font-light leading-tight">
+                <h2 className="text-black text-3xl md:text-5xl font-montserrat font-light leading-tight">
                   Technical precision meets...<br />
                   Digital Alchemy
                 </h2>
@@ -181,17 +181,17 @@ export const AnimatedHero: React.FC = () => {
               />
 
               <div className="flex flex-col items-center leading-none">
-                <h3 className="text-white text-5xl md:text-8xl font-black tracking-[0.2em] font-sans drop-shadow-2xl">
+                <h3 className="text-white text-5xl md:text-8xl font-inter font-black tracking-[0.2em] drop-shadow-2xl">
                   <DecryptText text="KODE" trigger={scene === 8} />
                 </h3>
-                <h3 className="text-white text-5xl md:text-8xl font-black tracking-[0.2em] font-sans drop-shadow-2xl">
+                <h3 className="text-white text-5xl md:text-8xl font-inter font-black tracking-[0.2em] drop-shadow-2xl">
                   <DecryptText text="KENOBI" trigger={scene === 8} />
                 </h3>
               </div>
 
               <div className="flex items-center justify-center gap-6 mt-8">
                 <div className="h-px w-12 accent-line-gold" />
-                <p className="text-zinc-400 font-mono text-xs tracking-[0.4em] uppercase">
+                <p className="text-zinc-400 font-montserrat font-medium text-xs tracking-[0.4em] uppercase">
                   Creative Engineering
                 </p>
                 <div className="h-px w-12 accent-line-gold" />
@@ -261,8 +261,8 @@ export const AnimatedHero: React.FC = () => {
                 </motion.svg>
               </div>
 
-              {/* UNIFIED TYPOGRAPHY (Sans Serif / Monochrome) */}
-              <h2 className="text-2xl md:text-4xl font-sans font-bold leading-none tracking-tighter relative z-10">
+              {/* UNIFIED TYPOGRAPHY */}
+              <h2 className="text-2xl md:text-4xl font-roboto font-bold leading-none tracking-tighter relative z-10">
                 <span className="text-white">COMPLEX PROBLEMS.</span>
                 <br />
                 <span className="text-white block pt-2">SIMPLE SOLUTIONS.</span>
@@ -292,7 +292,7 @@ export const AnimatedHero: React.FC = () => {
         <motion.span
           animate={{ opacity: [0.3, 0.7, 0.3] }}
           transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-          className="text-white font-mono text-[9px] uppercase tracking-[0.3em]"
+          className="text-white font-montserrat font-medium text-[9px] uppercase tracking-[0.3em]"
         >
           Scroll
         </motion.span>

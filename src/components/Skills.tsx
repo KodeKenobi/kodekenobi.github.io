@@ -3,15 +3,14 @@ import { DynamicPagination } from "./about/Shared";
 import { AnimatePresence } from "framer-motion";
 import { Slide1 } from "./skills/Slide1";
 import { Slide2 } from "./skills/Slide2";
-import { Slide3 } from "./skills/Slide3";
 import { skillCategories } from "./skills/Shared";
 
 // ─── SKILLS PREVIEW COMPONENTS ───
 const ToolkitPreview: React.FC = () => (
     <div className="w-full h-full bg-[#0a0a0a] flex items-center justify-center p-12 overflow-hidden">
         <div className="text-left">
-            <h1 className="text-white text-[120px] font-black leading-[0.85] tracking-tighter opacity-90">THE</h1>
-            <h1 className="text-white/40 text-[120px] font-black leading-[0.85] tracking-tighter opacity-90">TOOLKIT</h1>
+            <h1 className="text-white text-[120px] font-inter font-black leading-[0.85] tracking-tighter opacity-90">THE</h1>
+            <h1 className="text-white/40 text-[120px] font-inter font-black leading-[0.85] tracking-tighter opacity-90">TOOLKIT</h1>
         </div>
     </div>
 );
@@ -20,8 +19,8 @@ const ExpertisePreview: React.FC = () => (
     <div className="w-full h-full bg-[#0a0a0a] flex flex-col justify-center p-12 gap-8 overflow-hidden">
         {skillCategories.slice(0, 4).map((cat) => (
             <div key={cat.title} className="flex items-center gap-8 border-b border-white/5 pb-4">
-                <span className="text-white/30 font-mono text-2xl tracking-widest">{cat.index}</span>
-                <span className="text-white/60 font-mono text-3xl font-black tracking-widest uppercase">{cat.title}</span>
+                <span className="text-white/30 font-montserrat text-2xl tracking-widest">{cat.index}</span>
+                <span className="text-white/60 font-montserrat text-3xl font-black tracking-widest uppercase">{cat.title}</span>
             </div>
         ))}
     </div>
@@ -63,16 +62,17 @@ const ImpactPreview: React.FC = () => (
     </div>
 );
 
-const skillPreviews = [ToolkitPreview, ExpertisePreview, ProcessPreview];
+const skillPreviews = [ToolkitPreview, ExpertisePreview];
 
 import { motion } from "framer-motion";
 
 const CodePreview: React.FC<{
     code: string;
     active: boolean;
+    isMobile?: boolean;
     onClose: () => void;
     onInteractionChange: (interacting: boolean) => void;
-}> = ({ code, active, onClose, onInteractionChange }) => {
+}> = ({ code, active, isMobile, onClose, onInteractionChange }) => {
     const [copied, setCopied] = React.useState(false);
     const [isMinimized, setIsMinimized] = React.useState(false);
     const [isMaximized, setIsMaximized] = React.useState(false);
@@ -124,7 +124,7 @@ const CodePreview: React.FC<{
                             onClick={(e) => e.stopPropagation()}
                             className="relative pointer-events-auto w-full max-w-[800px] shadow-[0_30px_100px_rgba(0,0,0,0.8)]"
                             style={{
-                                width: isMaximized ? "800px" : "650px",
+                                width: isMobile ? "90vw" : (isMaximized ? "800px" : "650px"),
                                 height: 'auto',
                                 maxWidth: '90vw'
                             }}
@@ -140,7 +140,7 @@ const CodePreview: React.FC<{
                                             <svg className="w-2 h-2 opacity-0 group-hover/btn:opacity-100 transition-opacity" viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="4">
                                                 <path d="M18 6L6 18M6 6l12 12" />
                                             </svg>
-                                            <span className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] text-white/60 font-mono opacity-0 group-hover/btn:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">CLOSE</span>
+                                            <span className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] text-white/60 font-montserrat font-medium opacity-0 group-hover/btn:opacity-100 transition-opacity pointer-events-none whitespace-nowrap uppercase tracking-widest">CLOSE</span>
                                         </button>
                                         <button
                                             onClick={(e) => { e.stopPropagation(); }}
@@ -152,12 +152,14 @@ const CodePreview: React.FC<{
                                         />
                                     </div>
                                     <div className="flex items-center gap-4">
-                                        <span className="text-[10px] font-mono text-white/60 tracking-[0.3em] uppercase">Architecture_Preview</span>
+                                        <span className="text-[10px] font-montserrat font-semibold text-white/60 tracking-[0.3em] uppercase">Architecture_Preview</span>
                                         <button
-                                            onClick={(e) => { e.stopPropagation(); copyToClipboard(); }}
-                                            className="bg-white/5 hover:bg-white/10 text-white/60 hover:text-white px-3 py-1 rounded-md text-[10px] font-mono transition-all border border-white/5 flex items-center gap-2 group/copy cursor-pointer"
+                                            onClick={(e) => { e.stopPropagation(); isMobile ? onClose() : copyToClipboard(); }}
+                                            className="bg-white/5 hover:bg-white/10 text-white/60 hover:text-white px-3 py-1 rounded-md text-[10px] font-montserrat font-medium transition-all border border-white/5 flex items-center gap-2 group/copy cursor-pointer"
                                         >
-                                            {copied ? (
+                                            {isMobile ? (
+                                                "CLOSE"
+                                            ) : copied ? (
                                                 <>
                                                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                                                     COPIED
@@ -174,11 +176,11 @@ const CodePreview: React.FC<{
                                     animate={{ height: isMinimized ? 0 : "auto", opacity: isMinimized ? 0 : 1 }}
                                     className="overflow-hidden bg-[#050505]/50"
                                 >
-                                    <div className="p-8 font-mono text-[12px] leading-relaxed max-h-[60vh] overflow-y-auto custom-scrollbar">
+                                    <div className={`${isMobile ? "p-4" : "p-8"} font-roboto ${isMobile ? "text-[10px]" : "text-[12px]"} leading-relaxed max-h-[60vh] overflow-y-auto custom-scrollbar`}>
                                         <pre className="text-white/80">
                                             <code>
                                                 {code.split('\n').map((line, i) => (
-                                                    <div key={i} className="flex gap-6 group/line hover:bg-white/5 transition-colors -mx-4 px-4 py-0.5">
+                                                    <div key={i} className={`flex ${isMobile ? "gap-3" : "gap-6"} group/line hover:bg-white/5 transition-colors -mx-4 px-4 py-0.5`}>
                                                         <span className="text-white/30 w-4 inline-block text-right select-none">{i + 1}</span>
                                                         <span className="text-white/70 whitespace-pre">
                                                             {line.split(/([ \t,.<>{}[\]()=;:"'])/).map((part, k) => {
@@ -244,10 +246,10 @@ export const Skills: React.FC<{
         if (onInteractionChange) onInteractionChange(interacting);
     };
 
-    const slideLabels = ["Toolkit", "Expertise", "Engineering"];
+    const slideLabels = ["Toolkit", "Expertise"];
     return (
         <div
-            className="relative w-full h-full font-sans overflow-hidden"
+            className="relative w-full h-full font-roboto overflow-hidden"
             onClick={() => {
                 setActiveCategory(null);
                 if (onInteractionChange) onInteractionChange(false);
@@ -256,13 +258,13 @@ export const Skills: React.FC<{
             <AnimatePresence initial={false} custom={direction}>
                 {isActive && slideIndex === 0 && <Slide1 key="slide0" isMobile={isMobile} direction={direction} />}
                 {isActive && slideIndex === 1 && <Slide2 key="slide1" isMobile={isMobile} direction={direction} activeCategory={activeCategory} handleRowClick={handleRowClick} />}
-                {isActive && slideIndex === 2 && <Slide3 key="slide2" isMobile={isMobile} direction={direction} />}
             </AnimatePresence>
 
             {/* Desktop interaction only: */}
             <CodePreview
                 code={activeCategory !== null ? skillCategories[activeCategory].code || "" : ""}
-                active={activeCategory !== null && !isMobile}
+                active={activeCategory !== null}
+                isMobile={isMobile}
                 onClose={() => {
                     setActiveCategory(null);
                     if (onInteractionChange) onInteractionChange(false);
@@ -273,11 +275,11 @@ export const Skills: React.FC<{
             {/* Bottom Dynamic Navigation */}
             <DynamicPagination
                 activeIndex={slideIndex}
-                totalSlides={3}
+                totalSlides={2}
                 labels={slideLabels}
                 onSlideChange={onSlideChange!}
                 isActive={isActive}
-                slides={skillPreviews.slice(0, 3)}
+                slides={skillPreviews.slice(0, 2)}
             />
 
             {/* Cinematic Grain */}

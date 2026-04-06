@@ -182,10 +182,10 @@ const MobileTouchCard: React.FC<{
                             transition={{ duration: 2, repeat: Infinity, delay: i * 0.5 }}
                             className="w-1.5 h-1.5 rounded-full bg-[#c9a84c] flex-shrink-0"
                         />
-                        <span className="text-[#c9a84c] font-mono text-[10px] tracking-[0.35em] uppercase">{tech.area}</span>
+                        <span className="text-[#c9a84c] font-montserrat font-semibold text-[10px] tracking-[0.35em] uppercase">{tech.area}</span>
                     </div>
                     <h3
-                        className="text-white text-xl font-black tracking-tighter"
+                        className="text-white text-xl font-montserrat font-black tracking-tighter"
                         style={{
                             textShadow: held ? '0 0 25px rgba(201,168,76,0.6), 2px 0 10px rgba(0,255,255,0.15)' : isActive ? '0 0 15px rgba(201,168,76,0.35)' : 'none',
                             transition: 'text-shadow 0.35s ease',
@@ -203,7 +203,7 @@ const MobileTouchCard: React.FC<{
                             initial={{ opacity: 0, x: isRight ? 20 : -20 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ duration: 0.4, delay: i * 0.12 + mi * 0.05 + 0.25 }}
-                            className={`flex items-center gap-3 font-mono text-[11px] tracking-wider ${isRight ? 'flex-row-reverse' : 'flex-row'}`}
+                            className={`flex items-center gap-3 font-roboto text-[11px] tracking-wider ${isRight ? 'flex-row-reverse' : 'flex-row'}`}
                             style={{ color: isActive ? 'rgba(255,255,255,0.9)' : 'rgba(255,255,255,0.5)', transition: 'color 0.35s ease' }}
                         >
                             <motion.div
@@ -220,7 +220,7 @@ const MobileTouchCard: React.FC<{
                 </ul>
 
                 <div
-                    className={`w-full rounded-xl p-3 font-mono text-[10px] ${isRight ? 'text-right' : 'text-left'}`}
+                    className={`w-full rounded-xl p-3 font-roboto text-[10px] ${isRight ? 'text-right' : 'text-left'}`}
                     style={{
                         background: 'rgba(0,0,0,0.75)',
                         border: isActive ? '1px solid rgba(201,168,76,0.45)' : '1px solid rgba(255,255,255,0.05)',
@@ -414,20 +414,20 @@ const MagneticTiltCard = ({ tech, i, isAudioEnabled, toggleAudio }: { tech: any;
                     )}
                 </div>
                 <div className="mt-8 mb-8 transform-gpu" style={{ transform: "translateZ(60px)" }}>
-                    <h3 className="text-white text-3xl xl:text-4xl font-black tracking-tighter leading-[0.9] group-hover:text-[#c9a84c] transition-all duration-500 max-w-[90%] group-hover:[text-shadow:2px_0_10px_rgba(201,168,76,0.3),-2px_0_10px_rgba(0,255,255,0.2)]">
+                    <h3 className="text-white text-3xl xl:text-4xl font-montserrat font-black tracking-tighter leading-[0.9] group-hover:text-[#c9a84c] transition-all duration-500 max-w-[90%] group-hover:[text-shadow:2px_0_10px_rgba(201,168,76,0.3),-2px_0_10px_rgba(0,255,255,0.2)]">
                         {tech.title.replace('_', '\n')}
                     </h3>
                 </div>
                 <ul className="space-y-5 mb-8 flex-1 transform-gpu" style={{ transform: "translateZ(90px)" }}>
                     {tech.metrics.map((m: string) => (
-                        <li key={m} className="flex items-center gap-4 text-white/40 font-mono text-[10px] xl:text-xs tracking-[0.2em] group-hover:text-white/90 transition-all duration-300">
+                        <li key={m} className="flex items-center gap-4 text-white/40 font-roboto text-[10px] xl:text-xs tracking-[0.2em] group-hover:text-white/90 transition-all duration-300">
                             <div className="w-1.5 h-1.5 rounded-full bg-white/10 group-hover:bg-[#c9a84c] group-hover:scale-125 transition-all duration-300 shadow-[0_0_10px_rgba(201,168,76,0.5)]" />
                             {m}
                         </li>
                     ))}
                 </ul>
                 <div
-                    className="bg-black/80 backdrop-blur-md border border-white/10 p-5 rounded-xl font-mono text-[9px] xl:text-[10px] text-white/40 select-none shadow-[0_20px_40px_-15px_rgba(0,0,0,0.7)] transform-gpu group-hover:border-[#c9a84c]/30 transition-colors duration-500"
+                    className="bg-black/80 backdrop-blur-md border border-white/10 p-5 rounded-xl font-roboto text-[9px] xl:text-[10px] text-white/40 select-none shadow-[0_20px_40px_-15px_rgba(0,0,0,0.7)] transform-gpu group-hover:border-[#c9a84c]/30 transition-colors duration-500"
                     style={{ transform: "translateZ(130px)" }}
                 >
                     <div className="flex gap-2 mb-4 border-b border-white/10 pb-3">

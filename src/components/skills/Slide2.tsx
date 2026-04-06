@@ -12,9 +12,8 @@ const desktopVariants = {
 export const Slide2: React.FC<{
     isMobile: boolean;
     direction: number;
-    activeCategory: number | null;
     handleRowClick: (index: number) => void;
-}> = ({ isMobile, direction, activeCategory, handleRowClick }) => {
+}> = ({ isMobile, direction, handleRowClick }) => {
     const scrollRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -42,15 +41,16 @@ export const Slide2: React.FC<{
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.5, delay: i * 0.08 }}
                             key={category.title}
-                            className="border border-white/5 p-5 bg-white/[0.02] flex flex-col"
+                            onClick={(e) => { e.stopPropagation(); handleRowClick(i); }}
+                            className="border border-white/5 p-5 bg-white/[0.02] flex flex-col active:bg-white/10 transition-colors cursor-pointer"
                         >
                             <div className="flex items-center justify-between border-b border-white/5 pb-3 mb-4">
-                                <h3 className="text-white text-xl font-black tracking-widest uppercase">{category.title}</h3>
-                                <span className="text-white/30 font-mono text-xs tracking-widest">{category.index}</span>
+                                <h3 className="text-white text-xl font-montserrat font-black tracking-widest uppercase">{category.title}</h3>
+                                <span className="text-white/30 font-montserrat font-medium text-xs tracking-widest">{category.index}</span>
                             </div>
                             <div className="flex flex-wrap gap-2">
                                 {category.skills.map(skill => (
-                                    <span key={skill} className="px-3 py-1.5 bg-white/5 text-white/80 font-mono text-xs uppercase tracking-widest rounded border border-white/10">
+                                    <span key={skill} className="px-3 py-1.5 bg-white/5 text-white/80 font-roboto text-xs uppercase tracking-widest rounded border border-white/10">
                                         {skill}
                                     </span>
                                 ))}
@@ -85,31 +85,31 @@ export const Slide2: React.FC<{
                             />
                             <div className="col-span-2 md:col-span-1">
                                 <ClipReveal delay={0.1 + i * 0.05} duration={0.6}>
-                                    <span className="text-white/30 font-mono text-xs tracking-widest group-hover:text-[#c9a84c] transition-colors duration-500">
+                                    <span className="text-white/30 font-montserrat font-medium text-xs tracking-widest group-hover:text-[#c9a84c] transition-colors duration-500">
                                         {category.index}
                                     </span>
                                 </ClipReveal>
                             </div>
                             <div className="col-span-10 md:col-span-4 flex items-center gap-6">
-                                <h3 className="text-white text-3xl md:text-4xl font-black tracking-[0.1em] group-hover:tracking-[0.15em] transition-all duration-700 uppercase whitespace-nowrap">
+                                <h3 className="text-white text-3xl md:text-4xl font-montserrat font-black tracking-[0.1em] group-hover:tracking-[0.15em] transition-all duration-700 uppercase whitespace-nowrap">
                                     <SplitText text={category.title} startDelay={0.1 + i * 0.05} charDelay={0.008} />
                                 </h3>
                                 <div className="h-[2px] bg-[#c9a84c] w-0 opacity-0 group-hover:w-24 group-hover:opacity-100 transition-all duration-700 hidden md:block" />
                             </div>
                             <div className="hidden md:col-span-1" />
                             <div className="col-span-12 md:col-span-6 flex items-center pl-8 md:pl-0 mt-2 md:mt-0 relative group/skills">
-                                <div className="flex flex-wrap items-center gap-x-2">
+                                 <div className="flex flex-wrap items-center gap-x-2">
                                     {category.skills.map((skill, j) => (
                                         <React.Fragment key={skill}>
                                             <motion.span
                                                 initial={{ opacity: 0, y: 10 }}
                                                 animate={{ opacity: 1, y: 0 }}
                                                 transition={{ duration: 0.6, delay: 0.3 + i * 0.05 + j * 0.02, ease: CINEMATIC_EASE }}
-                                                className="text-white/30 font-mono text-xs md:text-base group-hover:text-white/80 transition-all duration-500 py-1 hover:text-[#c9a84c]"
+                                                className="text-white/30 font-roboto text-xs md:text-base group-hover:text-white/80 transition-all duration-500 py-1 hover:text-[#c9a84c]"
                                             >
                                                 {skill}
                                             </motion.span>
-                                            {j < category.skills.length - 1 && <span className="text-white/5 font-mono text-[10px] mx-1">/</span>}
+                                            {j < category.skills.length - 1 && <span className="text-white/5 font-roboto text-[10px] mx-1">/</span>}
                                         </React.Fragment>
                                     ))}
                                 </div>

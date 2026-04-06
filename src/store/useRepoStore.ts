@@ -31,7 +31,7 @@ const CACHE_DURATION = 1000 * 60 * 60; // 1 hour
 export const useRepoStore = create<RepoState>()(
     persist(
         (set, get) => ({
-            repos: fallbackRepos as Repository[],
+            repos: (fallbackRepos as unknown as Repository[]).filter(r => r.name.toLowerCase() !== 'kodekenobi.github.io'),
             loading: false,
             error: null,
             lastFetched: null,
@@ -70,7 +70,11 @@ export const useRepoStore = create<RepoState>()(
                         // If completely empty OR forced, show the bundled repos.json as better "baseline" than mocks.
                         if (existingRepos.length === 0 || force) {
                             console.log("useRepoStore: Using bundled src/data/repos.json as fallback.");
-                            set({ repos: fallbackRepos as Repository[], lastFetched: now, loading: false });
+                            set({ 
+                                repos: (fallbackRepos as unknown as Repository[]).filter(r => r.name.toLowerCase() !== 'kodekenobi.github.io'), 
+                                lastFetched: now, 
+                                loading: false 
+                            });
                         } else {
                             set({ loading: false });
                         }
@@ -85,6 +89,7 @@ export const useRepoStore = create<RepoState>()(
                     let filtered = data.filter((r: any) =>
                         !r.fork &&
                         r.name.toLowerCase() !== 'thuis' &&
+                        r.name.toLowerCase() !== 'kodekenobi.github.io' &&
                         !r.name.toLowerCase().includes('trevnoctilla')
                     );
 
@@ -120,7 +125,9 @@ export const useRepoStore = create<RepoState>()(
                         error: err.message,
                         loading: false,
                         // If completely empty, use bundled repos.json
-                        repos: existingRepos.length > 0 ? existingRepos : (fallbackRepos as Repository[]),
+                        repos: existingRepos.length > 0 
+                            ? existingRepos.filter(r => r.name.toLowerCase() !== 'kodekenobi.github.io') 
+                            : (fallbackRepos as unknown as Repository[]).filter(r => r.name.toLowerCase() !== 'kodekenobi.github.io'),
                         lastFetched: existingRepos.length > 0 ? lastFetched : now
                     });
                 }
@@ -132,7 +139,7 @@ export const useRepoStore = create<RepoState>()(
             },
         }),
         {
-            name: 'repo-storage-v3',
+            name: 'repo-storage-v4',
             storage: createJSONStorage(() => localStorage),
         }
     )

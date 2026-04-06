@@ -36,10 +36,10 @@ export const Slide0: React.FC<{ isMobile: boolean; direction: number }> = ({
     >
       <div className="relative z-10 w-full flex flex-col items-start md:items-end justify-center h-full">
         <div className="flex flex-col items-start leading-[0.85]">
-          <h1 className="text-white text-[15vw] md:text-[10rem] font-black leading-[0.9] tracking-tighter">
+          <h1 className="text-white text-[15vw] md:text-[10rem] font-inter font-black leading-[0.9] tracking-tighter">
             <SplitText text="MY" startDelay={0.1} charDelay={0.03} />
           </h1>
-          <h1 className="text-white/40 text-[15vw] md:text-[10rem] font-black leading-[0.9] tracking-tighter">
+          <h1 className="text-white/40 text-[15vw] md:text-[10rem] font-inter font-black leading-[0.9] tracking-tighter">
             <SplitText text="PROJECTS" startDelay={0.2} charDelay={0.02} />
             <motion.span
               initial={{ y: -150, opacity: 0 }}
@@ -79,7 +79,7 @@ export const Slide0: React.FC<{ isMobile: boolean; direction: number }> = ({
               className="h-px w-32 md:w-48 bg-[#c9a84c]/50"
             />
             <ClipReveal delay={0.3} duration={0.5}>
-              <span className="text-white/50 font-mono text-[10px] md:text-xs tracking-[0.5em] uppercase pl-4">
+              <span className="text-white/50 font-montserrat font-semibold text-[10px] md:text-xs tracking-[0.5em] uppercase pl-4">
                 Selected Works
               </span>
             </ClipReveal>
