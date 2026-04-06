@@ -73,9 +73,9 @@ const CodePreview: React.FC<{
     onClose: () => void;
     onInteractionChange: (interacting: boolean) => void;
 }> = ({ code, active, isMobile, onClose, onInteractionChange }) => {
-    const [copied, setCopied] = React.useState(false);
-    const [isMinimized, setIsMinimized] = React.useState(false);
-    const [isMaximized, setIsMaximized] = React.useState(false);
+    const [copied, setCopied] = useState(false);
+    const [isMinimized, setIsMinimized] = useState(false);
+    const [isMaximized, setIsMaximized] = useState(false);
 
     const copyToClipboard = () => {
         navigator.clipboard.writeText(code);
@@ -158,7 +158,7 @@ const CodePreview: React.FC<{
                                             className="bg-white/5 hover:bg-white/10 text-white/60 hover:text-white px-3 py-1 rounded-md text-[10px] font-montserrat font-medium transition-all border border-white/5 flex items-center gap-2 group/copy cursor-pointer"
                                         >
                                             {isMobile ? (
-                                                "CLOSE"
+                                                "X"
                                             ) : copied ? (
                                                 <>
                                                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
@@ -257,7 +257,7 @@ export const Skills: React.FC<{
         >
             <AnimatePresence initial={false} custom={direction}>
                 {isActive && slideIndex === 0 && <Slide1 key="slide0" isMobile={isMobile} direction={direction} />}
-                {isActive && slideIndex === 1 && <Slide2 key="slide1" isMobile={isMobile} direction={direction} activeCategory={activeCategory} handleRowClick={handleRowClick} />}
+                {isActive && slideIndex === 1 && <Slide2 key="slide1" isMobile={isMobile} direction={direction} handleRowClick={handleRowClick} />}
             </AnimatePresence>
 
             {/* Desktop interaction only: */}

@@ -43,7 +43,7 @@ const MobileTouchCard: React.FC<{
     const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
         // DO NOT stop propagation here for natural scroll access
         isTouching.current = true;
-        
+
         if (holdTimer.current) clearTimeout(holdTimer.current);
         if (soundTimer.current) clearTimeout(soundTimer.current);
 
@@ -69,7 +69,6 @@ const MobileTouchCard: React.FC<{
         if (held) {
             if (e.cancelable) e.preventDefault();
             e.stopPropagation();
-            dragControls.start(e);
         }
 
         const rect = cardRef.current?.getBoundingClientRect();
@@ -83,15 +82,15 @@ const MobileTouchCard: React.FC<{
 
     const handleTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
         isTouching.current = false;
-        
+
         if (holdTimer.current) clearTimeout(holdTimer.current);
         if (soundTimer.current) clearTimeout(soundTimer.current);
-        
+
         if (held) {
             soundEngine.stopFocus();
             setHeld(false);
         }
-        
+
         resetTilt();
         setTapped(true);
         if (tapTimeout.current) clearTimeout(tapTimeout.current);
