@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { DynamicPagination } from "./about/Shared";
 import { AnimatePresence } from "framer-motion";
 import { Slide1 } from "./skills/Slide1";
@@ -62,7 +62,7 @@ const ImpactPreview: React.FC = () => (
     </div>
 );
 
-const skillPreviews = [ToolkitPreview, ExpertisePreview];
+const skillPreviews = [ToolkitPreview];
 
 import { motion } from "framer-motion";
 
@@ -143,13 +143,23 @@ const CodePreview: React.FC<{
                                             <span className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] text-white/60 font-montserrat font-medium opacity-0 group-hover/btn:opacity-100 transition-opacity pointer-events-none whitespace-nowrap uppercase tracking-widest">CLOSE</span>
                                         </button>
                                         <button
-                                            onClick={(e) => { e.stopPropagation(); }}
-                                            className="w-3.5 h-3.5 rounded-full bg-[#ffbd2e]/50 cursor-default opacity-50 flex items-center justify-center"
-                                        />
+                                            onClick={(e) => { e.stopPropagation(); setIsMinimized(!isMinimized); }}
+                                            className="w-3.5 h-3.5 rounded-full bg-[#ffbd2e] hover:bg-[#ffbd2e]/80 transition-all flex items-center justify-center group/btn relative cursor-pointer shadow-[0_0_10px_rgba(255,189,46,0.5)]"
+                                        >
+                                            <svg className="w-2 h-2 opacity-0 group-hover/btn:opacity-100 transition-opacity" viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="4">
+                                                <path d="M20 12H4" />
+                                            </svg>
+                                            <span className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] text-white/60 font-montserrat font-medium opacity-0 group-hover/btn:opacity-100 transition-opacity pointer-events-none whitespace-nowrap uppercase tracking-widest">MINIMIZE</span>
+                                        </button>
                                         <button
-                                            onClick={(e) => { e.stopPropagation(); }}
-                                            className="w-3.5 h-3.5 rounded-full bg-[#27c93f]/50 cursor-default opacity-50 flex items-center justify-center"
-                                        />
+                                            onClick={(e) => { e.stopPropagation(); setIsMaximized(!isMaximized); }}
+                                            className="w-3.5 h-3.5 rounded-full bg-[#27c93f] hover:bg-[#27c93f]/80 transition-all flex items-center justify-center group/btn relative cursor-pointer shadow-[0_0_10px_rgba(39,201,63,0.5)]"
+                                        >
+                                            <svg className="w-2 h-2 opacity-0 group-hover/btn:opacity-100 transition-opacity" viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="4">
+                                                <path d="M12 4v16m8-8H4" />
+                                            </svg>
+                                            <span className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] text-white/60 font-montserrat font-medium opacity-0 group-hover/btn:opacity-100 transition-opacity pointer-events-none whitespace-nowrap uppercase tracking-widest">MAXIMIZE</span>
+                                        </button>
                                     </div>
                                     <div className="flex items-center gap-4">
                                         <span className="text-[10px] font-montserrat font-semibold text-white/60 tracking-[0.3em] uppercase">Architecture_Preview</span>

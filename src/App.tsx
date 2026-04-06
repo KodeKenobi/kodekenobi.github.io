@@ -87,13 +87,26 @@ export default function App() {
 
     setCurrentSection(sectionId);
     currentSectionRef.current = sectionId;
-    if (sectionId === "home") {
-      // No longer resetting homeTrigger to allow animation to persist
-    }
+    
+    // Reset all slide states to 0 when navigating via direct selection (Navbar)
     if (sectionId === "about") {
       setAboutSlide(0);
       aboutSlideRef.current = 0;
       setAboutDirection(1);
+    } else if (sectionId === "skills") {
+      setSkillsSlide(0);
+      skillsSlideRef.current = 0;
+      setSkillsDirection(1);
+    } else if (sectionId === "experience") {
+      setExperienceSlide(0);
+      experienceSlideRef.current = 0;
+      setExperienceDirection(1);
+      setSkillsExperienceProgress(0);
+      skillsExperienceProgressRef.current = 0;
+    } else if (sectionId === "projects") {
+      setProjectsSlide(0);
+      projectsSlideRef.current = 0;
+      setProjectsDirection(1);
     }
   };
 

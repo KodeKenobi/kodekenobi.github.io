@@ -4,7 +4,7 @@ import { SplitText, ClipReveal, CINEMATIC_EASE } from "../about/Shared";
 import { mobileSlideVariants } from "./Shared";
 
 const desktopVariants = {
-// ... existing variants
+    // ... existing variants
     enter: (direction: number) => ({
         x: direction > 0 ? "100%" : "-100%",
         opacity: 0,
@@ -23,7 +23,7 @@ export const Slide1: React.FC<{ isMobile: boolean; direction: number }> = ({ isM
 
 
     if (isMobile) {
-// ... existing mobile JSX
+        // ... existing mobile JSX
         return (
             <motion.div
                 key="mb-skills-0"
@@ -59,7 +59,7 @@ export const Slide1: React.FC<{ isMobile: boolean; direction: number }> = ({ isM
 
                 <div className="mt-8 flex items-center gap-4">
                     <ClipReveal delay={1.4} duration={0.8}>
-                        <span className="text-zinc-500 font-montserrat font-semibold text-[10px] tracking-[0.5em] uppercase w-[120px] block">
+                        <span className="text-zinc-500 font-montserrat font-semibold text-[9px] tracking-[0.5em] uppercase w-[120px] block">
                             Skills & Expertise
                         </span>
                     </ClipReveal>

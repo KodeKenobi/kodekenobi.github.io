@@ -65,10 +65,10 @@ export const Experience: React.FC<{ isActive: boolean; isMobile: boolean; slideI
                             className="absolute inset-0 w-full h-full flex flex-col items-center justify-center px-8"
                         >
                             <div className="flex flex-col items-start translate-y-[-10%]">
-                                <h1 className="text-white text-[18vw] font-inter font-black leading-[0.9] tracking-tighter">
+                                <h1 className="text-white text-[16vw] font-inter font-black leading-[0.9] tracking-tighter">
                                     <SplitText text="THE" startDelay={0.1} charDelay={0.03} />
                                 </h1>
-                                <h1 className="text-white/40 text-[18vw] font-inter font-black leading-[0.9] tracking-tighter">
+                                <h1 className="text-white/40 text-[16vw] font-inter font-black leading-[0.9] tracking-tighter">
                                     <SplitText text="JOURNEY" startDelay={0.2} charDelay={0.02} />
                                     <motion.span
                                         initial={{ y: -100, opacity: 0 }}
@@ -94,7 +94,7 @@ export const Experience: React.FC<{ isActive: boolean; isMobile: boolean; slideI
                                         className="h-px w-32 bg-[#c9a84c]/50"
                                     />
                                     <ClipReveal delay={0.3} duration={0.5}>
-                                        <span className="text-white/50 font-montserrat font-semibold text-[10px] tracking-[0.3em] uppercase">
+                                        <span className="text-white/50 font-montserrat font-semibold text-[9px] tracking-[0.3em] uppercase">
                                             Experience
                                         </span>
                                     </ClipReveal>
