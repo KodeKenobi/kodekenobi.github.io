@@ -150,13 +150,21 @@ export default function Products({ isActive, isMobile, slideIndex, direction }: 
                                             <div className="relative z-10 flex flex-col h-full">
                                                 {product.name === "ActiveDesk" ? (
                                                     <>
-                                                        {/* ActiveDesk iframe preview */}
-                                                        <iframe
-                                                            src={product.url}
-                                                            className="w-full h-full border-0 rounded-sm pointer-events-none"
-                                                            title={product.name}
-                                                            style={{ overflow: 'hidden' }}
-                                                        />
+                                                        {/* ActiveDesk iframe preview - scaled to show full hero */}
+                                                        <div className="w-full h-full overflow-hidden rounded-sm">
+                                                            <iframe
+                                                                src={product.url}
+                                                                className="w-full h-full border-0 pointer-events-none"
+                                                                title={product.name}
+                                                                style={{ 
+                                                                    overflow: 'hidden',
+                                                                    transform: 'scale(0.65)',
+                                                                    transformOrigin: 'top left',
+                                                                    width: '154%',
+                                                                    height: '154%'
+                                                                }}
+                                                            />
+                                                        </div>
                                                     </>
                                                 ) : (
                                                     <>
