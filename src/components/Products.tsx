@@ -150,14 +150,18 @@ export default function Products({ isActive, isMobile, slideIndex, direction }: 
                                             <div className="relative z-10 flex flex-col h-full w-full">
                                                 {product.name === "ActiveDesk" ? (
                                                     <>
-                                                        {/* ActiveDesk iframe preview - fills entire card */}
-                                                        <div className="w-full h-full overflow-hidden rounded-sm">
+                                                        {/* ActiveDesk iframe preview - zoomed out to show full hero, covers entire card */}
+                                                        <div className="w-full h-full overflow-hidden rounded-sm flex items-center justify-center bg-black">
                                                             <iframe
                                                                 src={product.url}
-                                                                className="w-full h-full border-0 pointer-events-none"
+                                                                className="border-0 pointer-events-none"
                                                                 title={product.name}
                                                                 style={{ 
-                                                                    overflow: 'hidden'
+                                                                    overflow: 'hidden',
+                                                                    transform: 'scale(0.65)',
+                                                                    transformOrigin: 'top left',
+                                                                    width: '154%',
+                                                                    height: '154%'
                                                                 }}
                                                             />
                                                         </div>
