@@ -133,7 +133,7 @@ export default function Products({ isActive, isMobile, slideIndex, direction }: 
                                         <motion.div
                                             key={product.id}
                                             variants={cardVariants}
-                                            className={`group relative bg-white/5 border border-white/10 p-8 hover:border-[#c9a84c]/50 transition-all duration-500 overflow-hidden ${product.url ? "cursor-pointer" : ""}`}
+                                            className={`group relative bg-white/5 border border-white/10 ${product.name === "ActiveDesk" ? "" : "p-8"} hover:border-[#c9a84c]/50 transition-all duration-500 overflow-hidden ${product.url ? "cursor-pointer" : ""}`}
                                         >
                                             {product.url && (
                                                 <a
@@ -151,14 +151,22 @@ export default function Products({ isActive, isMobile, slideIndex, direction }: 
                                                 {product.name === "ActiveDesk" ? (
                                                     <>
                                                         {/* ActiveDesk iframe preview - zoomed out to show full hero, fills entire card */}
-                                                        <iframe
-                                                            src={product.url}
-                                                            className="w-full h-full border-0 pointer-events-none"
-                                                            title={product.name}
-                                                            style={{ 
-                                                                overflow: 'hidden'
-                                                            }}
-                                                        />
+                                                        <div className="w-full h-full overflow-hidden">
+                                                            <iframe
+                                                                src={product.url}
+                                                                className="border-0 pointer-events-none"
+                                                                title={product.name}
+                                                                style={{ 
+                                                                    width: '170%',
+                                                                    height: '170%',
+                                                                    transform: 'scale(0.59)',
+                                                                    transformOrigin: 'top left',
+                                                                    margin: 0,
+                                                                    padding: 0,
+                                                                    overflow: 'hidden'
+                                                                }}
+                                                            />
+                                                        </div>
                                                     </>
                                                 ) : (
                                                     <>
