@@ -148,29 +148,43 @@ export default function Products({ isActive, isMobile, slideIndex, direction }: 
                                             <div className="absolute inset-0 bg-gradient-to-br from-[#c9a84c]/0 to-[#c9a84c]/0 group-hover:from-[#c9a84c]/10 group-hover:to-[#c9a84c]/0 transition-all duration-500 pointer-events-none" />
 
                                             <div className="relative z-10 flex flex-col h-full">
-                                                {/* Number Badge */}
-                                                <div className="mb-6">
-                                                    <span className="text-4xl font-inter font-black text-[#c9a84c]/40 group-hover:text-[#c9a84c]/60 transition-colors duration-300">
-                                                        {String(idx + 1).padStart(2, "0")}
-                                                    </span>
-                                                </div>
+                                                {product.name === "ActiveDesk" ? (
+                                                    <>
+                                                        {/* ActiveDesk iframe preview */}
+                                                        <iframe
+                                                            src={product.url}
+                                                            className="w-full h-full border-0 rounded-sm pointer-events-none"
+                                                            title={product.name}
+                                                            style={{ overflow: 'hidden' }}
+                                                        />
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        {/* Number Badge */}
+                                                        <div className="mb-6">
+                                                            <span className="text-4xl font-inter font-black text-[#c9a84c]/40 group-hover:text-[#c9a84c]/60 transition-colors duration-300">
+                                                                {String(idx + 1).padStart(2, "0")}
+                                                            </span>
+                                                        </div>
 
-                                                {/* Content */}
-                                                <div className="flex-1">
-                                                    <h3 className="text-lg font-inter font-black text-white mb-3 group-hover:text-[#c9a84c] transition-colors duration-300 tracking-tight">
-                                                        {product.name}
-                                                    </h3>
-                                                    <p className="text-sm font-roboto text-white/50 leading-relaxed">
-                                                        {product.description}
-                                                    </p>
-                                                </div>
+                                                        {/* Content */}
+                                                        <div className="flex-1">
+                                                            <h3 className="text-lg font-inter font-black text-white mb-3 group-hover:text-[#c9a84c] transition-colors duration-300 tracking-tight">
+                                                                {product.name}
+                                                            </h3>
+                                                            <p className="text-sm font-roboto text-white/50 leading-relaxed">
+                                                                {product.description}
+                                                            </p>
+                                                        </div>
 
-                                                {/* Bottom line */}
-                                                <div className="mt-6 pt-6 border-t border-white/5 group-hover:border-[#c9a84c]/30 transition-colors duration-300">
-                                                    <span className="text-[10px] font-montserrat font-semibold text-white/30 group-hover:text-[#c9a84c] transition-colors duration-300 uppercase tracking-[0.2em]">
-                                                        Learn More
-                                                    </span>
-                                                </div>
+                                                        {/* Bottom line */}
+                                                        <div className="mt-6 pt-6 border-t border-white/5 group-hover:border-[#c9a84c]/30 transition-colors duration-300">
+                                                            <span className="text-[10px] font-montserrat font-semibold text-white/30 group-hover:text-[#c9a84c] transition-colors duration-300 uppercase tracking-[0.2em]">
+                                                                Learn More
+                                                            </span>
+                                                        </div>
+                                                    </>
+                                                )}
                                             </div>
                                         </motion.div>
                                     ))
