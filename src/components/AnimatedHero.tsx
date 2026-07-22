@@ -58,8 +58,8 @@ export const AnimatedHero: React.FC = () => {
         {/* Background Image Layer */}
         <div className="absolute inset-0">
           <motion.img
-            src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=2070"
-            alt="Cinematic Architecture"
+            src="/hero-gif.gif"
+            alt="hero"
             initial={{ scale: 1, filter: "none" }}
             animate={{
               scale: scene >= 7 ? 1.08 : 1,
@@ -181,10 +181,10 @@ export const AnimatedHero: React.FC = () => {
               />
 
               <div className="flex flex-col items-center leading-none">
-                <h3 className="text-white text-5xl md:text-8xl font-inter font-black tracking-[0.2em] drop-shadow-2xl">
+                <h3 className="text-white text-5xl md:text-8xl font-montserrat font-black tracking-[0.2em] drop-shadow-2xl">
                   <DecryptText text="KODE" trigger={scene === 8} />
                 </h3>
-                <h3 className="text-white text-5xl md:text-8xl font-inter font-black tracking-[0.2em] drop-shadow-2xl">
+                <h3 className="text-white text-5xl md:text-8xl font-montserrat font-black tracking-[0.2em] drop-shadow-2xl">
                   <DecryptText text="KENOBI" trigger={scene === 8} />
                 </h3>
               </div>

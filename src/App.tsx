@@ -6,6 +6,8 @@ import About from "./components/About";
 import Skills from "./components/Skills";
 import Experience from "./components/Experience";
 import Projects from "./components/Projects";
+import Products from "./components/Products";
+import RightClickModal from "./components/RightClickModal";
 import { soundEngine } from "./lib/SoundEngine";
 
 const sections = [
@@ -14,11 +16,13 @@ const sections = [
   { id: "skills", name: "SKILLS" },
   { id: "experience", name: "EXPERIENCE" },
   { id: "projects", name: "PROJECTS" },
+  { id: "products", name: "PRODUCTS" },
 ];
 
-const ABOUT_TOTAL_SLIDES = 5;
+const ABOUT_TOTAL_SLIDES = 3;
 const SKILLS_TOTAL_SLIDES = 2;
 const PROJECTS_TOTAL_SLIDES = 2; // NEW: Slide 0 (Intro), Slide 1 (Grid)
+const PRODUCTS_TOTAL_SLIDES = 2; // Slide 0 (Intro), Slide 1 (Grid)
 
 export default function App() {
   const [isMobile, setIsMobile] = useState(false);
@@ -39,6 +43,10 @@ export default function App() {
   const [projectsSlide, setProjectsSlide] = useState(0);
   const [projectsDirection, setProjectsDirection] = useState(1);
   const projectsSlideRef = useRef(0);
+
+  const [productsSlide, setProductsSlide] = useState(0);
+  const [productsDirection, setProductsDirection] = useState(1);
+  const productsSlideRef = useRef(0);
 
   const isMobileRef = useRef(false);
   const projectsContainerRef = useRef<HTMLDivElement>(null);
@@ -107,6 +115,10 @@ export default function App() {
       setProjectsSlide(0);
       projectsSlideRef.current = 0;
       setProjectsDirection(1);
+    } else if (sectionId === "products") {
+      setProductsSlide(0);
+      productsSlideRef.current = 0;
+      setProductsDirection(1);
     }
   };
 
@@ -162,6 +174,12 @@ export default function App() {
         setProjectsSlide(slideTarget);
         projectsSlideRef.current = slideTarget;
         setProjectsDirection(direction);
+      }
+      if (nextSection === "products") {
+        const slideTarget = direction > 0 ? 0 : PRODUCTS_TOTAL_SLIDES - 1;
+        setProductsSlide(slideTarget);
+        productsSlideRef.current = slideTarget;
+        setProductsDirection(direction);
       }
     }
   };
@@ -399,6 +417,12 @@ export default function App() {
                 projectsSlideRef.current = 0;
                 lockScroll(isMobileRef.current ? 500 : 800);
               }
+            } else if (atBottom && scrollingDown) {
+              e.preventDefault();
+              if (scrollAccumulatorRef.current > threshold) {
+                scrollAccumulatorRef.current = 0;
+                navigateSection(1);
+              }
             }
           }
         } else {
@@ -415,6 +439,52 @@ export default function App() {
             if (scrollAccumulatorRef.current < -threshold) {
               scrollAccumulatorRef.current = 0;
               navigateSection(-1);
+            }
+          }
+        }
+        return;
+      }
+
+      if (current === "products") {
+        const slide = productsSlideRef.current;
+        const threshold = 200;
+
+        if (slide === 0) {
+          e.preventDefault();
+          if (scrollingDown) {
+            if (scrollAccumulatorRef.current > threshold) {
+              scrollAccumulatorRef.current = 0;
+              setProductsDirection(1);
+              setProductsSlide(1);
+              productsSlideRef.current = 1;
+              lockScroll(isMobileRef.current ? 500 : 800);
+            }
+          } else {
+            if (scrollAccumulatorRef.current < -threshold) {
+              scrollAccumulatorRef.current = 0;
+              navigateSection(-1);
+            }
+          }
+        } else {
+          const container = document.getElementById("products-grid");
+          if (container) {
+            const { scrollTop, scrollHeight, clientHeight } =
+              container as HTMLElement;
+            const atTop = scrollTop <= 5;
+            const atBottom = scrollTop + clientHeight >= scrollHeight - 5;
+
+            if (scrollingDown && !atBottom) return;
+            if (!scrollingDown && !atTop) return;
+
+            if (atTop && !scrollingDown) {
+              e.preventDefault();
+              if (scrollAccumulatorRef.current < -threshold) {
+                scrollAccumulatorRef.current = 0;
+                setProductsDirection(-1);
+                setProductsSlide(0);
+                productsSlideRef.current = 0;
+                lockScroll(isMobileRef.current ? 500 : 800);
+              }
             }
           }
         }
@@ -494,6 +564,52 @@ export default function App() {
                 // Slightly harder to leave accidentally
                 scrollAccumulatorRef.current = 0;
                 navigateSection(1);
+              }
+            } else {
+              scrollAccumulatorRef.current = 0;
+            }
+          }
+        }
+        return;
+      }
+
+      if (current === "products") {
+        const slide = productsSlideRef.current;
+        const threshold = 60;
+        if (slide === 0) {
+          if (e.cancelable) e.preventDefault();
+          scrollAccumulatorRef.current += deltaY;
+          if (scrollingDown) {
+            if (scrollAccumulatorRef.current > threshold) {
+              setProductsDirection(1);
+              setProductsSlide(1);
+              productsSlideRef.current = 1;
+              scrollAccumulatorRef.current = 0;
+              lockScroll(600);
+            }
+          } else {
+            if (scrollAccumulatorRef.current < -threshold) {
+              scrollAccumulatorRef.current = 0;
+              navigateSection(-1);
+            }
+          }
+        } else {
+          const container = document.getElementById("products-grid");
+          if (container) {
+            const { scrollTop, scrollHeight, clientHeight } =
+              container as HTMLElement;
+            const atTop = scrollTop <= 5;
+            const atBottom = scrollTop + clientHeight >= scrollHeight - 5;
+
+            if (atTop && !scrollingDown) {
+              if (e.cancelable) e.preventDefault();
+              scrollAccumulatorRef.current += deltaY;
+              if (scrollAccumulatorRef.current < -threshold) {
+                setProductsDirection(-1);
+                setProductsSlide(0);
+                productsSlideRef.current = 0;
+                scrollAccumulatorRef.current = 0;
+                lockScroll(600);
               }
             } else {
               scrollAccumulatorRef.current = 0;
@@ -748,7 +864,16 @@ export default function App() {
   }, [currentSection]);
 
   return (
-    <div className="relative bg-[#050505] h-[100dvh] w-full overflow-hidden">
+    <div className="relative h-[100dvh] w-full overflow-hidden">
+      {/* Global GIF Background — fixed behind everything */}
+      <div className="fixed inset-0 z-0 pointer-events-none">
+        <img
+          src="/hero-gif.gif"
+          alt=""
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-black/75" />
+      </div>
       <AnimatedNavbar
         currentSection={currentSection}
         onSectionChange={showSection}
@@ -845,7 +970,23 @@ export default function App() {
             direction={projectsDirection}
           />
         </section>
+        <section
+          className={`absolute inset-0 bg-[#050505] no-scrollbar overflow-hidden`}
+          style={{
+            opacity: currentSection === "products" ? 1 : 0,
+            pointerEvents: currentSection === "products" ? "auto" : "none",
+            transition: "opacity 0.6s ease-in-out",
+          }}
+        >
+          <Products
+            isActive={currentSection === "products"}
+            isMobile={isMobile}
+            slideIndex={productsSlide}
+            direction={productsDirection}
+          />
+        </section>
       </div>
+      <RightClickModal />
     </div>
   );
 }

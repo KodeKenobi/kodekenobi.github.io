@@ -4,12 +4,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import Slide1 from "./about/Slide1";
 import Slide2 from "./about/Slide2";
 import Slide3 from "./about/Slide3";
-import Slide4 from "./about/Slide4";
-import Slide5 from "./about/Slide5";
 import { DynamicPagination } from "./about/Shared";
 
 // ─── SLIDE MAP ───
-const slides = [Slide1, Slide2, Slide3, Slide4, Slide5];
+const slides = [Slide1, Slide2, Slide3];
 
 // ─── HORIZONTAL SLIDE VARIANTS ───
 const slideVariants = {
@@ -31,7 +29,7 @@ const slideVariants = {
 };
 
 // ─── ABOUT COMPONENT ───
-const slideLabels = ["The Architect", "Philosophy", "The Journey", "The Method", "The Next Step"];
+const slideLabels = ["The Architect", "Philosophy", "The Journey"];
 
 interface AboutProps {
   slideIndex: number;
@@ -61,7 +59,7 @@ export const About: React.FC<AboutProps> = ({ slideIndex, direction, isActive, o
   }, [isActive, hasFlashed]);
 
   return (
-    <div className="relative w-full h-full bg-[#050505] font-sans overflow-hidden">
+    <div className="relative w-full h-full font-sans overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(20,20,20,1)_0%,rgba(0,0,0,1)_100%)]" />
 

@@ -180,10 +180,10 @@ export const MobileAnimatedHero: React.FC = () => {
                             />
 
                             <div className="flex flex-col items-center leading-none">
-                                <h3 className="text-white text-[13vw] font-inter font-black tracking-[0.2em] drop-shadow-2xl">
+                                <h3 className="text-white text-[13vw] font-montserrat font-black tracking-[0.2em] drop-shadow-2xl">
                                     <DecryptText text="KODE" trigger={scene === 8} />
                                 </h3>
-                                <h3 className="text-white text-[13vw] font-inter font-black tracking-[0.2em] drop-shadow-2xl">
+                                <h3 className="text-white text-[13vw] font-montserrat font-black tracking-[0.2em] drop-shadow-2xl">
                                     <DecryptText text="KENOBI" trigger={scene === 8} />
                                 </h3>
                             </div>

@@ -11,6 +11,7 @@ const navItems = [
   { name: "SKILLS", id: "skills" },
   { name: "EXPERIENCE", id: "experience" },
   { name: "PROJECTS", id: "projects" },
+  { name: "PRODUCTS", id: "products" },
 ];
 
 const menuVariants: Variants = {

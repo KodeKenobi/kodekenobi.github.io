@@ -89,7 +89,7 @@ export default function Projects({ isActive, isMobile, slideIndex, direction }: 
     };
 
     return (
-        <div className="absolute inset-0 w-full h-full bg-[#050505] overflow-hidden">
+        <div className="absolute inset-0 w-full h-full overflow-hidden">
             <AnimatePresence initial={false} custom={direction}>
                 {isActive && slideIndex === 0 && (
                     <Slide0 isMobile={isMobile} direction={direction} />
@@ -106,7 +106,7 @@ export default function Projects({ isActive, isMobile, slideIndex, direction }: 
                         exit="exit"
                         transition={{ duration: 0.6, ease: CINEMATIC_EASE }}
                         ref={scrollRef}
-                        className="absolute inset-0 w-full h-full font-roboto bg-[#050505] flex flex-col pt-24 pb-20 px-6 md:px-12 overflow-y-auto no-scrollbar overflow-x-hidden"
+                        className="absolute inset-0 w-full h-full font-roboto flex flex-col pt-24 pb-20 px-6 md:px-12 overflow-y-auto no-scrollbar overflow-x-hidden"
                     >
                         <div className="flex-1 w-full max-w-7xl mx-auto mt-12 relative z-10">
                             {/* Stats Header */}
