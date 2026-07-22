@@ -158,10 +158,9 @@ export default function Products({ isActive, isMobile, slideIndex, direction }: 
                                                                 title={product.name}
                                                                 style={{ 
                                                                     overflow: 'hidden',
-                                                                    transform: 'scale(0.65)',
-                                                                    transformOrigin: 'top left',
-                                                                    width: '154%',
-                                                                    height: '154%'
+                                                                    transform: 'scale(1.5)',
+                                                                    width: '100%',
+                                                                    height: '100%'
                                                                 }}
                                                             />
                                                         </div>
