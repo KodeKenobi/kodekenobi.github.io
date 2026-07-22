@@ -133,7 +133,7 @@ export default function Products({ isActive, isMobile, slideIndex, direction }: 
                                         <motion.div
                                             key={product.id}
                                             variants={cardVariants}
-                                            className={`group relative bg-white/5 border border-white/10 ${product.name === "ActiveDesk" ? "" : "p-8"} hover:border-[#c9a84c]/50 transition-all duration-500 overflow-hidden ${product.url ? "cursor-pointer" : ""}`}
+                                            className={`group relative bg-white/5 border border-white/10 ${product.name === "ActiveDesk" ? "h-96" : "p-8"} hover:border-[#c9a84c]/50 transition-all duration-500 overflow-hidden ${product.url ? "cursor-pointer" : ""}`}
                                         >
                                             {product.url && (
                                                 <a
@@ -157,9 +157,9 @@ export default function Products({ isActive, isMobile, slideIndex, direction }: 
                                                                 className="border-0 pointer-events-none"
                                                                 title={product.name}
                                                                 style={{ 
-                                                                    width: '170%',
-                                                                    height: '170%',
-                                                                    transform: 'scale(0.59)',
+                                                                    width: '1920px',
+                                                                    height: '1080px',
+                                                                    transform: 'scale(0.25)',
                                                                     transformOrigin: 'top left',
                                                                     margin: 0,
                                                                     padding: 0,
