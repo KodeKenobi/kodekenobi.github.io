@@ -150,20 +150,15 @@ export default function Products({ isActive, isMobile, slideIndex, direction }: 
                                             <div className="relative z-10 flex flex-col h-full w-full">
                                                 {product.name === "ActiveDesk" ? (
                                                     <>
-                                                        {/* ActiveDesk iframe preview - zoomed out to show full hero, covers entire card */}
-                                                        <div className="w-full h-full overflow-hidden rounded-sm flex items-center justify-center bg-black">
-                                                            <iframe
-                                                                src={product.url}
-                                                                className="border-0 pointer-events-none"
-                                                                title={product.name}
-                                                                style={{ 
-                                                                    overflow: 'hidden',
-                                                                    transform: 'scale(1.5)',
-                                                                    width: '100%',
-                                                                    height: '100%'
-                                                                }}
-                                                            />
-                                                        </div>
+                                                        {/* ActiveDesk iframe preview - zoomed out to show full hero, fills entire card */}
+                                                        <iframe
+                                                            src={product.url}
+                                                            className="w-full h-full border-0 pointer-events-none"
+                                                            title={product.name}
+                                                            style={{ 
+                                                                overflow: 'hidden'
+                                                            }}
+                                                        />
                                                     </>
                                                 ) : (
                                                     <>
