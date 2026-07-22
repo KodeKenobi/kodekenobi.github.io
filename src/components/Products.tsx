@@ -147,21 +147,17 @@ export default function Products({ isActive, isMobile, slideIndex, direction }: 
                                             {/* Hover glow effect */}
                                             <div className="absolute inset-0 bg-gradient-to-br from-[#c9a84c]/0 to-[#c9a84c]/0 group-hover:from-[#c9a84c]/10 group-hover:to-[#c9a84c]/0 transition-all duration-500 pointer-events-none" />
 
-                                            <div className="relative z-10 flex flex-col h-full">
+                                            <div className="relative z-10 flex flex-col h-full w-full">
                                                 {product.name === "ActiveDesk" ? (
                                                     <>
-                                                        {/* ActiveDesk iframe preview - scaled to show full hero */}
+                                                        {/* ActiveDesk iframe preview - fills entire card */}
                                                         <div className="w-full h-full overflow-hidden rounded-sm">
                                                             <iframe
                                                                 src={product.url}
                                                                 className="w-full h-full border-0 pointer-events-none"
                                                                 title={product.name}
                                                                 style={{ 
-                                                                    overflow: 'hidden',
-                                                                    transform: 'scale(0.65)',
-                                                                    transformOrigin: 'top left',
-                                                                    width: '154%',
-                                                                    height: '154%'
+                                                                    overflow: 'hidden'
                                                                 }}
                                                             />
                                                         </div>
