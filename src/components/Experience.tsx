@@ -136,7 +136,7 @@ export const Experience: React.FC<{ isActive: boolean; isMobile: boolean; slideI
 
 
     return (
-        <div className="absolute inset-0 w-full h-full bg-[#030303] overflow-hidden flex flex-col items-center">
+        <div className="absolute inset-0 w-full h-full overflow-hidden flex flex-col items-center">
 
             <AnimatePresence initial={false} custom={direction}>
                 {isActive && slideIndex === 0 && (
@@ -219,7 +219,7 @@ export const Experience: React.FC<{ isActive: boolean; isMobile: boolean; slideI
                         animate="center"
                         exit="exit"
                         transition={{ duration: 1, ease: CINEMATIC_EASE }}
-                        className="absolute inset-0 w-full h-full bg-[#030303] overflow-hidden flex flex-col items-center pt-32 z-10"
+                        className="absolute inset-0 w-full h-full overflow-hidden flex flex-col items-center pt-32 z-10"
                         ref={containerRef}
                     >
                         {/* BACKGROUND TEXT DECORATION */}

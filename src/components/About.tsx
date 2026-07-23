@@ -60,8 +60,7 @@ export const About: React.FC<AboutProps> = ({ slideIndex, direction, isActive, o
 
   return (
     <div className="relative w-full h-full font-sans overflow-hidden">
-      {/* Background */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(20,20,20,1)_0%,rgba(0,0,0,1)_100%)]" />
+      {/* Background — removed to show global GIF background */}
 
       {/* Horizontal Slides */}
       <AnimatePresence initial={true} custom={direction}>

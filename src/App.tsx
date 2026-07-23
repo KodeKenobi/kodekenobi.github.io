@@ -897,7 +897,7 @@ export default function App() {
           )}
         </section>
         <section
-          className="absolute inset-0 bg-[#050505] overflow-hidden"
+          className="absolute inset-0 overflow-hidden"
           style={{
             opacity: currentSection === "about" ? 1 : 0,
             pointerEvents: currentSection === "about" ? "auto" : "none",
@@ -917,7 +917,7 @@ export default function App() {
           />
         </section>
         <section
-          className={`absolute inset-0 bg-[#050505] no-scrollbar overflow-hidden`}
+          className={`absolute inset-0 no-scrollbar overflow-hidden`}
           ref={skillsContainerRef}
           style={{
             opacity: currentSection === "skills" ? 1 : 0,
@@ -939,7 +939,7 @@ export default function App() {
           />
         </section>
         <section
-          className={`absolute inset-0 bg-[#050505] no-scrollbar overflow-hidden`}
+          className={`absolute inset-0 no-scrollbar overflow-hidden`}
           style={{
             opacity: currentSection === "experience" ? 1 : 0,
             pointerEvents: currentSection === "experience" ? "auto" : "none",
@@ -955,7 +955,7 @@ export default function App() {
           />
         </section>
         <section
-          className={`absolute inset-0 bg-[#050505] no-scrollbar overflow-hidden`}
+          className={`absolute inset-0 no-scrollbar overflow-hidden`}
           ref={projectsContainerRef}
           style={{
             opacity: currentSection === "projects" ? 1 : 0,
@@ -971,7 +971,7 @@ export default function App() {
           />
         </section>
         <section
-          className={`absolute inset-0 bg-[#050505] no-scrollbar overflow-hidden`}
+          className={`absolute inset-0 no-scrollbar overflow-hidden`}
           style={{
             opacity: currentSection === "products" ? 1 : 0,
             pointerEvents: currentSection === "products" ? "auto" : "none",

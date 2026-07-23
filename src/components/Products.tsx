@@ -9,7 +9,7 @@ export default function Products({ isActive, isMobile, slideIndex, direction }: 
 
     // Sample products data
     const products = [
-        { id: 1, name: "ActiveDesk", description: "Keeps your work status active while you step away. Lightweight desktop app for Teams, Slack & more. Lifetime, weekly, or monthly license.", url: "https://kodekenobi.github.io/ActiveDesk/" },
+        { id: 1, name: "ActiveDesk", description: "Lifetime, weekly, or monthly license.\n\nFor Windows and Mac operating systems", url: "https://kodekenobi.github.io/ActiveDesk/" },
         { id: 2, name: "Product Two", description: "Tools designed for modern development" },
         { id: 3, name: "Product Three", description: "Systems that drive real impact" },
     ];
@@ -130,11 +130,11 @@ export default function Products({ isActive, isMobile, slideIndex, direction }: 
                             >
                                 {currentProducts.length > 0 ? (
                                     currentProducts.map((product, idx) => (
-                                        <motion.div
-                                            key={product.id}
-                                            variants={cardVariants}
-                                            className={`group relative bg-white/5 border border-white/10 ${product.name === "ActiveDesk" ? "h-96" : "p-8"} hover:border-[#c9a84c]/50 transition-all duration-500 overflow-hidden ${product.url ? "cursor-pointer" : ""}`}
-                                        >
+                                        <div key={product.id} className="flex flex-col group">
+                                            <motion.div
+                                                variants={cardVariants}
+                                                className={`relative bg-white/5 border border-white/10 ${product.name === "ActiveDesk" ? "h-56" : "p-8"} group-hover:border-[#c9a84c]/50 transition-all duration-500 overflow-hidden ${product.url ? "cursor-pointer" : ""}`}
+                                            >
                                             {product.url && (
                                                 <a
                                                     href={product.url}
@@ -151,10 +151,10 @@ export default function Products({ isActive, isMobile, slideIndex, direction }: 
                                                 {product.name === "ActiveDesk" ? (
                                                     <>
                                                         {/* ActiveDesk iframe preview - zoomed out to show full hero, fills entire card */}
-                                                        <div className="w-full h-full overflow-hidden">
+                                                        <div className="w-full h-full overflow-hidden relative">
                                                             <iframe
                                                                 src={product.url}
-                                                                className="border-0 pointer-events-none"
+                                                                className="border-0 pointer-events-none group-hover:blur-sm transition-all duration-300"
                                                                 title={product.name}
                                                                 style={{ 
                                                                     width: '1920px',
@@ -166,6 +166,18 @@ export default function Products({ isActive, isMobile, slideIndex, direction }: 
                                                                     overflow: 'hidden'
                                                                 }}
                                                             />
+                                                            {/* Hover eye icon overlay */}
+                                                            <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/0 group-hover:bg-black/30 transition-all duration-300 opacity-0 group-hover:opacity-100">
+                                                                <svg className="w-12 h-12 text-white mb-3" fill="currentColor" viewBox="0 0 24 24">
+                                                                    <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" />
+                                                                </svg>
+                                                                <div className="flex items-center gap-2">
+                                                                    <span className="text-white text-sm font-montserrat font-semibold uppercase tracking-[0.2em]">View Product</span>
+                                                                    <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                                                    </svg>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </>
                                                 ) : (
@@ -197,6 +209,19 @@ export default function Products({ isActive, isMobile, slideIndex, direction }: 
                                                 )}
                                             </div>
                                         </motion.div>
+                                        
+                                        {/* Text below card */}
+                                        {product.name === "ActiveDesk" && (
+                                            <div className="mt-4">
+                                                <h3 className="text-lg font-inter font-black text-white group-hover:text-[#c9a84c] transition-colors duration-300">
+                                                    {product.name}
+                                                </h3>
+                                                <p className="text-sm font-roboto text-white/50 leading-relaxed mt-2">
+                                                    {product.description}
+                                                </p>
+                                            </div>
+                                        )}
+                                        </div>
                                     ))
                                 ) : (
                                     <div className="col-span-full py-20 text-center">
