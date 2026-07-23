@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ActiveDesk | License Key Ready</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Montserrat:wght@400;500;600;700&family=Lato:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="site.css" />
+    <style>
+      body {
+        background: linear-gradient(135deg, #fff9f1 0%, var(--cream) 48%, #f4ebde 100%);
+      }
+
+      .success-shell {
+        width: calc(100% - 24px);
+        margin: 0 auto;
+        padding: 64px 12px;
+        max-width: 800px;
+      }
+
+      .success-card {
+        background: rgba(255, 249, 241, 0.95);
+        border: 1px solid var(--line);
+        border-radius: 28px;
+        padding: 48px;
+        text-align: center;
+      }
+
+      .success-icon {
+        font-size: 4rem;
+        margin-bottom: 24px;
+      }
+
+      .success-heading {
+        font-family: "Fraunces", serif;
+        font-size: clamp(2rem, 5vw, 3rem);
+        font-weight: 700;
+        color: var(--ink);
+        margin: 0 0 16px;
+      }
+
+      .success-text {
+        font-family: "Montserrat", sans-serif;
+        font-size: 1.1rem;
+        color: var(--ink-soft);
+        margin: 0 0 40px;
+        line-height: 1.6;
+      }
+
+      .license-display {
+        background: linear-gradient(135deg, rgba(63, 131, 255, 0.08), rgba(155, 224, 207, 0.08));
+        border: 1px solid rgba(63, 131, 255, 0.3);
+        border-radius: 16px;
+        padding: 24px;
+        margin-bottom: 32px;
+      }
+
+      .license-label {
+        font-family: "Lato", sans-serif;
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--ink-soft);
+        margin-bottom: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .license-key {
+        font-family: "Lato", sans-serif;
+        font-size: 1.1rem;
+        font-weight: 500;
+        color: var(--blue);
+        word-break: break-all;
+        line-height: 1.8;
+        margin: 0 0 16px;
+        min-height: 60px;
+      }
+
+      .button-group {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      .btn {
+        padding: 12px 28px;
+        font-family: "Lato", sans-serif;
+        font-weight: 700;
+        font-size: 1rem;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-decoration: none;
+        display: inline-block;
+      }
+
+      .btn-primary {
+        background: var(--ink);
+        color: #fff;
+      }
+
+      .btn-primary:hover {
+        background: var(--ink-soft);
+        transform: translateY(-2px);
+      }
+
+      .btn-secondary {
+        background: rgba(63, 131, 255, 0.12);
+        color: var(--blue);
+        border: 1px solid var(--blue);
+      }
+
+      .btn-secondary:hover {
+        background: rgba(63, 131, 255, 0.2);
+      }
+
+      .loading {
+        text-align: center;
+      }
+
+      .spinner {
+        display: inline-block;
+        width: 40px;
+        height: 40px;
+        border: 3px solid rgba(16, 32, 51, 0.1);
+        border-top-color: var(--blue);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-bottom: 20px;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .error-message {
+        background: rgba(220, 38, 38, 0.1);
+        border: 1px solid rgba(220, 38, 38, 0.3);
+        border-radius: 12px;
+        padding: 16px;
+        color: #dc2626;
+        font-family: "Montserrat", sans-serif;
+        margin-bottom: 24px;
+      }
+
+      .next-steps {
+        text-align: left;
+        background: rgba(250, 250, 250, 0.5);
+        border-radius: 12px;
+        padding: 24px;
+        margin-top: 32px;
+      }
+
+      .next-steps h3 {
+        font-family: "Fraunces", serif;
+        font-size: 1.2rem;
+        margin: 0 0 16px;
+      }
+
+      .next-steps ol {
+        font-family: "Montserrat", sans-serif;
+        margin: 0;
+        padding-left: 24px;
+      }
+
+      .next-steps li {
+        margin-bottom: 12px;
+        line-height: 1.6;
+      }
+
+      @media (max-width: 640px) {
+        .success-shell {
+          padding: 32px 12px;
+        }
+
+        .success-card {
+          padding: 32px 20px;
+        }
+
+        .button-group {
+          flex-direction: column;
+        }
+
+        .btn {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="success-shell">
+      <div class="success-card">
+        <div id="content">
+          <div class="loading">
+            <div class="spinner"></div>
+            <p style="font-family: Montserrat, sans-serif; color: var(--ink-soft)">
+              Preparing your license key...
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+      const SUPABASE_URL = "https://nibzfmjwisfdmwublvyu.supabase.co";
+      const SUPABASE_ANON_KEY = "sb_publishable_Cq5ljxAxHRZOJU4wiGc07g_6vrFU0lA";
+
+      const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+      async function init() {
+        try {
+          const params = new URLSearchParams(window.location.search);
+          const email = params.get("email");
+          const plan = params.get("plan");
+
+          if (!email || !plan) {
+            showError("Missing email or plan information. Please try again.");
+            return;
+          }
+
+          // Check if license already exists for this email+plan (prevent duplicates)
+          const { data: existing, error: existError } = await supabase
+            .from("licenses")
+            .select("license_key")
+            .eq("email", email)
+            .eq("plan", plan)
+            .order("created_at", { ascending: false })
+            .limit(1);
+
+          let licenseKey;
+
+          if (existing && existing.length > 0) {
+            // Use existing key if found
+            licenseKey = existing[0].license_key;
+          } else {
+            // Generate new key (server-side via Edge Function)
+            const { data: generatedData, error: genError } = await supabase.functions.invoke(
+              "generate-license",
+              {
+                body: {
+                  email,
+                  plan,
+                },
+              }
+            );
+
+            if (genError || !generatedData?.license_key) {
+              console.error("Generation error:", genError);
+              showError("Failed to generate license key. Please contact support.");
+              return;
+            }
+
+            licenseKey = generatedData.license_key;
+          }
+
+          showSuccess(email, plan, licenseKey);
+        } catch (error) {
+          console.error("Error:", error);
+          showError("An unexpected error occurred. Please contact support.");
+        }
+      }
+
+      function showSuccess(email, plan, licenseKey) {
+        const content = document.getElementById("content");
+        content.innerHTML = `
+          <div class="success-icon">✓</div>
+          <h1 class="success-heading">License Ready!</h1>
+          <p class="success-text">Your ${capitalize(plan)} license is ready to activate.</p>
+
+          <div class="license-display">
+            <div class="license-label">Your License Key</div>
+            <p class="license-key">${licenseKey}</p>
+            <button class="btn btn-secondary" onclick="copyToClipboard('${licenseKey}')">
+              Copy Key
+            </button>
+          </div>
+
+          <div class="button-group">
+            <a href="#" class="btn btn-primary" onclick="downloadApp()">Download ActiveDesk</a>
+            <a href="/" class="btn btn-secondary">Back to Home</a>
+          </div>
+
+          <div class="next-steps">
+            <h3>Next Steps</h3>
+            <ol>
+              <li><strong>Download</strong> ActiveDesk for Mac or Windows</li>
+              <li><strong>Open</strong> the app</li>
+              <li><strong>Paste</strong> your license key in the License section</li>
+              <li><strong>Click Activate</strong> and start using</li>
+            </ol>
+          </div>
+        `;
+      }
+
+      function showError(message) {
+        const content = document.getElementById("content");
+        content.innerHTML = `
+          <div class="success-heading">Something went wrong</div>
+          <div class="error-message">${message}</div>
+          <a href="/" class="btn btn-primary">Back to Home</a>
+        `;
+      }
+
+      function capitalize(str) {
+        return str.charAt(0).toUpperCase() + str.slice(1);
+      }
+
+      function copyToClipboard(text) {
+        navigator.clipboard.writeText(text).then(() => {
+          alert("License key copied to clipboard!");
+        });
+      }
+
+      function downloadApp() {
+        // Redirect to GitHub releases or your download page
+        window.open("https://github.com/your-username/ActiveDesk/releases");
+      }
+
+      // Initialize
+      init();
+    </script>
+  </body>
+</html>

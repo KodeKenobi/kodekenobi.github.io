@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ActiveDesk | Get Your License Key</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Montserrat:wght@400;500;600;700&family=Lato:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/activedesk/site.css" />
+    <style>
+      body {
+        background: linear-gradient(135deg, #fff9f1 0%, var(--cream) 48%, #f4ebde 100%);
+      }
+
+      .shell {
+        width: calc(100% - 24px);
+        margin: 0 auto;
+        padding: 64px 12px;
+        max-width: 800px;
+      }
+
+      .card {
+        background: rgba(255, 249, 241, 0.95);
+        border: 1px solid var(--line);
+        border-radius: 28px;
+        padding: 48px;
+      }
+
+      h1 {
+        font-family: "Fraunces", serif;
+        font-size: clamp(2rem, 5vw, 3rem);
+        font-weight: 700;
+        color: var(--ink);
+        margin: 0 0 16px;
+        text-align: center;
+      }
+
+      .subtitle {
+        font-family: "Montserrat", sans-serif;
+        font-size: 1.1rem;
+        color: var(--ink-soft);
+        margin: 0 0 40px;
+        text-align: center;
+      }
+
+      .form-group {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-bottom: 24px;
+      }
+
+      input {
+        flex: 1;
+        min-width: 240px;
+        padding: 12px 16px;
+        font-family: "Lato", sans-serif;
+        font-size: 1rem;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: #fff;
+        color: var(--ink);
+      }
+
+      input:focus {
+        outline: none;
+        border-color: var(--blue);
+        box-shadow: 0 0 0 3px rgba(63, 131, 255, 0.1);
+      }
+
+      button {
+        padding: 12px 28px;
+        font-family: "Lato", sans-serif;
+        font-weight: 700;
+        font-size: 1rem;
+        background: var(--ink);
+        color: #fff;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: background 0.2s ease;
+      }
+
+      button:hover {
+        background: var(--ink-soft);
+      }
+
+      button:disabled {
+        background: var(--sand);
+        cursor: not-allowed;
+      }
+
+      .license-box {
+        background: linear-gradient(135deg, rgba(63, 131, 255, 0.08), rgba(155, 224, 207, 0.08));
+        border: 1px solid rgba(63, 131, 255, 0.3);
+        border-radius: 16px;
+        padding: 24px;
+        margin-top: 20px;
+        display: none;
+      }
+
+      .license-box.show {
+        display: block;
+      }
+
+      .key-label {
+        font-family: "Lato", sans-serif;
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--ink-soft);
+        margin-bottom: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .key-text {
+        font-family: "Lato", sans-serif;
+        font-size: 1rem;
+        font-weight: 500;
+        color: var(--blue);
+        word-break: break-all;
+        line-height: 1.8;
+        margin: 0 0 16px;
+        min-height: 60px;
+      }
+
+      .copy-btn {
+        padding: 8px 16px;
+        font-size: 0.9rem;
+        background: var(--blue);
+      }
+
+      .copy-btn:hover {
+        background: var(--blue-deep);
+      }
+
+      .error {
+        background: rgba(220, 38, 38, 0.15);
+        border: 1px solid rgba(220, 38, 38, 0.3);
+        border-radius: 12px;
+        padding: 12px 16px;
+        color: #dc2626;
+        font-family: "Montserrat", sans-serif;
+        margin-top: 16px;
+        display: none;
+      }
+
+      .error.show {
+        display: block;
+      }
+
+      .loading {
+        text-align: center;
+        color: var(--ink-soft);
+        font-family: "Montserrat", sans-serif;
+        display: none;
+      }
+
+      .loading.show {
+        display: block;
+      }
+
+      @media (max-width: 640px) {
+        .shell {
+          padding: 32px 12px;
+        }
+
+        .card {
+          padding: 32px 20px;
+        }
+
+        .form-group {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="shell">
+      <div class="card">
+        <h1>Get Your License Key</h1>
+        <p class="subtitle">Enter the email you used when purchasing</p>
+
+        <div class="form-group">
+          <input type="email" id="email" placeholder="your@email.com" />
+          <button id="claimBtn">Claim License</button>
+        </div>
+
+        <div id="loading" class="loading">Generating license...</div>
+        <div id="error" class="error"></div>
+
+        <div id="licenseBox" class="license-box">
+          <div class="key-label">Your License Key</div>
+          <p id="keyText" class="key-text"></p>
+          <button class="copy-btn" onclick="copyKey()">Copy Key</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+      console.log("Dashboard script starting...");
+
+      const SUPABASE_URL = "https://nibzfmjwisfdmwublvyu.supabase.co";
+      const SUPABASE_ANON_KEY = "sb_publishable_Cq5ljxAxHRZOJU4wiGc07g_6vrFU0lA";
+
+      // Wait for Supabase to load
+      function initDashboard() {
+        if (!window.supabase) {
+          console.log("Waiting for Supabase...");
+          setTimeout(initDashboard, 100);
+          return;
+        }
+
+        console.log("Supabase loaded, initializing...");
+
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        console.log("Supabase client created");
+
+        const emailInput = document.getElementById("email");
+        const claimBtn = document.getElementById("claimBtn");
+        const loading = document.getElementById("loading");
+        const error = document.getElementById("error");
+        const licenseBox = document.getElementById("licenseBox");
+        const keyText = document.getElementById("keyText");
+
+        claimBtn.addEventListener("click", claimLicense);
+        emailInput.addEventListener("keypress", (e) => {
+          if (e.key === "Enter") claimLicense();
+        });
+
+        async function claimLicense() {
+          console.log("claimLicense called");
+          const email = emailInput.value.trim();
+          if (!email) {
+            showError("Please enter your email");
+            return;
+          }
+
+          console.log("Email:", email);
+
+          error.classList.remove("show");
+          licenseBox.classList.remove("show");
+          loading.classList.add("show");
+          claimBtn.disabled = true;
+
+          try {
+            // Check if license exists
+            console.log("Checking for existing license...");
+            const { data: existing, error: queryError } = await supabase
+              .from("licenses")
+              .select("license_key")
+              .eq("email", email)
+              .order("issued_at", { ascending: false })
+              .limit(1);
+
+            console.log("Query result:", { existing, queryError });
+
+            if (existing && existing.length > 0) {
+              console.log("Found existing license");
+              showLicense(existing[0].license_key);
+              return;
+            }
+
+            // Generate new license
+            console.log("Generating new license...");
+            const { data: result, error: err } = await supabase.functions.invoke(
+              "generate-license",
+              {
+                body: { email, plan: "lifetime" },
+              }
+            );
+
+            console.log("Function result:", { result, err });
+
+            if (err || !result?.license_key) {
+              showError("Could not generate license. Please try again: " + (err?.message || "Unknown error"));
+              return;
+            }
+
+            showLicense(result.license_key);
+          } catch (err) {
+            console.error("Error:", err);
+            showError("An error occurred: " + err.message);
+          } finally {
+            loading.classList.remove("show");
+            claimBtn.disabled = false;
+          }
+        }
+
+        function showLicense(key) {
+          console.log("Showing license:", key);
+          keyText.textContent = key;
+          licenseBox.classList.add("show");
+        }
+
+        function showError(msg) {
+          console.error("Error:", msg);
+          error.textContent = msg;
+          error.classList.add("show");
+        }
+      }
+
+      initDashboard();
+
+      function copyKey() {
+        navigator.clipboard.writeText(keyText.textContent);
+        claimBtn.textContent = "Copied!";
+        setTimeout(() => {
+          claimBtn.textContent = "Claim License";
+        }, 2000);
+      }
+    </script>
+  </body>
+</html>
