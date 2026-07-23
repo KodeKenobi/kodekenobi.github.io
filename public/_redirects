@@ -1,2 +1,7 @@
-/activedesk/*    /activedesk/:splat  200
-/*    /index.html   200 
+/activedesk/     /activedesk/index.html   200
+/activedesk/*    /activedesk/:splat       200
+/ActiveDesk/     /activedesk/index.html   200
+/ActiveDesk/*    /activedesk/:splat       200
+/ACTIVEDESK/     /activedesk/index.html   200
+/ACTIVEDESK/*    /activedesk/:splat       200
+/*               /index.html              200
