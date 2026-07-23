@@ -39,7 +39,7 @@ export const MobileAnimatedHero: React.FC = () => {
     }, [isTapped]);
 
     return (
-        <div className="relative w-full h-[100dvh] overflow-hidden bg-white font-roboto">
+        <div className="relative w-full h-[100dvh] overflow-hidden font-roboto">
             {/* 
         CINEMATIC WORLD (The Revealed Image)
       */}
@@ -51,12 +51,12 @@ export const MobileAnimatedHero: React.FC = () => {
                     clipPath: "circle(40px at 50% 50%)"
                 }}
                 transition={{ duration: 1.2, ease: CINEMATIC_EASE }}
-                className="absolute inset-0 z-10 bg-[#050505] overflow-hidden flex items-center justify-center"
+                className="absolute inset-0 z-10 overflow-hidden flex items-center justify-center"
             >
                 <div className="absolute inset-0">
                     <motion.img
-                        src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=2070"
-                        alt="Cinematic Architecture"
+                        src="/hero-gif.gif"
+                        alt="hero"
                         initial={{ scale: 1, filter: "none" }}
                         animate={{
                             scale: scene >= 7 ? 1.08 : 1,

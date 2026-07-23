@@ -39,7 +39,7 @@ export const AnimatedHero: React.FC = () => {
   }, []);
 
   return (
-    <div className="relative w-full h-screen overflow-hidden bg-white font-roboto">
+    <div className="relative w-full h-screen overflow-hidden font-roboto">
 
       {/* 
         CINEMATIC WORLD (The Revealed Image)
@@ -53,7 +53,7 @@ export const AnimatedHero: React.FC = () => {
           clipPath: "circle(40px at 50% 50%)"
         }}
         transition={{ duration: 1.2, ease: CINEMATIC_EASE }}
-        className="absolute inset-0 z-10 bg-[#050505] overflow-hidden flex items-center justify-center"
+        className="absolute inset-0 z-10 overflow-hidden flex items-center justify-center"
       >
         {/* Background Image Layer */}
         <div className="absolute inset-0">
