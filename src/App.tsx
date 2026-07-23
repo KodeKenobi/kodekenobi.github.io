@@ -77,6 +77,15 @@ export default function App() {
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
+  // Redirect external paths (like /ActiveDesk/) to their actual locations
+  useEffect(() => {
+    const pathname = window.location.pathname;
+    // If path is /ActiveDesk/ or any other external subdirectory, redirect with full page load
+    if (pathname.includes('/ActiveDesk/')) {
+      window.location.href = pathname;
+    }
+  }, []);
+
   useEffect(() => {
     isPreviewInteractingRef.current = isPreviewInteracting;
   }, [isPreviewInteracting]);
