@@ -88,6 +88,80 @@ export default function App() {
     return () => clearTimeout(timer);
   }, []);
 
+  // Block all devtools shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // F12
+      if (e.key === "F12") {
+        e.preventDefault();
+        return false;
+      }
+
+      // Ctrl+Shift+I (Windows/Linux)
+      if (e.ctrlKey && e.shiftKey && e.key === "I") {
+        e.preventDefault();
+        return false;
+      }
+
+      // Cmd+Option+I (Mac)
+      if (e.metaKey && e.altKey && e.key === "i") {
+        e.preventDefault();
+        return false;
+      }
+
+      // Cmd+Option+J (Mac - Console)
+      if (e.metaKey && e.altKey && e.key === "j") {
+        e.preventDefault();
+        return false;
+      }
+
+      // Ctrl+Shift+J (Windows/Linux - Console)
+      if (e.ctrlKey && e.shiftKey && e.key === "J") {
+        e.preventDefault();
+        return false;
+      }
+
+      // Cmd+Option+U (Mac - View Source)
+      if (e.metaKey && e.altKey && e.key === "u") {
+        e.preventDefault();
+        return false;
+      }
+
+      // Ctrl+Shift+K (Firefox - Console)
+      if (e.ctrlKey && e.shiftKey && e.key === "K") {
+        e.preventDefault();
+        return false;
+      }
+
+      // Ctrl+Shift+C (Windows/Linux - Inspector)
+      if (e.ctrlKey && e.shiftKey && e.key === "C") {
+        e.preventDefault();
+        return false;
+      }
+
+      // Cmd+Shift+C (Mac - Inspector)
+      if (e.metaKey && e.shiftKey && e.key === "c") {
+        e.preventDefault();
+        return false;
+      }
+
+      // Ctrl+Shift+M (Responsive Design Mode)
+      if (e.ctrlKey && e.shiftKey && e.key === "M") {
+        e.preventDefault();
+        return false;
+      }
+
+      // Cmd+Option+M (Mac - Responsive Design Mode)
+      if (e.metaKey && e.altKey && e.key === "m") {
+        e.preventDefault();
+        return false;
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown, true);
+    return () => window.removeEventListener("keydown", handleKeyDown, true);
+  }, []);
+
   const showSection = (sectionId: string) => {
     // Initialize sound engine on user gesture and play click
     soundEngine.init();
