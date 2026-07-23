@@ -133,7 +133,7 @@ export default function Products({ isActive, isMobile, slideIndex, direction }: 
                                         <div key={product.id} className="flex flex-col group">
                                             <motion.div
                                                 variants={cardVariants}
-                                                className={`relative bg-white/5 border border-white/10 ${product.name === "ActiveDesk" ? "h-56" : "p-8"} group-hover:border-[#c9a84c]/50 transition-all duration-500 overflow-hidden ${product.url ? "cursor-pointer" : ""}`}
+                                                className={`relative bg-white/5 border border-white/10 ${product.name === "ActiveDesk" ? "h-56" : "p-8"} group-hover:border-[#c9a84c]/50 transition-all duration-500 overflow-hidden rounded-3xl ${product.url ? "cursor-pointer" : ""}`}
                                             >
                                             {product.url && (
                                                 <a
@@ -145,13 +145,15 @@ export default function Products({ isActive, isMobile, slideIndex, direction }: 
                                                 />
                                             )}
                                             {/* Hover glow effect */}
-                                            <div className="absolute inset-0 bg-gradient-to-br from-[#c9a84c]/0 to-[#c9a84c]/0 group-hover:from-[#c9a84c]/10 group-hover:to-[#c9a84c]/0 transition-all duration-500 pointer-events-none" />
+                                            <div className="absolute inset-0 bg-gradient-to-br from-[#c9a84c]/0 to-[#c9a84c]/0 group-hover:from-[#c9a84c]/10 group-hover:to-[#c9a84c]/0 transition-all duration-500 pointer-events-none rounded-3xl" />
+                                            {/* Hover border effect */}
+                                            <div className="absolute inset-0 border border-[#c9a84c]/0 group-hover:border-[#c9a84c]/20 rounded-3xl transition-all duration-500 pointer-events-none" />
 
                                             <div className="relative z-10 flex flex-col h-full w-full">
                                                 {product.name === "ActiveDesk" ? (
                                                     <>
                                                         {/* ActiveDesk iframe preview - zoomed out to show full hero, fills entire card */}
-                                                        <div className="w-full h-full overflow-hidden relative">
+                                                        <div className="w-full h-full overflow-hidden relative rounded-3xl">
                                                             <iframe
                                                                 src={product.url}
                                                                 className="border-0 pointer-events-none group-hover:blur-sm transition-all duration-300"
