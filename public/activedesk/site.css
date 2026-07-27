@@ -790,7 +790,6 @@ code {
   padding: 20px;
   background: rgba(63, 131, 255, 0.05);
   border-radius: var(--radius-md);
-  border-left: 4px solid var(--blue);
 }
 
 .step h3 {
@@ -877,7 +876,6 @@ code {
   padding: 20px;
   background: rgba(255, 165, 0, 0.08);
   border-radius: var(--radius-md);
-  border-left: 4px solid #FFA500;
 }
 
 .troubleshooting h3 {
