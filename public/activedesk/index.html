@@ -108,14 +108,14 @@
               ActiveDesk is a lightweight desktop app that keeps your work status active even when you step away from your desk. Perfect for remote work, focus time, or when you need your presence visible across collaboration tools. Buy once with a lifetime license, or try a weekly/monthly pass first. Download for Mac or Windows, activate with a simple license key no account required.
             </p>
             <div class="hero-actions">
-              <a id="downloadMacBtn" class="btn btn-primary btn-download" href="https://github.com/KodeKenobi/ActiveDesk/releases/download/v1.0.1/ActiveDesk-1.0.0-arm64.dmg">
+              <button id="downloadMacBtn" class="btn btn-primary btn-download" type="button">
                 <span class="btn-icon btn-icon-mac" aria-hidden="true">
                   <svg viewBox="0 0 24 24" focusable="false">
                     <path d="M15.8 12.4c0-1.8 1.5-2.7 1.6-2.8-.9-1.3-2.2-1.5-2.7-1.5-1.1-.1-2.1.6-2.7.6-.6 0-1.4-.6-2.3-.6-1.2 0-2.4.7-3 1.8-1.3 2.3-.3 5.7 1 7.5.7.9 1.4 1.9 2.4 1.8.9 0 1.3-.6 2.4-.6 1.1 0 1.5.6 2.5.6 1 .1 1.7-.9 2.3-1.8.8-1.1 1.1-2.1 1.1-2.2-.1 0-2.6-1-2.6-2.8zm-1.9-5.5c.5-.6.9-1.5.8-2.4-.8 0-1.7.5-2.3 1.1-.5.6-1 1.5-.9 2.3.9.1 1.8-.4 2.4-1z" />
                   </svg>
                 </span>
                 <span>Download for macOS</span>
-              </a>
+              </button>
               <a id="downloadWinBtn" class="btn btn-primary btn-download" href="https://github.com/KodeKenobi/ActiveDesk/releases/download/v1.0.1/ActiveDesk.Setup.1.0.0.exe">
                 <span class="btn-icon" aria-hidden="true">
                   <svg viewBox="0 0 24 24" focusable="false">
@@ -194,6 +194,14 @@
           </div>
           <div class="faq-grid">
             <article class="fade-scroll">
+              <h3>How do I install on macOS?</h3>
+              <p>Click "Download for macOS" to get step-by-step instructions. You'll download a simple installer script, open Terminal, paste one command, and that's it. The installer handles everything else automatically.</p>
+            </article>
+            <article class="fade-scroll">
+              <h3>What if I get a "Cannot verify developer" warning?</h3>
+              <p>That's macOS being cautious about unsigned apps. When you see the warning, just click <strong>Open</strong> to allow it. It only appears the first time. This is normal for apps that aren't from the App Store.</p>
+            </article>
+            <article class="fade-scroll">
               <h3>Do I need an account?</h3>
               <p>No. Download the app, pay through PayFast, then activate the key you receive.</p>
             </article>
@@ -233,6 +241,59 @@
           </div>
         </footer>
       </main>
+    </div>
+
+    <!-- macOS Installation Modal -->
+    <div id="macInstallModal" class="modal-overlay" style="display: none;">
+      <div class="modal-content">
+        <button class="modal-close" type="button" aria-label="Close">&times;</button>
+        <h2>Install ActiveDesk on macOS</h2>
+        
+        <div class="installation-steps">
+          <div class="step">
+            <h3>Step 1: Download the installer</h3>
+            <a id="modalDownloadBtn" class="btn btn-primary" href="https://github.com/KodeKenobi/ActiveDesk/releases/download/v1.0.5/install-activedesk.command" download>
+              📥 Download install-activedesk.command
+            </a>
+            <p class="step-note">The file will be saved to your <strong>Downloads</strong> folder</p>
+          </div>
+
+          <div class="step">
+            <h3>Step 2: Open Terminal</h3>
+            <p>Press <strong>Command + Space</strong> to open Spotlight search, type <code>Terminal</code>, then press Enter.</p>
+            <img src="./assets/terminal-guide.png" alt="Open Terminal" class="step-image" onerror="this.style.display='none'" />
+          </div>
+
+          <div class="step">
+            <h3>Step 3: Run the installer</h3>
+            <p>Copy and paste this command into Terminal, then press Enter:</p>
+            <div class="code-block">
+              <code>chmod +x ~/Downloads/install-activedesk.command && ~/Downloads/install-activedesk.command</code>
+              <button class="copy-btn" type="button" aria-label="Copy command">📋</button>
+            </div>
+          </div>
+
+          <div class="step">
+            <h3>Step 4: Follow the installer</h3>
+            <p>The installer will:</p>
+            <ul>
+              <li>Download the latest ActiveDesk (≈ 111 MB)</li>
+              <li>Verify the files are safe</li>
+              <li>Install to your Applications folder</li>
+              <li>Open ActiveDesk automatically</li>
+            </ul>
+          </div>
+
+          <div class="troubleshooting">
+            <h3>⚠️ Security Warning?</h3>
+            <p>If you see "Cannot verify developer" when opening Terminal or ActiveDesk, that's normal. Just click <strong>Open</strong> in the dialog box.</p>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn btn-secondary" id="modalCloseBtn" type="button">Close</button>
+        </div>
+      </div>
     </div>
 
     <script src="./site.js"></script>

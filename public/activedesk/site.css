@@ -710,3 +710,247 @@ code {
     font-size: 12px;
   }
 }
+
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(16, 32, 51, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modal-content {
+  background: var(--panel-strong);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  max-width: 600px;
+  width: 100%;
+  max-height: 85vh;
+  overflow-y: auto;
+  position: relative;
+  padding: 40px;
+  animation: modalSlideIn 0.3s ease;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.modal-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: none;
+  border: none;
+  font-size: 32px;
+  cursor: pointer;
+  color: var(--ink-soft);
+  transition: color 0.2s ease;
+  padding: 0;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-close:hover {
+  color: var(--ink);
+}
+
+.modal-content h2 {
+  font-family: "Fraunces", serif;
+  font-size: 32px;
+  color: var(--ink);
+  margin: 0 0 32px 0;
+}
+
+.installation-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.step {
+  padding: 20px;
+  background: rgba(63, 131, 255, 0.05);
+  border-radius: var(--radius-md);
+  border-left: 4px solid var(--blue);
+}
+
+.step h3 {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ink);
+  margin: 0 0 12px 0;
+}
+
+.step p {
+  font-family: "Lato", sans-serif;
+  font-size: 14px;
+  color: var(--ink-soft);
+  margin: 0 0 12px 0;
+  line-height: 1.6;
+}
+
+.step ul {
+  margin: 0;
+  padding-left: 20px;
+  font-family: "Lato", sans-serif;
+  font-size: 14px;
+  color: var(--ink-soft);
+}
+
+.step li {
+  margin: 6px 0;
+}
+
+.step-note {
+  font-size: 12px !important;
+  color: var(--blue) !important;
+  margin-top: 8px !important;
+}
+
+.code-block {
+  background: var(--ink);
+  color: #00ff00;
+  padding: 16px;
+  border-radius: var(--radius-md);
+  font-family: "Monaco", "Courier New", monospace;
+  font-size: 12px;
+  overflow-x: auto;
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.code-block code {
+  flex: 1;
+  word-break: break-all;
+  color: #00ff00;
+}
+
+.copy-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #00ff00;
+  padding: 8px 12px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-size: 12px;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  font-family: "Lato", sans-serif;
+}
+
+.copy-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.step-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius-md);
+  margin-top: 12px;
+}
+
+.troubleshooting {
+  padding: 20px;
+  background: rgba(255, 165, 0, 0.08);
+  border-radius: var(--radius-md);
+  border-left: 4px solid #FFA500;
+}
+
+.troubleshooting h3 {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ink);
+  margin: 0 0 8px 0;
+}
+
+.troubleshooting p {
+  font-family: "Lato", sans-serif;
+  font-size: 14px;
+  color: var(--ink-soft);
+  margin: 0;
+  line-height: 1.6;
+}
+
+.modal-footer {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  border-top: 1px solid var(--line);
+  padding-top: 24px;
+  margin-top: 24px;
+}
+
+.modal-footer .btn {
+  font-size: 14px;
+  padding: 10px 24px;
+}
+
+@media (max-width: 640px) {
+  .modal-content {
+    padding: 24px;
+  }
+
+  .modal-content h2 {
+    font-size: 24px;
+  }
+
+  .installation-steps {
+    gap: 16px;
+  }
+
+  .step {
+    padding: 16px;
+  }
+
+  .step h3 {
+    font-size: 14px;
+  }
+
+  .step p,
+  .step ul {
+    font-size: 13px;
+  }
+
+  .code-block {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .copy-btn {
+    align-self: flex-end;
+  }
+
+  .modal-footer {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .modal-footer .btn {
+    width: 100%;
+  }
+}
