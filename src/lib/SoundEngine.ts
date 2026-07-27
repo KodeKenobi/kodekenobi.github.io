@@ -9,7 +9,7 @@
  * - Section ambient: Different subtle tonal shifts per section
  */
 
-type SectionId = 'home' | 'about' | 'skills' | 'experience' | 'projects';
+type SectionId = 'home' | 'about' | 'skills' | 'experience' | 'products';
 
 interface SoundEngineState {
   isMuted: boolean;
@@ -39,7 +39,7 @@ class SoundEngine {
     about: { f1: 65.41, f2: 98, detune: 3 },       // C2 + G2 — warm, personal
     skills: { f1: 73.42, f2: 110, detune: -2 },    // D2 + A2 — focused, bright
     experience: { f1: 61.74, f2: 92.5, detune: 5 },// B1 + F#2 — reflective
-    projects: { f1: 82.41, f2: 123.47, detune: -3 },// E2 + B2 — energetic
+    products: { f1: 82.41, f2: 123.47, detune: -3 },// E2 + B2 — energetic
   };
 
   /**

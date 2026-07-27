@@ -5,7 +5,6 @@ import AnimatedNavbar from "./components/AnimatedNavbar";
 import About from "./components/About";
 import Skills from "./components/Skills";
 import Experience from "./components/Experience";
-import Projects from "./components/Projects";
 import Products from "./components/Products";
 import RightClickModal from "./components/RightClickModal";
 import { soundEngine } from "./lib/SoundEngine";
@@ -15,13 +14,11 @@ const sections = [
   { id: "about", name: "ABOUT" },
   { id: "skills", name: "SKILLS" },
   { id: "experience", name: "EXPERIENCE" },
-  { id: "projects", name: "PROJECTS" },
   { id: "products", name: "PRODUCTS" },
 ];
 
 const ABOUT_TOTAL_SLIDES = 3;
 const SKILLS_TOTAL_SLIDES = 2;
-const PROJECTS_TOTAL_SLIDES = 2; // NEW: Slide 0 (Intro), Slide 1 (Grid)
 const PRODUCTS_TOTAL_SLIDES = 2; // Slide 0 (Intro), Slide 1 (Grid)
 
 export default function App() {
@@ -40,17 +37,11 @@ export default function App() {
   const skillsSlideRef = useRef(0);
   const skillsExperienceProgressRef = useRef(0);
 
-  const [projectsSlide, setProjectsSlide] = useState(0);
-  const [projectsDirection, setProjectsDirection] = useState(1);
-  const projectsSlideRef = useRef(0);
-
   const [productsSlide, setProductsSlide] = useState(0);
   const [productsDirection, setProductsDirection] = useState(1);
   const productsSlideRef = useRef(0);
 
   const isMobileRef = useRef(false);
-  const projectsContainerRef = useRef<HTMLDivElement>(null);
-  const [isProjectsScrolled, setIsProjectsScrolled] = useState(false);
 
   const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const isScrollingRef = useRef(false);
@@ -185,10 +176,6 @@ export default function App() {
       setExperienceDirection(1);
       setSkillsExperienceProgress(0);
       skillsExperienceProgressRef.current = 0;
-    } else if (sectionId === "projects") {
-      setProjectsSlide(0);
-      projectsSlideRef.current = 0;
-      setProjectsDirection(1);
     } else if (sectionId === "products") {
       setProductsSlide(0);
       productsSlideRef.current = 0;
@@ -242,12 +229,6 @@ export default function App() {
         setExperienceSlide(slideTarget);
         experienceSlideRef.current = slideTarget;
         setExperienceDirection(direction);
-      }
-      if (nextSection === "projects") {
-        const slideTarget = direction > 0 ? 0 : PROJECTS_TOTAL_SLIDES - 1;
-        setProjectsSlide(slideTarget);
-        projectsSlideRef.current = slideTarget;
-        setProjectsDirection(direction);
       }
       if (nextSection === "products") {
         const slideTarget = direction > 0 ? 0 : PRODUCTS_TOTAL_SLIDES - 1;
@@ -467,58 +448,6 @@ export default function App() {
         return;
       }
 
-      if (current === "projects") {
-        const slide = projectsSlideRef.current;
-        const threshold = 200; // Increased feel of intentionality
-
-        if (slide === 1) {
-          const container = document.getElementById("projects-grid");
-          if (container) {
-            const { scrollTop, scrollHeight, clientHeight } =
-              container as HTMLElement;
-            const atTop = scrollTop <= 5;
-            const atBottom = scrollTop + clientHeight >= scrollHeight - 5;
-
-            if (scrollingDown && !atBottom) return; // Let native scroll happen
-            if (!scrollingDown && !atTop) return; // Let native scroll happen
-
-            if (atTop && !scrollingDown) {
-              e.preventDefault();
-              if (scrollAccumulatorRef.current < -threshold) {
-                scrollAccumulatorRef.current = 0;
-                setProjectsDirection(-1);
-                setProjectsSlide(0);
-                projectsSlideRef.current = 0;
-                lockScroll(isMobileRef.current ? 500 : 800);
-              }
-            } else if (atBottom && scrollingDown) {
-              e.preventDefault();
-              if (scrollAccumulatorRef.current > threshold) {
-                scrollAccumulatorRef.current = 0;
-                navigateSection(1);
-              }
-            }
-          }
-        } else {
-          e.preventDefault();
-          if (scrollingDown) {
-            if (scrollAccumulatorRef.current > threshold) {
-              scrollAccumulatorRef.current = 0;
-              setProjectsDirection(1);
-              setProjectsSlide(1);
-              projectsSlideRef.current = 1;
-              lockScroll(isMobileRef.current ? 500 : 800);
-            }
-          } else {
-            if (scrollAccumulatorRef.current < -threshold) {
-              scrollAccumulatorRef.current = 0;
-              navigateSection(-1);
-            }
-          }
-        }
-        return;
-      }
-
       if (current === "products") {
         const slide = productsSlideRef.current;
         const threshold = 200;
@@ -588,64 +517,6 @@ export default function App() {
       const deltaY = touchStartY - touchY;
       const scrollingDown = deltaY > 0;
       const current = currentSectionRef.current;
-
-      if (current === "projects") {
-        const slide = projectsSlideRef.current;
-        const threshold = 60; // Sensitive but intentional for touch
-        if (slide === 0) {
-          if (e.cancelable) e.preventDefault();
-          scrollAccumulatorRef.current += deltaY;
-          if (scrollingDown) {
-            if (scrollAccumulatorRef.current > threshold) {
-              setProjectsDirection(1);
-              setProjectsSlide(1);
-              projectsSlideRef.current = 1;
-              scrollAccumulatorRef.current = 0;
-              lockScroll(600);
-            }
-          } else {
-            if (scrollAccumulatorRef.current < -threshold) {
-              scrollAccumulatorRef.current = 0;
-              navigateSection(-1);
-            }
-          }
-        } else {
-          const container = document.getElementById("projects-grid");
-          if (container) {
-            const { scrollTop, scrollHeight, clientHeight } =
-              container as HTMLElement;
-            const atTop = scrollTop <= 5;
-            const atBottom = scrollTop + clientHeight >= scrollHeight - 5;
-
-            if (atTop && !scrollingDown) {
-              if (e.cancelable) e.preventDefault();
-              scrollAccumulatorRef.current += deltaY;
-              if (scrollAccumulatorRef.current < -threshold) {
-                setProjectsDirection(-1);
-                setProjectsSlide(0);
-                projectsSlideRef.current = 0;
-                scrollAccumulatorRef.current = 0;
-                lockScroll(600);
-              }
-            } else if (atBottom && scrollingDown) {
-              // Standard behavior: allow exit to next section if needed,
-              // but user requested "vertical scroll on mobile and desktop",
-              // implying they might want to stay in repos more easily.
-              // For now, let's keep it similar to Experience section's atBottom logic.
-              if (e.cancelable) e.preventDefault();
-              scrollAccumulatorRef.current += deltaY;
-              if (scrollAccumulatorRef.current > 80) {
-                // Slightly harder to leave accidentally
-                scrollAccumulatorRef.current = 0;
-                navigateSection(1);
-              }
-            } else {
-              scrollAccumulatorRef.current = 0;
-            }
-          }
-        }
-        return;
-      }
 
       if (current === "products") {
         const slide = productsSlideRef.current;
@@ -927,16 +798,6 @@ export default function App() {
     return () => container.removeEventListener("scroll", handleContainerScroll);
   }, [currentSection]);
 
-  useEffect(() => {
-    const container = projectsContainerRef.current;
-    if (!container) return;
-    const handleContainerScroll = () => {
-      setIsProjectsScrolled(container.scrollTop > 20);
-    };
-    container.addEventListener("scroll", handleContainerScroll);
-    return () => container.removeEventListener("scroll", handleContainerScroll);
-  }, [currentSection]);
-
   return (
     <div className="relative h-[100dvh] w-full overflow-hidden">
       {/* Global GIF Background — fixed behind everything */}
@@ -951,7 +812,7 @@ export default function App() {
       <AnimatedNavbar
         currentSection={currentSection}
         onSectionChange={showSection}
-        isScrolled={isSkillsScrolled || isProjectsScrolled}
+        isScrolled={isSkillsScrolled}
         isGoldLineActive={isHeaderGoldLineActive}
         isMobile={isMobile}
       />
@@ -1026,22 +887,6 @@ export default function App() {
             slideIndex={experienceSlide}
             direction={experienceDirection}
             progress={skillsExperienceProgress}
-          />
-        </section>
-        <section
-          className={`absolute inset-0 no-scrollbar overflow-hidden`}
-          ref={projectsContainerRef}
-          style={{
-            opacity: currentSection === "projects" ? 1 : 0,
-            pointerEvents: currentSection === "projects" ? "auto" : "none",
-            transition: "opacity 0.6s ease-in-out",
-          }}
-        >
-          <Projects
-            isActive={currentSection === "projects"}
-            isMobile={isMobile}
-            slideIndex={projectsSlide}
-            direction={projectsDirection}
           />
         </section>
         <section
