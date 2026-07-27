@@ -9,7 +9,7 @@ export default function Products({ isActive, isMobile, slideIndex, direction }: 
 
     // Sample products data
     const products = [
-        { id: 1, name: "ActiveDesk", description: "Keeps your work status active while you step away. Lightweight desktop app for Teams, Slack & more. For Mac and Windows.", url: "https://kodekenobi.github.io/ActiveDesk/" },
+        { id: 1, name: "ActiveDesk", description: "Keeps your work status active while you step away. Lightweight desktop app for Teams, Slack & more. For Mac and Windows.", url: "https://kodekenobi.github.io/activedesk/" },
         { id: 2, name: "Design Token Extractor", description: "Chrome extension that pulls design tokens from live interfaces so you can inspect and reuse colors, typography, spacing, and more.", demoUrl: "https://youtu.be/k2qEeS8TPY8", downloadUrl: "https://chromewebstore.google.com/detail/iibemocnockckccgcihcmjkciicfoclh?utm_source=item-share-cb", previewUrl: "https://www.youtube.com/embed/k2qEeS8TPY8?autoplay=1&mute=1&loop=1&playlist=k2qEeS8TPY8&controls=0&modestbranding=1&rel=0&playsinline=1" },
         { id: 3, name: "BookMarkItAll", description: "Chrome extension for capturing, organizing, and revisiting the pages that matter without breaking your browsing flow.", demoUrl: "https://www.youtube.com/watch?v=fPS1_87Bpe0", downloadUrl: "https://chromewebstore.google.com/detail/maloifpahagnengnobedhammfhhojjie?utm_source=item-share-cb", previewUrl: "https://www.youtube.com/embed/fPS1_87Bpe0?autoplay=1&mute=1&loop=1&playlist=fPS1_87Bpe0&controls=0&modestbranding=1&rel=0&playsinline=1" },
     ];
@@ -187,17 +187,19 @@ export default function Products({ isActive, isMobile, slideIndex, direction }: 
                                                                     overflow: 'hidden'
                                                                 }}
                                                             />
-                                                            {/* Hover eye icon overlay */}
-                                                            <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/0 group-hover:bg-black/30 transition-all duration-300 opacity-0 group-hover:opacity-100">
-                                                                <svg className="w-8 h-8 text-white mb-2" fill="currentColor" viewBox="0 0 24 24">
-                                                                    <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" />
-                                                                </svg>
-                                                                <div className="flex items-center gap-2">
-                                                                    <span className="text-white text-xs font-montserrat font-semibold uppercase tracking-[0.15em]">View Product</span>
-                                                                    <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                                            {/* Hover CTA overlay */}
+                                                            <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-black/0 group-hover:bg-black/30 transition-all duration-300 opacity-0 group-hover:opacity-100 z-20">
+                                                                <a
+                                                                    href={product.url}
+                                                                    target="_blank"
+                                                                    rel="noopener noreferrer"
+                                                                    className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-[10px] font-montserrat font-semibold uppercase tracking-[0.15em] text-white transition-colors duration-300 hover:border-[#c9a84c]/60 hover:text-[#c9a84c]"
+                                                                >
+                                                                    <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
+                                                                        <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" />
                                                                     </svg>
-                                                                </div>
+                                                                    <span>View Product</span>
+                                                                </a>
                                                             </div>
                                                         </div>
                                                     </>
