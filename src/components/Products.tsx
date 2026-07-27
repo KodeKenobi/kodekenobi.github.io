@@ -10,8 +10,8 @@ export default function Products({ isActive, isMobile, slideIndex, direction }: 
     // Sample products data
     const products = [
         { id: 1, name: "ActiveDesk", description: "Keeps your work status active while you step away. Lightweight desktop app for Teams, Slack & more. For Mac and Windows.", url: "https://kodekenobi.github.io/ActiveDesk/" },
-        { id: 2, name: "Product Two", description: "Tools designed for modern development" },
-        { id: 3, name: "Product Three", description: "Systems that drive real impact" },
+        { id: 2, name: "Design Token Extractor", description: "Chrome extension that pulls design tokens from live interfaces so you can inspect and reuse colors, typography, spacing, and more.", demoUrl: "https://youtu.be/k2qEeS8TPY8", downloadUrl: "https://chromewebstore.google.com/detail/iibemocnockckccgcihcmjkciicfoclh?utm_source=item-share-cb", previewUrl: "https://www.youtube.com/embed/k2qEeS8TPY8?autoplay=1&mute=1&loop=1&playlist=k2qEeS8TPY8&controls=0&modestbranding=1&rel=0&playsinline=1" },
+        { id: 3, name: "BookMarkItAll", description: "Chrome extension for capturing, organizing, and revisiting the pages that matter without breaking your browsing flow.", demoUrl: "https://www.youtube.com/watch?v=fPS1_87Bpe0", downloadUrl: "https://chromewebstore.google.com/detail/maloifpahagnengnobedhammfhhojjie?utm_source=item-share-cb", previewUrl: "https://www.youtube.com/embed/fPS1_87Bpe0?autoplay=1&mute=1&loop=1&playlist=fPS1_87Bpe0&controls=0&modestbranding=1&rel=0&playsinline=1" },
     ];
 
     // Pagination Logic
@@ -161,17 +161,8 @@ export default function Products({ isActive, isMobile, slideIndex, direction }: 
                                         >
                                             <motion.div
                                                 variants={cardVariants}
-                                                className={`relative bg-white/5 border border-white/10 h-56 group-hover:border-[#c9a84c]/50 transition-all duration-500 overflow-hidden rounded-3xl group-hover:scale-110 group-hover:z-50 ${product.url ? "cursor-pointer" : ""}`}
+                                                className={`relative bg-white/5 border border-white/10 h-56 group-hover:border-[#c9a84c]/50 transition-all duration-500 overflow-hidden rounded-3xl group-hover:scale-110 group-hover:z-50 ${product.url || product.demoUrl ? "cursor-pointer" : ""}`}
                                             >
-                                            {product.url && (
-                                                <a
-                                                    href={product.url}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="absolute inset-0 z-20"
-                                                    aria-label={product.name}
-                                                />
-                                            )}
                                             {/* Hover glow effect */}
                                             <div className="absolute inset-0 bg-gradient-to-br from-[#c9a84c]/0 to-[#c9a84c]/0 group-hover:from-[#c9a84c]/10 group-hover:to-[#c9a84c]/0 transition-all duration-500 pointer-events-none rounded-3xl" />
                                             {/* Hover border effect */}
@@ -210,6 +201,44 @@ export default function Products({ isActive, isMobile, slideIndex, direction }: 
                                                             </div>
                                                         </div>
                                                     </>
+                                                ) : product.previewUrl ? (
+                                                    <>
+                                                        <div className="w-full h-full overflow-hidden relative rounded-3xl bg-black">
+                                                            <iframe
+                                                                src={product.previewUrl}
+                                                                className="w-full h-full border-0 pointer-events-none group-hover:blur-sm transition-all duration-300 scale-[1.02]"
+                                                                title={product.name}
+                                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                                referrerPolicy="strict-origin-when-cross-origin"
+                                                                allowFullScreen
+                                                            />
+                                                            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-black/30 pointer-events-none" />
+                                                            <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-black/0 group-hover:bg-black/30 transition-all duration-300 opacity-0 group-hover:opacity-100 z-20">
+                                                                <a
+                                                                    href={product.demoUrl}
+                                                                    target="_blank"
+                                                                    rel="noopener noreferrer"
+                                                                    className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-[10px] font-montserrat font-semibold uppercase tracking-[0.15em] text-white transition-colors duration-300 hover:border-[#c9a84c]/60 hover:text-[#c9a84c]"
+                                                                >
+                                                                    <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
+                                                                        <path d="M8 5v14l11-7z" />
+                                                                    </svg>
+                                                                    <span>View Demo</span>
+                                                                </a>
+                                                                <a
+                                                                    href={product.downloadUrl}
+                                                                    target="_blank"
+                                                                    rel="noopener noreferrer"
+                                                                    className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-black/20 px-4 py-2 text-[10px] font-montserrat font-semibold uppercase tracking-[0.15em] text-white/85 transition-colors duration-300 hover:border-[#c9a84c]/60 hover:text-[#c9a84c]"
+                                                                >
+                                                                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v12m0 0l4-4m-4 4l-4-4m1 8h6" />
+                                                                    </svg>
+                                                                    <span>Download Extension</span>
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                    </>
                                                 ) : (
                                                     <>
                                                         {/* Cards 2 & 3 - Same layout as ActiveDesk */}
@@ -233,7 +262,12 @@ export default function Products({ isActive, isMobile, slideIndex, direction }: 
                                                                     <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" />
                                                                 </svg>
                                                                 <div className="flex items-center gap-2">
-                                                                    <span className="text-white text-xs font-montserrat font-semibold uppercase tracking-[0.15em]">Coming Soon</span>
+                                                                    <span className="text-white text-xs font-montserrat font-semibold uppercase tracking-[0.15em]">{product.url ? "View Product" : "Coming Soon"}</span>
+                                                                    {product.url && (
+                                                                        <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                                                        </svg>
+                                                                    )}
                                                                 </div>
                                                             </div>
                                                         </div>
