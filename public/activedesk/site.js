@@ -1,7 +1,7 @@
 const SITE_CONFIG = {
   downloads: {
-    mac: "https://github.com/KodeKenobi/ActiveDesk/releases/download/v1.0.1/ActiveDesk-1.0.0-arm64.dmg",
-    win: "https://github.com/KodeKenobi/ActiveDesk/releases/download/v1.0.1/ActiveDesk.Setup.1.0.0.exe",
+    mac: "https://github.com/KodeKenobi/ActiveDesk/releases/download/v1.0.5/install-activedesk.command",
+    win: "https://github.com/KodeKenobi/ActiveDesk/releases/download/v1.0.5/ActiveDesk.Setup.1.0.5.exe",
   },
   supportEmail: "kodekenobi@gmail.com",
   payfast: {
