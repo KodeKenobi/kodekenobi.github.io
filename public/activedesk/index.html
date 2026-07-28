@@ -51,7 +51,7 @@
 
           <aside class="hero-card reveal reveal-delay-1">
             <p class="hero-text">
-              ActiveDesk is a lightweight desktop app that keeps your work status active even when you step away from your desk. Perfect for remote work, focus time, or when you need your presence visible across collaboration tools. Buy once with a lifetime license, or try a weekly/monthly pass first. Download for Mac or Windows, activate with a simple license key no account required.
+              ActiveDesk is a lightweight desktop app that keeps your work status active even when you step away from your desk. Perfect for remote work, focus time, or when you need your presence visible across collaboration tools. Buy once with a lifetime license, or try a weekly/monthly pass first. Download for Mac or Windows, activate with a simple <span class="inline-license-slot" data-default-text="license key" data-active-text="ad7k2px9l">license key</span> no account required.
             </p>
             <div class="hero-actions">
               <button id="downloadMacBtn" class="btn btn-primary btn-download" type="button" onclick="showMacInstallModal()">
@@ -78,7 +78,7 @@
       <main>
         <section class="section reveal" id="how-it-works">
           <div class="section-heading-right">
-            <h2 class="status-heading">Built for remote work.<br>Works <span class="status-word"><span class="offline-text">offline</span><span class="online-text">online</span></span>.<br>Costs next to nothing.</h2>
+            <h2 class="status-heading">Built for remote work.<br>Works <span class="status-word"><span class="offline-text">offline</span><span class="online-text">online</span></span>.<br>Costs next to <span class="nothing-accent">nothing</span>.</h2>
           </div>
           <div class="steps-grid">
             <article class="step-card slide-in-left">
@@ -221,22 +221,59 @@
       </main>
     </div>
 
-    <div id="macInstallModal" class="modal-overlay" style="display: none;" aria-hidden="true">
-      <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="macModalTitle">
-        <button id="modalCloseBtn" class="modal-close" type="button" aria-label="Close">&times;</button>
-        <h2 id="macModalTitle">Install ActiveDesk on macOS</h2>
+    <!-- macOS Installation Modal -->
+    <div id="macInstallModal" class="modal-overlay" style="display: none;">
+      <div class="modal-content">
+        <button class="modal-close" type="button" aria-label="Close">&times;</button>
+        <h2>Install ActiveDesk on macOS</h2>
+        
         <div class="installation-steps">
-          <p>1. Download the installer script.</p>
-          <a id="modalDownloadBtn" class="btn btn-primary" href="https://github.com/KodeKenobi/ActiveDesk/releases/download/v1.0.5/install-activedesk.command" download>
-            Download install-activedesk.command
-          </a>
-          <p>2. Open Terminal and run:</p>
-          <pre><code>chmod +x ~/Downloads/install-activedesk.command && ~/Downloads/install-activedesk.command</code></pre>
-          <button class="btn btn-secondary copy-btn" type="button">Copy command</button>
+          <div class="step">
+            <h3>Step 1: Download the installer</h3>
+            <a id="modalDownloadBtn" class="btn btn-primary" href="https://github.com/KodeKenobi/ActiveDesk/releases/download/v1.0.5/install-activedesk.command" download>
+              Download install-activedesk.command
+            </a>
+            <p class="step-note">The file will be saved to your <strong>Downloads</strong> folder</p>
+          </div>
+
+          <div class="step">
+            <h3>Step 2: Open Terminal</h3>
+            <p>Press <strong>Command + Space</strong> to open Spotlight search, type <code>Terminal</code>, then press Enter.</p>
+            <img src="./assets/terminal-guide.png" alt="Open Terminal" class="step-image" onerror="this.style.display='none'" />
+          </div>
+
+          <div class="step">
+            <h3>Step 3: Run the installer</h3>
+            <p>Copy and paste this command into Terminal, then press Enter:</p>
+            <div class="code-block">
+              <code>chmod +x ~/Downloads/install-activedesk.command && ~/Downloads/install-activedesk.command</code>
+              <button class="copy-btn" type="button" aria-label="Copy command">Copy</button>
+            </div>
+          </div>
+
+          <div class="step">
+            <h3>Step 4: Follow the installer</h3>
+            <p>The installer will:</p>
+            <ul>
+              <li>Download the latest ActiveDesk (around 111 MB)</li>
+              <li>Verify the files are safe</li>
+              <li>Install to your Applications folder</li>
+              <li>Open ActiveDesk automatically</li>
+            </ul>
+          </div>
+
+          <div class="troubleshooting">
+            <h3>Security warning?</h3>
+            <p>If you see "Cannot verify developer" when opening Terminal or ActiveDesk, that is normal. Click <strong>Open</strong> in the dialog.</p>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn btn-secondary" id="modalCloseBtn" type="button">Close</button>
         </div>
       </div>
     </div>
 
-    <script src="./site.js?v=20260728-4"></script>
+    <script src="./site.js?v=20260728-6"></script>
   </body>
   </html>

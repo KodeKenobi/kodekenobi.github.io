@@ -71,52 +71,54 @@ function updateDownloadLinks() {
 
 function showMacInstallModal() {
   const modal = document.getElementById("macInstallModal");
-  if (!modal) return;
-  modal.style.display = "flex";
-  modal.setAttribute("aria-hidden", "false");
-  document.body.style.overflow = "hidden";
+  if (modal) {
+    modal.style.display = "flex";
+    document.body.style.overflow = "hidden";
+  }
 }
 
 function closeMacInstallModal() {
   const modal = document.getElementById("macInstallModal");
-  if (!modal) return;
-  modal.style.display = "none";
-  modal.setAttribute("aria-hidden", "true");
-  document.body.style.overflow = "";
+  if (modal) {
+    modal.style.display = "none";
+    document.body.style.overflow = "auto";
+  }
 }
 
 function setupMacInstallModal() {
   const modal = document.getElementById("macInstallModal");
   const closeBtn = document.getElementById("modalCloseBtn");
+  const modalClose = document.querySelector(".modal-close");
   const copyBtn = document.querySelector(".copy-btn");
+  const fullCommand = "chmod +x ~/Downloads/install-activedesk.command && ~/Downloads/install-activedesk.command";
 
+  // Close button handlers
   if (closeBtn) {
     closeBtn.addEventListener("click", closeMacInstallModal);
   }
+  if (modalClose) {
+    modalClose.addEventListener("click", closeMacInstallModal);
+  }
 
+  // Click outside modal to close
   if (modal) {
-    modal.addEventListener("click", (event) => {
-      if (event.target === modal) closeMacInstallModal();
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) {
+        closeMacInstallModal();
+      }
     });
   }
 
-  document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") closeMacInstallModal();
-  });
-
+  // Copy command button
   if (copyBtn) {
-    copyBtn.addEventListener("click", async () => {
-      const command = "chmod +x ~/Downloads/install-activedesk.command && ~/Downloads/install-activedesk.command";
-      try {
-        await navigator.clipboard.writeText(command);
+    copyBtn.addEventListener("click", () => {
+      navigator.clipboard.writeText(fullCommand).then(() => {
         const originalText = copyBtn.textContent;
         copyBtn.textContent = "Copied";
         setTimeout(() => {
           copyBtn.textContent = originalText;
-        }, 1500);
-      } catch {
-        setPayStatus("Could not copy command. Copy it manually from the modal.");
-      }
+        }, 2000);
+      });
     });
   }
 }
@@ -352,18 +354,246 @@ function initDownloadButtonGlow() {
   updateGlowState();
 }
 
+function initInlineLicenseSwap() {
+  const licenseSlot = document.querySelector(".inline-license-slot");
+  const heroCard = document.querySelector(".hero-card");
+  if (!licenseSlot || !heroCard) return;
+
+  const defaultText = licenseSlot.dataset.defaultText || "license key";
+  const activeText = licenseSlot.dataset.activeText || defaultText;
+
+  function syncActiveKeyScale() {
+    const previousText = licenseSlot.textContent || defaultText;
+    const wasActive = licenseSlot.classList.contains("key-active");
+
+    licenseSlot.classList.remove("key-active", "key-switching");
+
+    licenseSlot.textContent = defaultText;
+    const defaultWidth = licenseSlot.getBoundingClientRect().width;
+
+    licenseSlot.textContent = activeText;
+    const activeWidth = licenseSlot.getBoundingClientRect().width;
+
+    const scale = activeWidth > 0 ? defaultWidth / activeWidth : 1;
+    licenseSlot.style.setProperty("--license-key-scale", String(scale));
+
+    licenseSlot.textContent = previousText;
+    licenseSlot.classList.toggle("key-active", wasActive);
+  }
+
+  function setLicenseState(isActive) {
+    const alreadyActive = licenseSlot.classList.contains("key-active");
+    if (alreadyActive === isActive) return;
+
+    licenseSlot.classList.add("key-switching");
+    window.setTimeout(() => {
+      licenseSlot.classList.toggle("key-active", isActive);
+      licenseSlot.classList.remove("key-switching");
+    }, 110);
+  }
+
+  function updateInlineLicenseState() {
+    const rect = heroCard.getBoundingClientRect();
+    const viewportHeight = window.innerHeight;
+    const viewportCenter = viewportHeight / 2;
+    const cardCenter = (rect.top + rect.bottom) / 2;
+    const isInViewport = rect.bottom > 0 && rect.top < viewportHeight;
+    const isNearCenter = Math.abs(cardCenter - viewportCenter) <= 120;
+
+    setLicenseState(isInViewport && isNearCenter);
+  }
+
+  window.addEventListener("scroll", updateInlineLicenseState, { passive: true });
+  window.addEventListener("resize", () => {
+    syncActiveKeyScale();
+    updateInlineLicenseState();
+  });
+  syncActiveKeyScale();
+  updateInlineLicenseState();
+}
+
+function initPriceStampAnimation() {
+  const priceCards = document.querySelectorAll(".price-card");
+  if (!priceCards.length) return;
+
+  priceCards.forEach((card) => {
+    card.dataset.priceCentered = "false";
+  });
+
+  function playPriceStamp(card) {
+    const price = card.querySelector(".price");
+    if (!price) return;
+
+    price.classList.remove("price-stamp-active");
+    void price.offsetWidth;
+    price.classList.add("price-stamp-active");
+  }
+
+  function updatePriceCardState() {
+    const viewportCenter = window.innerHeight / 2;
+    const tolerance = 130;
+
+    priceCards.forEach((card) => {
+      const rect = card.getBoundingClientRect();
+      const cardCenter = (rect.top + rect.bottom) / 2;
+      const isInViewport = rect.bottom > 0 && rect.top < window.innerHeight;
+      const isNearCenter = Math.abs(cardCenter - viewportCenter) <= tolerance;
+
+      if (isInViewport && isNearCenter) {
+        card.classList.add("price-center-active");
+        if (card.dataset.priceCentered !== "true") {
+          card.dataset.priceCentered = "true";
+          playPriceStamp(card);
+        }
+      } else {
+        card.classList.remove("price-center-active");
+        card.dataset.priceCentered = "false";
+        const price = card.querySelector(".price");
+        if (price) {
+          price.classList.remove("price-stamp-active");
+        }
+      }
+    });
+  }
+
+  window.addEventListener("scroll", updatePriceCardState, { passive: true });
+  window.addEventListener("resize", updatePriceCardState);
+  updatePriceCardState();
+}
+
+function initFaqHeadingLift() {
+  const faqHeading = document.querySelector("#faq .fade-scroll");
+  if (!faqHeading) return;
+
+  faqHeading.classList.add("faq-heading-lift");
+
+  function updateFaqHeadingState() {
+    const rect = faqHeading.getBoundingClientRect();
+    const viewportHeight = window.innerHeight;
+    const viewportCenter = viewportHeight / 2;
+    const headingCenter = (rect.top + rect.bottom) / 2;
+    const isInViewport = rect.bottom > 0 && rect.top < viewportHeight;
+    const isNearCenter = Math.abs(headingCenter - viewportCenter) <= 150;
+
+    faqHeading.classList.toggle("paper-lift-active", isInViewport && isNearCenter);
+  }
+
+  window.addEventListener("scroll", updateFaqHeadingState, { passive: true });
+  window.addEventListener("resize", updateFaqHeadingState);
+  updateFaqHeadingState();
+}
+
+function initStepCardSpotlightSweep() {
+  const stepCards = document.querySelectorAll(".steps-grid .step-card");
+  if (!stepCards.length) return;
+
+  stepCards.forEach((card) => {
+    card.dataset.spotlightCentered = "false";
+  });
+
+  function triggerSpotlight(card) {
+    card.classList.remove("spotlight-on");
+    void card.offsetWidth;
+    card.classList.add("spotlight-on");
+  }
+
+  function updateSpotlightState() {
+    const viewportCenter = window.innerHeight / 2;
+    const tolerance = 140;
+
+    stepCards.forEach((card) => {
+      const rect = card.getBoundingClientRect();
+      const cardCenter = (rect.top + rect.bottom) / 2;
+      const isInViewport = rect.bottom > 0 && rect.top < window.innerHeight;
+      const isNearCenter = Math.abs(cardCenter - viewportCenter) <= tolerance;
+      const shouldTrigger = isInViewport && isNearCenter;
+
+      if (shouldTrigger) {
+        if (card.dataset.spotlightCentered !== "true") {
+          card.dataset.spotlightCentered = "true";
+          triggerSpotlight(card);
+        }
+      } else {
+        card.dataset.spotlightCentered = "false";
+        card.classList.remove("spotlight-on");
+      }
+    });
+  }
+
+  window.addEventListener("scroll", updateSpotlightState, { passive: true });
+  window.addEventListener("resize", updateSpotlightState);
+  updateSpotlightState();
+}
+
 function initFaqAccordion() {
   const toggles = document.querySelectorAll(".faq-toggle");
   if (!toggles.length) return;
+
+  function splitIntoInkLines(text) {
+    const sentenceParts = text
+      .split(/(?<=[.!?])\s+/)
+      .map((part) => part.trim())
+      .filter(Boolean);
+
+    if (sentenceParts.length > 1) return sentenceParts;
+
+    const words = text.split(/\s+/).filter(Boolean);
+    const chunks = [];
+    for (let i = 0; i < words.length; i += 6) {
+      chunks.push(words.slice(i, i + 6).join(" "));
+    }
+    return chunks;
+  }
+
+  function setupInkReveal(panel) {
+    const paragraph = panel.querySelector("p");
+    if (!paragraph || paragraph.dataset.inkReady === "true") return;
+
+    const originalText = paragraph.textContent.trim();
+    const lines = splitIntoInkLines(originalText);
+    if (!lines.length) return;
+
+    paragraph.textContent = "";
+
+    lines.forEach((line, index) => {
+      const lineWrap = document.createElement("span");
+      lineWrap.className = "faq-ink-line";
+
+      const lineText = document.createElement("span");
+      lineText.className = "faq-ink-text";
+      lineText.style.setProperty("--ink-delay", `${index * 90}ms`);
+      lineText.textContent = line;
+
+      lineWrap.appendChild(lineText);
+      paragraph.appendChild(lineWrap);
+    });
+
+    paragraph.dataset.inkReady = "true";
+  }
 
   toggles.forEach((toggle) => {
     toggle.addEventListener("click", () => {
       const item = toggle.closest(".faq-item");
       if (!item) return;
 
+      const panel = item.querySelector(".faq-panel");
+      if (panel) {
+        setupInkReveal(panel);
+      }
+
       const isOpen = item.classList.contains("open");
       item.classList.toggle("open", !isOpen);
       toggle.setAttribute("aria-expanded", String(!isOpen));
+
+      if (!panel) return;
+
+      if (!isOpen) {
+        panel.classList.remove("ink-reveal");
+        void panel.offsetWidth;
+        panel.classList.add("ink-reveal");
+      } else {
+        panel.classList.remove("ink-reveal");
+      }
     });
   });
 }
@@ -373,5 +603,9 @@ setupMacInstallModal();
 initScrollFadeAnimation();
 initMobileMenu();
 initDownloadButtonGlow();
+initInlineLicenseSwap();
+initPriceStampAnimation();
+initFaqHeadingLift();
+initStepCardSpotlightSweep();
 initFaqAccordion();
 bindPurchaseButtons();
