@@ -60,6 +60,85 @@
         margin-bottom: 32px;
       }
 
+      .license-summary {
+        font-family: "Montserrat", sans-serif;
+        color: var(--ink);
+        margin: 0 0 18px;
+        line-height: 1.6;
+      }
+
+      .license-grid {
+        display: grid;
+        gap: 16px;
+        text-align: left;
+      }
+
+      .license-card {
+        background: rgba(255, 255, 255, 0.72);
+        border: 1px solid rgba(63, 131, 255, 0.24);
+        border-radius: 16px;
+        padding: 20px;
+      }
+
+      .license-card-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: center;
+        flex-wrap: wrap;
+        margin-bottom: 10px;
+      }
+
+      .license-plan {
+        font-family: "Fraunces", serif;
+        font-size: 1.15rem;
+        color: var(--ink);
+        margin: 0;
+      }
+
+      .license-status {
+        border-radius: 999px;
+        padding: 6px 12px;
+        font-family: "Montserrat", sans-serif;
+        font-size: 0.78rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+
+      .license-status.active {
+        background: rgba(16, 185, 129, 0.12);
+        color: #047857;
+      }
+
+      .license-status.expired {
+        background: rgba(220, 38, 38, 0.12);
+        color: #b91c1c;
+      }
+
+      .license-meta {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 10px 16px;
+        margin: 16px 0;
+      }
+
+      .meta-label {
+        display: block;
+        font-family: "Montserrat", sans-serif;
+        font-size: 0.76rem;
+        font-weight: 700;
+        color: var(--ink-soft);
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        margin-bottom: 4px;
+      }
+
+      .meta-value {
+        font-family: "Lato", sans-serif;
+        color: var(--ink);
+      }
+
       .license-label {
         font-family: "Lato", sans-serif;
         font-size: 0.9rem;
@@ -177,6 +256,38 @@
         line-height: 1.6;
       }
 
+      .toast {
+        position: fixed;
+        right: 16px;
+        bottom: 16px;
+        max-width: 340px;
+        padding: 14px 16px;
+        border-radius: 14px;
+        box-shadow: var(--shadow);
+        font-family: "Montserrat", sans-serif;
+        font-size: 0.95rem;
+        line-height: 1.5;
+        color: #fff;
+        background: var(--ink);
+        opacity: 0;
+        transform: translateY(10px);
+        pointer-events: none;
+        transition: opacity 0.2s ease, transform 0.2s ease;
+      }
+
+      .toast.show {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .toast.success {
+        background: #0f766e;
+      }
+
+      .toast.error {
+        background: #b91c1c;
+      }
+
       @media (max-width: 640px) {
         .success-shell {
           padding: 32px 12px;
@@ -209,13 +320,69 @@
         </div>
       </div>
     </div>
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
       const SUPABASE_URL = "https://nibzfmjwisfdmwublvyu.supabase.co";
       const SUPABASE_ANON_KEY = "sb_publishable_Cq5ljxAxHRZOJU4wiGc07g_6vrFU0lA";
+      const DOWNLOADS = {
+        mac: "https://github.com/KodeKenobi/ActiveDesk/releases/download/v1.0.5/ActiveDesk-1.0.5-arm64.dmg",
+        win: "https://github.com/KodeKenobi/ActiveDesk/releases/download/v1.0.5/ActiveDesk.Setup.1.0.5.exe",
+      };
 
       const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      const toast = document.getElementById("toast");
+      let toastTimer = null;
+
+      function showToast(message, type = "success") {
+        if (toastTimer) clearTimeout(toastTimer);
+        toast.textContent = message;
+        toast.className = `toast ${type} show`;
+        toastTimer = setTimeout(() => {
+          toast.className = `toast ${type}`;
+        }, 2400);
+      }
+
+      function normalizePlan(plan) {
+        if (plan === "weekly") return "1 Week";
+        if (plan === "monthly") return "1 Month";
+        if (plan === "lifetime") return "Lifetime";
+        return plan || "Unknown";
+      }
+
+      function formatDate(value) {
+        if (!value) return "Forever";
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) return "-";
+        return date.toLocaleString();
+      }
+
+      function classifyLicense(license) {
+        const expiry = license.expires_at ? Date.parse(license.expires_at) : null;
+        const expired = Number.isFinite(expiry) && expiry < Date.now();
+        return {
+          expired,
+          label: expired ? "Expired" : "Active",
+        };
+      }
+
+      async function lookupPayment(email, plan) {
+        const { data, error } = await supabase
+          .from("payments")
+          .select("status, created_at")
+          .eq("email", email)
+          .eq("plan", plan)
+          .order("created_at", { ascending: false })
+          .limit(1);
+
+        if (error) {
+          console.error("Payment lookup error:", error);
+          return null;
+        }
+
+        return Array.isArray(data) ? data[0] || null : null;
+      }
 
       async function init() {
         try {
@@ -228,71 +395,96 @@
             return;
           }
 
-          // Check if license already exists for this email+plan (prevent duplicates)
+          // Check if a paid license already exists for this email and plan.
           const { data: existing, error: existError } = await supabase
             .from("licenses")
-            .select("license_key")
+            .select("license_key, plan, issued_at, expires_at")
             .eq("email", email)
             .eq("plan", plan)
-            .order("created_at", { ascending: false })
-            .limit(1);
+            .order("issued_at", { ascending: false })
+            .limit(5);
 
-          let licenseKey;
+          if (existError) {
+            console.error("Lookup error:", existError);
+            showError("Could not confirm your payment yet. Please try again in a minute.");
+            return;
+          }
 
-          if (existing && existing.length > 0) {
-            // Use existing key if found
-            licenseKey = existing[0].license_key;
-          } else {
-            // Generate new key (server-side via Edge Function)
-            const { data: generatedData, error: genError } = await supabase.functions.invoke(
-              "generate-license",
-              {
-                body: {
-                  email,
-                  plan,
-                },
-              }
-            );
-
-            if (genError || !generatedData?.license_key) {
-              console.error("Generation error:", genError);
-              showError("Failed to generate license key. Please contact support.");
+          if (!existing || existing.length === 0) {
+            const payment = await lookupPayment(email, plan);
+            if (payment?.status === "completed") {
+              showError("We found your completed payment, but the license is still being prepared. Please refresh in a minute.");
               return;
             }
 
-            licenseKey = generatedData.license_key;
+            if (payment?.status === "pending") {
+              showError("Your payment is still pending. Finish the payment first, then this page will be able to show your license.");
+              return;
+            }
+
+            showError("No paid license was found for this email and plan yet. Please wait a minute and refresh.");
+            return;
           }
 
-          showSuccess(email, plan, licenseKey);
+          showSuccess(email, plan, existing);
         } catch (error) {
           console.error("Error:", error);
           showError("An unexpected error occurred. Please contact support.");
         }
       }
 
-      function showSuccess(email, plan, licenseKey) {
+      function showSuccess(email, plan, licenses) {
         const content = document.getElementById("content");
+        const cards = licenses
+          .map((license) => {
+            const ui = classifyLicense(license);
+            return `
+              <section class="license-card">
+                <div class="license-card-head">
+                  <h2 class="license-plan">${normalizePlan(license.plan)}</h2>
+                  <span class="license-status ${ui.expired ? "expired" : "active"}">${ui.label}</span>
+                </div>
+                <div class="license-label">Your License Key</div>
+                <p class="license-key">${license.license_key}</p>
+                <div class="license-meta">
+                  <div>
+                    <span class="meta-label">Status</span>
+                    <span class="meta-value">${ui.label}</span>
+                  </div>
+                  <div>
+                    <span class="meta-label">Valid Until</span>
+                    <span class="meta-value">${formatDate(license.expires_at)}</span>
+                  </div>
+                  <div>
+                    <span class="meta-label">Issued</span>
+                    <span class="meta-value">${formatDate(license.issued_at)}</span>
+                  </div>
+                </div>
+                <button class="btn btn-secondary" onclick="copyToClipboard('${license.license_key.replace(/'/g, "\\'")}')">Copy Key</button>
+              </section>
+            `;
+          })
+          .join("");
+
         content.innerHTML = `
           <div class="success-icon">✓</div>
           <h1 class="success-heading">License Ready!</h1>
-          <p class="success-text">Your ${capitalize(plan)} license is ready to activate.</p>
+          <p class="success-text">We found your ${capitalize(plan)} purchase for ${email}. Copy the key below and paste it into the ActiveDesk app.</p>
 
           <div class="license-display">
-            <div class="license-label">Your License Key</div>
-            <p class="license-key">${licenseKey}</p>
-            <button class="btn btn-secondary" onclick="copyToClipboard('${licenseKey}')">
-              Copy Key
-            </button>
+            <p class="license-summary">If you change machines later, come back with the same purchase email and recover the same license again.</p>
+            <div class="license-grid">${cards}</div>
           </div>
 
           <div class="button-group">
-            <a href="#" class="btn btn-primary" onclick="downloadApp()">Download ActiveDesk</a>
-            <a href="/" class="btn btn-secondary">Back to Home</a>
+            <a href="${DOWNLOADS.mac}" class="btn btn-primary">Download for macOS</a>
+            <a href="${DOWNLOADS.win}" class="btn btn-secondary">Download for Windows</a>
           </div>
 
           <div class="next-steps">
             <h3>Next Steps</h3>
             <ol>
+              <li><strong>Copy</strong> the license key you want to use</li>
               <li><strong>Download</strong> ActiveDesk for Mac or Windows</li>
               <li><strong>Open</strong> the app</li>
               <li><strong>Paste</strong> your license key in the License section</li>
@@ -317,13 +509,10 @@
 
       function copyToClipboard(text) {
         navigator.clipboard.writeText(text).then(() => {
-          alert("License key copied to clipboard!");
+          showToast("License key copied. Paste it into the app and click Activate.", "success");
+        }).catch(() => {
+          showToast("Copy failed. Select the key manually and paste it into the app.", "error");
         });
-      }
-
-      function downloadApp() {
-        // Redirect to GitHub releases or your download page
-        window.open("https://github.com/your-username/ActiveDesk/releases");
       }
 
       // Initialize

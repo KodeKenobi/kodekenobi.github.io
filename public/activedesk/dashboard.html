@@ -41,10 +41,19 @@
 
       .subtitle {
         font-family: "Montserrat", sans-serif;
-        font-size: 1.1rem;
+        font-size: 1rem;
         color: var(--ink-soft);
-        margin: 0 0 40px;
+        margin: 0 0 14px;
         text-align: center;
+      }
+
+      .intro-note {
+        font-family: "Montserrat", sans-serif;
+        font-size: 0.94rem;
+        color: var(--ink-soft);
+        margin: 0 0 24px;
+        text-align: center;
+        line-height: 1.6;
       }
 
       .form-group {
@@ -52,6 +61,7 @@
         gap: 12px;
         flex-wrap: wrap;
         margin-bottom: 24px;
+        align-items: stretch;
       }
 
       input {
@@ -77,21 +87,33 @@
         font-family: "Lato", sans-serif;
         font-weight: 700;
         font-size: 1rem;
-        background: var(--ink);
+        background: #102033;
         color: #fff;
         border: none;
         border-radius: 12px;
         cursor: pointer;
-        transition: background 0.2s ease;
+        transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+        white-space: nowrap;
+        box-shadow: 0 16px 34px rgba(16, 32, 51, 0.22);
       }
 
       button:hover {
-        background: var(--ink-soft);
+        background: #1f3550;
+        transform: translateY(-1px);
+        box-shadow: 0 18px 38px rgba(16, 32, 51, 0.26);
       }
 
       button:disabled {
-        background: var(--sand);
+        background: #b8ad9a;
+        color: rgba(255, 255, 255, 0.88);
         cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+      }
+
+      #claimBtn {
+        min-width: 180px;
+        border: 1px solid rgba(16, 32, 51, 0.08);
       }
 
       .license-box {
@@ -105,6 +127,85 @@
 
       .license-box.show {
         display: block;
+      }
+
+      .results-summary {
+        font-family: "Montserrat", sans-serif;
+        font-size: 0.98rem;
+        color: var(--ink);
+        margin: 16px 0 0;
+      }
+
+      .license-list {
+        display: grid;
+        gap: 16px;
+        margin-top: 20px;
+      }
+
+      .license-card {
+        border: 1px solid rgba(63, 131, 255, 0.25);
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.72);
+        padding: 20px;
+      }
+
+      .license-card-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: center;
+        margin-bottom: 12px;
+        flex-wrap: wrap;
+      }
+
+      .license-card-title {
+        font-family: "Fraunces", serif;
+        font-size: 1.2rem;
+        color: var(--ink);
+        margin: 0;
+      }
+
+      .license-badge {
+        border-radius: 999px;
+        padding: 6px 12px;
+        font-family: "Montserrat", sans-serif;
+        font-size: 0.78rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+
+      .license-badge.active {
+        background: rgba(16, 185, 129, 0.12);
+        color: #047857;
+      }
+
+      .license-badge.expired {
+        background: rgba(220, 38, 38, 0.12);
+        color: #b91c1c;
+      }
+
+      .license-meta {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 10px 16px;
+        margin: 16px 0;
+      }
+
+      .meta-label {
+        display: block;
+        font-family: "Montserrat", sans-serif;
+        font-size: 0.76rem;
+        font-weight: 700;
+        color: var(--ink-soft);
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        margin-bottom: 4px;
+      }
+
+      .meta-value {
+        font-family: "Lato", sans-serif;
+        color: var(--ink);
       }
 
       .key-label {
@@ -138,6 +239,14 @@
         background: var(--blue-deep);
       }
 
+      .claim-note {
+        font-family: "Montserrat", sans-serif;
+        font-size: 0.98rem;
+        line-height: 1.6;
+        color: var(--ink);
+        margin: 16px 0 0;
+      }
+
       .error {
         background: rgba(220, 38, 38, 0.15);
         border: 1px solid rgba(220, 38, 38, 0.3);
@@ -164,6 +273,39 @@
         display: block;
       }
 
+      .toast {
+        position: fixed;
+        right: 16px;
+        bottom: 16px;
+        max-width: 340px;
+        padding: 14px 16px;
+        border-radius: 14px;
+        box-shadow: var(--shadow);
+        font-family: "Montserrat", sans-serif;
+        font-size: 0.95rem;
+        line-height: 1.5;
+        color: #fff;
+        background: var(--ink);
+        opacity: 0;
+        transform: translateY(10px);
+        pointer-events: none;
+        transition: opacity 0.2s ease, transform 0.2s ease;
+        z-index: 999;
+      }
+
+      .toast.show {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .toast.success {
+        background: #0f766e;
+      }
+
+      .toast.error {
+        background: #b91c1c;
+      }
+
       @media (max-width: 640px) {
         .shell {
           padding: 32px 12px;
@@ -182,24 +324,27 @@
   <body>
     <div class="shell">
       <div class="card">
-        <h1>Get Your License Key</h1>
-        <p class="subtitle">Enter the email you used when purchasing</p>
+        <h1>Recover Your License Key</h1>
+        <p class="subtitle">Enter the email you used at checkout.</p>
+        <p class="intro-note">Already paid? We'll find your existing license for this email.</p>
 
         <div class="form-group">
           <input type="email" id="email" placeholder="your@email.com" />
-          <button id="claimBtn">Claim License</button>
+          <button id="claimBtn">Find My License</button>
         </div>
 
-        <div id="loading" class="loading">Generating license...</div>
+        <div id="loading" class="loading">Looking up your license...</div>
         <div id="error" class="error"></div>
 
         <div id="licenseBox" class="license-box">
-          <div class="key-label">Your License Key</div>
-          <p id="keyText" class="key-text"></p>
-          <button class="copy-btn" onclick="copyKey()">Copy Key</button>
+          <div class="key-label">Recovered Licenses</div>
+          <p id="resultsSummary" class="results-summary"></p>
+          <div id="licenseList" class="license-list"></div>
+          <p class="claim-note">Copy the license key you want to use, open the ActiveDesk app, paste it into the <strong>License Key</strong> field, and click <strong>Activate</strong>. Removing a key in the app only removes it from that device.</p>
         </div>
       </div>
     </div>
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
@@ -226,18 +371,180 @@
         const loading = document.getElementById("loading");
         const error = document.getElementById("error");
         const licenseBox = document.getElementById("licenseBox");
-        const keyText = document.getElementById("keyText");
+        const licenseList = document.getElementById("licenseList");
+        const resultsSummary = document.getElementById("resultsSummary");
+        const toast = document.getElementById("toast");
+        let toastTimer = null;
+
+        function showToast(message, type = "success") {
+          if (toastTimer) clearTimeout(toastTimer);
+          toast.textContent = message;
+          toast.className = `toast ${type} show`;
+          toastTimer = setTimeout(() => {
+            toast.className = `toast ${type}`;
+          }, 2400);
+        }
+
+        function formatDate(value) {
+          if (!value) return "Forever";
+          const date = new Date(value);
+          if (Number.isNaN(date.getTime())) return "-";
+          return date.toLocaleString();
+        }
+
+        function normalizePlan(plan) {
+          if (plan === "weekly") return "1 Week";
+          if (plan === "monthly") return "1 Month";
+          if (plan === "lifetime") return "Lifetime";
+          return plan || "Unknown";
+        }
+
+        function classifyLicense(license) {
+          const now = Date.now();
+          const expiry = license.expires_at ? Date.parse(license.expires_at) : null;
+          const expired = Number.isFinite(expiry) && expiry < now;
+          const lifetime = !license.expires_at;
+          const priority = lifetime ? 0 : expired ? 2 : 1;
+          return {
+            expired,
+            lifetime,
+            priority,
+            statusLabel: expired ? "Expired" : "Active",
+          };
+        }
+
+        function isValidEmail(email) {
+          return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        }
+
+        async function copyKey(button, key) {
+          try {
+            await navigator.clipboard.writeText(key);
+            showToast("License key copied. Paste it into the app and click Activate.", "success");
+            const original = button.textContent;
+            button.textContent = "Copied";
+            setTimeout(() => {
+              button.textContent = original;
+            }, 1800);
+          } catch {
+            showToast("Copy failed. Select the key manually and paste it into the app.", "error");
+          }
+        }
+
+        function renderLicenses(email, licenses) {
+          const sorted = [...licenses]
+            .map((license) => ({ ...license, ui: classifyLicense(license) }))
+            .sort((a, b) => {
+              if (a.ui.priority !== b.ui.priority) return a.ui.priority - b.ui.priority;
+              return new Date(b.issued_at).getTime() - new Date(a.issued_at).getTime();
+            });
+
+          resultsSummary.textContent =
+            sorted.length === 1
+              ? `We found 1 license for ${email}.`
+              : `We found ${sorted.length} licenses for ${email}. Choose the one you want to activate.`;
+
+          licenseList.innerHTML = "";
+
+          sorted.forEach((license) => {
+            const card = document.createElement("section");
+            card.className = "license-card";
+
+            const head = document.createElement("div");
+            head.className = "license-card-head";
+
+            const title = document.createElement("h2");
+            title.className = "license-card-title";
+            title.textContent = normalizePlan(license.plan);
+
+            const badge = document.createElement("span");
+            badge.className = `license-badge ${license.ui.expired ? "expired" : "active"}`;
+            badge.textContent = license.ui.statusLabel;
+
+            head.appendChild(title);
+            head.appendChild(badge);
+
+            const keyLabel = document.createElement("div");
+            keyLabel.className = "key-label";
+            keyLabel.textContent = "License Key";
+
+            const keyValue = document.createElement("p");
+            keyValue.className = "key-text";
+            keyValue.textContent = license.license_key;
+
+            const meta = document.createElement("div");
+            meta.className = "license-meta";
+            meta.innerHTML = `
+              <div>
+                <span class="meta-label">Status</span>
+                <span class="meta-value">${license.ui.statusLabel}</span>
+              </div>
+              <div>
+                <span class="meta-label">Valid Until</span>
+                <span class="meta-value">${formatDate(license.expires_at)}</span>
+              </div>
+              <div>
+                <span class="meta-label">Issued</span>
+                <span class="meta-value">${formatDate(license.issued_at)}</span>
+              </div>
+            `;
+
+            const copyButton = document.createElement("button");
+            copyButton.className = "copy-btn";
+            copyButton.type = "button";
+            copyButton.textContent = "Copy Key";
+            copyButton.addEventListener("click", () => void copyKey(copyButton, license.license_key));
+
+            card.appendChild(head);
+            card.appendChild(keyLabel);
+            card.appendChild(keyValue);
+            card.appendChild(meta);
+            card.appendChild(copyButton);
+            licenseList.appendChild(card);
+          });
+
+          licenseBox.classList.add("show");
+        }
+
+        const queryEmail = new URLSearchParams(window.location.search).get("email");
+        if (queryEmail) {
+          emailInput.value = queryEmail;
+          setTimeout(() => {
+            claimLicense();
+          }, 50);
+        }
 
         claimBtn.addEventListener("click", claimLicense);
         emailInput.addEventListener("keypress", (e) => {
           if (e.key === "Enter") claimLicense();
         });
 
+        async function lookupPaymentStatus(email) {
+          const { data, error: paymentError } = await supabase
+            .from("payments")
+            .select("status, plan, created_at")
+            .eq("email", email)
+            .order("created_at", { ascending: false })
+            .limit(5);
+
+          if (paymentError) {
+            console.error("Payment lookup error:", paymentError);
+            return null;
+          }
+
+          return Array.isArray(data) ? data : [];
+        }
+
         async function claimLicense() {
           console.log("claimLicense called");
-          const email = emailInput.value.trim();
+          const email = emailInput.value.trim().toLowerCase();
           if (!email) {
-            showError("Please enter your email");
+            showError("Enter the email you used when purchasing ActiveDesk.");
+            return;
+          }
+
+          if (!isValidEmail(email)) {
+            showError("Enter a valid email address so we can look up your license.");
             return;
           }
 
@@ -245,57 +552,56 @@
 
           error.classList.remove("show");
           licenseBox.classList.remove("show");
+          licenseList.innerHTML = "";
+          resultsSummary.textContent = "";
           loading.classList.add("show");
           claimBtn.disabled = true;
 
           try {
-            // Check if license exists
-            console.log("Checking for existing license...");
+            console.log("Checking for existing licenses...");
             const { data: existing, error: queryError } = await supabase
               .from("licenses")
-              .select("license_key")
+              .select("license_key, plan, issued_at, expires_at")
               .eq("email", email)
               .order("issued_at", { ascending: false })
-              .limit(1);
+              .limit(10);
 
             console.log("Query result:", { existing, queryError });
 
+            if (queryError) {
+              console.error("Query error:", queryError);
+              showError("We couldn't verify your license right now. Please retry in a moment.");
+              return;
+            }
+
             if (existing && existing.length > 0) {
-              console.log("Found existing license");
-              showLicense(existing[0].license_key);
+              console.log("Found existing licenses");
+              renderLicenses(email, existing);
               return;
             }
 
-            // Generate new license
-            console.log("Generating new license...");
-            const { data: result, error: err } = await supabase.functions.invoke(
-              "generate-license",
-              {
-                body: { email, plan: "lifetime" },
-              }
-            );
+            const payments = await lookupPaymentStatus(email);
+            const completedPayment = payments?.find((payment) => payment.status === "completed");
+            const pendingPayment = payments?.find((payment) => payment.status === "pending");
 
-            console.log("Function result:", { result, err });
-
-            if (err || !result?.license_key) {
-              showError("Could not generate license. Please try again: " + (err?.message || "Unknown error"));
+            if (completedPayment) {
+              showError("We found a completed payment for this email, but the license is still being prepared. Please wait a minute and try again.");
               return;
             }
 
-            showLicense(result.license_key);
+            if (pendingPayment) {
+              showError("We found a pending payment for this email. Finish the payment first, then return here to recover your key.");
+              return;
+            }
+
+            showError("No paid license was found for this email yet. If you just paid, wait a minute and try again. If not, double-check the email you used at checkout.");
           } catch (err) {
             console.error("Error:", err);
-            showError("An error occurred: " + err.message);
+            showError("We hit a server problem while looking up your license. Please try again.");
           } finally {
             loading.classList.remove("show");
             claimBtn.disabled = false;
           }
-        }
-
-        function showLicense(key) {
-          console.log("Showing license:", key);
-          keyText.textContent = key;
-          licenseBox.classList.add("show");
         }
 
         function showError(msg) {
@@ -306,14 +612,6 @@
       }
 
       initDashboard();
-
-      function copyKey() {
-        navigator.clipboard.writeText(keyText.textContent);
-        claimBtn.textContent = "Copied!";
-        setTimeout(() => {
-          claimBtn.textContent = "Claim License";
-        }, 2000);
-      }
     </script>
   </body>
 </html>
