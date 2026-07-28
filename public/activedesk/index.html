@@ -47,7 +47,7 @@
               ActiveDesk is a lightweight desktop app that keeps your work status active even when you step away from your desk. Perfect for remote work, focus time, or when you need your presence visible across collaboration tools. Buy once with a lifetime license, or try a weekly/monthly pass first. Download for Mac or Windows, activate with a simple license key no account required.
             </p>
             <div class="hero-actions">
-              <button id="downloadMacBtn" class="btn btn-primary btn-download" type="button">
+              <button id="downloadMacBtn" class="btn btn-primary btn-download" type="button" onclick="showMacInstallModal()">
                 <span class="btn-icon btn-icon-mac" aria-hidden="true">
                   <svg viewBox="0 0 24 24" focusable="false">
                     <path d="M15.8 12.4c0-1.8 1.5-2.7 1.6-2.8-.9-1.3-2.2-1.5-2.7-1.5-1.1-.1-2.1.6-2.7.6-.6 0-1.4-.6-2.3-.6-1.2 0-2.4.7-3 1.8-1.3 2.3-.3 5.7 1 7.5.7.9 1.4 1.9 2.4 1.8.9 0 1.3-.6 2.4-.6 1.1 0 1.5.6 2.5.6 1 .1 1.7-.9 2.3-1.8.8-1.1 1.1-2.1 1.1-2.2-.1 0-2.6-1-2.6-2.8zm-1.9-5.5c.5-.6.9-1.5.8-2.4-.8 0-1.7.5-2.3 1.1-.5.6-1 1.5-.9 2.3.9.1 1.8-.4 2.4-1z" />
@@ -133,20 +133,60 @@
           </div>
           <div class="faq-grid">
             <article class="faq-item drop-in-down">
-              <h3 class="faq-text">Do I need an account?</h3>
-              <p class="faq-text delayed-1">No. Download the app, pay through PayFast, then activate the key you receive.</p>
+              <button class="faq-toggle" type="button" aria-expanded="false">
+                <span>How do I install on macOS?</span>
+              </button>
+              <div class="faq-panel">
+                <p>Click "Download for macOS" to get step-by-step instructions. You will download a simple installer script, open Terminal, paste one command, and the installer handles the rest.</p>
+              </div>
             </article>
             <article class="faq-item drop-in-down">
-              <h3 class="faq-text">How do I receive the key?</h3>
-              <p class="faq-text delayed-1">After payment, you'll be redirected to your license dashboard. Your key is generated instantly and ready to copy. No email, no waiting just grab your key and activate the app immediately.</p>
+              <button class="faq-toggle" type="button" aria-expanded="false">
+                <span>What if I get a "Cannot verify developer" warning?</span>
+              </button>
+              <div class="faq-panel">
+                <p>That is normal for apps outside the App Store. Use the installer command from the macOS modal and macOS will run it safely through Terminal.</p>
+              </div>
             </article>
             <article class="faq-item drop-in-down">
-              <h3 class="faq-text">Does the app need internet access?</h3>
-              <p class="faq-text delayed-1">After you activate your license key, ActiveDesk works completely offline. No internet connection required for daily use. You only need internet to download the app initially and to purchase your license.</p>
+              <button class="faq-toggle" type="button" aria-expanded="false">
+                <span>Do I need an account?</span>
+              </button>
+              <div class="faq-panel">
+                <p>No. Download the app, pay through PayFast, then activate the key you receive.</p>
+              </div>
             </article>
             <article class="faq-item drop-in-down">
-              <h3 class="faq-text">What if I need help?</h3>
-              <p class="faq-text delayed-1">Questions or issues? Contact us at <a href="mailto:kodekenobi@gmail.com">kodekenobi@gmail.com</a> or call <a href="tel:+27630291420">+27 630 291 420</a>. We're available Monday - Friday, 24 hours.</p>
+              <button class="faq-toggle" type="button" aria-expanded="false">
+                <span>How do I receive the key?</span>
+              </button>
+              <div class="faq-panel">
+                <p>After payment, you will be redirected to your license dashboard. Your key is generated instantly and ready to copy.</p>
+              </div>
+            </article>
+            <article class="faq-item drop-in-down">
+              <button class="faq-toggle" type="button" aria-expanded="false">
+                <span>Does the app need internet access?</span>
+              </button>
+              <div class="faq-panel">
+                <p>After activation, ActiveDesk works completely offline. Internet is only needed to download the app and buy a license.</p>
+              </div>
+            </article>
+            <article class="faq-item drop-in-down">
+              <button class="faq-toggle" type="button" aria-expanded="false">
+                <span>What if I need help?</span>
+              </button>
+              <div class="faq-panel">
+                <p>Questions or issues? Contact us at <a href="mailto:kodekenobi@gmail.com">kodekenobi@gmail.com</a> or call <a href="tel:+27630291420">+27 630 291 420</a>.</p>
+              </div>
+            </article>
+            <article class="faq-item drop-in-down">
+              <button class="faq-toggle" type="button" aria-expanded="false">
+                <span>Will ActiveDesk be on the App Store?</span>
+              </button>
+              <div class="faq-panel">
+                <p>That is on the roadmap. For now, direct download gives you the fastest install path for both macOS and Windows.</p>
+              </div>
             </article>
           </div>
         </section>
