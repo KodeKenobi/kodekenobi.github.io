@@ -778,6 +778,54 @@ a {
   gap: 12px;
 }
 
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(8, 14, 24, 0.62);
+  z-index: 30;
+}
+
+.modal-content {
+  width: min(680px, 100%);
+  max-height: 85vh;
+  overflow: auto;
+  background: #fff9f1;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  box-shadow: 0 28px 90px rgba(8, 14, 24, 0.26);
+  position: relative;
+}
+
+.modal-close {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  font-size: 2rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.installation-steps {
+  display: grid;
+  gap: 12px;
+}
+
+.installation-steps pre {
+  margin: 0;
+  padding: 12px;
+  border-radius: 10px;
+  background: rgba(16, 32, 51, 0.08);
+  overflow-x: auto;
+}
+
 code {
   padding: 2px 6px;
   border-radius: 8px;

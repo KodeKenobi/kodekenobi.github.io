@@ -51,39 +51,74 @@ const EXCHANGE_RATE_APIS = [
 ];
 
 function updateDownloadLinks() {
-  const downloadTargets = [
-    {
-      id: "downloadMacBtn",
-      url: SITE_CONFIG.downloads.mac,
-      fallbackText: "Set macOS release URL",
-    },
-    {
-      id: "downloadMacBtnSecondary",
-      url: SITE_CONFIG.downloads.mac,
-      fallbackText: "Set macOS release URL",
-    },
-    {
-      id: "downloadWinBtn",
-      url: SITE_CONFIG.downloads.win,
-      fallbackText: "Set Windows release URL",
-    },
-    {
-      id: "downloadWinBtnSecondary",
-      url: SITE_CONFIG.downloads.win,
-      fallbackText: "Set Windows release URL",
-    },
-  ];
+  const macButton = document.getElementById("downloadMacBtn");
+  if (macButton && macButton.tagName === "BUTTON") {
+    macButton.addEventListener("click", () => showMacInstallModal());
+  }
 
-  downloadTargets.forEach((target) => {
-    const link = document.getElementById(target.id);
-    if (!link) return;
+  const winBtn = document.getElementById("downloadWinBtn");
+  if (winBtn && winBtn.tagName === "A") {
+    const valid = /^https:\/\//.test(SITE_CONFIG.downloads.win || "");
+    winBtn.href = valid ? SITE_CONFIG.downloads.win : "#";
+  }
 
-    const valid = /^https:\/\//.test(target.url || "");
-    link.href = valid ? target.url : "#";
-    if (!valid) {
-      link.textContent = target.fallbackText;
-    }
+  const modalDownloadBtn = document.getElementById("modalDownloadBtn");
+  if (modalDownloadBtn && modalDownloadBtn.tagName === "A") {
+    const valid = /^https:\/\//.test(SITE_CONFIG.downloads.mac || "");
+    modalDownloadBtn.href = valid ? SITE_CONFIG.downloads.mac : "#";
+  }
+}
+
+function showMacInstallModal() {
+  const modal = document.getElementById("macInstallModal");
+  if (!modal) return;
+  modal.style.display = "flex";
+  modal.setAttribute("aria-hidden", "false");
+  document.body.style.overflow = "hidden";
+}
+
+function closeMacInstallModal() {
+  const modal = document.getElementById("macInstallModal");
+  if (!modal) return;
+  modal.style.display = "none";
+  modal.setAttribute("aria-hidden", "true");
+  document.body.style.overflow = "";
+}
+
+function setupMacInstallModal() {
+  const modal = document.getElementById("macInstallModal");
+  const closeBtn = document.getElementById("modalCloseBtn");
+  const copyBtn = document.querySelector(".copy-btn");
+
+  if (closeBtn) {
+    closeBtn.addEventListener("click", closeMacInstallModal);
+  }
+
+  if (modal) {
+    modal.addEventListener("click", (event) => {
+      if (event.target === modal) closeMacInstallModal();
+    });
+  }
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") closeMacInstallModal();
   });
+
+  if (copyBtn) {
+    copyBtn.addEventListener("click", async () => {
+      const command = "chmod +x ~/Downloads/install-activedesk.command && ~/Downloads/install-activedesk.command";
+      try {
+        await navigator.clipboard.writeText(command);
+        const originalText = copyBtn.textContent;
+        copyBtn.textContent = "Copied";
+        setTimeout(() => {
+          copyBtn.textContent = originalText;
+        }, 1500);
+      } catch {
+        setPayStatus("Could not copy command. Copy it manually from the modal.");
+      }
+    });
+  }
 }
 
 async function fetchRateFromApi(api) {
@@ -318,6 +353,7 @@ function initDownloadButtonGlow() {
 }
 
 updateDownloadLinks();
+setupMacInstallModal();
 initScrollFadeAnimation();
 initMobileMenu();
 initDownloadButtonGlow();
