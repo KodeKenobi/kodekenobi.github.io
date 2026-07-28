@@ -109,7 +109,7 @@ export default function Products({ isActive, isMobile, slideIndex, direction }: 
                             {/* Header */}
                             <div className="mb-16">
                                 <h2 className="text-[#c9a84c] text-[10px] font-montserrat font-semibold tracking-[0.3em] uppercase opacity-50">
-                                    What I Build
+                                    Explore
                                 </h2>
                                 <div className="flex items-baseline gap-2 mt-3">
                                     <span className="text-4xl font-inter font-black text-white tracking-tighter">

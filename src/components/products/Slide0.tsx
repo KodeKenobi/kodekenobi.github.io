@@ -78,7 +78,7 @@ export const Slide0: React.FC<{ isMobile: boolean; direction: number }> = ({
             />
             <ClipReveal delay={0.3} duration={0.5}>
               <span className="text-white/50 font-montserrat font-semibold text-[9px] md:text-xs tracking-[0.5em] uppercase pl-4">
-                Explore & Discover
+                Explore
               </span>
             </ClipReveal>
           </div>
