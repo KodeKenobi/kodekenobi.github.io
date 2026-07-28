@@ -343,30 +343,29 @@ function initDownloadButtonGlow() {
         element.classList.remove("glow-active");
       }
     });
-
-    function initFaqAccordion() {
-      const toggles = document.querySelectorAll(".faq-toggle");
-      if (!toggles.length) return;
-
-      toggles.forEach((toggle) => {
-        toggle.addEventListener("click", () => {
-          const item = toggle.closest(".faq-item");
-          if (!item) return;
-
-          const isOpen = item.classList.contains("open");
-          item.classList.toggle("open", !isOpen);
-          toggle.setAttribute("aria-expanded", String(!isOpen));
-        });
-      });
-    }
   }
   
   // Check on scroll
   window.addEventListener("scroll", updateGlowState, { passive: true });
   
-    initFaqAccordion();
   // Initial check
   updateGlowState();
+}
+
+function initFaqAccordion() {
+  const toggles = document.querySelectorAll(".faq-toggle");
+  if (!toggles.length) return;
+
+  toggles.forEach((toggle) => {
+    toggle.addEventListener("click", () => {
+      const item = toggle.closest(".faq-item");
+      if (!item) return;
+
+      const isOpen = item.classList.contains("open");
+      item.classList.toggle("open", !isOpen);
+      toggle.setAttribute("aria-expanded", String(!isOpen));
+    });
+  });
 }
 
 updateDownloadLinks();
@@ -374,4 +373,5 @@ setupMacInstallModal();
 initScrollFadeAnimation();
 initMobileMenu();
 initDownloadButtonGlow();
+initFaqAccordion();
 bindPurchaseButtons();
