@@ -51,7 +51,7 @@ export const Experience: React.FC<{ isActive: boolean; isMobile: boolean; slideI
 
     if (isMobile) {
         return (
-            <div className="absolute inset-0 w-full h-full bg-black overflow-hidden">
+            <div className="absolute inset-0 w-full h-full overflow-hidden">
                 <AnimatePresence initial={false} custom={direction}>
                     {isActive && slideIndex === 0 && (
                         <motion.div
