@@ -2,7 +2,7 @@ const SITE_CONFIG = {
   payfastMode: "live", // set to "sandbox" when testing
   downloads: {
     mac: "https://github.com/KodeKenobi/ActiveDesk/releases/download/v1.0.5/install-activedesk.command",
-    win: "https://github.com/KodeKenobi/ActiveDesk/releases/download/v1.0.5/ActiveDesk.Setup.1.0.5.exe",
+    win: "https://apps.microsoft.com/detail/9nkv7chs7v73?ocid=webpdpshare%20Get%20ActiveDesk%20from%20the%20Microsoft%20Store&hl=en-GB&gl=ZA",
   },
   supportEmail: "kodekenobi@gmail.com",
   payfast: {
