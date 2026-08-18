@@ -90,9 +90,9 @@ export const MobileAnimatedHero: React.FC = () => {
                                 transition={{ duration: 1.5, delay: 0.2 }}
                                 className="block"
                             >
-                                BEYOND
+                                BRIDGING
                                 <br />
-                                COMPLEXITY
+                                EXPRESSION
                             </motion.span>
                         </motion.h1>
                     </div>
@@ -125,7 +125,7 @@ export const MobileAnimatedHero: React.FC = () => {
                                     Core Architecture
                                 </span>
                                 <h2 className="text-black text-[7vw] font-montserrat font-light leading-tight">
-                                    Technical precision meets...<br />
+                                    Creative expression meets...<br />
                                     Digital Alchemy
                                 </h2>
                                 <motion.div

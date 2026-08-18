@@ -93,9 +93,9 @@ export const AnimatedHero: React.FC = () => {
                 animate={scene >= 3 ? { letterSpacing: "-0.05em" } : { letterSpacing: "0.05em" }}
                 transition={{ duration: 1.5, delay: 0.2 }}
               >
-                BEYOND
+                BRIDGING
                 <br />
-                COMPLEXITY
+                EXPRESSION
               </motion.span>
             </motion.h1>
           </div>
@@ -124,7 +124,7 @@ export const AnimatedHero: React.FC = () => {
                 transition={{ duration: 0.8 }}
               >
                 <h2 className="text-black text-3xl md:text-5xl font-montserrat font-light leading-tight">
-                  Technical precision meets...<br />
+                  Creative expression meets...<br />
                   Digital Alchemy
                 </h2>
                 <motion.div
