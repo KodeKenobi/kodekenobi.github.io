@@ -1,0 +1,2486 @@
+<style>
+  [data-weapon-tray-root="true"] {
+    --ht-tray-height: 100px;
+  }
+
+  @font-face {
+    font-family: 'BlackOpsOne';
+    src: url("assets/fonts/BlackOpsOne.ttf") format('truetype');
+  }
+
+  #ht-weapon-tray {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: var(--ht-tray-height);
+    background: rgba(8, 8, 8, 0.97);
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    gap: 0;
+    z-index: 100;
+    box-sizing: border-box;
+    padding: 0 10px;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+
+  #ht-weapon-tray[data-mode="enemy"] {
+    border-top-color: rgba(255, 164, 124, 0.3);
+    background: rgba(22, 16, 18, 0.96);
+  }
+
+  #ht-weapon-layout {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    width: 100%;
+  }
+
+  #ht-enemy-layout {
+    display: none;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    height: 78px;
+    padding: 4px 8px;
+    border: 2px solid rgba(255, 153, 126, 0.35);
+    background: linear-gradient(180deg, rgba(46, 24, 28, 0.9), rgba(28, 16, 20, 0.94));
+    border-radius: 10px;
+    box-sizing: border-box;
+  }
+
+  #ht-weapon-tray[data-mode="enemy"] #ht-weapon-layout {
+    display: flex;
+  }
+
+  #ht-weapon-tray[data-mode="enemy"] #ht-enemy-layout {
+    display: none;
+  }
+
+  .ht-enemy-block {
+    height: 100%;
+    border: 1px solid rgba(255, 168, 140, 0.36);
+    border-radius: 8px;
+    background: linear-gradient(180deg, rgba(42, 22, 26, 0.82), rgba(24, 13, 16, 0.9));
+    padding: 6px 8px;
+    box-sizing: border-box;
+  }
+
+  #ht-enemy-info {
+    width: 180px;
+    flex-shrink: 0;
+  }
+
+  #ht-enemy-controls {
+    flex: 1;
+    min-width: 0;
+  }
+
+  #ht-enemy-spawn {
+    width: 312px;
+    flex-shrink: 0;
+  }
+
+  .ht-enemy-title {
+    font-family: 'Trebuchet MS', sans-serif;
+    font-size: 9px;
+    color: #ffcfba;
+    letter-spacing: 0.8px;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .ht-enemy-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .ht-enemy-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
+  }
+
+  #ht-enemy-threat-value {
+    font-family: 'BlackOpsOne', 'Trebuchet MS', sans-serif;
+    font-size: 20px;
+    color: #ffe8db;
+  }
+
+  #ht-enemy-timer {
+    font-family: 'Trebuchet MS', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    color: #ffd8c5;
+  }
+
+  #ht-enemy-threat-meter {
+    margin-top: 5px;
+    width: 100%;
+    height: 10px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 174, 142, 0.55);
+    background: rgba(17, 9, 11, 0.95);
+    overflow: hidden;
+  }
+
+  #ht-enemy-threat-fill {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(90deg, #ff8f61, #ffb37c 56%, #ffe6cf);
+    box-shadow: 0 0 10px rgba(255, 149, 98, 0.5);
+  }
+
+  .ht-enemy-chip {
+    border: 1px solid rgba(255, 175, 144, 0.5);
+    background: rgba(36, 20, 24, 0.92);
+    color: #ffd8c6;
+    font-family: 'Trebuchet MS', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    padding: 3px 8px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+
+  .ht-enemy-chip.ht-active {
+    border-color: rgba(255, 215, 182, 0.92);
+    background: rgba(83, 43, 34, 0.95);
+    color: #fff6ee;
+  }
+
+  .ht-enemy-btn {
+    border: 1px solid rgba(255, 176, 144, 0.56);
+    background: linear-gradient(180deg, rgba(57, 31, 35, 0.96), rgba(36, 20, 24, 0.98));
+    color: #ffd5c2;
+    font-family: 'Trebuchet MS', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.45px;
+    border-radius: 6px;
+    padding: 6px 8px;
+    cursor: pointer;
+    min-width: 68px;
+  }
+
+  .ht-enemy-btn.ht-active {
+    border-color: rgba(255, 218, 189, 0.95);
+    background: linear-gradient(180deg, rgba(95, 48, 38, 0.96), rgba(56, 30, 25, 0.98));
+    color: #fff2e8;
+  }
+
+  .ht-enemy-btn[disabled] {
+    opacity: 0.48;
+    cursor: default;
+  }
+
+  #ht-enemy-route-row,
+  #ht-enemy-lane-row,
+  #ht-enemy-spawn-row {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  #ht-enemy-spawn-row .ht-enemy-btn {
+    min-width: 70px;
+    padding: 6px 6px;
+  }
+
+  #ht-weapon-tray.ht-hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(8px);
+  }
+
+
+  /* ── Preview badge (left) ───────────────────────── */
+  #ht-preview-zone {
+    display: none;
+    flex-shrink: 0;
+    width: 96px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    gap: 4px;
+  }
+
+  #ht-preview-ring {
+    width: 72px;
+    height: 72px;
+    border-radius: 8px;
+    background: transparent;
+    border: none;
+    /* box-shadow: 0 0 0 6px rgba(112, 222, 255, 0.08); */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    cursor: grab;
+    user-select: none;
+    -webkit-user-select: none;
+    overflow: hidden;
+    transition: box-shadow 0.18s ease, border-color 0.18s ease;
+  }
+
+  #ht-preview-ring:active {
+    cursor: grabbing;
+  }
+
+  #ht-preview-ring.ht-ring-locked {
+    border-color: transparent;
+    box-shadow: none;
+    filter: grayscale(0.8) brightness(0.7);
+  }
+
+  #ht-preview-ring.ht-pulse {
+    animation: none;
+  }
+
+  @keyframes ht-ring-pulse {
+    0% { box-shadow: 0 0 0 6px rgba(255,255,255,0.06); }
+    50% { box-shadow: 0 0 0 10px rgba(255,255,255,0.14); }
+    100% { box-shadow: 0 0 0 6px rgba(255,255,255,0.06); }
+  }
+
+  #ht-preview-img {
+    width: 52px;
+    height: 52px;
+    object-fit: contain;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .ht-icon-adjust-toggle {
+    position: absolute;
+    right: 8px;
+    bottom: -3px;
+    width: 22px;
+    height: 22px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255, 255, 255, 0.42);
+    background: rgba(18, 18, 18, 0.9);
+    color: #f0f0f0;
+    font-family: 'Trebuchet MS', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0;
+    border-radius: 999px;
+    padding: 0;
+    cursor: pointer;
+    line-height: 1;
+    opacity: 0.72;
+    transition: opacity 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+  }
+
+  .ht-icon-adjust-toggle:hover,
+  .ht-icon-adjust-toggle:focus-visible,
+  .ht-icon-adjust-toggle.ht-open {
+    opacity: 1;
+    border-color: rgba(255, 255, 255, 0.72);
+    background: rgba(30, 30, 30, 0.95);
+    outline: none;
+  }
+
+  .ht-icon-adjust-panel {
+    position: absolute;
+    left: 0;
+    bottom: 86px;
+    width: 164px;
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    border-radius: 8px;
+    background: rgba(10, 10, 10, 0.96);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45);
+    padding: 6px;
+    box-sizing: border-box;
+    display: none;
+    z-index: 260;
+  }
+
+  .ht-icon-adjust-panel.ht-open {
+    display: block;
+  }
+
+  .ht-icon-adjust-title {
+    font-family: 'Trebuchet MS', sans-serif;
+    font-size: 9px;
+    color: #f1f1f1;
+    letter-spacing: 0.6px;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .ht-icon-adjust-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 4px;
+    margin-bottom: 4px;
+  }
+
+  .ht-icon-adjust-label {
+    font-family: 'Trebuchet MS', sans-serif;
+    font-size: 9px;
+    color: #d9d9d9;
+    min-width: 38px;
+  }
+
+  .ht-icon-adjust-value {
+    min-width: 42px;
+    text-align: center;
+    font-family: 'Trebuchet MS', sans-serif;
+    font-size: 9px;
+    color: #fff5cc;
+    font-weight: 700;
+  }
+
+  .ht-icon-adjust-btn {
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: rgba(24, 24, 24, 0.95);
+    color: #f0f0f0;
+    border-radius: 4px;
+    font-size: 11px;
+    line-height: 1;
+    min-width: 24px;
+    height: 20px;
+    cursor: pointer;
+    padding: 0;
+  }
+
+  .ht-icon-adjust-actions {
+    display: flex;
+    gap: 4px;
+    margin-top: 6px;
+  }
+
+  .ht-icon-adjust-actions .ht-icon-adjust-btn {
+    flex: 1;
+    min-width: 0;
+    height: 22px;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+  }
+
+  .ht-icon-adjust-status {
+    display: none;
+    margin-top: 5px;
+    min-height: 11px;
+    font-family: 'Trebuchet MS', sans-serif;
+    font-size: 9px;
+    letter-spacing: 0.3px;
+    font-weight: 700;
+    text-transform: uppercase;
+    text-align: center;
+  }
+
+  .ht-icon-adjust-status.is-ok {
+    color: #84f4c8;
+  }
+
+  .ht-icon-adjust-status.is-warn {
+    color: #ffe4a3;
+  }
+
+  .ht-icon-adjust-status.is-error {
+    color: #ffb0b0;
+  }
+
+  /* ── Carousel (center) ──────────────────────────── */
+  #ht-carousel-zone {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0 6px;
+    min-width: 0;
+    background: rgba(10, 10, 10, 0.92);
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    border-radius: 10px;
+    height: 66px;
+    box-sizing: border-box;
+  }
+
+  .ht-arrow {
+    background: none;
+    border: none;
+    color: #efefef;
+    font-size: 26px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0 4px;
+    flex-shrink: 0;
+    user-select: none;
+    opacity: 0.9;
+    transition: opacity 0.15s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .ht-arrow:active { opacity: 0.5; }
+
+  #ht-cards {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    gap: 4px;
+    min-width: 0;
+  }
+
+  .ht-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    background: rgba(103, 114, 74, 0.38);
+    border: 1px solid rgba(74, 84, 51, 0.54);
+    border-radius: 8px;
+    padding: 4px 6px;
+    flex: 1;
+    min-width: 0;
+    height: 52px;
+    cursor: grab;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: border-color 0.18s, background 0.18s;
+    box-sizing: border-box;
+    position: relative;
+    overflow: hidden;
+  }
+  .ht-card:active { cursor: grabbing; }
+
+  .ht-card.ht-selected {
+    background: rgba(134, 146, 94, 0.5);
+    border-color: rgba(94, 104, 64, 0.78);
+  }
+
+  .ht-card.ht-armed {
+    border-color: rgba(255, 221, 132, 0.96);
+    box-shadow: inset 0 0 0 1px rgba(255, 208, 98, 0.58);
+  }
+
+  .ht-card.ht-armed::after {
+    content: 'ARMED';
+    position: absolute;
+    top: 2px;
+    right: 4px;
+    font-family: 'Trebuchet MS', sans-serif;
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.45px;
+    color: #2c1707;
+    background: linear-gradient(180deg, #ffd891, #ffbe61);
+    border: 1px solid rgba(255, 232, 170, 0.9);
+    border-radius: 999px;
+    padding: 1px 5px;
+    pointer-events: none;
+  }
+
+  .ht-card.ht-locked {
+    opacity: 0.6;
+    cursor: default;
+  }
+
+  .ht-card-img {
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+    background: center/contain no-repeat;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .ht-card-label {
+    font-family: 'Trebuchet MS', sans-serif;
+    font-size: 9px;
+    font-weight: 700;
+    color: #f0f0f0;
+    letter-spacing: 0.3px;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+    pointer-events: none;
+    display: none;
+  }
+
+  /* ── Detail panel ───────────────────────────────── */
+  #ht-detail-zone {
+    flex-shrink: 0;
+    width: 210px;
+    padding: 6px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+    overflow: hidden;
+    text-align: right;
+  }
+
+  #ht-detail-badge {
+    font-family: 'Trebuchet MS', sans-serif;
+    font-size: 8px;
+    font-weight: 700;
+    color: #d8d8d8;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+  }
+
+  #ht-detail-name {
+    font-family: 'Trebuchet MS', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    color: #f4f4f4;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  #ht-detail-role {
+    font-family: 'Trebuchet MS', sans-serif;
+    font-size: 8px;
+    font-weight: 700;
+    color: #d2d2d2;
+    line-height: 1.3;
+  }
+
+  #ht-detail-stats {
+    font-family: 'Trebuchet MS', sans-serif;
+    font-size: 8px;
+    color: #bdbdbd;
+    line-height: 1.5;
+    white-space: pre-line;
+  }
+
+  /* ── Action buttons (right) ─────────────────────── */
+  #ht-action-zone {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    align-items: stretch;
+    padding-left: 8px;
+  }
+
+  #ht-start-wave {
+    background: rgba(14, 14, 14, 0.98);
+    border: 1px solid rgba(255, 255, 255, 0.38);
+    border-radius: 4px;
+    color: #f2f2f2;
+    font-family: 'Trebuchet MS', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    padding: 8px 16px;
+    cursor: pointer;
+    white-space: nowrap;
+    -webkit-tap-highlight-color: transparent;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  #ht-start-wave:active {
+    background: rgba(26, 26, 26, 0.98);
+    border-color: rgba(255, 255, 255, 0.72);
+  }
+  #ht-start-wave:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
+
+  #ht-remove-btn {
+    position: absolute;
+    bottom: 108px;
+    right: 10px;
+    background: rgba(61, 47, 47, 0.92);
+    border: 2px solid rgba(143, 105, 105, 0.44);
+    border-radius: 4px;
+    color: #ffd7d7;
+    font-family: 'Trebuchet MS', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    padding: 5px 12px;
+    cursor: pointer;
+    display: none;
+    white-space: nowrap;
+    -webkit-tap-highlight-color: transparent;
+    pointer-events: auto;
+    z-index: 211;
+  }
+  #ht-remove-btn.ht-visible { display: block; }
+
+  /* ── Drag ghost ─────────────────────────────────── */
+  #ht-drag-ghost {
+    position: fixed;
+    pointer-events: none;
+    z-index: 9000;
+    width: 56px;
+    height: 56px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    transform: translate(-50%, -50%);
+  }
+  #ht-drag-ghost.ht-active { display: flex; }
+  #ht-ghost-img {
+    width: 52px;
+    height: 52px;
+    filter: drop-shadow(0 2px 8px rgba(255,255,255,0.3));
+    border-radius: 6px;
+  }
+
+  /* ── Valid placement indicator ──────────────────── */
+  #ht-drag-ghost.ht-valid #ht-ghost-img {
+    filter: drop-shadow(0 0 8px rgba(0, 255, 120, 0.8));
+  }
+
+  /* ── Responsive compact mode for landscape mobile ─ */
+  @media (max-height: 520px) and (orientation: landscape) {
+    [data-weapon-tray-root="true"] { --ht-tray-height: 80px; }
+    #ht-weapon-tray { height: 80px; }
+    #ht-preview-ring { width: 56px; height: 56px; }
+    #ht-preview-zone { width: 72px; }
+    #ht-preview-img { width: 40px; height: 40px; }
+    #ht-carousel-zone { height: 54px; }
+    .ht-card { height: 42px; }
+    .ht-card-img { width: 22px; height: 22px; }
+    #ht-detail-zone { width: 150px; }
+    #ht-start-wave { font-size: 11px; padding: 6px 12px; }
+  }
+
+</style>
+
+<!-- Drag ghost element -->
+<div id="ht-drag-ghost"><div id="ht-ghost-img"></div></div>
+
+<!-- Main tray -->
+<div id="ht-weapon-tray" class="ht-hidden" data-mode="weapon">
+
+  <div id="ht-weapon-layout">
+
+  <!-- Left: selected weapon preview badge -->
+  <div id="ht-preview-zone">
+    <div id="ht-preview-ring">
+      <div id="ht-preview-img"></div>
+    </div>
+    <button id="ht-icon-adjust-toggle" class="ht-icon-adjust-toggle" type="button" aria-label="Adjust circle icon" title="Adjust circle icon">&#9881;</button>
+    <div id="ht-icon-adjust-panel" class="ht-icon-adjust-panel">
+      <div class="ht-icon-adjust-title" id="ht-icon-adjust-title">Circle Icon: Soldier</div>
+      <div class="ht-icon-adjust-row">
+        <span class="ht-icon-adjust-label">X</span>
+        <button class="ht-icon-adjust-btn" type="button" data-icon-field="x" data-icon-step="-1">-</button>
+        <span class="ht-icon-adjust-value" id="ht-icon-adjust-x">0</span>
+        <button class="ht-icon-adjust-btn" type="button" data-icon-field="x" data-icon-step="1">+</button>
+      </div>
+      <div class="ht-icon-adjust-row">
+        <span class="ht-icon-adjust-label">Y</span>
+        <button class="ht-icon-adjust-btn" type="button" data-icon-field="y" data-icon-step="-1">-</button>
+        <span class="ht-icon-adjust-value" id="ht-icon-adjust-y">0</span>
+        <button class="ht-icon-adjust-btn" type="button" data-icon-field="y" data-icon-step="1">+</button>
+      </div>
+      <div class="ht-icon-adjust-row">
+        <span class="ht-icon-adjust-label">Scale</span>
+        <button class="ht-icon-adjust-btn" type="button" data-icon-field="scale" data-icon-step="-0.02">-</button>
+        <span class="ht-icon-adjust-value" id="ht-icon-adjust-scale">1.00</span>
+        <button class="ht-icon-adjust-btn" type="button" data-icon-field="scale" data-icon-step="0.02">+</button>
+      </div>
+      <div class="ht-icon-adjust-actions">
+        <button id="ht-icon-adjust-save" class="ht-icon-adjust-btn" type="button">SAVE TO CODE</button>
+        <button id="ht-icon-adjust-reset" class="ht-icon-adjust-btn" type="button">RESET</button>
+        <button id="ht-icon-adjust-close" class="ht-icon-adjust-btn" type="button">CLOSE</button>
+      </div>
+      <div id="ht-icon-adjust-status" class="ht-icon-adjust-status" aria-live="polite"></div>
+    </div>
+  </div>
+
+  <!-- Center: carousel -->
+  <div id="ht-carousel-zone" style="margin-left: 0;">
+    <button class="ht-arrow" id="ht-prev">&#8249;</button>
+    <div id="ht-cards">
+      <div class="ht-card" data-slot="0">
+        <div class="ht-card-img"></div>
+        <span class="ht-card-label"></span>
+      </div>
+      <div class="ht-card ht-selected" data-slot="1">
+        <div class="ht-card-img"></div>
+        <span class="ht-card-label"></span>
+      </div>
+      <div class="ht-card" data-slot="2">
+        <div class="ht-card-img"></div>
+        <span class="ht-card-label"></span>
+      </div>
+    </div>
+    <button class="ht-arrow" id="ht-next">&#8250;</button>
+  </div>
+
+  <!-- Right: weapon details -->
+  <div id="ht-detail-zone">
+    <div id="ht-detail-name"></div>
+    <div id="ht-detail-role"></div>
+    <div id="ht-detail-stats"></div>
+  </div>
+
+  </div>
+
+  <div id="ht-enemy-layout">
+    <div id="ht-enemy-info" class="ht-enemy-block">
+      <div class="ht-enemy-title">Enemy Commander</div>
+      <div class="ht-enemy-meta">
+        <div id="ht-enemy-threat-value">0</div>
+        <div id="ht-enemy-timer">00:00</div>
+      </div>
+      <div id="ht-enemy-threat-meter"><div id="ht-enemy-threat-fill"></div></div>
+      <div class="ht-enemy-row" style="margin-top: 5px; justify-content: space-between;">
+        <span class="ht-enemy-chip" id="ht-enemy-role-chip">Role: ENEMY</span>
+        <span class="ht-enemy-chip" id="ht-enemy-queue-chip">Q:0</span>
+      </div>
+    </div>
+
+    <div id="ht-enemy-controls" class="ht-enemy-block">
+      <div class="ht-enemy-title">Route + Lane</div>
+      <div id="ht-enemy-route-row"></div>
+      <div id="ht-enemy-lane-row" style="margin-top: 6px;">
+        <button class="ht-enemy-btn" data-enemy-lane="top">Top</button>
+        <button class="ht-enemy-btn" data-enemy-lane="middle">Middle</button>
+        <button class="ht-enemy-btn" data-enemy-lane="bottom">Bottom</button>
+      </div>
+    </div>
+
+    <div id="ht-enemy-spawn" class="ht-enemy-block">
+      <div class="ht-enemy-title">Attack Enemies</div>
+      <div id="ht-enemy-spawn-row">
+        <button class="ht-enemy-btn" data-enemy-spawn="soldier">Soldier 8</button>
+        <button class="ht-enemy-btn" data-enemy-spawn="raider">Raider 6</button>
+        <button class="ht-enemy-btn" data-enemy-spawn="grenadier">Grenadier 16</button>
+        <button class="ht-enemy-btn" data-enemy-spawn="eliteSoldier">Elite 4</button>
+        <button class="ht-enemy-btn" data-enemy-spawn="humvee">Humvee 20</button>
+        <button class="ht-enemy-btn" data-enemy-spawn="tank">Tank 28</button>
+        <button class="ht-enemy-btn" data-enemy-spawn="plane">Plane 24</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- REMOVE floats above tray when a placed tower is selected -->
+<button id="ht-remove-btn">REMOVE</button>
+
+<script>
+(function () {
+  var tray        = document.getElementById('ht-weapon-tray');
+  var weaponLayout = document.getElementById('ht-weapon-layout');
+  var enemyLayout = document.getElementById('ht-enemy-layout');
+  var cards       = Array.from(document.querySelectorAll('.ht-card'));
+  var previewImg  = document.getElementById('ht-preview-img');
+  var previewRing = document.getElementById('ht-preview-ring');
+  var detailName  = document.getElementById('ht-detail-name');
+  var detailRole  = document.getElementById('ht-detail-role');
+  var detailStats = document.getElementById('ht-detail-stats');
+  var startBtn    = null; // moved to HUD
+  var removeBtn   = document.getElementById('ht-remove-btn');
+  var prevBtn     = document.getElementById('ht-prev');
+  var nextBtn     = document.getElementById('ht-next');
+  var cardsZone   = document.getElementById('ht-cards');
+  var ghost       = document.getElementById('ht-drag-ghost');
+  var ghostImg    = document.getElementById('ht-ghost-img');
+
+  var enemyThreatValue = document.getElementById('ht-enemy-threat-value');
+  var enemyTimer = document.getElementById('ht-enemy-timer');
+  var enemyThreatFill = document.getElementById('ht-enemy-threat-fill');
+  var enemyRoleChip = document.getElementById('ht-enemy-role-chip');
+  var enemyQueueChip = document.getElementById('ht-enemy-queue-chip');
+  var enemyRouteRow = document.getElementById('ht-enemy-route-row');
+  var enemySpawnButtons = Array.from(document.querySelectorAll('[data-enemy-spawn]'));
+  var enemyLaneButtons = Array.from(document.querySelectorAll('[data-enemy-lane]'));
+  var iconAdjustToggle = document.getElementById('ht-icon-adjust-toggle');
+  var iconAdjustPanel = document.getElementById('ht-icon-adjust-panel');
+  var iconAdjustTitle = document.getElementById('ht-icon-adjust-title');
+  var iconAdjustX = document.getElementById('ht-icon-adjust-x');
+  var iconAdjustY = document.getElementById('ht-icon-adjust-y');
+  var iconAdjustScale = document.getElementById('ht-icon-adjust-scale');
+  var iconAdjustSave = document.getElementById('ht-icon-adjust-save');
+  var iconAdjustReset = document.getElementById('ht-icon-adjust-reset');
+  var iconAdjustClose = document.getElementById('ht-icon-adjust-close');
+  var iconAdjustStatus = document.getElementById('ht-icon-adjust-status');
+  var iconAdjustButtons = Array.from(document.querySelectorAll('[data-icon-field]'));
+  var iconAdjustStatusTimer = 0;
+  var DEV_UI_TOOLS_STORAGE_KEY = 'tdDevUiToolsV1';
+  var trayDevToolsEnabled = false;
+
+  // Current card data (set by __updateHtmlTray)
+  var cardData = [{}, {}, {}];
+  var trayMode = 'weapon';
+  var enemyRouteButtons = [];
+  var pendingEnemyDeploy = null;
+  var pendingEnemyType = '';
+  var pendingEnemyLabel = '';
+  var pendingWeaponDeploy = null;
+  var lastPointerClient = null;
+  var PREVIEW_ICON_ADJUST_DEFAULTS = {
+    soldier: { x: 20, y: -10, scale: 1.34 },
+    raider: { x: 20, y: -10, scale: 1.34 },
+    grenadier: { x: 20, y: -10, scale: 1.34 },
+    elitesoldier: { x: 20, y: -10, scale: 1.34 },
+    humvee: { x: 0, y: 0, scale: 0.9 },
+    tank: { x: 0, y: 0, scale: 0.9 },
+    plane: { x: 0, y: 0, scale: 1.0 },
+    default: { x: 0, y: 0, scale: 1.0 },
+  };
+  var PREVIEW_ICON_ADJUST_PROFILES = ['desktop', 'mobile'];
+  var PREVIEW_ICON_ADJUST_ENDPOINT = '/__preview-icon-adjustments';
+  var PREVIEW_ICON_ADJUST_SOURCE_URL = 'assets/generated/preview-icon-adjustments.json';
+  var previewIconAdjustments = loadPreviewIconAdjustments();
+  hydratePreviewIconAdjustmentsFromPersistentStore();
+  var ENEMY_ICON_OFFSETS = {
+    humvee: { x: 0, y: 2 },
+    soldier: { x: 0, y: -3 },
+    raider: { x: 0, y: -3 },
+    grenadier: { x: 0, y: -2 },
+    elitesoldier: { x: 0, y: -3 },
+    plane: { x: 0, y: 1 },
+    tank: { x: 0, y: 3 },
+  };
+
+  function readTrayDevToolsEnabled() {
+    if (typeof window !== 'undefined' && typeof window.__tdDevUiToolsEnabled === 'boolean') {
+      return !!window.__tdDevUiToolsEnabled;
+    }
+    try {
+      return String(window.localStorage.getItem(DEV_UI_TOOLS_STORAGE_KEY) || '').trim() === '1';
+    } catch (_) {
+      return false;
+    }
+  }
+
+  function applyTrayDevToolsVisibility() {
+    if (!iconAdjustToggle || !iconAdjustPanel) return;
+    iconAdjustToggle.style.display = trayDevToolsEnabled ? '' : 'none';
+    if (!trayDevToolsEnabled) {
+      setIconAdjustPanelOpen(false);
+    }
+  }
+
+  window.__setTrayDevToolsEnabled = function (enabled) {
+    trayDevToolsEnabled = !!enabled;
+    if (typeof window !== 'undefined') {
+      window.__tdDevUiToolsEnabled = trayDevToolsEnabled;
+    }
+    applyTrayDevToolsVisibility();
+  };
+
+  trayDevToolsEnabled = readTrayDevToolsEnabled();
+  applyTrayDevToolsVisibility();
+
+  function normalizeEnemyTypeKey(key) {
+    var lowered = String(key || '').trim().toLowerCase();
+    if (lowered === 'elite_soldier') return 'elitesoldier';
+    return lowered;
+  }
+
+  function applyEnemyIconAdjustment(el, enemyType) {
+    if (!el || !enemyType) return;
+    if (!el.classList || !el.classList.contains('ht-card-img')) return;
+    var ref = ENEMY_ICON_OFFSETS[String(enemyType).toLowerCase()];
+    if (!ref) return;
+    var x = Number(ref.x) || 0;
+    var y = Number(ref.y) || 0;
+    if (!x && !y) return;
+    var baseTransform = (el.style.transform && el.style.transform !== 'none') ? el.style.transform : '';
+    var translate = 'translate(' + x + 'px, ' + y + 'px)';
+    el.style.transform = baseTransform ? (baseTransform + ' ' + translate) : translate;
+  }
+
+  function cloneAdjustPreset(source) {
+    return {
+      x: Number(source && source.x) || 0,
+      y: Number(source && source.y) || 0,
+      scale: Number(source && source.scale) || 1,
+    };
+  }
+
+  function createDefaultAdjustProfile() {
+    var profile = {};
+    Object.keys(PREVIEW_ICON_ADJUST_DEFAULTS).forEach(function (key) {
+      profile[key] = cloneAdjustPreset(PREVIEW_ICON_ADJUST_DEFAULTS[key]);
+    });
+    return profile;
+  }
+
+  function isMobileTrayView() {
+    try {
+      var platformMobile = !!(window && window.__appPlatform && window.__appPlatform.isMobile);
+      var narrowViewport = typeof window !== 'undefined' && window.matchMedia('(max-width: 900px)').matches;
+      var compactLandscape = typeof window !== 'undefined' && window.matchMedia('(orientation: landscape) and (max-height: 520px)').matches;
+      var coarsePointer = typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches;
+      return !!(platformMobile || narrowViewport || (coarsePointer && compactLandscape));
+    } catch (_) {
+      return false;
+    }
+  }
+
+  function getPreviewIconAdjustProfileKey() {
+    return isMobileTrayView() ? 'mobile' : 'desktop';
+  }
+
+  function getPreviewIconAdjustProfileLabel() {
+    return getPreviewIconAdjustProfileKey() === 'mobile' ? 'Mobile' : 'Desktop';
+  }
+
+  function loadPreviewIconAdjustments() {
+    var base = {};
+    PREVIEW_ICON_ADJUST_PROFILES.forEach(function (profileKey) {
+      base[profileKey] = createDefaultAdjustProfile();
+    });
+    return base;
+  }
+
+  function mergePreviewIconAdjustmentEntries(targetProfile, parsed) {
+    if (!parsed || typeof parsed !== 'object') return;
+    Object.keys(parsed).forEach(function (key) {
+      var normalizedKey = normalizeEnemyTypeKey(key);
+      if (!normalizedKey) return;
+      if (!targetProfile[normalizedKey]) {
+        targetProfile[normalizedKey] = cloneAdjustPreset(PREVIEW_ICON_ADJUST_DEFAULTS.default);
+      }
+      targetProfile[normalizedKey].x = Number(parsed[key].x);
+      targetProfile[normalizedKey].y = Number(parsed[key].y);
+      targetProfile[normalizedKey].scale = Number(parsed[key].scale);
+      if (!isFinite(targetProfile[normalizedKey].x)) targetProfile[normalizedKey].x = 0;
+      if (!isFinite(targetProfile[normalizedKey].y)) targetProfile[normalizedKey].y = 0;
+      if (!isFinite(targetProfile[normalizedKey].scale) || targetProfile[normalizedKey].scale <= 0) targetProfile[normalizedKey].scale = 1;
+      targetProfile[normalizedKey].x = Math.max(-40, Math.min(40, targetProfile[normalizedKey].x));
+      targetProfile[normalizedKey].y = Math.max(-40, Math.min(40, targetProfile[normalizedKey].y));
+      targetProfile[normalizedKey].scale = Math.max(0.3, Math.min(2.6, targetProfile[normalizedKey].scale));
+    });
+  }
+
+  function mergePreviewIconAdjustmentPayload(base, parsed) {
+    if (!parsed || typeof parsed !== 'object') return;
+    var hasProfiles = PREVIEW_ICON_ADJUST_PROFILES.some(function (profileKey) {
+      return parsed[profileKey] && typeof parsed[profileKey] === 'object';
+    });
+    if (hasProfiles) {
+      PREVIEW_ICON_ADJUST_PROFILES.forEach(function (profileKey) {
+        mergePreviewIconAdjustmentEntries(base[profileKey], parsed[profileKey]);
+      });
+      return;
+    }
+    mergePreviewIconAdjustmentEntries(base.desktop, parsed);
+  }
+
+  function toSerializablePreviewIconAdjustments() {
+    var out = {};
+    PREVIEW_ICON_ADJUST_PROFILES.forEach(function (profileKey) {
+      var profile = previewIconAdjustments && previewIconAdjustments[profileKey] ? previewIconAdjustments[profileKey] : {};
+      out[profileKey] = {};
+      Object.keys(profile).forEach(function (key) {
+        var normalizedKey = normalizeEnemyTypeKey(key);
+        if (!normalizedKey) return;
+        var value = profile[key] || {};
+        out[profileKey][normalizedKey] = {
+          x: Math.max(-40, Math.min(40, Number(value.x) || 0)),
+          y: Math.max(-40, Math.min(40, Number(value.y) || 0)),
+          scale: Math.max(0.3, Math.min(2.6, Number(value.scale) || 1)),
+        };
+      });
+    });
+    return out;
+  }
+
+  function loadPreviewIconAdjustmentsFromEndpoint() {
+    if (!window || typeof window.fetch !== 'function') {
+      return Promise.resolve(null);
+    }
+    return window.fetch(PREVIEW_ICON_ADJUST_ENDPOINT, { cache: 'no-store' }).then(function (response) {
+      if (!response || !response.ok) return null;
+      return response.json();
+    }).then(function (parsed) {
+      if (!parsed || typeof parsed !== 'object') return null;
+      return parsed;
+    }).catch(function () {
+      return null;
+    });
+  }
+
+  function loadPreviewIconAdjustmentsFromCodeSource() {
+    if (!window || typeof window.fetch !== 'function') {
+      return Promise.resolve(null);
+    }
+    return window.fetch(PREVIEW_ICON_ADJUST_SOURCE_URL, { cache: 'no-store' }).then(function (response) {
+      if (!response || !response.ok) return null;
+      return response.json();
+    }).then(function (parsed) {
+      if (!parsed || typeof parsed !== 'object') return null;
+      return parsed;
+    }).catch(function () {
+      return null;
+    });
+  }
+
+  function showIconAdjustSaveStatus(message, tone) {
+    if (!iconAdjustStatus) return;
+    if (iconAdjustStatusTimer) {
+      clearTimeout(iconAdjustStatusTimer);
+      iconAdjustStatusTimer = 0;
+    }
+    iconAdjustStatus.classList.remove('is-ok', 'is-warn', 'is-error');
+    if (!message) {
+      iconAdjustStatus.textContent = '';
+      iconAdjustStatus.style.display = 'none';
+      return;
+    }
+    iconAdjustStatus.textContent = String(message);
+    iconAdjustStatus.style.display = 'block';
+    if (tone === 'warn') iconAdjustStatus.classList.add('is-warn');
+    else if (tone === 'error') iconAdjustStatus.classList.add('is-error');
+    else iconAdjustStatus.classList.add('is-ok');
+    iconAdjustStatusTimer = setTimeout(function () {
+      if (!iconAdjustStatus) return;
+      iconAdjustStatus.textContent = '';
+      iconAdjustStatus.style.display = 'none';
+      iconAdjustStatus.classList.remove('is-ok', 'is-warn', 'is-error');
+      iconAdjustStatusTimer = 0;
+    }, 1800);
+  }
+
+  function applyHydratedPreviewIconAdjustments(parsed) {
+    if (!parsed || typeof parsed !== 'object') return;
+    var base = loadPreviewIconAdjustments();
+    mergePreviewIconAdjustmentPayload(base, parsed);
+    previewIconAdjustments = base;
+    refreshIconAdjustPanelValues();
+    refreshPreviewIconFromCenterCard();
+  }
+
+  function hydratePreviewIconAdjustmentsFromPersistentStore() {
+    var applyIfPresent = function (parsed) {
+      if (!parsed || typeof parsed !== 'object') return false;
+      applyHydratedPreviewIconAdjustments(parsed);
+      return true;
+    };
+
+    loadPreviewIconAdjustmentsFromEndpoint().then(function (parsed) {
+      if (applyIfPresent(parsed)) return;
+
+      loadPreviewIconAdjustmentsFromCodeSource().then(function (fileParsed) {
+        applyIfPresent(fileParsed);
+      }).catch(function () {});
+    }).catch(function () {});
+  }
+
+  function savePreviewIconAdjustments(options) {
+    var opts = options || {};
+    var payload = toSerializablePreviewIconAdjustments();
+
+    var saveThroughEndpoint = function () {
+      if (!window || typeof window.fetch !== 'function') {
+        return Promise.resolve({ ok: false });
+      }
+      return window.fetch(PREVIEW_ICON_ADJUST_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      }).then(function (response) {
+        if (!response || !response.ok) return { ok: false };
+        return response.json().catch(function () { return { ok: true }; });
+      }).then(function (result) {
+        return { ok: !!(result && result.ok !== false) };
+      }).catch(function () {
+        return { ok: false };
+      });
+    };
+
+    return saveThroughEndpoint().then(function (endpointResult) {
+      if (endpointResult && endpointResult.ok) {
+        if (!opts.silent) showIconAdjustSaveStatus('Saved to code', 'ok');
+        return { ok: true };
+      }
+
+      if (!opts.silent) {
+        showIconAdjustSaveStatus('Save failed', 'error');
+      }
+      return { ok: false };
+    });
+  }
+
+  function getPreviewIconAdjust(enemyType) {
+    var profileKey = getPreviewIconAdjustProfileKey();
+    var key = normalizeEnemyTypeKey(enemyType) || 'default';
+    if (!previewIconAdjustments[profileKey]) {
+      previewIconAdjustments[profileKey] = createDefaultAdjustProfile();
+    }
+    if (!previewIconAdjustments[profileKey][key]) {
+      var fallback = PREVIEW_ICON_ADJUST_DEFAULTS[key] || PREVIEW_ICON_ADJUST_DEFAULTS.default;
+      previewIconAdjustments[profileKey][key] = cloneAdjustPreset(fallback);
+    }
+    return previewIconAdjustments[profileKey][key];
+  }
+
+  function getActivePreviewAdjustKey() {
+    var center = cardData[1] || {};
+    if (trayMode === 'enemy') {
+      var enemy = center.enemyDefRef || {};
+      return normalizeEnemyTypeKey(enemy.enemyType) || 'soldier';
+    }
+    // Defend mode uses one shared transform profile across all weapons.
+    return 'weapon-shared';
+  }
+
+  function getActivePreviewAdjustLabel() {
+    var center = cardData[1] || {};
+    if (trayMode === 'enemy') {
+      return (normalizeEnemyTypeKey(center?.enemyDefRef?.enemyType) || 'soldier').toUpperCase();
+    }
+    if (center.label) {
+      return ('WEAPON ' + String(center.label)).toUpperCase();
+    }
+    return 'WEAPON';
+  }
+
+  function applyPreviewIconTransform(el, adjustKey) {
+    if (!el) return;
+    var adjust = getPreviewIconAdjust(adjustKey);
+    var x = (Number(adjust.x) || 0).toFixed(2);
+    var y = (Number(adjust.y) || 0).toFixed(2);
+    var scale = Math.max(0.3, Number(adjust.scale) || 1).toFixed(3);
+    el.style.transform = 'translate(' + x + 'px, ' + y + 'px) scale(' + scale + ')';
+    el.style.transformOrigin = '50% 50%';
+  }
+
+  function refreshPreviewIconFromCenterCard() {
+    var center = cardData[1] || {};
+    if (!previewImg) return;
+    if (trayMode === 'enemy') {
+      if (!center.enemyDefRef) return;
+      applyEnemyIcon(previewImg, center.enemyDefRef, 56);
+      return;
+    }
+    if (!center.weaponId) return;
+    applyWeaponIcon(previewImg, center.weaponId, center.assetPath || '', 64);
+    applyPreviewIconTransform(previewImg, getActivePreviewAdjustKey());
+  }
+
+  function refreshIconAdjustPanelValues() {
+    if (!iconAdjustPanel) return;
+    var adjustKey = getActivePreviewAdjustKey();
+    var adjust = getPreviewIconAdjust(adjustKey);
+    if (iconAdjustTitle) {
+      iconAdjustTitle.textContent = 'Circle Icon (' + getPreviewIconAdjustProfileLabel() + '): ' + getActivePreviewAdjustLabel();
+    }
+    if (iconAdjustX) iconAdjustX.textContent = String(Math.round((Number(adjust.x) || 0) * 100) / 100);
+    if (iconAdjustY) iconAdjustY.textContent = String(Math.round((Number(adjust.y) || 0) * 100) / 100);
+    if (iconAdjustScale) iconAdjustScale.textContent = (Math.round((Number(adjust.scale) || 1) * 1000) / 1000).toFixed(3);
+  }
+
+  function setIconAdjustPanelOpen(open) {
+    if (!iconAdjustPanel) return;
+    iconAdjustPanel.classList.toggle('ht-open', !!open);
+    if (iconAdjustToggle) {
+      iconAdjustToggle.classList.toggle('ht-open', !!open);
+    }
+    if (open) refreshIconAdjustPanelValues();
+  }
+
+  if (typeof window !== 'undefined') {
+    window.addEventListener('resize', function () {
+      refreshIconAdjustPanelValues();
+      refreshPreviewIconFromCenterCard();
+    });
+  }
+
+  function isEnemyCommanderTrayContext(scene) {
+    var s = scene || resolveScene();
+    if (!s) return false;
+    try {
+      if (typeof s.isMultiplayerEnemyCommanderRole === 'function') {
+        return !!s.isMultiplayerEnemyCommanderRole();
+      }
+    } catch (_) {}
+    var role = (s.multiplayerRuntime && s.multiplayerRuntime.role)
+      || (s.gameState && s.gameState.multiplayerRole)
+      || '';
+    return String(role) === 'enemyCommander';
+  }
+
+  function applyTrayMode(mode) {
+    var requestedMode = mode === 'enemy' ? 'enemy' : 'weapon';
+    var s = resolveScene();
+    var nextMode = requestedMode;
+    if (requestedMode === 'enemy' && !isEnemyCommanderTrayContext(s)) {
+      nextMode = 'weapon';
+    }
+    if (trayMode !== nextMode) {
+      cancelDrag();
+    }
+    trayMode = nextMode;
+    tray.setAttribute('data-mode', trayMode);
+    if (iconAdjustToggle) {
+      iconAdjustToggle.setAttribute('aria-label', 'Adjust circle icon');
+      iconAdjustToggle.setAttribute('title', 'Adjust circle icon');
+    }
+    if (trayMode !== 'enemy') {
+      setIconAdjustPanelOpen(false);
+      clearPendingEnemyDeploy();
+      if (nextMode !== 'weapon') {
+        clearPendingWeaponDeploy({ skipGlowReset: true });
+      }
+    }
+
+    if (trayMode === 'enemy') {
+      if (s && s.pushEnemyTrayCardsToHtml) {
+        s.pushEnemyTrayCardsToHtml(true);
+      }
+    } else if (s && typeof s.renderWeaponCarousel === 'function') {
+      s.renderWeaponCarousel();
+    }
+  }
+
+  window.__setHtmlTrayMode = function (mode) {
+    applyTrayMode(mode);
+  };
+
+  applyTrayMode('weapon');
+
+  function resolveScene() {
+    if (window.__tdScene) return window.__tdScene;
+    try {
+      if (window.parent && window.parent !== window && window.parent.__tdScene) return window.parent.__tdScene;
+    } catch (_) {}
+    try {
+      if (window.top && window.top !== window && window.top.__tdScene) return window.top.__tdScene;
+    } catch (_) {}
+    return null;
+  }
+
+  function updateEnemyDetailRoleText() {
+    if (!detailRole || trayMode !== 'enemy') return;
+    if (pendingEnemyType) {
+      detailRole.textContent = pendingEnemyType === 'plane'
+        ? 'ARMED: ' + (pendingEnemyLabel || 'Plane') + '. Tap map lane to deploy.'
+        : 'ARMED: ' + (pendingEnemyLabel || 'Unit') + '. Tap highlighted entrance to deploy.';
+      return;
+    }
+    var center = cardData[1] || {};
+    var centerType = String(center.enemyDefRef && center.enemyDefRef.enemyType || '').toLowerCase();
+    detailRole.textContent = centerType === 'plane'
+      ? 'Tap center card, then tap map lane to deploy.'
+      : 'Tap center card, then tap a highlighted entrance.';
+  }
+
+  function updateEnemyDetailFromCard(cardEntry) {
+    if (trayMode !== 'enemy') return;
+    var entry = cardEntry || {};
+    var enemyDef = entry.enemyDefRef || null;
+    if (detailName) detailName.textContent = entry.label || 'Enemy Unit';
+    if (detailStats) {
+      if (enemyDef) {
+        var threatCost = Math.max(0, Number(enemyDef.threatCost || 0));
+        var batchCount = Math.max(1, Number(enemyDef.batchCount || 1));
+        detailStats.textContent = 'Cost: Bounty ' + threatCost + '  |  Batch: ' + batchCount;
+      } else {
+        detailStats.textContent = '';
+      }
+    }
+    if (enemyDef && previewImg) {
+      applyEnemyIcon(previewImg, enemyDef, 56);
+      previewRing.classList.remove('ht-ring-locked');
+    }
+  }
+
+  function findCardByEnemyType(enemyType) {
+    var typeKey = String(enemyType || '').toLowerCase();
+    if (!typeKey) return null;
+    for (var i = 0; i < cardData.length; i += 1) {
+      var entry = cardData[i] || null;
+      var t = String(entry && entry.enemyDefRef && entry.enemyDefRef.enemyType || '').toLowerCase();
+      if (t === typeKey) return entry;
+    }
+    return null;
+  }
+
+  function clearPendingEnemyDeploy() {
+    pendingEnemyDeploy = null;
+    pendingEnemyType = '';
+    pendingEnemyLabel = '';
+    updateEnemyDetailFromCard(cardData[1] || null);
+    updateEnemyDetailRoleText();
+    var s = resolveScene();
+    if (s && s.highlightEnemySpawnDropTarget) {
+      s.highlightEnemySpawnDropTarget(null, false);
+    }
+  }
+
+  function updateArmedWeaponAim(clientX, clientY) {
+    if (trayMode !== 'weapon' || !pendingWeaponDeploy || activeDrag) return;
+    var s = resolveScene();
+    if (!s || !s.updateWeaponReachGlow) return;
+    if (isPointOverHudOrTray(clientX, clientY)) {
+      s.draggingFromTray = false;
+      s.activeTrayTowerDef = pendingWeaponDeploy;
+      s.updateWeaponReachGlow();
+      return;
+    }
+    var wc = screenToWorld(clientX, clientY);
+    if (!wc) return;
+    s.draggingFromTray = true;
+    s.activeTrayTowerDef = pendingWeaponDeploy;
+    if (s.selectTowerDef) s.selectTowerDef(pendingWeaponDeploy);
+    s.updateWeaponReachGlow(wc.x, wc.y);
+  }
+
+  function isPointWithinRect(x, y, rect) {
+    return !!rect
+      && Number.isFinite(x)
+      && Number.isFinite(y)
+      && x >= rect.left
+      && x <= rect.right
+      && y >= rect.top
+      && y <= rect.bottom;
+  }
+
+  function isPointOverHudOrTray(clientX, clientY) {
+    if (!Number.isFinite(clientX) || !Number.isFinite(clientY)) return false;
+    var trayRect = tray && tray.getBoundingClientRect ? tray.getBoundingClientRect() : null;
+    if (isPointWithinRect(clientX, clientY, trayRect)) return true;
+
+    var hudOverlay = document.getElementById('ab-hud-overlay');
+    var hudBar = hudOverlay && hudOverlay.querySelector ? hudOverlay.querySelector('.hud') : null;
+    var hudTarget = hudBar || hudOverlay;
+    var hudRect = hudTarget && hudTarget.getBoundingClientRect ? hudTarget.getBoundingClientRect() : null;
+    if (isPointWithinRect(clientX, clientY, hudRect)) return true;
+
+    return false;
+  }
+
+  function clearPendingWeaponDeploy(options) {
+    var opts = options || {};
+    pendingWeaponDeploy = null;
+    cards.forEach(function (card) {
+      card.classList.remove('ht-armed');
+    });
+    var s = resolveScene();
+    if (s) {
+      s.draggingFromTray = false;
+      s.activeTrayTowerDef = null;
+      if (!opts.skipGlowReset && s.updateWeaponReachGlow) s.updateWeaponReachGlow();
+    }
+  }
+
+  function setPendingWeaponDeploy(towerDefRef, label) {
+    if (!towerDefRef || trayMode !== 'weapon') {
+      clearPendingWeaponDeploy();
+      return;
+    }
+    pendingWeaponDeploy = towerDefRef;
+    cards.forEach(function (card, idx) {
+      var data = cardData[idx] || {};
+      var cardTowerId = Number(data && data.towerDefRef && data.towerDefRef.id || 0);
+      card.classList.toggle('ht-armed', cardTowerId > 0 && cardTowerId === Number(towerDefRef.id || 0));
+    });
+
+    var s = resolveScene();
+    if (s) {
+      s.draggingFromTray = false;
+      s.activeTrayTowerDef = towerDefRef;
+      s.selectedTowerDef = towerDefRef;
+      if (s._notifyHtmlTrayDetail) s._notifyHtmlTrayDetail(towerDefRef);
+      if (s.updateWeaponReachGlow) {
+        s.updateWeaponReachGlow();
+      }
+      if (s.setStatus) {
+        s.setStatus('Armed ' + String(label || towerDefRef.name || 'weapon') + '. Move pointer/finger, then tap map to place.', '#9df8ff');
+      }
+    }
+  }
+
+  function togglePendingWeaponDeploy(towerDefRef, label) {
+    if (!towerDefRef || trayMode !== 'weapon') {
+      clearPendingWeaponDeploy();
+      return false;
+    }
+    var nextId = Number(towerDefRef.id || 0);
+    var currentId = Number(pendingWeaponDeploy && pendingWeaponDeploy.id || 0);
+    if (nextId > 0 && currentId > 0 && nextId === currentId) {
+      clearPendingWeaponDeploy();
+      var scene = resolveScene();
+      if (scene && scene.setStatus) {
+        scene.setStatus('Disarmed ' + String(label || towerDefRef.name || 'weapon') + '.', '#ffcf8a');
+      }
+      return false;
+    }
+    setPendingWeaponDeploy(towerDefRef, label);
+    return true;
+  }
+
+  function setPendingEnemyDeploy(enemyDefRef, label) {
+    if (!enemyDefRef || trayMode !== 'enemy') {
+      clearPendingEnemyDeploy();
+      return;
+    }
+    pendingEnemyDeploy = enemyDefRef;
+    var enemyType = String(enemyDefRef.enemyType || '').toLowerCase();
+    var unitLabel = String(label || enemyDefRef.label || enemyType || 'unit');
+    pendingEnemyType = enemyType;
+    pendingEnemyLabel = unitLabel;
+    var s = resolveScene();
+    updateEnemyDetailFromCard({ enemyDefRef: enemyDefRef, label: unitLabel });
+    updateEnemyDetailRoleText();
+    if (s && s.highlightEnemySpawnDropTarget) {
+      if (enemyType === 'plane') {
+        s.highlightEnemySpawnDropTarget(null, false, { planeArmGlow: true, triggerPlaneSweep: true });
+      } else {
+        // Show armed entrance guidance and trigger one spawn-FX pulse for this selection.
+        s.highlightEnemySpawnDropTarget(null, true, { triggerArmPulse: true });
+      }
+    }
+    if (s && s.setStatus) {
+      s.setStatus(enemyType === 'plane'
+        ? 'Selected ' + unitLabel + '. Tap map lane to deploy.'
+        : 'Selected ' + unitLabel + '. Tap an entrance marker to deploy.', '#9edcff');
+    }
+  }
+
+  function togglePendingEnemyDeploy(enemyDefRef, label) {
+    if (!enemyDefRef || trayMode !== 'enemy') {
+      clearPendingEnemyDeploy();
+      return false;
+    }
+    var nextType = String(enemyDefRef.enemyType || '').toLowerCase();
+    if (nextType && pendingEnemyType === nextType) {
+      var unitLabel = String(label || enemyDefRef.label || nextType || 'unit');
+      clearPendingEnemyDeploy();
+      var scene = resolveScene();
+      if (scene && scene.setStatus) {
+        scene.setStatus('Selection cleared for ' + unitLabel + '.', '#ffcf8a');
+      }
+      return false;
+    }
+    setPendingEnemyDeploy(enemyDefRef, label);
+    return true;
+  }
+
+  // ── Tray show/hide ──────────────────────────────
+  window.__setHtmlTrayVisible = function (visible) {
+    var trayRoot = tray && tray.closest ? tray.closest('[data-weapon-tray-root="true"]') : null;
+    if (visible) {
+      tray.classList.remove('ht-hidden');
+      if (trayRoot) trayRoot.style.pointerEvents = 'auto';
+    } else {
+      tray.classList.add('ht-hidden');
+      if (trayRoot) trayRoot.style.pointerEvents = 'none';
+    }
+  };
+
+  // Keep this hook as a no-op so game-side compatibility checks keep Phaser
+  // fallback chevrons hidden when HTML tray is active.
+  window.__setHtmlBlueprintChevronState = function () {
+  };
+
+  // ── Atlas helpers ────────────────────────────────
+  // Use same weapons.png atlas as tower-blueprints.html: frame = weaponId - 1
+  var ATLAS_URL  = 'assets/ground-shaker/ground_shaker_asset/Red/Weapons/weapons.png';
+  var ATLAS_COLS = 4; // 384 / 96 = 4 columns per row
+
+  // Atlas rows: row0=turret_01(mk1-4), row1=turret_02(mk1-4), row2-3=weapons9-17
+  // WEAPON_LIBRARY interleaves types so id-1 is wrong for some weapons
+  var ATLAS_FRAME = {
+    1:0, 2:1, 3:4, 4:2, 5:3, 6:5, 7:6, 8:7,
+    17:11  // shares frame with id=12
+  };
+  function getFrame(weaponId) {
+    return ATLAS_FRAME[weaponId] !== undefined ? ATLAS_FRAME[weaponId] : Math.max(0, (weaponId || 1) - 1);
+  }
+
+  function applyAtlas(el, weaponId, sizePx) {
+    if (!el) return;
+    var frame = getFrame(weaponId);
+    var col   = frame % ATLAS_COLS;
+    var row   = Math.floor(frame / ATLAS_COLS);
+    // percentage position: same formula as tower-blueprints.html
+    var pctX  = (col / (ATLAS_COLS - 1)) * 100;
+    var pctY  = (row / (ATLAS_COLS - 1)) * 100;
+    el.style.backgroundImage    = 'url(' + ATLAS_URL + ')';
+    el.style.backgroundSize     = (ATLAS_COLS * 100) + '% ' + (ATLAS_COLS * 100) + '%';
+    el.style.backgroundPosition = pctX.toFixed(3) + '% ' + pctY.toFixed(3) + '%';
+    el.style.backgroundRepeat   = 'no-repeat';
+    el.style.width  = sizePx + 'px';
+    el.style.height = sizePx + 'px';
+  }
+
+  // Apply weapon icon to an element — uses the animation strip first frame for
+  // weapons 1-8 (individual PNGs), atlas for weapons 9+
+  function applyWeaponIcon(el, weaponId, assetPath, sizePx) {
+    if (!el) return;
+    el.style.transform = 'none';
+    el.style.transformOrigin = 'center center';
+    var isRing = el.id === 'ht-preview-ring';
+    var isPreviewBadge = el.id === 'ht-preview-img';
+    if (!isRing) {
+      el.style.width  = sizePx + 'px';
+      el.style.height = sizePx + 'px';
+    }
+    if (isRing) {
+      // Always use atlas for the ring — percentage positions center perfectly
+      applyAtlas(el, weaponId, 72);
+      return;
+    }
+    if (assetPath) {
+      el.style.backgroundImage    = 'url(/' + assetPath + ')';
+      el.style.backgroundSize     = 'auto ' + sizePx + 'px';
+      el.style.backgroundPosition = '0 0';
+      el.style.backgroundRepeat   = 'no-repeat';
+    } else {
+      applyAtlas(el, weaponId, sizePx);
+    }
+    if (isPreviewBadge && trayMode === 'weapon') {
+      applyPreviewIconTransform(el, getActivePreviewAdjustKey());
+    }
+  }
+
+  window.__updateHtmlTray = function (newCards) {
+    if (!newCards || !newCards.length) return;
+    if (trayMode !== 'weapon') return;
+    cardData = newCards;
+    cards.forEach(function (card, i) {
+      var data = newCards[i] || {};
+      var img  = card.querySelector('.ht-card-img');
+      var lbl  = card.querySelector('.ht-card-label');
+      if (img) applyWeaponIcon(img, data.weaponId, data.assetPath || '', 36);
+      if (lbl) lbl.textContent = data.label || '';
+      card.classList.toggle('ht-selected', !!data.isCenter);
+      card.classList.toggle('ht-locked',   !!data.locked);
+      var cardWeaponId = Number(data && data.weaponId || 0);
+      card.setAttribute('data-weapon-id', cardWeaponId > 0 ? String(cardWeaponId) : '');
+      card.classList.toggle('ht-armed', !!pendingWeaponDeploy && cardWeaponId > 0 && cardWeaponId === Number(pendingWeaponDeploy.id || 0));
+      card.style.display = i <= 2 ? '' : 'none';
+    });
+    // Sync detail/preview with armed weapon when available; otherwise use center card.
+    var center = newCards[1] || {};
+    var activeDetailCard = center;
+    if (pendingWeaponDeploy) {
+      var armedWeaponId = Number(pendingWeaponDeploy.id || 0);
+      if (armedWeaponId > 0) {
+        activeDetailCard = newCards.find(function (entry) {
+          return Number(entry && entry.weaponId || 0) === armedWeaponId;
+        }) || center;
+      }
+    }
+    if (activeDetailCard.weaponId && previewImg) {
+      applyWeaponIcon(previewImg, activeDetailCard.weaponId, activeDetailCard.assetPath || '', 64);
+      previewRing.classList.toggle('ht-ring-locked', !!activeDetailCard.locked);
+    }
+
+    // Keep defender tray details in sync and preserve full detail copy.
+    var detailDef = resolveTrayDetailTowerDef(activeDetailCard);
+    var detailUpdatedByScene = false;
+    var scene = resolveScene();
+    if (scene && detailDef && scene._notifyHtmlTrayDetail) {
+      scene._notifyHtmlTrayDetail(detailDef);
+      detailUpdatedByScene = true;
+    }
+    if (!detailUpdatedByScene) {
+      var detailCopy = formatWeaponDetailFromDef(detailDef);
+      if (detailName) detailName.textContent = (detailCopy && detailCopy.name) || activeDetailCard.label || detailName.textContent || '';
+      if (detailRole && detailCopy && detailCopy.role) detailRole.textContent = detailCopy.role;
+      if (detailStats && detailCopy && detailCopy.stats) detailStats.textContent = detailCopy.stats;
+    }
+  };
+
+  function applyEnemyIcon(el, enemyDef, sizePx) {
+    if (!el || !enemyDef) return;
+    var path = enemyDef.assetPath || '';
+    var enemyType = String(enemyDef.enemyType || '').toLowerCase();
+    // Grenadier must always use Soldier_3 sheet, even if upstream payload drifts.
+    var resolvedPath = enemyType === 'grenadier'
+      ? 'assets/soldier-sprites/craftpix-net-507107-free-soldier-sprite-sheets-pixel-art/Soldier_3/Grenade.png'
+      : path;
+    if (!resolvedPath) {
+      return;
+    }
+    // Reset per-render transforms so reused card nodes do not keep stale offsets.
+    el.style.transform = 'none';
+    el.style.transformOrigin = 'center center';
+    var isRing = el.id === 'ht-preview-ring';
+    var isPreviewBadge = el.id === 'ht-preview-img';
+    if (!isRing) {
+      el.style.width  = sizePx + 'px';
+      el.style.height = sizePx + 'px';
+    }
+    var isStrip = resolvedPath.indexOf('_strip4') !== -1;
+
+    if (isStrip) {
+      el.style.backgroundImage = 'url("/' + encodeURI(resolvedPath) + '")';
+      // Sprite strips contain 4 horizontal frames; zoom to the first frame.
+      el.style.backgroundSize = '400% 100%';
+      el.style.backgroundPosition = '0% 50%';
+      el.style.backgroundRepeat = 'no-repeat';
+      el.style.imageRendering = 'pixelated';
+    } else if (enemyType === 'tank') {
+      // Tank source image contains two adjacent bodies; crop to the first one.
+      el.style.backgroundImage = 'url("assets/ground-shaker/ground_shaker_asset/Red/Weapons/weapons.png"), url("/' + encodeURI(resolvedPath) + '")';
+      el.style.backgroundSize = '400% 400%, 200% 100%';
+      el.style.backgroundPosition = '0% 0%, 0% 50%';
+      el.style.backgroundRepeat = 'no-repeat, no-repeat';
+      el.style.imageRendering = 'auto';
+    } else if (enemyType === 'plane') {
+      el.style.backgroundImage = 'url("/' + encodeURI(resolvedPath) + '")';
+      el.style.backgroundSize = '96% auto';
+      el.style.backgroundPosition = '50% 50%';
+      el.style.backgroundRepeat = 'no-repeat';
+      el.style.imageRendering = 'auto';
+    } else if (enemyType === 'humvee') {
+      el.style.backgroundImage = 'url("/' + encodeURI(resolvedPath) + '")';
+      // Humvee art reads large in the circular preview; keep it intentionally smaller.
+      el.style.backgroundSize = isPreviewBadge ? 'auto 58%' : 'auto 72%';
+      el.style.backgroundPosition = '50% 50%';
+      el.style.backgroundRepeat = 'no-repeat';
+      el.style.imageRendering = 'pixelated';
+    } else {
+      el.style.backgroundImage = 'url("/' + encodeURI(resolvedPath) + '")';
+      var isCraftpixAttackSheet = (enemyType === 'soldier' || enemyType === 'raider' || enemyType === 'elitesoldier') && resolvedPath.indexOf('/Attack.png') !== -1;
+      var isEliteRunSheet = enemyType === 'elitesoldier' && resolvedPath.indexOf('/Soldier_3/Run.png') !== -1;
+      var isSoldierLike = enemyType === 'soldier' || enemyType === 'raider' || enemyType === 'grenadier' || enemyType === 'elitesoldier';
+      if (isPreviewBadge && isSoldierLike) {
+        // Circle preview must match the same sprite frame shown on the card.
+        if (enemyType === 'grenadier') {
+          var previewGrenadierFrames = resolvedPath.indexOf('/Soldier_3/Run.png') !== -1 ? 6
+            : (resolvedPath.indexOf('/Soldier_3/Grenade.png') !== -1 ? 8 : 4);
+          var previewGrenadierFramePos = previewGrenadierFrames === 6 ? '60%'
+            : (previewGrenadierFrames === 8 ? '57.142%' : '33.333%');
+          el.style.backgroundSize = String(previewGrenadierFrames * 100) + '% 100%';
+          el.style.backgroundPosition = previewGrenadierFramePos + ' 58%';
+        } else if (isEliteRunSheet) {
+          el.style.backgroundSize = '600% 100%';
+          el.style.backgroundPosition = '60% 58%';
+        } else if (isCraftpixAttackSheet) {
+          el.style.backgroundSize = '330% 100%';
+          el.style.backgroundPosition = '0% 58%';
+        } else if (isStrip) {
+          el.style.backgroundSize = '400% 100%';
+          el.style.backgroundPosition = '0% 50%';
+        } else {
+          el.style.backgroundSize = 'auto 80%';
+          el.style.backgroundPosition = '50% 54%';
+        }
+      } else if (enemyType === 'grenadier') {
+        // Non-circle grenadier card icon keeps larger silhouette like soldier cards.
+        var grenadierFrames = resolvedPath.indexOf('/Soldier_3/Run.png') !== -1 ? 6
+          : (resolvedPath.indexOf('/Soldier_3/Grenade.png') !== -1 ? 8 : 4);
+        var grenadierFramePos = grenadierFrames === 6 ? '60%'
+          : (grenadierFrames === 8 ? '57.142%' : '33.333%');
+        el.style.backgroundSize = String(grenadierFrames * 100) + '% 100%';
+        el.style.backgroundPosition = grenadierFramePos + ' 58%';
+        el.style.transform = 'scale(1.2)';
+        el.style.transformOrigin = '50% 100%';
+      } else if (isEliteRunSheet) {
+        el.style.backgroundSize = '600% 100%';
+        el.style.backgroundPosition = '60% 58%';
+        el.style.transform = 'scale(1.2)';
+        el.style.transformOrigin = '50% 100%';
+      } else if (isCraftpixAttackSheet) {
+        el.style.backgroundSize = '330% 100%';
+        el.style.backgroundPosition = '0% 58%';
+        // Scale from the feet so the soldier grows upward instead of drifting down.
+        el.style.transform = 'scale(1.2)';
+        el.style.transformOrigin = '50% 100%';
+      } else {
+        var isSoldierCardIcon = (enemyType === 'soldier' || enemyType === 'raider' || enemyType === 'grenadier' || enemyType === 'elitesoldier') && !isRing;
+        el.style.backgroundSize = isSoldierCardIcon ? 'auto 80%' : 'auto 92%';
+        el.style.backgroundPosition = isSoldierCardIcon ? '50% 54%' : '50% 50%';
+      }
+      el.style.backgroundRepeat = 'no-repeat';
+      el.style.imageRendering = 'pixelated';
+    }
+
+    if (isPreviewBadge) {
+      applyPreviewIconTransform(el, enemyType);
+    }
+
+    applyEnemyIconAdjustment(el, enemyType);
+  }
+
+  window.__updateHtmlEnemyCards = function (newCards) {
+    if (!newCards || !newCards.length) return;
+    if (!isEnemyCommanderTrayContext()) {
+      applyTrayMode('weapon');
+      return;
+    }
+    if (trayMode !== 'enemy') {
+      applyTrayMode('enemy');
+    }
+    cardData = newCards;
+    cards.forEach(function (card, i) {
+      var data = newCards[i] || {};
+      var img  = card.querySelector('.ht-card-img');
+      var lbl  = card.querySelector('.ht-card-label');
+      var cardEnemyType = String(data.enemyDefRef && data.enemyDefRef.enemyType || '').toLowerCase();
+        if (img) {
+          var cardSize = data.enemyDefRef && String(data.enemyDefRef.enemyType || '').toLowerCase() === 'soldier' ? 36 : 36;
+          applyEnemyIcon(img, data.enemyDefRef || {}, cardSize);
+        }
+      if (lbl) lbl.textContent = data.label || '';
+      card.classList.toggle('ht-selected', !!data.isCenter);
+      card.classList.toggle('ht-locked',   !!data.locked);
+      card.classList.toggle('ht-armed', !!pendingEnemyType && cardEnemyType === pendingEnemyType);
+      card.style.display = i <= 2 ? '' : 'none';
+    });
+    var center = newCards[1] || {};
+    var detailEntry = pendingEnemyType ? (findCardByEnemyType(pendingEnemyType) || center) : center;
+    updateEnemyDetailFromCard(detailEntry);
+    updateEnemyDetailRoleText();
+    refreshIconAdjustPanelValues();
+  };
+
+  // ── Update detail panel ─────────────────────────
+  window.__updateHtmlTrayDetail = function (def) {
+    if (!def) return;
+    if (trayMode !== 'weapon') return;
+    if (previewImg) applyWeaponIcon(previewImg, def.weaponId, def.assetPath || '', 64);
+    // Pulse animation
+    previewRing.classList.remove('ht-pulse');
+    void previewRing.offsetWidth;
+    previewRing.classList.add('ht-pulse');
+
+    detailName.textContent  = def.name || '';
+    detailRole.textContent  = def._roleText || '';
+    detailStats.textContent = def._statsText || '';
+  };
+
+  // ── Wave mode (START WAVE is now in HUD) ─────────
+  window.__setHtmlTrayWaveMode = function (inCombat) {
+    // no-op — handled by updatePauseHudButton in game.js
+  };
+
+  // ── Show/hide REMOVE button ──────────────────────
+  window.__setHtmlTrayRemoveVisible = function (visible) {
+    if (trayMode !== 'weapon') {
+      removeBtn.classList.remove('ht-visible');
+      return;
+    }
+    removeBtn.classList.toggle('ht-visible', visible);
+  };
+
+  function ensureEnemyRouteButtons(routeOptions) {
+    if (!enemyRouteRow) return;
+    var nextOptions = Array.isArray(routeOptions) ? routeOptions : [];
+    if (!nextOptions.length) {
+      nextOptions = [{ key: 'route1', label: 'Main' }];
+    }
+
+    var sameCount = enemyRouteButtons.length === nextOptions.length;
+    var sameKeys = sameCount && enemyRouteButtons.every(function (btn, idx) {
+      return btn.getAttribute('data-enemy-route') === nextOptions[idx].key;
+    });
+    if (sameKeys) {
+      return;
+    }
+
+    enemyRouteRow.innerHTML = '';
+    enemyRouteButtons = nextOptions.map(function (route) {
+      var btn = document.createElement('button');
+      btn.className = 'ht-enemy-btn';
+      btn.setAttribute('data-enemy-route', route.key);
+      btn.textContent = route.label || route.key;
+      btn.addEventListener('click', function () {
+        var s = resolveScene();
+        if (!s || !s.setCommanderRouteKey) return;
+        s.setCommanderRouteKey(route.key);
+      });
+      enemyRouteRow.appendChild(btn);
+      return btn;
+    });
+  }
+
+  window.__updateHtmlEnemyTray = function (state) {
+    var data = state || {};
+    if (!isEnemyCommanderTrayContext()) {
+      applyTrayMode('weapon');
+      return;
+    }
+    applyTrayMode('enemy');
+
+    ensureEnemyRouteButtons(data.routes || []);
+
+    if (enemyThreatValue) enemyThreatValue.textContent = String(Math.max(0, Math.floor(data.threat || 0)));
+    if (enemyTimer) enemyTimer.textContent = String(data.timerText || '00:00');
+    if (enemyThreatFill) enemyThreatFill.style.width = (Math.max(0, Math.min(100, Number(data.threatPct || 0) * 100))).toFixed(1) + '%';
+    if (enemyRoleChip) enemyRoleChip.textContent = 'Role: ' + String(data.roleLabel || 'ENEMY');
+    if (enemyQueueChip) enemyQueueChip.textContent = 'Q:' + String(data.queueCount || 0);
+
+    var selectedRoute = String(data.selectedRouteKey || 'route1');
+    enemyRouteButtons.forEach(function (button) {
+      button.classList.toggle('ht-active', button.getAttribute('data-enemy-route') === selectedRoute);
+      button.disabled = !!data.disableAll;
+    });
+
+    var selectedLane = String(data.selectedLane || 'middle');
+    enemyLaneButtons.forEach(function (button) {
+      button.classList.toggle('ht-active', button.getAttribute('data-enemy-lane') === selectedLane);
+      button.disabled = !!data.disableAll;
+    });
+
+    enemySpawnButtons.forEach(function (button) {
+      var spawnType = button.getAttribute('data-enemy-spawn');
+      var nextLabel = (data.spawnLabels && data.spawnLabels[spawnType]) || button.textContent;
+      button.textContent = nextLabel;
+      var canUse = !!(data.spawnEnabled && data.spawnEnabled[spawnType]);
+      button.disabled = !canUse;
+    });
+  };
+
+  // ── Carousel arrows ─────────────────────────────
+  function shiftTrayBy(direction) {
+    var s = resolveScene();
+    if (!s) return;
+    if (trayMode === 'enemy') {
+      if (s.shiftEnemyTrayCarousel) s.shiftEnemyTrayCarousel(direction >= 0 ? 1 : -1);
+      return;
+    }
+    if (s.shiftWeaponCarousel) s.shiftWeaponCarousel(direction >= 0 ? 1 : -1);
+  }
+
+  if (prevBtn) prevBtn.addEventListener('click', function () {
+    shiftTrayBy(-1);
+  });
+  if (nextBtn) nextBtn.addEventListener('click', function () {
+    shiftTrayBy(1);
+  });
+
+  // ── Start wave button now lives in HUD ──────────
+
+  // ── Remove button ────────────────────────────────
+  if (removeBtn) removeBtn.addEventListener('click', function () {
+    if (trayMode !== 'weapon') return;
+    var s = resolveScene();
+    if (s && s.removeSelectedPlacedTower) s.removeSelectedPlacedTower();
+  });
+
+  enemyLaneButtons.forEach(function (button) {
+    button.addEventListener('click', function () {
+      var lane = button.getAttribute('data-enemy-lane') || 'middle';
+      var s = resolveScene();
+      if (s && s.setCommanderPlaneLane) s.setCommanderPlaneLane(lane);
+    });
+  });
+
+  enemySpawnButtons.forEach(function (button) {
+    button.addEventListener('click', function () {
+      var spawnType = button.getAttribute('data-enemy-spawn');
+      var selected = cardData.find(function (entry) {
+        return String(entry && entry.enemyDefRef && entry.enemyDefRef.enemyType || '').toLowerCase() === String(spawnType || '').toLowerCase();
+      });
+      if (selected && selected.enemyDefRef) {
+        togglePendingEnemyDeploy(selected.enemyDefRef, selected.label || spawnType);
+      }
+    });
+  });
+
+  if (iconAdjustToggle) {
+    iconAdjustToggle.addEventListener('click', function (e) {
+      if (!trayDevToolsEnabled) return;
+      if (e) e.preventDefault();
+      var open = !(iconAdjustPanel && iconAdjustPanel.classList.contains('ht-open'));
+      setIconAdjustPanelOpen(open);
+    });
+  }
+
+  iconAdjustButtons.forEach(function (button) {
+    button.addEventListener('click', function (e) {
+      if (e) e.preventDefault();
+      var adjustKey = getActivePreviewAdjustKey();
+      var adjust = getPreviewIconAdjust(adjustKey);
+      var field = button.getAttribute('data-icon-field') || '';
+      var delta = Number(button.getAttribute('data-icon-step') || 0);
+      if (!field || !delta) return;
+      if (field === 'scale') {
+        adjust.scale = Math.max(0.3, Math.min(2.6, (Number(adjust.scale) || 1) + delta));
+      } else if (field === 'x') {
+        adjust.x = Math.max(-40, Math.min(40, (Number(adjust.x) || 0) + delta));
+      } else if (field === 'y') {
+        adjust.y = Math.max(-40, Math.min(40, (Number(adjust.y) || 0) + delta));
+      }
+      savePreviewIconAdjustments({ silent: true });
+      refreshIconAdjustPanelValues();
+      refreshPreviewIconFromCenterCard();
+    });
+  });
+
+  if (iconAdjustSave) {
+    iconAdjustSave.addEventListener('click', function (e) {
+      if (e) e.preventDefault();
+      savePreviewIconAdjustments();
+      setIconAdjustPanelOpen(false);
+    });
+  }
+
+  if (iconAdjustReset) {
+    iconAdjustReset.addEventListener('click', function (e) {
+      if (e) e.preventDefault();
+      var adjustKey = getActivePreviewAdjustKey();
+      var fallback = PREVIEW_ICON_ADJUST_DEFAULTS[adjustKey] || PREVIEW_ICON_ADJUST_DEFAULTS.default;
+      var profileKey = getPreviewIconAdjustProfileKey();
+      if (!previewIconAdjustments[profileKey]) {
+        previewIconAdjustments[profileKey] = createDefaultAdjustProfile();
+      }
+      previewIconAdjustments[profileKey][adjustKey] = cloneAdjustPreset(fallback);
+      savePreviewIconAdjustments({ silent: true });
+      refreshIconAdjustPanelValues();
+      refreshPreviewIconFromCenterCard();
+    });
+  }
+
+  if (iconAdjustClose) {
+    iconAdjustClose.addEventListener('click', function (e) {
+      if (e) e.preventDefault();
+      setIconAdjustPanelOpen(false);
+    });
+  }
+
+  // ── Drag from card / preview ─────────────────────
+  function screenToWorld(clientX, clientY) {
+    var s = resolveScene();
+    if (!s || !s.game || !s.game.canvas) return null;
+    var canvas = s.game.canvas;
+    var rect   = canvas.getBoundingClientRect();
+    // CSS pixels → canvas pixels
+    var scaleX = canvas.width  / Math.max(1, rect.width);
+    var scaleY = canvas.height / Math.max(1, rect.height);
+    var cx = (clientX - rect.left) * scaleX;
+    var cy = (clientY - rect.top)  * scaleY;
+    // Canvas pixels → Phaser world
+    var cam = s.cameras && s.cameras.main;
+    var zoom    = (cam && cam.zoom)    || 1;
+    var scrollX = (cam && cam.scrollX) || 0;
+    var scrollY = (cam && cam.scrollY) || 0;
+    return { x: cx / zoom + scrollX, y: cy / zoom + scrollY };
+  }
+
+  var activeDrag = null; // { kind, towerDef?, enemyDef? }
+  var pendingDrag = null; // holds payload+startPos until pointer moves enough to confirm drag
+  var DRAG_THRESHOLD = 8;
+  var SWIPE_SHIFT_THRESHOLD = 36;
+
+  function startDrag(payload, clientX, clientY, sourceIndex, sourceTowerId, sourceLabel) {
+    if (!payload) return;
+    var isEnemyDrag = trayMode === 'enemy';
+    activeDrag = isEnemyDrag
+      ? { kind: 'enemy', enemyDef: payload }
+      : { kind: 'weapon', towerDef: payload };
+    pendingDrag = {
+      clientX: clientX,
+      clientY: clientY,
+      activated: false,
+      sourceIndex: sourceIndex,
+      sourceTowerId: Number(sourceTowerId || 0),
+      sourceLabel: String(sourceLabel || '')
+    };
+
+    if (ghostImg) {
+      if (isEnemyDrag) {
+        applyEnemyIcon(ghostImg, payload, 52);
+      } else {
+        applyWeaponIcon(ghostImg, payload.id, payload.assetPath || '', 52);
+      }
+    }
+    // Don't activate glow yet — wait for movement threshold
+    var s = resolveScene();
+    if (s && activeDrag.kind === 'enemy') {
+      var dragEnemyType = String(payload && payload.enemyType || '').toLowerCase();
+      if (dragEnemyType === 'plane' && s.highlightEnemySpawnDropTarget) {
+        s.highlightEnemySpawnDropTarget(null, false);
+      }
+    }
+    if (s && activeDrag.kind === 'weapon') {
+      s.activeTrayTowerDef = payload;
+      if (s.selectTowerDef) s.selectTowerDef(payload);
+    }
+  }
+
+  function moveDrag(clientX, clientY) {
+    if (!activeDrag) return;
+
+    // Activate drag only after pointer moves beyond threshold
+    if (pendingDrag && !pendingDrag.activated) {
+      var dx = clientX - pendingDrag.clientX;
+      var dy = clientY - pendingDrag.clientY;
+      if (trayMode === 'enemy' && pendingDrag.sourceIndex !== undefined && Math.abs(dx) >= DRAG_THRESHOLD && Math.abs(dx) > Math.abs(dy)) {
+        pendingDrag.swipeIntent = true;
+        return;
+      }
+      if (Math.sqrt(dx * dx + dy * dy) < DRAG_THRESHOLD) return;
+      pendingDrag.activated = true;
+      ghost.classList.add('ht-active');
+      ghost.classList.remove('ht-valid');
+      var s2 = resolveScene();
+      if (s2 && activeDrag.kind === 'weapon') {
+        s2.draggingFromTray = true;
+      }
+    }
+
+    ghost.style.left = clientX + 'px';
+    ghost.style.top  = clientY + 'px';
+    var s = resolveScene();
+    if (!s) return;
+
+    var wc = screenToWorld(clientX, clientY);
+    if (!wc) return;
+
+    if (activeDrag.kind === 'enemy') {
+      var dragEnemyType2 = String(activeDrag.enemyDef && activeDrag.enemyDef.enemyType || '').toLowerCase();
+      var validEnemyDrop = false;
+      if (dragEnemyType2 === 'plane') {
+        validEnemyDrop = !!(s.updateEnemyDragDropHover && s.updateEnemyDragDropHover(wc.x, wc.y, activeDrag.enemyDef));
+      } else {
+        validEnemyDrop = !!(s.updateEnemyDragDropHover && s.updateEnemyDragDropHover(wc.x, wc.y, activeDrag.enemyDef));
+      }
+      ghost.classList.toggle('ht-valid', validEnemyDrop);
+      return;
+    }
+
+    s.draggingFromTray = true;
+    if (isPointOverHudOrTray(clientX, clientY)) {
+      ghost.classList.remove('ht-valid');
+      if (s.updateWeaponReachGlow) s.updateWeaponReachGlow();
+      return;
+    }
+    if (s.canPlaceTowerAt) {
+      var valid = s.canPlaceTowerAt(wc.x, wc.y);
+      ghost.classList.toggle('ht-valid', valid);
+      if (s.updateWeaponReachGlow) s.updateWeaponReachGlow(wc.x, wc.y);
+    }
+  }
+
+  function endDrag(clientX, clientY) {
+    if (!activeDrag) return;
+    ghost.classList.remove('ht-active', 'ht-valid');
+    var dx = pendingDrag ? (clientX - pendingDrag.clientX) : 0;
+    var dy = pendingDrag ? (clientY - pendingDrag.clientY) : 0;
+    var trayRect = tray && tray.getBoundingClientRect ? tray.getBoundingClientRect() : null;
+    var pointerInsideTray = !!trayRect
+      && clientX >= trayRect.left
+      && clientX <= trayRect.right
+      && clientY >= trayRect.top
+      && clientY <= trayRect.bottom;
+
+    if (pendingDrag && !pendingDrag.activated && (pendingDrag.swipeIntent || (Math.abs(dx) >= SWIPE_SHIFT_THRESHOLD && Math.abs(dx) > Math.abs(dy)))) {
+      shiftTrayBy(dx < 0 ? 1 : -1);
+      activeDrag = null;
+      pendingDrag = null;
+      return;
+    }
+
+    if (pendingDrag && !pendingDrag.activated && Math.abs(dx) < DRAG_THRESHOLD && Math.abs(dy) < DRAG_THRESHOLD) {
+      if (trayMode === 'enemy' && (pendingDrag.sourceIndex === 0 || pendingDrag.sourceIndex === 1 || pendingDrag.sourceIndex === 2)) {
+        var selectedCard = cardData[pendingDrag.sourceIndex] || cardData[1] || null;
+        togglePendingEnemyDeploy(selectedCard && selectedCard.enemyDefRef, selectedCard && selectedCard.label);
+        activeDrag = null;
+        pendingDrag = null;
+        return;
+      }
+      if (trayMode === 'weapon' && (pendingDrag.sourceIndex === 0 || pendingDrag.sourceIndex === 1 || pendingDrag.sourceIndex === 2)) {
+        var tappedLabel = String(pendingDrag.sourceLabel || '').trim();
+        var trayRectForTap = tray && tray.getBoundingClientRect ? tray.getBoundingClientRect() : null;
+        var centerX = trayRectForTap ? (trayRectForTap.left + trayRectForTap.right) * 0.5 : clientX;
+        var tappedEl = (pendingDrag.sourceIndex >= 0 && pendingDrag.sourceIndex < cards.length) ? cards[pendingDrag.sourceIndex] : null;
+        var tappedRect = tappedEl && tappedEl.getBoundingClientRect ? tappedEl.getBoundingClientRect() : null;
+        var tappedX = tappedRect ? (tappedRect.left + tappedRect.right) * 0.5 : clientX;
+        var distanceFromCenter = Math.abs(tappedX - centerX);
+        var centerDeadZone = tappedRect ? Math.max(18, tappedRect.width * 0.35) : 32;
+
+        if (distanceFromCenter <= centerDeadZone) {
+          var centerCardNow = cardData[1] || null;
+          togglePendingWeaponDeploy(centerCardNow && centerCardNow.towerDefRef, centerCardNow && centerCardNow.label);
+          activeDrag = null;
+          pendingDrag = null;
+          return;
+        }
+
+        var desiredShift = tappedX < centerX ? 1 : -1;
+        shiftTrayBy(desiredShift);
+
+        setTimeout(function () {
+          var centerLabelNode = cards[1] && cards[1].querySelector ? cards[1].querySelector('.ht-card-label') : null;
+          var centerLabel = String(centerLabelNode && centerLabelNode.textContent || '').trim();
+          var centerCard = cardData[1] || null;
+
+          if (tappedLabel && centerLabel && centerLabel.toLowerCase() !== tappedLabel.toLowerCase()) {
+            shiftTrayBy(-desiredShift);
+            setTimeout(function () {
+              var correctedCenter = cardData[1] || null;
+              togglePendingWeaponDeploy(correctedCenter && correctedCenter.towerDefRef, correctedCenter && correctedCenter.label);
+            }, 0);
+            return;
+          }
+
+          togglePendingWeaponDeploy(centerCard && centerCard.towerDefRef, centerCard && centerCard.label);
+        }, 0);
+        activeDrag = null;
+        pendingDrag = null;
+        return;
+      }
+      if (pendingDrag.sourceIndex === 0) {
+        shiftTrayBy(-1);
+        activeDrag = null;
+        pendingDrag = null;
+        return;
+      }
+      if (pendingDrag.sourceIndex === 2) {
+        shiftTrayBy(1);
+        activeDrag = null;
+        pendingDrag = null;
+        return;
+      }
+    }
+
+    // Mobile/desktop jitter guard: center-card tap inside tray should arm, not attempt map drop.
+    if (trayMode === 'enemy' && pendingDrag
+      && (pendingDrag.sourceIndex === 0 || pendingDrag.sourceIndex === 1 || pendingDrag.sourceIndex === 2)
+      && pointerInsideTray
+      && !pendingDrag.swipeIntent) {
+      var selectedCardWithJitter = cardData[pendingDrag.sourceIndex] || cardData[1] || null;
+      togglePendingEnemyDeploy(selectedCardWithJitter && selectedCardWithJitter.enemyDefRef, selectedCardWithJitter && selectedCardWithJitter.label);
+      activeDrag = null;
+      pendingDrag = null;
+      return;
+    }
+
+    var s = resolveScene();
+    if (s) {
+      var wc = screenToWorld(clientX, clientY);
+      if (activeDrag.kind === 'enemy') {
+        if (wc && s.handleEnemyTrayDrop) {
+          var dropped = s.handleEnemyTrayDrop(activeDrag.enemyDef, wc.x, wc.y);
+          if (dropped) {
+            clearPendingEnemyDeploy();
+          }
+        }
+        if (s.highlightEnemySpawnDropTarget) s.highlightEnemySpawnDropTarget(null);
+      } else {
+        if (pendingDrag?.activated) {
+          clearPendingWeaponDeploy({ skipGlowReset: true });
+          s.draggingFromTray = false;
+          s.activeTrayTowerDef = null;
+          if (s.tryPlaceTower && wc) {
+            var placed = s.tryPlaceTower(wc.x, wc.y, activeDrag.towerDef);
+            if (placed && s.setStatus) s.setStatus(activeDrag.towerDef.name + ' turret mounted.', '#89ffd0');
+          }
+          if (s.updateWeaponReachGlow) s.updateWeaponReachGlow();
+        } else {
+          // Was just a click — no placement, no glow
+          s.draggingFromTray = false;
+        }
+      }
+    }
+    activeDrag = null;
+    pendingDrag = null;
+  }
+
+  function cancelDrag() {
+    activeDrag = null;
+    ghost.classList.remove('ht-active', 'ht-valid');
+    var s = resolveScene();
+    if (s) {
+      s.draggingFromTray = false;
+      s.activeTrayTowerDef = null;
+      if (s.highlightEnemySpawnDropTarget) s.highlightEnemySpawnDropTarget(null);
+      if (s.updateWeaponReachGlow) s.updateWeaponReachGlow();
+    }
+  }
+
+  function getVisibleWeaponCardsByX() {
+    return cards
+      .map(function (card) {
+        if (!card || !card.getBoundingClientRect) return null;
+        var rect = card.getBoundingClientRect();
+        if (!rect || rect.width <= 0 || rect.height <= 0) return null;
+        var style = window.getComputedStyle(card);
+        if (style.display === 'none' || style.visibility === 'hidden' || style.opacity === '0') return null;
+        var lblNode = card.querySelector ? card.querySelector('.ht-card-label') : null;
+        var lbl = String(lblNode && lblNode.textContent || '').trim();
+        return { card: card, rect: rect, label: lbl };
+      })
+      .filter(Boolean)
+      .sort(function (a, b) {
+        return a.rect.left - b.rect.left;
+      });
+  }
+
+  function findWeaponCardDataByLabel(label) {
+    var key = String(label || '').trim().toLowerCase();
+    if (!key) return null;
+    return cardData.find(function (entry) {
+      return String(entry && entry.label || '').trim().toLowerCase() === key;
+    }) || null;
+  }
+
+  function resolveTowerDefByWeaponId(weaponId) {
+    var id = Number(weaponId || 0);
+    if (id <= 0) return null;
+    var s = resolveScene();
+    var catalog = (s && s.getUnlockedWeaponCatalog && s.getUnlockedWeaponCatalog()) || (s && s.towerCatalog) || [];
+    for (var i = 0; i < catalog.length; i += 1) {
+      if (Number(catalog[i] && catalog[i].id || 0) === id) return catalog[i];
+    }
+    return null;
+  }
+
+  function resolveTowerDefByLabel(label) {
+    var key = String(label || '').trim().toLowerCase();
+    if (!key) return null;
+    var s = resolveScene();
+    var catalog = (s && s.getUnlockedWeaponCatalog && s.getUnlockedWeaponCatalog()) || (s && s.towerCatalog) || [];
+    for (var i = 0; i < catalog.length; i += 1) {
+      var defLabel = String(catalog[i] && catalog[i].name || '').trim().toLowerCase();
+      if (defLabel === key) return catalog[i];
+    }
+    return null;
+  }
+
+  function resolveTrayDetailTowerDef(activeDetailCard) {
+    var byWeaponId = resolveTowerDefByWeaponId(activeDetailCard && activeDetailCard.weaponId);
+    if (byWeaponId) return byWeaponId;
+    var byLabel = resolveTowerDefByLabel(activeDetailCard && activeDetailCard.label);
+    if (byLabel) return byLabel;
+    var armedDef = resolveTowerDefByWeaponId(pendingWeaponDeploy && pendingWeaponDeploy.id);
+    if (armedDef) return armedDef;
+    var s = resolveScene();
+    return (s && s.selectedTowerDef) || null;
+  }
+
+  function formatWeaponDetailFromDef(towerDef) {
+    if (!towerDef) return null;
+    var hitPowerValue = Number(towerDef.baseDamage || towerDef.damage || 0);
+    var pattern = String(towerDef.firePattern || 'single').toLowerCase();
+    var fireClass = (pattern === 'laser' || pattern === 'lance') ? 'Laser' : (pattern === 'pulsar' ? 'Pulsar' : 'Ballistic');
+    var rangeValue = Number(towerDef.range || 0);
+    var rangeLabel = rangeValue <= 0 ? 'Unknown range' : (rangeValue < 170 ? 'Short range' : (rangeValue > 245 ? 'Long range' : 'Medium range'));
+    var fireRate = Number(towerDef.fireRate || 0);
+    var fireLabel = fireRate <= 0 ? 'Steady fire' : (fireRate <= 380 ? 'Rapid fire' : (fireRate <= 650 ? 'Steady fire' : 'Heavy shots'));
+    var tier = Math.max(1, Number(towerDef.blueprintTier) || (Math.floor(((Number(towerDef.id || 1) - 1) / 4)) + 1));
+    var powerTierLabel = String(towerDef.powerTierLabel || 'Power').trim();
+    return {
+      name: String(towerDef.name || '') + ' · T' + tier,
+      role: 'Class: ' + fireClass + '  |  ' + powerTierLabel + '  |  ' + rangeLabel + ' • ' + fireLabel,
+      stats: 'Best use: ' + String(towerDef.role || 'General-purpose') + '\nHit power: ' + hitPowerValue.toFixed(2) + '  |  Cost ' + String(towerDef.cost || 0),
+    };
+  }
+
+  function handleWeaponCardTapFromPoint(clientX, clientY) {
+    if (trayMode !== 'weapon' || !Number.isFinite(clientX) || !Number.isFinite(clientY)) return false;
+    var visible = getVisibleWeaponCardsByX();
+    if (!visible.length) return false;
+
+    var hitIndex = -1;
+    for (var i = 0; i < visible.length; i += 1) {
+      var r = visible[i].rect;
+      if (clientX >= r.left && clientX <= r.right && clientY >= r.top && clientY <= r.bottom) {
+        hitIndex = i;
+        break;
+      }
+    }
+    if (hitIndex < 0) return false;
+
+    var desiredLabel = String(visible[hitIndex].label || '').trim();
+    var hitWeaponId = Number(visible[hitIndex].card && visible[hitIndex].card.getAttribute ? visible[hitIndex].card.getAttribute('data-weapon-id') : 0);
+    var defById = resolveTowerDefByWeaponId(hitWeaponId);
+    var tappedEntry = findWeaponCardDataByLabel(desiredLabel) || cardData[hitIndex] || cardData[1] || null;
+    var resolvedDef = defById || (tappedEntry && tappedEntry.towerDefRef) || null;
+    togglePendingWeaponDeploy(resolvedDef, tappedEntry && tappedEntry.label || desiredLabel);
+    return true;
+  }
+
+  // Mouse events
+  function addDragSource(el, getDefFn, sourceIndex) {
+    el.addEventListener('mousedown', function (e) {
+      if (e.button !== 0) return;
+      if (trayMode === 'enemy') {
+        e.preventDefault();
+        var tappedEnemyCard = (sourceIndex === 0 || sourceIndex === 1 || sourceIndex === 2)
+          ? (cardData[sourceIndex] || cardData[1] || null)
+          : (cardData[1] || null);
+        togglePendingEnemyDeploy(tappedEnemyCard && tappedEnemyCard.enemyDefRef, tappedEnemyCard && tappedEnemyCard.label);
+        return;
+      }
+      if (trayMode === 'weapon' && Number.isInteger(sourceIndex) && sourceIndex >= 0) {
+        e.preventDefault();
+        if (e.stopPropagation) e.stopPropagation();
+        if (e.stopImmediatePropagation) e.stopImmediatePropagation();
+        cancelDrag();
+        if (handleWeaponCardTapFromPoint(e.clientX, e.clientY)) return;
+        return;
+      }
+      e.preventDefault();
+      var sourceTowerId = Number((el && el.getAttribute && el.getAttribute('data-tower-id')) || 0);
+      var sourceLabelNode = el && el.querySelector ? el.querySelector('.ht-card-label') : null;
+      var sourceLabel = sourceLabelNode ? String(sourceLabelNode.textContent || '').trim() : '';
+      startDrag(getDefFn(), e.clientX, e.clientY, sourceIndex, sourceTowerId, sourceLabel);
+    });
+    el.addEventListener('touchstart', function (e) {
+      if (trayMode === 'enemy') {
+        e.preventDefault();
+        var tappedEnemyCard = (sourceIndex === 0 || sourceIndex === 1 || sourceIndex === 2)
+          ? (cardData[sourceIndex] || cardData[1] || null)
+          : (cardData[1] || null);
+        togglePendingEnemyDeploy(tappedEnemyCard && tappedEnemyCard.enemyDefRef, tappedEnemyCard && tappedEnemyCard.label);
+        return;
+      }
+      if (trayMode === 'weapon' && Number.isInteger(sourceIndex) && sourceIndex >= 0) {
+        e.preventDefault();
+        if (e.stopPropagation) e.stopPropagation();
+        if (e.stopImmediatePropagation) e.stopImmediatePropagation();
+        cancelDrag();
+        var touchPoint = e.changedTouches && e.changedTouches[0];
+        if (touchPoint && handleWeaponCardTapFromPoint(touchPoint.clientX, touchPoint.clientY)) return;
+        return;
+      }
+      e.preventDefault();
+      var t = e.changedTouches[0];
+      var touchTowerId = Number((el && el.getAttribute && el.getAttribute('data-tower-id')) || 0);
+      var touchLabelNode = el && el.querySelector ? el.querySelector('.ht-card-label') : null;
+      var touchLabel = touchLabelNode ? String(touchLabelNode.textContent || '').trim() : '';
+      startDrag(getDefFn(), t.clientX, t.clientY, sourceIndex, touchTowerId, touchLabel);
+    }, { passive: false });
+  }
+
+  document.addEventListener('mousemove', function (e) { moveDrag(e.clientX, e.clientY); });
+  document.addEventListener('mousemove', function (e) {
+    lastPointerClient = { x: e.clientX, y: e.clientY };
+    if (!activeDrag) updateArmedWeaponAim(e.clientX, e.clientY);
+  });
+  document.addEventListener('mouseup',   function (e) { endDrag(e.clientX, e.clientY); });
+  document.addEventListener('touchmove', function (e) {
+    if (!activeDrag && (!pendingWeaponDeploy || trayMode !== 'weapon')) return;
+    e.preventDefault();
+    var t = e.changedTouches[0];
+    if (!t) return;
+    lastPointerClient = { x: t.clientX, y: t.clientY };
+    if (activeDrag) {
+      moveDrag(t.clientX, t.clientY);
+      return;
+    }
+    updateArmedWeaponAim(t.clientX, t.clientY);
+  }, { passive: false });
+  document.addEventListener('touchend', function (e) {
+    var t = e.changedTouches[0];
+    if (activeDrag) {
+      if (!t) return;
+      endDrag(t.clientX, t.clientY);
+      return;
+    }
+    if (trayMode !== 'weapon' || !pendingWeaponDeploy || !t) return;
+    var s = resolveScene();
+    if (!s || !s.game || !s.tryPlaceTower) return;
+    if (tray && tray.contains && tray.contains(e.target)) return;
+    var canvasRect = s.game.canvas.getBoundingClientRect();
+    var insideCanvas = t.clientX >= canvasRect.left
+      && t.clientX <= canvasRect.right
+      && t.clientY >= canvasRect.top
+      && t.clientY <= canvasRect.bottom;
+    if (!insideCanvas) return;
+    var wc = screenToWorld(t.clientX, t.clientY);
+    if (!wc) return;
+    var placed = s.tryPlaceTower(wc.x, wc.y, pendingWeaponDeploy);
+    if (placed) {
+      if (s.setStatus) s.setStatus((pendingWeaponDeploy.name || 'Weapon') + ' turret mounted.', '#89ffd0');
+      clearPendingWeaponDeploy();
+    }
+  });
+  document.addEventListener('touchcancel', cancelDrag);
+
+  // Attach drag to each card
+  cards.forEach(function (card, i) {
+    addDragSource(card, function () {
+      if (trayMode === 'enemy') {
+        return cardData[i] && cardData[i].enemyDefRef;
+      }
+      return cardData[i] && cardData[i].towerDefRef;
+    }, i);
+  });
+
+  if (cardsZone) {
+    cardsZone.setAttribute('tabindex', '0');
+    cardsZone.setAttribute('role', 'listbox');
+  }
+
+  document.addEventListener('keydown', function (e) {
+    if (tray.classList.contains('ht-hidden')) return;
+    var activeTag = (document.activeElement && document.activeElement.tagName || '').toLowerCase();
+    if (activeTag === 'input' || activeTag === 'textarea' || activeTag === 'select') return;
+    if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      shiftTrayBy(-1);
+    } else if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      shiftTrayBy(1);
+    } else if (e.key === 'Escape' && pendingWeaponDeploy) {
+      e.preventDefault();
+      clearPendingWeaponDeploy();
+      var s = resolveScene();
+      if (s && s.setStatus) s.setStatus('Placement cancelled.', '#ffcf8a');
+    }
+  });
+
+  // Attach drag to preview badge
+  addDragSource(previewRing, function () {
+    var s = resolveScene();
+    if (trayMode === 'enemy') {
+      return cardData[1] && cardData[1].enemyDefRef;
+    }
+    return s && s.selectedTowerDef;
+  });
+
+  document.addEventListener('click', function (e) {
+    if (trayMode === 'weapon' && pendingWeaponDeploy && !activeDrag) {
+      if (!e || !Number.isFinite(e.clientX) || !Number.isFinite(e.clientY)) return;
+      var ws = resolveScene();
+      if (!ws || !ws.game || !ws.tryPlaceTower) return;
+      if (tray && tray.contains && tray.contains(e.target)) return;
+
+      var weaponCanvasRect = ws.game.canvas.getBoundingClientRect();
+      var weaponInsideCanvas = e.clientX >= weaponCanvasRect.left
+        && e.clientX <= weaponCanvasRect.right
+        && e.clientY >= weaponCanvasRect.top
+        && e.clientY <= weaponCanvasRect.bottom;
+      if (!weaponInsideCanvas) return;
+
+      var weaponWc = screenToWorld(e.clientX, e.clientY);
+      if (!weaponWc) return;
+      var weaponPlaced = ws.tryPlaceTower(weaponWc.x, weaponWc.y, pendingWeaponDeploy);
+      if (weaponPlaced) {
+        if (ws.setStatus) ws.setStatus((pendingWeaponDeploy.name || 'Weapon') + ' turret mounted.', '#89ffd0');
+        clearPendingWeaponDeploy();
+      }
+      return;
+    }
+
+    if (trayMode !== 'enemy' || !pendingEnemyDeploy || activeDrag) return;
+    if (!e || !Number.isFinite(e.clientX) || !Number.isFinite(e.clientY)) return;
+    var s = resolveScene();
+    if (!s || !s.game || !s.game.canvas || !s.handleEnemyTrayDrop) return;
+    if (tray && tray.contains && tray.contains(e.target)) return;
+
+    var canvasRect = s.game.canvas.getBoundingClientRect();
+    var insideCanvas = e.clientX >= canvasRect.left
+      && e.clientX <= canvasRect.right
+      && e.clientY >= canvasRect.top
+      && e.clientY <= canvasRect.bottom;
+    if (!insideCanvas) return;
+
+    var wc = screenToWorld(e.clientX, e.clientY);
+    if (!wc) return;
+    var ok = s.handleEnemyTrayDrop(pendingEnemyDeploy, wc.x, wc.y);
+    if (ok) {
+      clearPendingEnemyDeploy();
+    }
+  }, true);
+
+})();
+</script>

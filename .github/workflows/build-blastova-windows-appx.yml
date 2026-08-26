@@ -1,0 +1,200 @@
+name: Build Blastova Windows APPX
+
+on:
+  workflow_dispatch:
+    inputs:
+      app_version:
+        description: Windows package version, using four numeric parts.
+        required: true
+        default: 1.0.0.0
+      start_url:
+        description: URL the Windows package opens.
+        required: true
+        default: https://kodekenobi.github.io/blastova/index.html
+
+permissions:
+  contents: write
+
+jobs:
+  build-appx:
+    runs-on: windows-latest
+    env:
+      PACKAGE_NAME: KodeKenobi.Blastova
+      PUBLISHER: CN=KodeKenobi
+      DISPLAY_NAME: Blastova
+      RELEASE_TAG: blastova-windows-appx
+      APPX_NAME: Blastova.appx
+      PFX_PASSWORD: blastova-local-signing
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Prepare package layout
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+
+          $packageRoot = Join-Path $env:RUNNER_TEMP 'blastova-appx'
+          $assetsRoot = Join-Path $packageRoot 'Assets'
+          New-Item -ItemType Directory -Path $assetsRoot -Force | Out-Null
+
+          $iconSource = Join-Path $env:GITHUB_WORKSPACE 'public\blastova\game\icons\icon-1024.png'
+          if (!(Test-Path $iconSource)) {
+            $iconSource = Join-Path $env:GITHUB_WORKSPACE 'public\blastova\game\icons\icon-512.png'
+          }
+          if (!(Test-Path $iconSource)) {
+            throw "Blastova icon source not found."
+          }
+
+          Add-Type -AssemblyName System.Drawing
+
+          function New-AppImage($Path, $Width, $Height, $SourcePath) {
+            $bitmap = New-Object System.Drawing.Bitmap($Width, $Height)
+            $graphics = [System.Drawing.Graphics]::FromImage($bitmap)
+            $graphics.Clear([System.Drawing.Color]::FromArgb(5, 8, 13))
+            $graphics.InterpolationMode = [System.Drawing.Drawing2D.InterpolationMode]::HighQualityBicubic
+            $source = [System.Drawing.Image]::FromFile($SourcePath)
+            $size = [Math]::Min($Width, $Height)
+            $padding = [Math]::Max(0, [Math]::Floor($size * 0.12))
+            $drawSize = $size - ($padding * 2)
+            $x = [Math]::Floor(($Width - $drawSize) / 2)
+            $y = [Math]::Floor(($Height - $drawSize) / 2)
+            $graphics.DrawImage($source, $x, $y, $drawSize, $drawSize)
+            $source.Dispose()
+            $graphics.Dispose()
+            $bitmap.Save($Path, [System.Drawing.Imaging.ImageFormat]::Png)
+            $bitmap.Dispose()
+          }
+
+          New-AppImage (Join-Path $assetsRoot 'Square44x44Logo.png') 44 44 $iconSource
+          New-AppImage (Join-Path $assetsRoot 'Square150x150Logo.png') 150 150 $iconSource
+          New-AppImage (Join-Path $assetsRoot 'Square310x310Logo.png') 310 310 $iconSource
+          New-AppImage (Join-Path $assetsRoot 'Wide310x150Logo.png') 310 150 $iconSource
+          New-AppImage (Join-Path $assetsRoot 'SplashScreen.png') 620 300 $iconSource
+
+          $manifest = @"
+          <?xml version="1.0" encoding="utf-8"?>
+          <Package
+            xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
+            xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+            xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
+            IgnorableNamespaces="uap rescap">
+            <Identity
+              Name="$env:PACKAGE_NAME"
+              Publisher="$env:PUBLISHER"
+              Version="${{ inputs.app_version }}"
+              ProcessorArchitecture="neutral" />
+            <Properties>
+              <DisplayName>$env:DISPLAY_NAME</DisplayName>
+              <PublisherDisplayName>KodeKenobi</PublisherDisplayName>
+              <Logo>Assets\Square150x150Logo.png</Logo>
+            </Properties>
+            <Dependencies>
+              <TargetDeviceFamily Name="Windows.Universal" MinVersion="10.0.17763.0" MaxVersionTested="10.0.22621.0" />
+            </Dependencies>
+            <Resources>
+              <Resource Language="en-us" />
+            </Resources>
+            <Applications>
+              <Application Id="App" StartPage="${{ inputs.start_url }}">
+                <uap:VisualElements
+                  DisplayName="$env:DISPLAY_NAME"
+                  Description="Blastova: The Last Wave"
+                  BackgroundColor="#05080d"
+                  Square150x150Logo="Assets\Square150x150Logo.png"
+                  Square44x44Logo="Assets\Square44x44Logo.png">
+                  <uap:DefaultTile
+                    Wide310x150Logo="Assets\Wide310x150Logo.png"
+                    Square310x310Logo="Assets\Square310x310Logo.png" />
+                  <uap:SplashScreen Image="Assets\SplashScreen.png" />
+                </uap:VisualElements>
+              </Application>
+            </Applications>
+            <Capabilities>
+              <Capability Name="internetClient" />
+            </Capabilities>
+          </Package>
+          "@
+
+          $manifest.TrimStart() | Set-Content -Path (Join-Path $packageRoot 'AppxManifest.xml') -Encoding UTF8
+          "PACKAGE_ROOT=$packageRoot" | Out-File -FilePath $env:GITHUB_ENV -Append
+
+      - name: Build APPX package
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $outputRoot = Join-Path $env:GITHUB_WORKSPACE 'appx-output'
+          New-Item -ItemType Directory -Path $outputRoot -Force | Out-Null
+          $appxPath = Join-Path $outputRoot $env:APPX_NAME
+
+          $makeAppx = Get-ChildItem "${env:ProgramFiles(x86)}\Windows Kits\10\bin" -Recurse -Filter makeappx.exe |
+            Sort-Object FullName -Descending |
+            Select-Object -First 1
+          if (!$makeAppx) {
+            throw 'makeappx.exe was not found on this runner.'
+          }
+
+          & $makeAppx.FullName pack /d $env:PACKAGE_ROOT /p $appxPath /o
+          if ($LASTEXITCODE -ne 0) {
+            throw "makeappx failed with exit code $LASTEXITCODE"
+          }
+
+      - name: Sign APPX package
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $outputRoot = Join-Path $env:GITHUB_WORKSPACE 'appx-output'
+          $appxPath = Join-Path $outputRoot $env:APPX_NAME
+          $pfxPath = Join-Path $outputRoot 'Blastova-TestCertificate.pfx'
+          $cerPath = Join-Path $outputRoot 'Blastova-TestCertificate.cer'
+
+          $cert = New-SelfSignedCertificate `
+            -Type CodeSigningCert `
+            -Subject $env:PUBLISHER `
+            -CertStoreLocation 'Cert:\CurrentUser\My' `
+            -KeyExportPolicy Exportable `
+            -KeyUsage DigitalSignature `
+            -FriendlyName 'Blastova APPX Test Certificate'
+
+          $password = ConvertTo-SecureString -String $env:PFX_PASSWORD -Force -AsPlainText
+          Export-PfxCertificate -Cert $cert -FilePath $pfxPath -Password $password | Out-Null
+          Export-Certificate -Cert $cert -FilePath $cerPath | Out-Null
+
+          $signtool = Get-ChildItem "${env:ProgramFiles(x86)}\Windows Kits\10\bin" -Recurse -Filter signtool.exe |
+            Sort-Object FullName -Descending |
+            Select-Object -First 1
+          if (!$signtool) {
+            throw 'signtool.exe was not found on this runner.'
+          }
+
+          & $signtool.FullName sign /fd SHA256 /f $pfxPath /p $env:PFX_PASSWORD $appxPath
+          if ($LASTEXITCODE -ne 0) {
+            throw "signtool failed with exit code $LASTEXITCODE"
+          }
+
+          Remove-Item $pfxPath -Force
+          @"
+          Blastova Windows APPX
+
+          This package is signed with the included test certificate.
+          Install the .cer into Trusted People or use a production signing certificate for public distribution.
+          "@ | Set-Content -Path (Join-Path $outputRoot 'README.txt') -Encoding UTF8
+
+      - name: Upload workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: blastova-windows-appx
+          path: appx-output/*
+
+      - name: Publish GitHub release asset
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $releaseExists = gh release view $env:RELEASE_TAG 2>$null
+          if ($LASTEXITCODE -ne 0) {
+            gh release create $env:RELEASE_TAG appx-output/* --title 'Blastova Windows APPX' --notes 'Windows APPX package generated by GitHub Actions.'
+          } else {
+            gh release upload $env:RELEASE_TAG appx-output/* --clobber
+          }

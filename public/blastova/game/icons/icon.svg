@@ -1,0 +1,119 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="45%" r="60%">
+      <stop offset="0%" stop-color="#0d1f38"/>
+      <stop offset="100%" stop-color="#040b16"/>
+    </radialGradient>
+    <radialGradient id="glowCenter" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#1a4a8a" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#040b16" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="towerGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#4a9eff"/>
+      <stop offset="100%" stop-color="#1a5cbf"/>
+    </linearGradient>
+    <linearGradient id="lightningGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffe566"/>
+      <stop offset="50%" stop-color="#ffc200"/>
+      <stop offset="100%" stop-color="#ff8c00"/>
+    </linearGradient>
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="12" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="lightningGlow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="18" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <clipPath id="roundRect">
+      <rect width="1024" height="1024" rx="200" ry="200"/>
+    </clipPath>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1024" height="1024" rx="200" ry="200" fill="url(#bg)"/>
+
+  <!-- Subtle inner glow -->
+  <rect width="1024" height="1024" rx="200" ry="200" fill="url(#glowCenter)"/>
+
+  <!-- Hex grid pattern (subtle tactical feel) -->
+  <g clip-path="url(#roundRect)" opacity="0.07" stroke="#4a9eff" stroke-width="1" fill="none">
+    <polygon points="512,80 592,124 592,212 512,256 432,212 432,124"/>
+    <polygon points="692,180 772,224 772,312 692,356 612,312 612,224"/>
+    <polygon points="332,180 412,224 412,312 332,356 252,312 252,224"/>
+    <polygon points="512,256 592,300 592,388 512,432 432,388 432,300"/>
+    <polygon points="692,356 772,400 772,488 692,532 612,488 612,400"/>
+    <polygon points="332,356 412,400 412,488 332,532 252,488 252,400"/>
+    <polygon points="512,432 592,476 592,564 512,608 432,564 432,476"/>
+    <polygon points="692,532 772,576 772,664 692,708 612,664 612,576"/>
+    <polygon points="332,532 412,576 412,664 332,708 252,664 252,576"/>
+    <polygon points="512,608 592,652 592,740 512,784 432,740 432,652"/>
+    <polygon points="512,784 592,828 592,916 512,960 432,916 432,828"/>
+    <polygon points="692,708 772,752 772,840 692,884 612,840 612,752"/>
+    <polygon points="332,708 412,752 412,840 332,884 252,840 252,752"/>
+    <polygon points="872,180 952,224 952,312 872,356 792,312 792,224"/>
+    <polygon points="152,180 232,224 232,312 152,356 72,312 72,224"/>
+    <polygon points="872,356 952,400 952,488 872,532 792,488 792,400"/>
+    <polygon points="152,356 232,400 232,488 152,532 72,488 72,400"/>
+    <polygon points="872,532 952,576 952,664 872,708 792,664 792,576"/>
+    <polygon points="152,532 232,576 232,664 152,708 72,664 72,576"/>
+    <polygon points="872,708 952,752 952,840 872,884 792,840 792,752"/>
+    <polygon points="152,708 232,752 232,840 152,884 72,840 72,752"/>
+  </g>
+
+  <!-- Tower base/body -->
+  <g filter="url(#glow)">
+    <!-- Tower platform base -->
+    <rect x="362" y="720" width="300" height="40" rx="8" fill="#1a5cbf" opacity="0.9"/>
+    <rect x="382" y="710" width="260" height="20" rx="4" fill="#2a6fd4"/>
+
+    <!-- Tower barrel left battlement -->
+    <rect x="370" y="580" width="70" height="140" rx="6" fill="url(#towerGrad)"/>
+    <!-- Tower barrel center -->
+    <rect x="462" y="540" width="100" height="180" rx="8" fill="url(#towerGrad)"/>
+    <!-- Tower barrel right battlement -->
+    <rect x="584" y="580" width="70" height="140" rx="6" fill="url(#towerGrad)"/>
+
+    <!-- Merlons (top notches on battlements) -->
+    <rect x="370" y="550" width="28" height="36" rx="4" fill="#2a6fd4"/>
+    <rect x="412" y="550" width="28" height="36" rx="4" fill="#2a6fd4"/>
+    <rect x="462" y="508" width="30" height="40" rx="4" fill="#2a6fd4"/>
+    <rect x="506" y="508" width="30" height="40" rx="4" fill="#2a6fd4"/>
+    <rect x="550" y="508" width="30" height="40" rx="4" fill="#2a6fd4"/>
+    <rect x="584" y="550" width="28" height="36" rx="4" fill="#2a6fd4"/>
+    <rect x="626" y="550" width="28" height="36" rx="4" fill="#2a6fd4"/>
+
+    <!-- Tower body lower -->
+    <rect x="404" y="720" width="216" height="60" rx="6" fill="#1650a0"/>
+
+    <!-- Tower windows -->
+    <rect x="460" y="620" width="28" height="40" rx="4" fill="#0a1830" opacity="0.9"/>
+    <rect x="536" y="620" width="28" height="40" rx="4" fill="#0a1830" opacity="0.9"/>
+    <!-- Window glow -->
+    <rect x="462" y="622" width="24" height="36" rx="3" fill="#1a8fff" opacity="0.3"/>
+    <rect x="538" y="622" width="24" height="36" rx="3" fill="#1a8fff" opacity="0.3"/>
+  </g>
+
+  <!-- Lightning bolt (centered, striking down) -->
+  <g filter="url(#lightningGlow)">
+    <polygon points="540,220 490,430 530,430 480,680 580,390 535,390 590,220" fill="url(#lightningGrad)"/>
+    <!-- Inner bright core -->
+    <polygon points="535,240 500,415 528,415 488,640 563,400 530,400 572,240" fill="#fff8cc" opacity="0.7"/>
+  </g>
+
+  <!-- Impact sparks at bottom of lightning -->
+  <g filter="url(#lightningGlow)" opacity="0.9">
+    <ellipse cx="512" cy="690" rx="48" ry="14" fill="#ffc200" opacity="0.5"/>
+    <line x1="512" y1="680" x2="468" y2="712" stroke="#ffe566" stroke-width="3" stroke-linecap="round"/>
+    <line x1="512" y1="680" x2="556" y2="712" stroke="#ffe566" stroke-width="3" stroke-linecap="round"/>
+    <line x1="512" y1="680" x2="488" y2="724" stroke="#ffc200" stroke-width="2" stroke-linecap="round"/>
+    <line x1="512" y1="680" x2="538" y2="726" stroke="#ffc200" stroke-width="2" stroke-linecap="round"/>
+  </g>
+
+  <!-- "B" lettermark subtle bottom-right -->
+  <text x="840" y="940" font-family="Arial Black, sans-serif" font-weight="900" font-size="120" fill="#4a9eff" opacity="0.18" text-anchor="middle">B</text>
+
+  <!-- Border glow ring -->
+  <rect x="16" y="16" width="992" height="992" rx="188" ry="188" fill="none" stroke="#4a9eff" stroke-width="8" opacity="0.25"/>
+  <rect x="30" y="30" width="964" height="964" rx="176" ry="176" fill="none" stroke="#2a6fd4" stroke-width="3" opacity="0.15"/>
+</svg>

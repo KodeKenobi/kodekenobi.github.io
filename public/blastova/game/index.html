@@ -1,0 +1,2789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#070d14">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Blastova">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="apple-touch-icon.png">
+    <!-- Preload splash title font from the valid local TTF source. -->
+    <link rel="preload" href="assets/fonts/BlackOpsOne.ttf" as="font" type="font/ttf" crossorigin>
+  <!-- Start fetching/compiling the game module in parallel with parsing the
+       rest of this (large) document instead of waiting for the parser to
+       reach the <script type=module> tag near the end of <body>. -->
+  <link rel="modulepreload" href="assets/game-BIplBbyL.js">
+    <title>Blastova</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html {
+            width: 100%;
+            height: 100%;
+        }
+        body {
+            font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+            background: #000;
+            overflow: hidden;
+            width: 100%;
+            height: 100%;
+          min-height: 100dvh;
+            display: flex;
+            flex-direction: column;
+          padding: 0;
+        }
+        #game-container {
+            flex: 1;
+          width: 100vw;
+          height: 100dvh;
+            overflow: hidden;
+            padding: 0;
+            background: transparent;
+          .sp-text-row {
+            height: 30px;
+            padding: 0 8px;
+            gap: 6px;
+            flex-shrink: 0;
+          }
+            display: flex;
+        }
+        canvas {
+            display: block;
+            border-radius: 0;
+            box-shadow: none;
+          .sp-text-label {
+            width: 90px;
+            font-size: 7.5px;
+            letter-spacing: 0.3px;
+          }
+          .sp-text-input {
+            height: 20px;
+            font-size: 10px;
+            padding: 0 8px;
+          }
+          .sp-leaderboard-row {
+            font-size: 10px;
+          }
+            flex: 1;
+          width: 100% !important;
+          height: 100% !important;
+        }
+
+        @media (max-width: 768px) {
+          .sp-text-label {
+            width: 140px;
+            font-size: 9px;
+            letter-spacing: 0.6px;
+          }
+
+          .sp-text-input {
+            height: 24px;
+            font-size: 12px;
+          }
+
+          .sp-leaderboard-row {
+            font-size: 11px;
+          }
+          body {
+            min-height: 100svh;
+          }
+
+          #game-container {
+            width: 100vw;
+            height: 100svh;
+          }
+        }
+    </style>
+  <script type="module" crossorigin src="assets/index-BQEX64rE.js"></script>
+<link rel="manifest" href="manifest.webmanifest"></head>
+<body>
+      <script>
+        (function() {
+        const ua = navigator.userAgent || '';
+        const platform = navigator.platform || '';
+        const touchPoints = navigator.maxTouchPoints || 0;
+        const params = new URLSearchParams(window.location.search || '');
+        const forceMobileParam = params.get('forceMobile');
+        const forceMobile = forceMobileParam === '1';
+        const landingAttract = params.get('landingAttract') === '1';
+        const landingShell = params.get('landingShell') === '1';
+
+        const isElectron = /Electron/i.test(ua);
+        const isIOS = /iPhone|iPad|iPod/i.test(ua) || (platform === 'MacIntel' && touchPoints > 1 && !isElectron);
+        const isAndroid = /Android/i.test(ua) && !isElectron;
+        const isWindows = /Win/i.test(platform) || /Windows/i.test(ua);
+        const isMac = /Mac/i.test(platform) && !isIOS;
+        const isLinux = /Linux/i.test(platform) && !isAndroid;
+
+        let os = 'unknown';
+        if (isIOS) os = 'ios';
+        else if (isAndroid) os = 'android';
+        else if (isElectron) os = 'electron';
+        else if (isWindows) os = 'windows';
+        else if (isMac) os = 'macos';
+        else if (isLinux) os = 'linux';
+
+        const isMobile = !isElectron && (forceMobile || isIOS || isAndroid);
+        window.__appPlatform = { os, isMobile, forceMobile, ua, touchPoints };
+        document.documentElement.setAttribute('data-os', os);
+        document.documentElement.setAttribute('data-mobile', isMobile ? 'true' : 'false');
+        document.documentElement.setAttribute('data-force-mobile', forceMobile ? 'true' : 'false');
+        document.documentElement.setAttribute('data-landing-attract', landingAttract ? 'true' : 'false');
+        document.documentElement.setAttribute('data-landing-shell', landingShell ? 'true' : 'false');
+        document.body.setAttribute('data-os', os);
+        document.body.setAttribute('data-mobile', isMobile ? 'true' : 'false');
+        document.body.setAttribute('data-force-mobile', forceMobile ? 'true' : 'false');
+        document.body.setAttribute('data-landing-attract', landingAttract ? 'true' : 'false');
+        document.body.setAttribute('data-landing-shell', landingShell ? 'true' : 'false');
+        window.__landingAttractMode = landingAttract;
+        window.__landingShellMode = landingShell;
+        })();
+      </script>
+    <div id="world-select-mount"></div>
+    <div id="game-container"></div>
+    <div id="landing-shell-overlay" hidden>
+      <div class="landing-shell-copy">
+        <h1 class="landing-shell-title">BLASTOVA</h1>
+        <p class="landing-shell-subtitle">THE LAST WAVE</p>
+        <p class="landing-shell-summary">Stand against fractured front lines, absorb armored assaults, and outlast a battlefield that keeps tightening around your last defense.</p>
+        <div class="landing-shell-cta-row">
+          <a class="landing-shell-btn" href="https://blastova-frontend-production.up.railway.app/">Play Now</a>
+        </div>
+        <p class="landing-shell-meta">Play instantly or download.</p>
+        <div class="landing-shell-platforms" aria-label="Download platforms">
+          <a class="landing-shell-platform-link platform-windows" href="../release-artifacts/win/Blastova%20Setup%201.0.0.exe" aria-label="Download for Windows" title="Download for Windows">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4.2 10.4 3v8H3zm8.5-1.35L21 1.3v9.7h-9.5zM3 12.2h7.4v8L3 19.1zm8.5 0H21v10.5L11.5 21z"/></svg>
+          </a>
+          <a class="landing-shell-platform-link platform-android" href="../release-artifacts/android/app-release.apk" aria-label="Download for Android" title="Download for Android">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8.05 6.15 6.9 4.18a.48.48 0 1 1 .83-.48l1.2 2.08A6.8 6.8 0 0 1 12 5.1c1.1 0 2.14.25 3.07.68l1.2-2.08a.48.48 0 1 1 .83.48l-1.14 1.97A5.46 5.46 0 0 1 18.7 10H5.3c.18-1.63 1.18-3.02 2.75-3.85ZM9.2 8.35a.65.65 0 1 0 0-1.3.65.65 0 0 0 0 1.3Zm5.6 0a.65.65 0 1 0 0-1.3.65.65 0 0 0 0 1.3ZM6.4 10.9h11.2v6.33c0 .95-.77 1.72-1.72 1.72h-.73v2.18a.93.93 0 0 1-1.86 0v-2.18h-2.58v2.18a.93.93 0 1 1-1.86 0v-2.18h-.73a1.72 1.72 0 0 1-1.72-1.72z"/></svg>
+          </a>
+          <a class="landing-shell-platform-link platform-mac" href="../release-artifacts/mac/Blastova-1.0.0-arm64.dmg" aria-label="Download for macOS" title="Download for macOS">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.35 2.2c0 .82-.28 1.62-.84 2.3-.64.8-1.7 1.42-2.62 1.34-.12-.9.28-1.8.82-2.43.62-.74 1.67-1.27 2.64-1.21ZM19.05 17.35c-.47 1.03-.69 1.48-1.28 2.37-.82 1.27-1.99 2.86-3.42 2.87-1.27.01-1.6-.81-3.32-.8-1.72.01-2.08.82-3.35.8-1.43-.01-2.54-1.45-3.36-2.72-2.3-3.55-2.54-7.72-1.13-9.88.99-1.53 2.55-2.43 4.02-2.43 1.5 0 2.45.83 3.69.83 1.2 0 1.93-.83 3.67-.83 1.31 0 2.7.71 3.69 1.94-3.23 1.77-2.71 6.39 1.09 7.85Z"/></svg>
+          </a>
+          <a class="landing-shell-platform-link platform-linux" href="../release-artifacts/linux/Blastova-1.0.0-arm64.AppImage" aria-label="Download for Linux" title="Download for Linux">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.504 0c-.155 0-.315.008-.48.021C7.576.332 4.68 2.282 4.18 5.003a10.887 10.887 0 0 0-.18 1.848c0 1.032.17 2.056.502 3.04-.43.12-.85.275-1.255.467C1.591 11.27.5 13.226.5 15.5c0 2.274 1.09 4.23 2.747 5.142.406.192.825.347 1.255.467-.332.984-.502 2.008-.502 3.04 0 .626.06 1.243.18 1.848.5 2.721 3.396 4.671 7.844 4.982.165.013.325.021.48.021.155 0 .315-.008.48-.021 4.448-.311 7.344-2.261 7.844-4.982.12-.605.18-1.222.18-1.848 0-1.032-.17-2.056-.502-3.04.43-.12.85-.275 1.255-.467C22.909 19.73 24 17.774 24 15.5c0-2.274-1.091-4.23-2.747-5.142a8.504 8.504 0 0 0-1.255-.467c.332-.984.502-2.008.502-3.04 0-.626-.06-1.243-.18-1.848C19.82 2.282 16.924.332 12.476.021A7.33 7.33 0 0 0 12.504 0zm-.008 2c.108 0 .217.005.326.014 3.578.25 5.966 1.714 6.35 3.832.096.488.145.985.145 1.487 0 .942-.175 1.878-.513 2.758a8.504 8.504 0 0 0-1.254-.144c-1.06 0-2.078.26-2.946.733a6.506 6.506 0 0 0-2.404-2.175 6.506 6.506 0 0 0-2.404 2.175c-.868-.473-1.886-.733-2.946-.733-.428 0-.849.05-1.254.144a8.116 8.116 0 0 1-.513-2.758c0-.502.049-.999.145-1.487.384-2.118 2.772-3.582 6.35-3.832.109-.009.218-.014.326-.014h-.008zm-3.5 9a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zm7 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zM12 14c1.38 0 2.614.56 3.536 1.464L12 17.5l-3.536-2.036A4.987 4.987 0 0 1 12 14zm0 5.5 3.536 2.036A4.998 4.998 0 0 1 12 23a4.998 4.998 0 0 1-3.536-1.464L12 19.5z"/></svg>
+          </a>
+          <span class="landing-shell-platform-link platform-ios" aria-label="iOS coming soon" title="iOS coming soon" aria-disabled="true">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.4 2.4h9.2a2 2 0 0 1 2 2v15.2a2 2 0 0 1-2 2H7.4a2 2 0 0 1-2-2V4.4a2 2 0 0 1 2-2Zm4.1 1.5a.45.45 0 0 0 0 .9h1a.45.45 0 1 0 0-.9ZM12 20a1.1 1.1 0 1 0 0-2.2A1.1 1.1 0 0 0 12 20Zm-4.7-3.6h9.4V6.2H7.3Z"/></svg>
+          </span>
+        </div>
+      </div>
+    </div>
+    <script>
+    (function() {
+      if (!window.__landingShellMode) {
+        return;
+      }
+      var overlay = document.getElementById('landing-shell-overlay');
+      if (overlay) {
+        overlay.hidden = false;
+      }
+    })();
+    </script>
+
+    <!-- Floating REMOVE button — appears on map above selected tower -->
+    <button id="tower-remove-btn" style="
+      display:none; position:fixed; z-index:500;
+      background:rgba(90,30,30,0.92); border:2px solid rgba(255,80,80,0.6);
+      border-radius:50%; color:#ffaaaa; font-size:16px; font-weight:bold;
+      width:32px; height:32px; line-height:1;
+      cursor:pointer; pointer-events:auto;
+      transform:translate(-50%, -130%);
+      box-shadow:0 2px 8px rgba(0,0,0,0.6);
+      -webkit-tap-highlight-color:transparent;
+      display:none; padding:0;
+    ">✕</button>
+    <script>
+    (function() {
+      var btn = document.getElementById('tower-remove-btn');
+      btn.addEventListener('click', function() {
+        var s = window.__tdScene;
+        if (s && s.removeSelectedPlacedTower) s.removeSelectedPlacedTower();
+      });
+      window.__showTowerRemoveBtn = function(visible, worldX, worldY) {
+        if (!visible) { btn.style.display = 'none'; return; }
+        var waveClearVisible = Array.from(document.querySelectorAll('[data-wave-clear-root]')).some(function(node) {
+          return !!node && node.style.display !== 'none';
+        });
+        if (waveClearVisible) { btn.style.display = 'none'; return; }
+        var s = window.__tdScene;
+        if (!s || !s.game || !s.game.canvas) { btn.style.display = 'none'; return; }
+        var canvas = s.game.canvas;
+        var rect   = canvas.getBoundingClientRect();
+        var scaleX = rect.width  / canvas.width;
+        var scaleY = rect.height / canvas.height;
+        var cam    = s.cameras && s.cameras.main;
+        var zoom   = (cam && cam.zoom)    || 1;
+        var scrollX = (cam && cam.scrollX) || 0;
+        var scrollY = (cam && cam.scrollY) || 0;
+        var cx = (worldX - scrollX) * zoom;
+        var cy = (worldY - scrollY) * zoom;
+        btn.style.left    = (rect.left + cx * scaleX) + 'px';
+        btn.style.top     = (rect.top  + cy * scaleY) + 'px';
+        btn.style.display = 'block';
+      };
+    })();
+    </script>
+
+    <!-- App splash — black bg, escalating firing tank -->
+    <style>
+      @font-face {
+        font-family: 'BlackOpsOne';
+        src: url("assets/fonts/BlackOpsOne.ttf") format('truetype');
+        font-weight: normal; font-style: normal;
+        /* block (not the default "auto"/swap) so the browser never paints the
+           title in a fallback font and then swaps — it stays invisible for a
+           very short beat (font is preloaded above, local, and small) and
+           then renders directly in BlackOpsOne, once. */
+        font-display: block;
+      }
+      @font-face {
+        font-family: 'Teko';
+        src: url("assets/fonts/Teko-SemiBold.ttf") format('truetype');
+        font-weight: 600; font-style: normal;
+      }
+      @keyframes blastova-pulse {
+        0%,100% { opacity:1; }
+        50%      { opacity:0.55; }
+      }
+
+      #app-splash-title {
+        font-size: clamp(22px, 5vw, 42px);
+        /* Static glow (not animated) — animating text-shadow forces a repaint
+           every frame for the whole splash duration, which is a major jank
+           source on mobile WebViews. Opacity is compositor-only and cheap. */
+        text-shadow: 0 0 8px #cc4400, 0 0 18px #aa2200;
+        will-change: opacity;
+      }
+
+      @media (min-width: 1024px) {
+        #app-splash-title {
+          font-size: clamp(52px, 4.8vw, 76px);
+        }
+      }
+
+      html[data-landing-attract='true'],
+      body[data-landing-attract='true'] {
+        background: transparent;
+      }
+
+      body[data-landing-attract='true'] #world-select-mount,
+      body[data-landing-attract='true'] #app-splash,
+      body[data-landing-attract='true'] #tower-remove-btn,
+      body[data-landing-attract='true'] [data-hud-overlay-root],
+      body[data-landing-attract='true'] [data-weapon-tray-root],
+      body[data-landing-attract='true'] [data-wave-clear-root],
+      body[data-landing-attract='true'] #upgrade-modal-root {
+        display: none !important;
+      }
+
+      body[data-landing-shell='true'] #game-container {
+        position: fixed;
+        inset: 0;
+        width: 100vw;
+        height: 100dvh;
+        background:
+          linear-gradient(180deg, rgba(3, 5, 8, 0.18), rgba(3, 5, 8, 0.28)),
+          url("assets/LAIMap1-CjV40gPZ.jpg") center / cover no-repeat;
+      }
+
+      body[data-landing-shell='true'] #landing-shell-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 240;
+        pointer-events: none;
+        color: #f3f5f7;
+        font-family: 'Teko', 'Trebuchet MS', sans-serif;
+        background:
+          linear-gradient(90deg, rgba(5, 8, 13, 0.82) 0%, rgba(5, 8, 13, 0.72) 22%, rgba(5, 8, 13, 0.34) 36%, rgba(5, 8, 13, 0.08) 48%, rgba(5, 8, 13, 0) 60%);
+      }
+
+      body[data-landing-shell='true'] #landing-shell-overlay[hidden] {
+        display: none !important;
+      }
+
+      body[data-landing-shell='true'] .landing-shell-copy {
+        position: absolute;
+        top: clamp(36px, 7vh, 84px);
+        left: clamp(22px, 4.4vw, 74px);
+        width: min(430px, calc(100vw - 40px));
+        pointer-events: auto;
+        padding: 10px 10px 12px 0;
+        animation: landing-copy-enter 820ms cubic-bezier(.2,.8,.2,1) both;
+      }
+
+      body[data-landing-shell='true'] .landing-shell-copy::before {
+        content: '';
+        position: absolute;
+        inset: -18px -24px -22px -26px;
+        z-index: -1;
+        background: linear-gradient(90deg, rgba(5, 8, 13, 0.66) 0%, rgba(5, 8, 13, 0.34) 66%, rgba(5, 8, 13, 0) 100%);
+        animation: landing-panel-breathe 6s ease-in-out infinite;
+      }
+
+      body[data-landing-shell='true'] .landing-shell-eyebrow {
+        margin: 0 0 16px;
+        color: #8fdcff;
+        font-size: clamp(0.78rem, 1vw, 0.92rem);
+        letter-spacing: 0.24em;
+        text-transform: uppercase;
+      }
+
+      body[data-landing-shell='true'] .landing-shell-title {
+        margin: 0;
+        font-family: 'BlackOpsOne', sans-serif;
+        font-size: clamp(3.2rem, 7vw, 5.5rem);
+        line-height: 0.86;
+        letter-spacing: 0.03em;
+        text-transform: uppercase;
+        text-shadow: 0 14px 28px rgba(0, 0, 0, 0.74);
+        animation: landing-title-float 5.8s ease-in-out infinite;
+      }
+
+      body[data-landing-shell='true'] .landing-shell-subtitle {
+        margin: 4px 0 0;
+        color: #ffd7bd;
+        font-size: clamp(0.8rem, 0.95vw, 0.98rem);
+        letter-spacing: 0.28em;
+        text-transform: uppercase;
+        animation: landing-fade-up 760ms ease-out both;
+        animation-delay: 110ms;
+      }
+
+      body[data-landing-shell='true'] .landing-shell-summary {
+        margin: 34px 0 0;
+        max-width: 28rem;
+        color: #d7dde3;
+        font-size: clamp(1.02rem, 1.32vw, 1.18rem);
+        line-height: 1.14;
+        animation: landing-fade-up 760ms ease-out both;
+        animation-delay: 190ms;
+      }
+
+      body[data-landing-shell='true'] .landing-shell-cta-row {
+        margin-top: 28px;
+      }
+
+      body[data-landing-shell='true'] .landing-shell-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 48px;
+        padding: 0 26px;
+        color: #fff;
+        background: linear-gradient(180deg, #ff944a, #ff6a2a);
+        clip-path: polygon(8% 0, 100% 0, 92% 100%, 0 100%);
+        text-decoration: none;
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+        font-family: 'BlackOpsOne', sans-serif;
+        font-size: 0.88rem;
+        box-shadow: 0 14px 28px rgba(255, 106, 42, 0.28);
+        animation: landing-cta-pulse 2.8s ease-in-out infinite;
+      }
+
+      body[data-landing-shell='true'] .landing-shell-meta {
+        margin: 18px 0 0;
+        color: rgba(243, 245, 247, 0.68);
+        font-size: 0.82rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        animation: landing-fade-up 760ms ease-out both;
+        animation-delay: 260ms;
+      }
+
+      body[data-landing-shell='true'] .landing-shell-platforms {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        pointer-events: auto;
+        margin-top: 14px;
+        animation: landing-fade-up 760ms ease-out both;
+        animation-delay: 320ms;
+      }
+
+      body[data-landing-shell='true'] .landing-shell-platform-link {
+        width: 50px;
+        height: 50px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 16px;
+        border: 1px solid rgba(143, 220, 255, 0.18);
+        background: linear-gradient(180deg, rgba(22, 28, 38, 0.92), rgba(10, 14, 20, 0.92));
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.025), 0 10px 24px rgba(0, 0, 0, 0.24);
+        text-decoration: none;
+        color: #eaf5ff;
+        transition: transform 160ms ease, border-color 160ms ease, background 160ms ease, color 160ms ease;
+        position: relative;
+        overflow: hidden;
+        animation: landing-icon-float 3.6s ease-in-out infinite;
+      }
+
+      body[data-landing-shell='true'] .landing-shell-platform-link::before {
+        content: '';
+        position: absolute;
+        inset: 1px;
+        border-radius: inherit;
+        background: radial-gradient(circle at 50% 10%, rgba(255,255,255,0.16), transparent 42%);
+        opacity: 0.9;
+      }
+
+      body[data-landing-shell='true'] .landing-shell-platform-link::after {
+        content: '';
+        position: absolute;
+        inset: auto -30% -45% -30%;
+        height: 65%;
+        background: radial-gradient(circle, color-mix(in srgb, currentColor 44%, transparent) 0%, transparent 72%);
+        opacity: 0.65;
+        filter: blur(10px);
+      }
+
+      body[data-landing-shell='true'] .landing-shell-platform-link:hover {
+        transform: translateY(-2px);
+        border-color: rgba(143, 220, 255, 0.34);
+        background: linear-gradient(180deg, rgba(28, 36, 48, 0.96), rgba(12, 17, 24, 0.96));
+        color: #ffffff;
+      }
+
+      body[data-landing-shell='true'] .landing-shell-platform-link[aria-disabled='true'] {
+        opacity: 0.42;
+        pointer-events: none;
+      }
+
+      body[data-landing-shell='true'] .landing-shell-platform-link svg {
+        width: 24px;
+        height: 24px;
+        display: block;
+        fill: currentColor;
+        position: relative;
+        z-index: 1;
+        filter: drop-shadow(0 0 10px rgba(255,255,255,0.12));
+      }
+
+      body[data-landing-shell='true'] .platform-windows { color: #78d6ff; }
+      body[data-landing-shell='true'] .platform-android { color: #9ff96b; animation-delay: .12s; }
+      body[data-landing-shell='true'] .platform-mac { color: #f3f6ff; animation-delay: .24s; }
+      body[data-landing-shell='true'] .platform-linux { color: #ffd37a; animation-delay: .36s; }
+      body[data-landing-shell='true'] .platform-ios { color: #8db8ff; animation-delay: .48s; }
+
+      @keyframes landing-copy-enter {
+        from { opacity: 0; transform: translate3d(0, 16px, 0); }
+        to { opacity: 1; transform: translate3d(0, 0, 0); }
+      }
+
+      @keyframes landing-fade-up {
+        from { opacity: 0; transform: translate3d(0, 12px, 0); }
+        to { opacity: 1; transform: translate3d(0, 0, 0); }
+      }
+
+      @keyframes landing-panel-breathe {
+        0%, 100% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.015); opacity: 0.94; }
+      }
+
+      @keyframes landing-title-float {
+        0%, 100% { transform: translate3d(0, 0, 0); }
+        50% { transform: translate3d(0, -4px, 0); }
+      }
+
+      @keyframes landing-cta-pulse {
+        0%, 100% { transform: translate3d(0, 0, 0); box-shadow: 0 14px 28px rgba(255, 106, 42, 0.28); }
+        50% { transform: translate3d(0, -2px, 0); box-shadow: 0 18px 36px rgba(255, 106, 42, 0.36); }
+      }
+
+      @keyframes landing-icon-float {
+        0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+        50% { transform: translate3d(0, -3px, 0) scale(1.04); }
+      }
+
+      @media (max-width: 640px) {
+        body[data-landing-shell='true'] .landing-shell-copy {
+          top: 20px;
+          left: 14px;
+          width: min(255px, calc(100vw - 28px));
+        }
+
+        body[data-landing-shell='true'] .landing-shell-summary {
+          margin-top: 18px;
+          font-size: 0.94rem;
+        }
+
+        body[data-landing-shell='true'] .landing-shell-cta-row {
+          margin-top: 18px;
+          gap: 10px;
+        }
+
+        body[data-landing-shell='true'] .landing-shell-platform-link {
+          width: 44px;
+          height: 44px;
+          border-radius: 12px;
+        }
+      }
+    </style>
+    <div id="app-splash" style="
+      position:fixed; inset:0; z-index:9999;
+      background:#000000;
+      display:flex; align-items:center; justify-content:center;
+      transition:opacity 0.5s ease;
+    ">
+      <!-- Centered column: title + tank -->
+      <div style="display:flex; flex-direction:column; align-items:center; gap:2px; width:90vw; max-width:600px;">
+        <!-- Pulsating title -->
+        <div id="app-splash-title" style="
+          font-family:'BlackOpsOne', sans-serif;
+          font-weight:bold;
+          letter-spacing:4px;
+          color:#ff7a20;
+          text-transform:uppercase;
+          animation:blastova-pulse 1.6s ease-in-out infinite;
+          white-space:nowrap;
+        ">Blastova: The Last Wave</div>
+        <!-- Tank track — always visible so splash consistently shows the tank -->
+        <div id="app-splash-track" style="position:relative; width:100%; height:110px; max-height:110px; overflow:hidden; opacity:1; transition:opacity 0.4s ease, max-height 0.4s ease;
+          -webkit-mask-image:linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
+          mask-image:linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);">
+          <div id="app-splash-tank" style="position:absolute; top:50%; left:0; width:52px; height:52px; border-radius:6px; background:transparent; will-change:transform; transform:translateY(-50%) translateX(-100px);">
+            <img src="assets/ground-shaker/ground_shaker_asset/Camo/Bodies/body_tracks.gif"
+              id="asl-body"
+              decoding="async"
+              onload="var t=document.getElementById('app-splash-track'); if (t) { t.style.maxHeight='110px'; t.style.opacity='1'; }"
+              style="position:absolute;inset:0;width:52px;height:52px;transform:rotate(90deg);" />
+            <div id="asl-turrets" style="position:absolute;inset:0;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+    (function() {
+      // Hide the native Android splash only once our HTML splash has actually
+      // painted, instead of relying on a fixed timer that races WebView init
+      // and causes flashes/jank during handoff.
+      try {
+        if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.SplashScreen) {
+          requestAnimationFrame(function() {
+            requestAnimationFrame(function() {
+              window.Capacitor.Plugins.SplashScreen.hide({ fadeOutDuration: 220 }).catch(function(){});
+            });
+          });
+        }
+      } catch (_) {}
+
+      var TURRET_SRCS = [
+        'assets/ground-shaker/ground_shaker_asset/Camo/Weapons/turret_01_mk1.gif',
+        'assets/ground-shaker/ground_shaker_asset/Camo/Weapons/turret_01_mk2.gif',
+        'assets/ground-shaker/ground_shaker_asset/Camo/Weapons/turret_01_mk3.gif',
+        'assets/ground-shaker/ground_shaker_asset/Camo/Weapons/turret_01_mk4.gif',
+        'assets/ground-shaker/ground_shaker_asset/Camo/Weapons/turret_02_mk1.gif',
+        'assets/ground-shaker/ground_shaker_asset/Camo/Weapons/turret_02_mk2.gif',
+        'assets/ground-shaker/ground_shaker_asset/Camo/Weapons/turret_02_mk3.gif',
+        'assets/ground-shaker/ground_shaker_asset/Camo/Weapons/turret_02_mk4.gif',
+      ];
+
+      var turretEl = document.getElementById('asl-turrets');
+      var currentStage = -1;
+      // Reuse a single <img> and just swap its `src` instead of tearing down
+      // and recreating DOM nodes on every stage change (avoids GC churn and
+      // reflow). Preload all frames up front so swaps hit the decoded image
+      // cache instantly instead of stalling mid-animation on mobile.
+      var turretImg = document.createElement('img');
+      turretImg.decoding = 'async';
+      turretImg.style.cssText = 'position:absolute;inset:0;width:52px;height:52px;transform:rotate(90deg);';
+      turretEl.appendChild(turretImg);
+      TURRET_SRCS.forEach(function(src) {
+        var preload = new Image();
+        preload.src = src;
+      });
+
+      function setTurret(idx) {
+        if (idx === currentStage) return;
+        currentStage = idx;
+        turretImg.src = TURRET_SRCS[idx];
+      }
+
+      // Move tank left->right using a native CSS animation (compositor
+      // thread) instead of a requestAnimationFrame position loop (main
+      // thread). A rAF loop only gets to advance on the frames the main
+      // thread actually hands it — while the huge game bundle is parsing/
+      // executing, frames get skipped, so the tank visibly stops and lurches
+      // ("stop and go"). A CSS transform animation keeps running smoothly on
+      // the compositor regardless of how busy the main thread is.
+      var tank = document.getElementById('app-splash-tank');
+      var track = document.getElementById('app-splash-track');
+      var splashShownAt = Date.now();
+
+      var TANK_SPEED_PX_PER_SEC = 96; // ~= previous 1.6px/frame @60fps feel
+      var trackW = track ? track.offsetWidth : 600;
+      var animStyleTag = document.createElement('style');
+      document.head.appendChild(animStyleTag);
+
+      // Start ~15% of the way into the traverse so the tank is already
+      // inside the visible (unmasked) area the instant the splash paints,
+      // instead of spending the first ~1s scrolling in from off-screen.
+      var START_FRACTION = 0.15;
+
+      function applyTankAnimation() {
+        var distance = trackW + 200; // from -100px to trackW+100px
+        var durationSec = distance / TANK_SPEED_PX_PER_SEC;
+        animStyleTag.textContent =
+          '@keyframes blastova-tank-move {' +
+          'from { transform: translateY(-50%) translateX(-100px); }' +
+          'to   { transform: translateY(-50%) translateX(' + (trackW + 100) + 'px); }' +
+          '}';
+        tank.style.animation = 'blastova-tank-move ' + durationSec.toFixed(2) + 's linear infinite';
+        tank.style.animationDelay = '-' + (durationSec * START_FRACTION).toFixed(2) + 's';
+        return durationSec;
+      }
+      var durationSec = applyTankAnimation();
+
+      window.addEventListener('resize', function() {
+        var newW = track ? track.offsetWidth : trackW;
+        if (Math.abs(newW - trackW) < 2) return;
+        trackW = newW;
+        durationSec = applyTankAnimation();
+      }, { passive: true });
+
+      // Turret stage swaps are a minor embellishment and don't need
+      // per-frame precision — a coarse timer keeps them roughly in sync with
+      // the tank's position without needing a main-thread loop either.
+      setTurret(Math.min(7, Math.floor(START_FRACTION * 8)));
+      var turretTimer = setInterval(function() {
+        setTurret((currentStage + 1) % 8);
+      }, (durationSec * 1000) / 8);
+
+      // Was 1800ms — that was a fixed floor added purely for animation feel,
+      // not because anything needed that long. On fast loads it just padded
+      // out the splash for no reason, reading as "slow". Real device/asset
+      // load time still extends the splash naturally past this floor when needed.
+      var MIN_SPLASH_MS = 700;
+
+      window.__dismissSplash = function() {
+        clearInterval(turretTimer);
+        var splash = document.getElementById('app-splash');
+        if (!splash) return;
+        var elapsed = Date.now() - splashShownAt;
+        var delay = Math.max(0, MIN_SPLASH_MS - elapsed);
+        setTimeout(function() {
+          splash.style.opacity = '0';
+          setTimeout(function() { splash && splash.remove(); }, 520);
+        }, delay);
+      };
+    })();
+    </script>
+
+    <!-- World Selection HTML overlay -->
+<!-- Settings Panel — exact design from spec -->
+<div id="settings-overlay" style="display:none; position:fixed; inset:0; z-index:300; justify-content:center; align-items:center;">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&display=swap');
+
+  #settings-overlay {
+    background:
+      linear-gradient(rgba(5,10,20,0.72), rgba(5,10,20,0.72)),
+      url("assets/landing.png") center/cover no-repeat;
+    display: none;
+  }
+  #settings-overlay::before {
+    content:""; position:absolute; inset:0; pointer-events:none;
+    background:
+      linear-gradient(rgba(0,255,255,.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,255,255,.04) 1px, transparent 1px);
+    background-size:40px 40px; opacity:.25;
+  }
+
+  /* PANEL */
+  .sp-panel {
+    position:relative;
+    width:min(620px,92vw);
+    background:linear-gradient(180deg,#1d2428,#111619);
+    border-radius:14px;
+    border:3px solid #4b555c;
+    box-shadow:0 0 50px rgba(0,255,255,.18), inset 0 0 0 3px #252d31, inset 0 0 35px rgba(0,255,255,.05);
+    font-family:'BlackOpsOne',monospace;
+  }
+  .sp-panel::before {
+    content:""; position:absolute; left:16px; top:16px; right:16px; bottom:16px;
+    border-radius:8px; border:2px solid #3df4ff;
+    box-shadow:0 0 14px #00ffff, inset 0 0 10px rgba(0,255,255,.35);
+    pointer-events:none; z-index:0;
+  }
+  .sp-panel::after {
+    content:""; position:absolute; inset:0; pointer-events:none; z-index:0; opacity:.1;
+    background:linear-gradient(115deg,transparent 48%,rgba(255,255,255,.07) 49%,transparent 50%),
+               linear-gradient(35deg,transparent 63%,rgba(255,255,255,.05) 64%,transparent 65%);
+  }
+
+  /* TITLE */
+  .sp-title {
+    position:relative; z-index:1;
+    margin:12px auto 0; width:250px; height:42px;
+    background:linear-gradient(#2a3237,#181d21); border:2px solid #485158;
+    clip-path:polygon(8% 0,92% 0,100% 20%,100% 80%,92% 100%,8% 100%,0 80%,0 20%);
+    display:flex; justify-content:center; align-items:center;
+    color:#bffcff; font-size:15px; font-weight:700;
+    text-shadow:0 0 8px cyan,0 0 16px cyan; letter-spacing:3px;
+  }
+  /* CONTENT */
+  .sp-content {
+    position:relative; z-index:1;
+    padding:10px 32px 18px;
+    display:flex; flex-direction:column; gap:6px;
+  }
+
+  /* ACCORDION HEADER */
+  .sp-accordion-header {
+    display:flex; align-items:center; justify-content:space-between;
+    padding:0 14px; height:42px; cursor:pointer;
+    background:linear-gradient(180deg,#263038,#1b2328);
+    border:2px solid #3a7a99;
+    box-shadow:0 0 8px rgba(0,255,255,.12);
+    transition:.2s;
+    -webkit-user-select:none;
+       -moz-user-select:none;
+            user-select:none;
+  }
+  .sp-accordion-header:hover { border-color:#3df4ff; box-shadow:0 0 14px rgba(0,255,255,.25); }
+  .sp-accordion-header .sp-acc-label {
+    font-size:15px; font-weight:700; letter-spacing:3px;
+    color:#3df4ff; text-shadow:0 0 8px cyan; text-transform:uppercase;
+  }
+  .sp-accordion-header .sp-acc-arrow {
+    font-size:14px; color:#3df4ff; transition:transform .25s;
+  }
+  .sp-accordion-header.open .sp-acc-arrow { transform:rotate(180deg); }
+
+  /* ACCORDION BODY */
+  .sp-accordion-body {
+    display:none; flex-direction:column; gap:5px; padding-top:4px;
+  }
+  .sp-accordion-body.open { display:flex; }
+
+  /* SLIDER ROW */
+  .sp-row {
+    height:46px;
+    background:linear-gradient(180deg,#232b30,#1a2024);
+    border:1px solid #3a454d;
+    display:flex; align-items:center; padding:0 16px; gap:0; position:relative; overflow:visible;
+  }
+  .sp-text-row {
+    height:46px;
+    background:linear-gradient(180deg,#232b30,#1a2024);
+    border:1px solid #3a454d;
+    display:flex; align-items:center; padding:0 16px; gap:10px; position:relative; overflow:visible;
+  }
+  .sp-label {
+    width:190px; flex-shrink:0;
+    color:#cde; font-size:10px; font-weight:700;
+    letter-spacing:1px; text-transform:uppercase;
+  }
+
+  .sp-text-label {
+    width:190px; flex-shrink:0;
+    color:#cde; font-size:10px; font-weight:700;
+    letter-spacing:1px; text-transform:uppercase;
+  }
+
+  .sp-text-input {
+    flex:1;
+    min-width:0;
+    height:28px;
+    border:1px solid #596168;
+    border-radius:6px;
+    background:linear-gradient(180deg,#151b1f,#0f1316);
+    color:#f3fcff;
+    font-family:'Trebuchet MS', sans-serif;
+    font-size:14px;
+    font-weight:700;
+    padding:0 10px;
+    outline:none;
+    box-sizing:border-box;
+  }
+
+  .sp-text-input::-moz-placeholder {
+    color:#8da3ae;
+  }
+
+  .sp-text-input::placeholder {
+    color:#8da3ae;
+  }
+
+  .sp-leaderboard-list {
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+    padding:6px 2px 2px;
+    width:100%;
+  }
+  .sp-leaderboard-row {
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    gap:12px;
+    color:#dbeeff;
+    font-family:'Trebuchet MS', sans-serif;
+    font-size:13px;
+    font-weight:700;
+    letter-spacing:0.2px;
+  }
+  .sp-leaderboard-name {
+    min-width:0;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .sp-leaderboard-score {
+    color:#ffd289;
+    flex-shrink:0;
+  }
+
+  /* NATIVE RANGE — sci-fi styled */
+  .sp-range {
+    -webkit-appearance:none; -moz-appearance:none; appearance:none;
+    flex:1; height:6px; border-radius:20px; outline:none; cursor:pointer;
+    background: linear-gradient(to right, #2feeff var(--pct,50%), #2d3134 var(--pct,50%));
+    border:1px solid #596168;
+  }
+  .sp-range::-webkit-slider-thumb {
+    -webkit-appearance:none; appearance:none;
+    width:22px; height:22px; border-radius:50%;
+    background:#2feeff; border:2px solid #89ffff;
+    box-shadow:0 0 10px cyan,0 0 20px cyan;
+    cursor:grab;
+  }
+  .sp-range::-moz-range-thumb {
+    width:22px; height:22px; border-radius:50%;
+    background:#2feeff; border:2px solid #89ffff;
+    box-shadow:0 0 10px cyan; cursor:grab;
+  }
+  .sp-range::-webkit-slider-track { border-radius:20px; }
+  .sp-value {
+    width:42px; text-align:right; flex-shrink:0;
+    font-size:12px; font-weight:700;
+    color:#49f7ff; text-shadow:0 0 8px cyan;
+    margin-left:10px;
+  }
+
+  /* TOGGLE ROW */
+  .sp-toggle-row {
+    height:46px;
+    background:linear-gradient(180deg,#232b30,#1a2024);
+    border:1px solid #3a454d;
+    display:flex; align-items:center; padding:0 16px;
+  }
+  .sp-toggle-label {
+    flex:1;
+    color:#cde; font-size:10px; font-weight:700;
+    letter-spacing:1px; text-transform:uppercase;
+  }
+  .sp-toggle-btn {
+    width:64px; height:26px; border-radius:4px;
+    border:1px solid #3a7a99; background:linear-gradient(#1a2a2a,#131d1d);
+    color:#3df4ff; font-size:10px; font-weight:700;
+    font-family:'BlackOpsOne',monospace; letter-spacing:1px;
+    cursor:pointer; transition:.15s;
+  }
+  .sp-toggle-btn.on {
+    background:linear-gradient(#1a4a3a,#0f2e24);
+    border-color:#3df4ff; color:#3df4ff;
+    box-shadow:0 0 8px rgba(0,255,220,.4);
+  }
+
+  /* FOOTER */
+  .sp-footer { display:flex; justify-content:flex-end; gap:14px; padding-top:6px; }
+  .sp-btn {
+    width:140px; height:38px;
+    display:flex; justify-content:center; align-items:center;
+    font-size:9px; font-weight:700; cursor:pointer;
+    text-transform:uppercase; letter-spacing:1px; transition:.2s;
+    font-family:'BlackOpsOne',monospace;
+    clip-path:polygon(8% 0,100% 0,92% 100%,0 100%);
+    border:none; outline:none;
+  }
+  .sp-btn.reset {
+    background:linear-gradient(#2a3a3a,#1a2626);
+    color:#3df4ff; border:1px solid #3a7a99;
+  }
+  .sp-btn.reset:hover { border-color:#3df4ff; color:#fff; }
+  .sp-btn.armory {
+    background: linear-gradient(#4a2626, #2b1717);
+    color: #ffb8b8;
+    border: 1px solid #a55252;
+  }
+  .sp-btn.armory:hover {
+    border-color: #ff8f8f;
+    color: #ffe4e4;
+  }
+  .sp-btn.discard { background:linear-gradient(#555,#363636); color:#999; }
+  .sp-btn.discard:hover { color:white; }
+  .sp-btn.apply {
+    background:#26ecff; color:black;
+    box-shadow:0 0 12px cyan,0 0 22px cyan;
+  }
+  .sp-btn.apply:hover { transform:translateY(-2px); box-shadow:0 0 20px cyan,0 0 40px cyan; }
+
+  /* Compact landscape (Samsung A15 ~360-450px CSS height) */
+  @media (max-height: 520px) and (orientation: landscape) {
+    .sp-panel {
+      width: min(96vw, 760px);
+      height: 88vh;
+      max-height: 88vh;
+      min-height: 88vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .sp-title {
+      width: min(55vw, 240px);
+      height: 30px;
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      margin-top: 6px;
+    }
+    .sp-content {
+      padding: 5px 20px 4px;
+      gap: 3px;
+      flex: 1 1 auto;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .sp-accordion-header {
+      height: 30px;
+      padding: 0 10px;
+      flex-shrink: 0;
+    }
+    .sp-accordion-header .sp-acc-label {
+      font-size: 9px;
+      letter-spacing: 1.5px;
+    }
+    .sp-accordion-body {
+      gap: 2px;
+      padding-top: 2px;
+      flex-shrink: 0;
+    }
+    .sp-row,
+    .sp-toggle-row {
+      height: 30px;
+      padding: 0 8px;
+      flex-shrink: 0;
+    }
+    .sp-label,
+    .sp-toggle-label {
+      width: 90px;
+      font-size: 7.5px;
+      letter-spacing: 0.3px;
+    }
+    .sp-range::-webkit-slider-thumb {
+      width: 16px;
+      height: 16px;
+    }
+    .sp-value {
+      width: 32px;
+      font-size: 9px;
+      margin-left: 5px;
+    }
+    .sp-toggle-btn {
+      width: 48px;
+      height: 22px;
+      font-size: 8px;
+    }
+    .sp-footer {
+      gap: 4px;
+      padding: 4px 20px 8px;
+      flex-wrap: nowrap;
+      justify-content: space-between;
+      width: 100%;
+      flex-shrink: 0;
+      box-sizing: border-box;
+    }
+    .sp-btn {
+      flex: 1 1 0;
+      width: auto;
+      min-width: 0;
+      height: 28px;
+      font-size: 6.5px;
+      letter-spacing: 0.3px;
+      padding: 0 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+</style>
+
+<div class="sp-panel" id="settingsPanelEl">
+  <div class="sp-title-row">
+    <div class="sp-title">SYSTEM SETTINGS</div>
+</div>
+
+  <div class="sp-content">
+
+    <!-- AUDIO SECTION -->
+    <div class="sp-accordion-header" id="sp-acc-audio" onclick="spToggleAcc('audio')">
+      <span class="sp-acc-label">Audio</span>
+      <span class="sp-acc-arrow">▼</span>
+    </div>
+    <div class="sp-accordion-body" id="sp-body-audio">
+
+      <div class="sp-row">
+        <div class="sp-label">Weapon Shots</div>
+        <input type="range" class="sp-range" id="vol_weapon" min="0" max="100" value="20"
+               oninput="spSliderInput(this,'val_weapon','weapon')">
+        <span class="sp-value" id="val_weapon">20%</span>
+      </div>
+
+      <div class="sp-row">
+        <div class="sp-label">Explosions</div>
+        <input type="range" class="sp-range" id="vol_explosion" min="0" max="100" value="88"
+               oninput="spSliderInput(this,'val_explosion','explosion')">
+        <span class="sp-value" id="val_explosion">88%</span>
+      </div>
+
+      <div class="sp-row">
+        <div class="sp-label">Other SFX</div>
+        <input type="range" class="sp-range" id="vol_other" min="0" max="100" value="40"
+               oninput="spSliderInput(this,'val_other','other')">
+        <span class="sp-value" id="val_other">40%</span>
+      </div>
+
+      <div class="sp-row">
+        <div class="sp-label">Music</div>
+        <input type="range" class="sp-range" id="vol_music" min="0" max="100" value="45"
+               oninput="spSliderInput(this,'val_music','music')">
+        <span class="sp-value" id="val_music">45%</span>
+      </div>
+
+    </div>
+    <!-- /AUDIO -->
+
+    <!-- GAMEPLAY SECTION -->
+    <div class="sp-accordion-header" id="sp-acc-gameplay" onclick="spToggleAcc('gameplay')">
+      <span class="sp-acc-label">Gameplay</span>
+      <span class="sp-acc-arrow">▼</span>
+    </div>
+    <div class="sp-accordion-body" id="sp-body-gameplay">
+
+      <div class="sp-text-row">
+        <span class="sp-text-label">Player Name</span>
+        <input class="sp-text-input" id="gp-commander-name" type="text" maxlength="24" placeholder="Player">
+      </div>
+
+      <div class="sp-toggle-row" id="gp-row-pathguide">
+        <span class="sp-toggle-label">Show Path Guide</span>
+        <button class="sp-toggle-btn" id="gp-toggle-path" onclick="spToggleGameplay('showPathGuide','gp-toggle-path')">OFF</button>
+      </div>
+
+      <div class="sp-toggle-row">
+        <span class="sp-toggle-label">Double-Click Fullscreen</span>
+        <button class="sp-toggle-btn" id="gp-toggle-fs" onclick="spToggleGameplay('doubleClickFullscreen','gp-toggle-fs')">OFF</button>
+      </div>
+
+      <div class="sp-toggle-row">
+        <span class="sp-toggle-label">Cloud Save Sync</span>
+        <button class="sp-toggle-btn" id="gp-toggle-cloud-sync" onclick="spToggleGameplay('cloudSync','gp-toggle-cloud-sync')">ON</button>
+      </div>
+
+      <div class="sp-toggle-row">
+        <span class="sp-toggle-label">Difficulty</span>
+        <select id="gp-diff-select" onchange="spSetDifficulty(this.value)" style="background:#1a2a2a;color:#3df4ff;border:1px solid #3a7a99;padding:4px 8px;font-family:inherit;font-size:11px;letter-spacing:1px;cursor:pointer;border-radius:2px;">
+          <option value="easy">EASY</option>
+          <option value="normal">NORMAL</option>
+          <option value="hard">HARD</option>
+        </select>
+      </div>
+
+      <div class="sp-toggle-row">
+        <span class="sp-toggle-label">Unlock All Worlds <span style="font-size:10px;opacity:.55;">(Dev)</span></span>
+        <button class="sp-toggle-btn" id="gp-toggle-unlock-worlds" onclick="spToggleUnlockWorlds()">OFF</button>
+      </div>
+
+      <div class="sp-toggle-row">
+        <span class="sp-toggle-label">Dev UI Tools <span style="font-size:10px;opacity:.55;">(Attack tuner + tray cog)</span></span>
+        <button class="sp-toggle-btn" id="gp-toggle-dev-tools" onclick="spToggleGameplay('devUiTools','gp-toggle-dev-tools')">OFF</button>
+      </div>
+
+    </div>
+    <!-- /GAMEPLAY -->
+
+    <!-- WEAPON UPGRADES SECTION -->
+    <div class="sp-accordion-header" id="sp-acc-upgrades" onclick="spToggleAcc('upgrades')">
+      <span class="sp-acc-label">Weapon Upgrades</span>
+      <span class="sp-acc-arrow">▼</span>
+    </div>
+    <div class="sp-accordion-body" id="sp-body-upgrades">
+      <div class="sp-toggle-row">
+        <span class="sp-toggle-label">Open Blueprint Armory</span>
+        <button class="sp-toggle-btn on" id="settingsUpgradesOpenBtn">OPEN</button>
+      </div>
+    </div>
+    <!-- /WEAPON UPGRADES -->
+
+    <!-- LEADERBOARD SECTION -->
+    <div class="sp-accordion-header" id="sp-acc-leaderboard" onclick="spToggleAcc('leaderboard')">
+      <span class="sp-acc-label">Leaderboard</span>
+      <span class="sp-acc-arrow">▼</span>
+    </div>
+    <div class="sp-accordion-body" id="sp-body-leaderboard">
+      <div class="sp-row" style="height:auto; align-items:flex-start; padding:10px 16px;">
+        <div class="sp-label" style="width:190px; padding-top:2px;">Top Scores</div>
+        <div class="sp-leaderboard-list" id="settingsLeaderboardList"></div>
+      </div>
+    </div>
+    <!-- /LEADERBOARD -->
+
+  </div>
+
+    <div class="sp-footer">
+      <button class="sp-btn armory"  id="settingsArmoryResetBtn">Reset Armory Progress</button>
+      <button class="sp-btn reset"   id="settingsResetBtn">Reset Defaults</button>
+      <button class="sp-btn discard" id="settingsDiscardBtn">Discard</button>
+      <button class="sp-btn apply"   id="settingsApplyBtn">Apply Changes</button>
+    </div>
+
+</div>
+</div>
+
+<script>
+(function () {
+  var busMap = [
+    { bus:'weapon',    sliderId:'vol_weapon',    valId:'val_weapon'    },
+    { bus:'explosion', sliderId:'vol_explosion', valId:'val_explosion' },
+    { bus:'other',     sliderId:'vol_other',     valId:'val_other'     },
+    { bus:'music',     sliderId:'vol_music',     valId:'val_music'     },
+  ];
+  var savedValues = {};
+  var savedGpValues = {};
+  var savedCommanderName = 'Player';
+  var DEV_UI_TOOLS_KEY = 'tdDevUiToolsV1';
+  var COMMANDER_KEY = 'tdCommanderV2';
+  var COMMANDER_LEADERBOARD_KEY = 'tdCommanderLeaderboardV1';
+  var COMMANDER_CLOUD_SYNC_KEY = 'tdCommanderCloudSyncV1';
+  var COMMANDER_REMOTE_ROUTE = '/__commander-store';
+  var commanderRemotePersistQueue = Promise.resolve();
+
+  function isCommanderCloudSyncEnabled() {
+    if (window.__tdForceOffline === true) return false;
+    if (window.__tdEnableCommanderCloudSync === false) return false;
+    if (window.__tdEnableCommanderCloudSync === true) return true;
+    try {
+      var stored = localStorage.getItem(COMMANDER_CLOUD_SYNC_KEY);
+      if (stored === '0') return false;
+      if (stored === '1') return true;
+    } catch (_) {}
+    try {
+      var params = new URLSearchParams(window.location.search || '');
+      if (params.get('cloudSync') === '0') return false;
+      if (params.get('cloudSync') === '1') return true;
+    } catch (_) {}
+    return true;
+  }
+
+  function canUseCommanderRemoteSync() {
+    if (!isCommanderCloudSyncEnabled()) return false;
+    if (typeof fetch !== 'function') return false;
+    if (typeof navigator !== 'undefined' && navigator.onLine === false) return false;
+    return true;
+  }
+
+  window.__tdSetCommanderCloudSyncEnabled = function(enabled) {
+    var next = !!enabled;
+    try {
+      localStorage.setItem(COMMANDER_CLOUD_SYNC_KEY, next ? '1' : '0');
+    } catch (_) {}
+    window.__tdEnableCommanderCloudSync = next;
+    if (next) {
+      window.__tdHydrateCommanderStore();
+    }
+    return next;
+  };
+
+  function applyDevUiToolsMode(enabled) {
+    var next = !!enabled;
+    try { localStorage.setItem(DEV_UI_TOOLS_KEY, next ? '1' : '0'); } catch(e) {}
+    window.__tdDevUiToolsEnabled = next;
+    if (typeof window.__setTrayDevToolsEnabled === 'function') {
+      window.__setTrayDevToolsEnabled(next);
+    }
+    var iframe = document.querySelector('[data-blueprints-overlay-root="true"] .bp-iframe');
+    try {
+      if (iframe && iframe.contentWindow && typeof iframe.contentWindow.__setDevToolsEnabled === 'function') {
+        iframe.contentWindow.__setDevToolsEnabled(next);
+      }
+    } catch (_) {
+      // Ignore cross-window access failures.
+    }
+  }
+
+  function getStoredDevUiToolsMode() {
+    try { return localStorage.getItem(DEV_UI_TOOLS_KEY) === '1'; } catch(e) { return false; }
+  }
+
+  function getGameplayToggleButtonByKey(key) {
+    if (key === 'showPathGuide') return document.getElementById('gp-toggle-path');
+    if (key === 'doubleClickFullscreen') return document.getElementById('gp-toggle-fs');
+    if (key === 'cloudSync') return document.getElementById('gp-toggle-cloud-sync');
+    if (key === 'devUiTools') return document.getElementById('gp-toggle-dev-tools');
+    return null;
+  }
+
+  function normalizeCommanderName(name) {
+    var trimmed = String(name || '').replace(/\s+/g, ' ').trim();
+    return trimmed ? trimmed.slice(0, 24) : 'Player';
+  }
+
+  function getCommanderNameInput() {
+    return document.getElementById('gp-commander-name');
+  }
+
+  function getLeaderboardListEl() {
+    return document.getElementById('settingsLeaderboardList');
+  }
+
+  function readCommanderProfile() {
+    try {
+      var raw = localStorage.getItem(COMMANDER_KEY);
+      if (!raw) return { level: 1, xp: 0, worldsCleared: [], name: 'Player' };
+      var parsed = JSON.parse(raw) || {};
+      return {
+        level: Math.max(1, Number(parsed.level) || 1),
+        xp: Math.max(0, Number(parsed.xp) || 0),
+        worldsCleared: Array.isArray(parsed.worldsCleared) ? parsed.worldsCleared.slice() : [],
+        name: normalizeCommanderName(parsed.name),
+      };
+    } catch (e) {
+      return { level: 1, xp: 0, worldsCleared: [], name: 'Player' };
+    }
+  }
+
+  function syncCommanderNameField() {
+    var input = getCommanderNameInput();
+    if (!input) return;
+    var scene = window.__tdScene;
+    var profile = scene && scene.loadCommanderData ? scene.loadCommanderData() : readCommanderProfile();
+    var name = normalizeCommanderName(profile && profile.name);
+    input.value = name;
+    savedCommanderName = name;
+  }
+
+  function applyCommanderName() {
+    var input = getCommanderNameInput();
+    if (!input) return;
+    var nextName = normalizeCommanderName(input.value);
+    input.value = nextName;
+    savedCommanderName = nextName;
+    var scene = window.__tdScene;
+    if (scene && scene.loadCommanderData && scene.saveCommanderData) {
+      var profile = scene.loadCommanderData();
+      profile.name = nextName;
+      scene.saveCommanderData(profile);
+    } else {
+      try {
+        var profileRaw = localStorage.getItem(COMMANDER_KEY);
+        var profileData = profileRaw ? (JSON.parse(profileRaw) || {}) : {};
+        profileData.name = nextName;
+        localStorage.setItem(COMMANDER_KEY, JSON.stringify(profileData));
+        if (typeof window.__tdPersistCommanderStore === 'function') {
+          window.__tdPersistCommanderStore({
+            profile: profileData,
+            profileUpdatedAt: Date.now(),
+          });
+        }
+      } catch (e) {}
+    }
+    var scene = window.__tdScene;
+    if (scene) {
+      if (typeof scene.updateHud === 'function') scene.updateHud();
+      if (typeof scene.updateHtmlHudValues === 'function') scene.updateHtmlHudValues(true);
+      if (typeof scene.updateMultiplayerCommanderHud === 'function') scene.updateMultiplayerCommanderHud(true);
+    }
+  }
+
+  function readCommanderLeaderboard() {
+    try {
+      var raw = localStorage.getItem(COMMANDER_LEADERBOARD_KEY);
+      if (!raw) return [];
+      var parsed = JSON.parse(raw);
+      if (!Array.isArray(parsed)) return [];
+      return parsed
+        .map(function(entry) {
+          return {
+            name: normalizeCommanderName(entry && entry.name),
+            score: Math.max(0, Number(entry && entry.score) || 0),
+            updatedAt: Math.max(0, Number(entry && entry.updatedAt) || 0),
+          };
+        })
+        .filter(function(entry) { return entry.score > 0; })
+        .sort(function(a, b) { return (b.score - a.score) || (b.updatedAt - a.updatedAt); })
+        .slice(0, 5);
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function normalizeCommanderProfileForSync(profile) {
+    var source = profile && typeof profile === 'object' ? profile : {};
+    return {
+      level: Math.max(1, Number(source.level) || 1),
+      xp: Math.max(0, Number(source.xp) || 0),
+      worldsCleared: Array.isArray(source.worldsCleared) ? source.worldsCleared.slice() : [],
+      name: normalizeCommanderName(source.name),
+    };
+  }
+
+  function readCommanderProfileLocalRaw() {
+    try {
+      var raw = localStorage.getItem(COMMANDER_KEY);
+      if (!raw) return normalizeCommanderProfileForSync({});
+      return normalizeCommanderProfileForSync(JSON.parse(raw) || {});
+    } catch (_) {
+      return normalizeCommanderProfileForSync({});
+    }
+  }
+
+  function readCommanderLeaderboardLocalRaw() {
+    return readCommanderLeaderboard();
+  }
+
+  function applyCommanderSnapshotToLocal(snapshot) {
+    if (!snapshot || typeof snapshot !== 'object') return;
+    var profile = normalizeCommanderProfileForSync(snapshot.profile || {});
+    var leaderboard = Array.isArray(snapshot.leaderboard) ? snapshot.leaderboard : [];
+    var profileUpdatedAt = Math.max(0, Number(snapshot.profileUpdatedAt) || 0);
+    var leaderboardUpdatedAt = Math.max(0, Number(snapshot.leaderboardUpdatedAt) || 0);
+    try {
+      localStorage.setItem(COMMANDER_KEY, JSON.stringify(profile));
+      localStorage.setItem(COMMANDER_LEADERBOARD_KEY, JSON.stringify(leaderboard));
+      localStorage.setItem('tdCommanderProfileUpdatedAt', String(profileUpdatedAt));
+      localStorage.setItem('tdCommanderLeaderboardUpdatedAt', String(leaderboardUpdatedAt));
+    } catch (_) {}
+    window.__tdCommanderStoreSnapshot = {
+      profile: profile,
+      leaderboard: leaderboard,
+      profileUpdatedAt: profileUpdatedAt,
+      leaderboardUpdatedAt: leaderboardUpdatedAt,
+    };
+  }
+
+  window.__tdPersistCommanderStore = function(partial) {
+    var payload = partial && typeof partial === 'object' ? partial : {};
+    var profile = normalizeCommanderProfileForSync(payload.profile || readCommanderProfileLocalRaw());
+    var leaderboard = Array.isArray(payload.leaderboard) ? payload.leaderboard : readCommanderLeaderboardLocalRaw();
+    var profileUpdatedAt = Math.max(0, Number(payload.profileUpdatedAt) || Date.now());
+    var leaderboardUpdatedAt = Math.max(0, Number(payload.leaderboardUpdatedAt) || Date.now());
+    window.__tdCommanderStoreSnapshot = {
+      profile: profile,
+      leaderboard: leaderboard,
+      profileUpdatedAt: profileUpdatedAt,
+      leaderboardUpdatedAt: leaderboardUpdatedAt,
+    };
+    if (!canUseCommanderRemoteSync()) return;
+    commanderRemotePersistQueue = commanderRemotePersistQueue
+      .catch(function() { return null; })
+      .then(function() {
+        return fetch(COMMANDER_REMOTE_ROUTE, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(window.__tdCommanderStoreSnapshot),
+          keepalive: true,
+        }).catch(function() { return null; });
+      });
+  };
+
+  window.__tdHydrateCommanderStore = function() {
+    if (!canUseCommanderRemoteSync()) return Promise.resolve(false);
+    return fetch(COMMANDER_REMOTE_ROUTE, { method: 'GET', cache: 'no-store' })
+      .then(function(resp) {
+        if (!resp || !resp.ok) return null;
+        return resp.json();
+      })
+      .then(function(payload) {
+        if (!payload || !payload.ok || !payload.data) return false;
+        applyCommanderSnapshotToLocal(payload.data);
+        window.dispatchEvent(new CustomEvent('td:commander-remote-hydrated'));
+        var scene = window.__tdScene;
+        if (scene && typeof scene.updateHud === 'function') scene.updateHud();
+        if (scene && typeof scene.updateHtmlHudValues === 'function') scene.updateHtmlHudValues(true);
+        return true;
+      })
+      .catch(function() { return false; });
+  };
+
+  if (isCommanderCloudSyncEnabled()) {
+    window.__tdHydrateCommanderStore();
+  }
+
+  function renderCommanderLeaderboard() {
+    var list = getLeaderboardListEl();
+    if (!list) return;
+    var entries = readCommanderLeaderboard();
+    if (!entries.length) {
+      list.innerHTML = '<div class="sp-leaderboard-row"><span class="sp-leaderboard-name">No scores yet</span><span class="sp-leaderboard-score">0</span></div>';
+      return;
+    }
+    list.innerHTML = entries.map(function(entry, index) {
+      return '<div class="sp-leaderboard-row">' +
+        '<span class="sp-leaderboard-name">' + String(index + 1) + '. ' + String(entry.name) + '</span>' +
+        '<span class="sp-leaderboard-score">' + String(entry.score) + '</span>' +
+      '</div>';
+    }).join('');
+  }
+
+  /* update slider track fill and label */
+  function spUpdateSlider(el, valId) {
+    var pct = el.value;
+    el.style.setProperty('--pct', pct + '%');
+    document.getElementById(valId).textContent = pct + '%';
+  }
+
+  /* called on every input event — live preview */
+  window.spSliderInput = function(el, valId, bus) {
+    spUpdateSlider(el, valId);
+    var val = parseInt(el.value) / 100;
+    var scene = window.__tdScene;
+    if (scene && scene.setAudioBusLevel) {
+      scene.setAudioBusLevel(bus, val, false);
+      if (scene.syncThemeMusicVolumes) scene.syncThemeMusicVolumes();
+    }
+    spCheckDirty();
+  };
+
+  function spCheckDirty() {
+    var audioDirty = busMap.some(function(m) {
+      var el = document.getElementById(m.sliderId);
+      if (!el) return false;
+      return Math.abs(parseInt(el.value)/100 - (savedValues[m.bus] || 0)) > 0.005;
+    });
+    var nameInput = getCommanderNameInput();
+    var commanderDirty = !!nameInput && normalizeCommanderName(nameInput.value) !== normalizeCommanderName(savedCommanderName);
+    var gpDirty = ['showPathGuide','doubleClickFullscreen','cloudSync','devUiTools'].some(function(key) {
+      var btn = getGameplayToggleButtonByKey(key);
+      if (!btn) return false;
+      var current = btn.classList.contains('on');
+      return current !== !!savedGpValues[key];
+    });
+    var dirty = audioDirty || gpDirty || commanderDirty;
+    var btn = document.getElementById('settingsApplyBtn');
+    if (btn) btn.textContent = dirty ? 'Apply Changes' : 'Close';
+  }
+
+  function isPathGuideFeatureAvailable() {
+    var host = String(window.location.hostname || '').toLowerCase();
+    var protocol = String(window.location.protocol || '').toLowerCase();
+    var isLocalHttp = (protocol === 'http:' || protocol === 'https:')
+      && (host === 'localhost' || host === '127.0.0.1' || host.slice(-6) === '.local');
+    return isLocalHttp;
+  }
+
+  function syncGameplayFeatureVisibility() {
+    var enabled = isPathGuideFeatureAvailable();
+    var row = document.getElementById('gp-row-pathguide');
+    var pathBtn = document.getElementById('gp-toggle-path');
+    if (row) row.style.display = enabled ? '' : 'none';
+    if (pathBtn && !enabled) {
+      pathBtn.textContent = 'OFF';
+      pathBtn.classList.remove('on');
+    }
+  }
+
+  /* accordion toggle */
+  window.spToggleAcc = function(id) {
+    var hdr  = document.getElementById('sp-acc-' + id);
+    var body = document.getElementById('sp-body-' + id);
+    if (!hdr || !body) return;
+    var isOpen = body.classList.contains('open');
+    body.classList.toggle('open', !isOpen);
+    hdr.classList.toggle('open', !isOpen);
+  };
+
+  var LS_KEY = 'tdAudioSettingsV1';
+
+  function readFromStorage() {
+    try { return JSON.parse(localStorage.getItem(LS_KEY) || '{}'); } catch(e) { return {}; }
+  }
+
+  function syncFromGame() {
+    var scene = window.__tdScene;
+    var stored = readFromStorage();
+    var defaults = { weapon:0.20, explosion:0.88, other:0.40, music:0.45 };
+    busMap.forEach(function(m) {
+      var val;
+      if (scene && scene.audioSettings && m.bus in scene.audioSettings) {
+        val = scene.audioSettings[m.bus];
+      } else if (stored[m.bus] !== undefined) {
+        val = stored[m.bus];
+      } else {
+        val = defaults[m.bus];
+      }
+      var pct = Math.round(val * 100);
+      var el = document.getElementById(m.sliderId);
+      if (el) { el.value = pct; spUpdateSlider(el, m.valId); }
+      savedValues[m.bus] = val;
+    });
+    syncCommanderNameField();
+    renderCommanderLeaderboard();
+    spCheckDirty();
+  }
+
+  function applyToGame() {
+    var scene = window.__tdScene;
+    var data = {};
+    busMap.forEach(function(m) {
+      var el = document.getElementById(m.sliderId);
+      if (!el) return;
+      var val = parseInt(el.value) / 100;
+      data[m.bus] = val;
+      savedValues[m.bus] = val;
+      if (scene && scene.setAudioBusLevel) scene.setAudioBusLevel(m.bus, val, false);
+    });
+    try { localStorage.setItem(LS_KEY, JSON.stringify(data)); } catch(e) {}
+    if (scene) {
+      if (scene.syncThemeMusicVolumes) scene.syncThemeMusicVolumes();
+      if (scene.persistAudioSettings) scene.persistAudioSettings();
+    }
+    applyCommanderName();
+    // Save gameplay toggles
+    var gpData = readGpStorage();
+    ['showPathGuide','doubleClickFullscreen','cloudSync','devUiTools'].forEach(function(key) {
+      var btnEl = getGameplayToggleButtonByKey(key);
+      if (!btnEl) return;
+      var val = btnEl.classList.contains('on');
+      gpData[key] = val;
+      savedGpValues[key] = val;
+      if (key === 'cloudSync') window.__tdSetCommanderCloudSyncEnabled(val);
+      if (key === 'devUiTools') applyDevUiToolsMode(val);
+    });
+    try { localStorage.setItem(GP_KEY, JSON.stringify(gpData)); } catch(e) {}
+  }
+
+  function discardChanges() {
+    var scene = window.__tdScene;
+    Object.keys(savedValues).forEach(function(bus) {
+      if (scene && scene.setAudioBusLevel) scene.setAudioBusLevel(bus, savedValues[bus], false);
+    });
+    if (scene && scene.syncThemeMusicVolumes) scene.syncThemeMusicVolumes();
+    var nameInput = getCommanderNameInput();
+    if (nameInput) {
+      nameInput.value = savedCommanderName;
+    }
+    // Revert gameplay toggles
+    ['showPathGuide','doubleClickFullscreen','cloudSync','devUiTools'].forEach(function(key) {
+      var btnEl = getGameplayToggleButtonByKey(key);
+      if (!btnEl) return;
+      var saved = !!savedGpValues[key];
+      btnEl.textContent = saved ? 'ON' : 'OFF';
+      btnEl.classList.toggle('on', saved);
+      if (scene && key === 'showPathGuide') {
+        if (scene.setPathGuideVisible) scene.setPathGuideVisible(saved);
+        else if (scene.togglePathGuide && scene.showPathGuide !== saved) scene.togglePathGuide();
+      }
+      if (key === 'cloudSync') window.__tdSetCommanderCloudSyncEnabled(saved);
+      if (key === 'devUiTools') applyDevUiToolsMode(saved);
+    });
+    syncFromGame();
+  }
+
+  document.getElementById('settingsResetBtn').addEventListener('click', function() {
+    var defaults = { weapon:0.20, explosion:0.88, other:0.40, music:0.45 };
+    var scene = window.__tdScene;
+    busMap.forEach(function(m) {
+      var val = defaults[m.bus];
+      var el = document.getElementById(m.sliderId);
+      if (el) { el.value = Math.round(val*100); spUpdateSlider(el, m.valId); }
+      if (scene && scene.setAudioBusLevel) scene.setAudioBusLevel(m.bus, val, false);
+    });
+    if (scene && scene.syncThemeMusicVolumes) scene.syncThemeMusicVolumes();
+    spCheckDirty();
+  });
+  document.getElementById('settingsArmoryResetBtn').addEventListener('click', function() {
+    var scene = window.__tdScene;
+    if (!scene || typeof scene.resetArmoryProgress !== 'function') {
+      return;
+    }
+    var ok = window.confirm('Reset all saved weapon tuning and tier upgrades? This cannot be undone.');
+    if (!ok) {
+      return;
+    }
+    window.__hideSettings && window.__hideSettings();
+    scene.resetArmoryProgress(true);
+  });
+  document.getElementById('settingsUpgradesOpenBtn').addEventListener('click', function() {
+    var scene = window.__tdScene;
+    window.__hideSettings && window.__hideSettings();
+    if (scene && typeof scene.openWeaponUpgradesFromSettings === 'function') {
+      scene.openWeaponUpgradesFromSettings();
+      return;
+    }
+    if (scene && typeof scene.toggleBlueprintOverlay === 'function') {
+      scene.toggleBlueprintOverlay(true);
+      return;
+    }
+    if (typeof window.__toggleBlueprintOverlay === 'function') {
+      window.__toggleBlueprintOverlay(true);
+    }
+  });
+  document.getElementById('settingsApplyBtn').addEventListener('click', function() {
+    var btn = document.getElementById('settingsApplyBtn');
+    if (btn && btn.textContent.trim() === 'Close') {
+      window.__hideSettings && window.__hideSettings();
+    } else {
+      applyToGame(); window.__hideSettings && window.__hideSettings();
+    }
+  });
+  document.getElementById('settingsDiscardBtn').addEventListener('click', function() {
+    discardChanges(); window.__hideSettings && window.__hideSettings();
+  });
+
+  var commanderNameInput = document.getElementById('gp-commander-name');
+  if (commanderNameInput) {
+    commanderNameInput.addEventListener('input', spCheckDirty);
+  }
+
+  // Sync overlay bounds to match the Phaser canvas exactly (web == Electron)
+  function syncOverlaysToCanvas() {
+    var canvas = document.querySelector('#game-container canvas');
+    if (!canvas) return;
+    var rect = canvas.getBoundingClientRect();
+    ['settings-overlay', 'world-select-overlay', 'ws-parallax-bg'].forEach(function(id) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      el.style.position = 'fixed';
+      el.style.inset = 'unset';
+      el.style.left   = rect.left   + 'px';
+      el.style.top    = rect.top    + 'px';
+      el.style.width  = rect.width  + 'px';
+      el.style.height = rect.height + 'px';
+    });
+  }
+  window.addEventListener('resize', syncOverlaysToCanvas);
+  // Run once after a tick so the canvas has been sized by Phaser
+  setTimeout(syncOverlaysToCanvas, 300);
+
+  /* Gameplay toggle logic */
+  var GP_KEY = 'tdGameplaySettingsV1';
+  function readGpStorage() {
+    try { return JSON.parse(localStorage.getItem(GP_KEY) || '{}'); } catch(e) { return {}; }
+  }
+  function syncGameplayToggles() {
+    var stored = readGpStorage();
+    var scene = window.__tdScene;
+    function getBool(key, def) {
+      if (scene && key === 'showPathGuide') return scene.showPathGuide !== false;
+      return stored[key] !== undefined ? !!stored[key] : def;
+    }
+    var pathOn = isPathGuideFeatureAvailable() ? getBool('showPathGuide', true) : false;
+    var fsOn   = getBool('doubleClickFullscreen', false);
+    var cloudSyncOn = stored.cloudSync !== undefined ? !!stored.cloudSync : isCommanderCloudSyncEnabled();
+    var devToolsOn = getStoredDevUiToolsMode();
+    savedGpValues['showPathGuide']        = pathOn;
+    savedGpValues['doubleClickFullscreen'] = fsOn;
+    savedGpValues['cloudSync'] = cloudSyncOn;
+    savedGpValues['devUiTools'] = devToolsOn;
+    var pathBtn = document.getElementById('gp-toggle-path');
+    var fsBtn   = document.getElementById('gp-toggle-fs');
+    var cloudSyncBtn = document.getElementById('gp-toggle-cloud-sync');
+    var devToolsBtn = document.getElementById('gp-toggle-dev-tools');
+    if (pathBtn) { pathBtn.textContent = pathOn ? 'ON' : 'OFF'; pathBtn.classList.toggle('on', pathOn); }
+    if (fsBtn)   { fsBtn.textContent   = fsOn   ? 'ON' : 'OFF'; fsBtn.classList.toggle('on', fsOn);   }
+    if (cloudSyncBtn) { cloudSyncBtn.textContent = cloudSyncOn ? 'ON' : 'OFF'; cloudSyncBtn.classList.toggle('on', cloudSyncOn); }
+    if (devToolsBtn) { devToolsBtn.textContent = devToolsOn ? 'ON' : 'OFF'; devToolsBtn.classList.toggle('on', devToolsOn); }
+    window.__tdSetCommanderCloudSyncEnabled(cloudSyncOn);
+    applyDevUiToolsMode(devToolsOn);
+    var unlockBtn = document.getElementById('gp-toggle-unlock-worlds');
+    if (unlockBtn) {
+      var unlockOn = localStorage.getItem('tdDevUnlockAllWorlds') === '1';
+      unlockBtn.textContent = unlockOn ? 'ON' : 'OFF';
+      unlockBtn.classList.toggle('on', unlockOn);
+    }
+    var curDiff = localStorage.getItem('tdGlobalDifficulty') || 'normal';
+    var diffSel = document.getElementById('gp-diff-select');
+    if (diffSel) diffSel.value = curDiff;
+  }
+  window.spSetDifficulty = function(diff) {
+    localStorage.setItem('tdGlobalDifficulty', diff);
+  };
+  window.spToggleUnlockWorlds = function() {
+    var btn = document.getElementById('gp-toggle-unlock-worlds');
+    if (!btn) return;
+    var next = !btn.classList.contains('on');
+    btn.textContent = next ? 'ON' : 'OFF';
+    btn.classList.toggle('on', next);
+    localStorage.setItem('tdDevUnlockAllWorlds', next ? '1' : '0');
+    if (typeof window.__showWorldSelect === 'function') {
+      window.__hideSettings && window.__hideSettings();
+      window.__showWorldSelect();
+    }
+  };
+  window.spToggleGameplay = function(key, btnId) {
+    if (key === 'showPathGuide' && !isPathGuideFeatureAvailable()) {
+      var blockedBtn = document.getElementById(btnId);
+      if (blockedBtn) {
+        blockedBtn.textContent = 'OFF';
+        blockedBtn.classList.remove('on');
+      }
+      var blockedScene = window.__tdScene;
+      if (blockedScene && blockedScene.setPathGuideVisible) blockedScene.setPathGuideVisible(false);
+      spCheckDirty();
+      return;
+    }
+    var btnEl = document.getElementById(btnId);
+    if (!btnEl) return;
+    var next = !btnEl.classList.contains('on');
+    btnEl.textContent = next ? 'ON' : 'OFF';
+    btnEl.classList.toggle('on', next);
+    // Live-apply to scene but don't save to localStorage yet (Apply button saves)
+    var scene = window.__tdScene;
+    if (scene && key === 'showPathGuide') {
+      if (scene.setPathGuideVisible) scene.setPathGuideVisible(next);
+      else if (scene.togglePathGuide && scene.showPathGuide !== next) scene.togglePathGuide();
+    }
+    if (key === 'devUiTools') {
+      applyDevUiToolsMode(next);
+    }
+    if (key === 'cloudSync') {
+      window.__tdSetCommanderCloudSyncEnabled(next);
+    }
+    spCheckDirty();
+  };
+
+  window.__showSettings = function() {
+    syncOverlaysToCanvas();
+    syncGameplayFeatureVisibility();
+    syncFromGame();
+    syncGameplayToggles();
+    syncCommanderNameField();
+    renderCommanderLeaderboard();
+    document.getElementById('settings-overlay').style.display = 'flex';
+  };
+  window.__hideSettings = function() {
+    document.getElementById('settings-overlay').style.display = 'none';
+  };
+  window.__syncOverlaysToCanvas = syncOverlaysToCanvas;
+})();
+</script>
+
+<!-- World Selection UI — exact design from spec -->
+<div id="ws-parallax-bg"></div>
+<div id="world-select-overlay" style="display:none; position:fixed; inset:0; z-index:200; overflow:hidden;">
+  <style>
+    @font-face {
+      font-family: 'BlackOpsOne';
+      src: url("assets/fonts/BlackOpsOne.ttf") format('truetype');
+      font-weight: normal; font-style: normal;
+    }
+    @font-face {
+      font-family: 'Teko';
+      src: url("assets/fonts/Teko-Regular.ttf") format('truetype');
+      font-weight: 400; font-style: normal;
+    }
+    @font-face {
+      font-family: 'Teko';
+      src: url("assets/fonts/Teko-SemiBold.ttf") format('truetype');
+      font-weight: 600; font-style: normal;
+    }
+    :root {
+      --bg-dark: #070d14;
+      --border-blue: rgba(0, 162, 255, 0.8);
+      --border-blue-glow: rgba(0, 162, 255, 0.4);
+      --border-red: rgba(255, 38, 38, 0.8);
+      --border-red-glow: rgba(255, 38, 38, 0.4);
+      --panel-grey: #1c242c;
+      --panel-dark-red: #2a1616;
+      --text-gold: #d4af37;
+    }
+    #world-select-overlay {
+      background-color: transparent;
+      background-image:
+        linear-gradient(rgba(5, 10, 20, 0.28), rgba(5, 10, 20, 0.28)),
+        linear-gradient(rgba(18, 30, 49, 0.3) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(18, 30, 49, 0.3) 1px, transparent 1px);
+      background-size: auto, 30px 30px, 30px 30px;
+      background-position: center, 0 0, 0 0;
+      background-repeat: no-repeat, repeat, repeat;
+      font-family: 'Teko', 'Courier New', monospace;
+      letter-spacing: 1px;
+      color: #ffffff;
+      padding: 0;
+      position: fixed;
+      overflow-x: hidden;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    #world-select-overlay::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: transparent;
+      z-index: 0;
+      pointer-events: none;
+    }
+    #world-select-overlay::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        linear-gradient(rgba(4, 9, 18, 0.16), rgba(4, 9, 18, 0.22)),
+        radial-gradient(circle at 50% 30%, rgba(255, 255, 255, 0.05), rgba(0, 0, 0, 0.26));
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    @media (max-width: 1024px) {
+      #world-select-overlay {
+        padding-left: max(10px, env(safe-area-inset-left, 0px));
+        padding-right: max(10px, env(safe-area-inset-right, 0px));
+        padding-top: max(8px, env(safe-area-inset-top, 0px));
+        padding-bottom: max(8px, env(safe-area-inset-bottom, 0px));
+      }
+    }
+
+    /* Fixed blurred background for World Select */
+    #ws-parallax-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 199;
+      background:
+        radial-gradient(ellipse at 20% 30%, rgba(30, 0, 80, 0.55) 0%, transparent 55%),
+        radial-gradient(ellipse at 80% 70%, rgba(0, 30, 90, 0.5) 0%, transparent 50%),
+        radial-gradient(ellipse at 55% 15%, rgba(60, 0, 40, 0.35) 0%, transparent 40%),
+        #020408;
+      pointer-events: none;
+      display: none;
+    }
+    .hud-container {
+      width: 100%; max-width: 100%; margin: 0 auto;
+      display: flex; flex-direction: column; align-items: center; gap: 24px;
+      padding: 0;
+      position: relative;
+      z-index: 1;
+      height: auto;
+      min-height: 100%;
+      overflow: visible;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
+      touch-action: pan-y;
+      padding-bottom: max(24px, env(safe-area-inset-bottom, 0px) + 24px);
+    }
+    .commander-bar {
+      align-self: stretch;
+      display: flex; align-items: center; justify-content: space-between;
+      font-size: 16px; color: #ffd700; font-weight: 600; font-family: 'Teko', monospace;
+      letter-spacing: 2px; text-shadow: 0 0 8px rgba(255,215,0,0.5);
+    }
+    .commander-bar-label {
+      /* the ⭐ COMMANDER LVL text */
+    }
+    .ws-settings-btn {
+      font-family: 'BlackOpsOne', 'BlackOpsOne', monospace;
+      font-size: 10px; font-weight: 700; letter-spacing: 1px;
+      color: #3df4ff; background: linear-gradient(#2a3a3a, #1a2626);
+      border: 1px solid #3a7a99;
+      width: 132px; height: 34px;
+      cursor: pointer; text-transform: uppercase;
+      transition: color .2s, border-color .2s;
+      clip-path: polygon(8% 0, 100% 0, 92% 100%, 0 100%);
+      outline: none;
+    }
+    .ws-settings-btn:hover { color: #fff; border-color: #3df4ff; }
+    /* TIER HEADER */
+    .tier-header {
+      background: linear-gradient(180deg, #2c363f 0%, #151b22 100%);
+      border: 2px solid #3a4652;
+      border-bottom: 3px solid var(--text-gold);
+      padding: 10px 80px;
+      position: relative;
+      clip-path: polygon(4% 0%, 96% 0%, 100% 100%, 0% 100%);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+      text-align: center;
+    }
+    .tier-header::before, .tier-header::after {
+      content: '•'; color: #5a6978; position: absolute;
+      top: 50%; transform: translateY(-50%); font-size: 18px;
+    }
+    .tier-header::before { left: 20px; }
+    .tier-header::after  { right: 20px; }
+    .tier-title {
+      font-size: 24px; font-weight: 600; letter-spacing: 5px;
+      color: #e0e6ed; text-shadow: 0 0 8px rgba(255,255,255,0.2);
+      text-transform: uppercase; font-family: 'BlackOpsOne', monospace;
+    }
+    /* CAROUSEL WRAPPER */
+    .tier-row {
+      position: relative; width: 100%; box-sizing: border-box;
+      padding-left: clamp(56px, 6vw, 120px);
+      padding-right: clamp(56px, 6vw, 120px);
+    }
+    .cards-grid {
+      display: flex;
+      gap: 18px;
+      overflow-x: hidden;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      scrollbar-width: none;
+      width: 100%;
+      overscroll-behavior-x: contain;
+    }
+    .cards-grid::-webkit-scrollbar { display: none; }
+    .carousel-btn {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      background: transparent; border: none;
+      color: #7dd4ff; width: 34px; height: 80px;
+      cursor: pointer; z-index: 10; border-radius: 0;
+      font-size: 28px; line-height: 80px; text-align: center;
+      transition: color 0.15s; font-family: inherit; padding: 0;
+      text-shadow: 0 0 8px rgba(0,162,255,0.6);
+    }
+    .carousel-btn:hover { color: #ffffff; text-shadow: 0 0 12px rgba(0,162,255,1); }
+    .carousel-btn.prev { left: -40px; }
+    .carousel-btn.next { right: -40px; }
+    .carousel-dots {
+      display: flex; justify-content: center; gap: 6px; margin-top: 12px;
+    }
+    .carousel-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: #2a3a4a; transition: background 0.2s;
+    }
+    .carousel-dot.active { background: #3a8fbf; }
+    /* BASE CARD — full-bleed poster layout */
+    .ui-card {
+      background: #050a0f;
+      border-radius: 8px; padding: 0;
+      display: block; position: relative;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.7);
+      transition: box-shadow 0.2s ease, transform 0.2s ease, height 0.36s cubic-bezier(0.22,1,0.36,1), margin-top 0.36s cubic-bezier(0.22,1,0.36,1), opacity 0.28s ease;
+      height: 300px; cursor: default;
+      flex-shrink: 0;
+      scroll-snap-align: start;
+      will-change: height, margin-top, opacity;
+      overflow: hidden;
+    }
+    .ui-card.locked { border:1px solid rgba(130,25,25,0.5); box-shadow:0 6px 24px rgba(0,0,0,0.7); }
+    .ui-card.active { border:1px solid rgba(0,160,230,0.4); box-shadow:0 6px 24px rgba(0,0,0,0.7),0 0 28px rgba(0,150,220,0.12); }
+    @media (hover:hover) and (pointer:fine) {
+      .ui-card.active:hover {
+        box-shadow: 0 12px 32px rgba(0,0,0,0.8), 0 0 45px rgba(0,170,240,0.22);
+      }
+    }
+    .ui-card::before,.ui-card::after {
+      content:''; position:absolute; width:14px; height:14px; border-style:solid; z-index:6; pointer-events:none;
+    }
+    .ui-card::before { top:8px; left:8px; border-width:2px 0 0 2px; }
+    .ui-card::after  { bottom:8px; right:8px; border-width:0 2px 2px 0; }
+    .ui-card.active::before,.ui-card.active::after { border-color:rgba(0,200,255,0.85); }
+    .ui-card.locked::before,.ui-card.locked::after { border-color:rgba(200,50,50,0.65); }
+    .card-rivets { position:absolute; inset:0; pointer-events:none; z-index:6; }
+    .card-rivets::before { content:''; position:absolute; top:8px; right:8px; width:14px; height:14px; border-style:solid; border-width:2px 2px 0 0; }
+    .card-rivets::after  { content:''; position:absolute; bottom:8px; left:8px; width:14px; height:14px; border-style:solid; border-width:0 0 2px 2px; }
+    .ui-card.active .card-rivets::before,.ui-card.active .card-rivets::after { border-color:rgba(0,200,255,0.85); }
+    .ui-card.locked .card-rivets::before,.ui-card.locked .card-rivets::after { border-color:rgba(200,50,50,0.65); }
+    .ui-card-footer-rivet { display:none; }
+    .map-thumbnail {
+      position:absolute !important; inset:0 !important;
+      width:100% !important; height:100% !important;
+      border:none; border-radius:0; background-color:#050a0f; overflow:hidden;
+    }
+    .map-thumbnail::after {
+      content:''; position:absolute; inset:0; z-index:2; pointer-events:none;
+      background:linear-gradient(to bottom,rgba(0,0,0,0) 5%,rgba(0,5,20,0.15) 40%,rgba(0,5,20,0.82) 72%,rgba(0,5,20,0.97) 100%);
+    }
+    .map-canvas { width:100%; height:100%; display:block; -o-object-fit:cover; object-fit:cover; }
+    .ui-card.locked .map-thumbnail { filter:brightness(0.3) saturate(0.15); }
+    .lock-overlay { position:absolute; inset:0; z-index:4; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+    .hazard-strip { position:absolute; width:100%; height:36px; background:repeating-linear-gradient(-45deg,#f1c40f,#f1c40f 10px,#000 10px,#000 20px); opacity:0.18; top:50%; transform:translateY(-50%); }
+    .lock-icon { font-size:44px; color:#e74c3c; text-shadow:0 0 20px rgba(231,76,60,0.9); z-index:5; }
+    .card-info {
+      position:absolute; bottom:8px; left:0; right:0; z-index:3;
+      padding:0 14px 6px 26px !important; display:flex; flex-direction:column;
+      align-items:flex-start; text-align:left; background:none;
+    }
+    #world-select-overlay[data-mobile="true"] .card-info,
+    #world-select-overlay[data-force-mobile="true"] .card-info { bottom:6px; padding:0 10px 4px 26px !important; }
+    .card-title {
+      font-family:'BlackOpsOne',monospace; font-size:21px; letter-spacing:2px;
+      text-transform:uppercase; line-height:1.1; color:#fff;
+      text-shadow:0 2px 8px rgba(0,0,0,0.9),0 0 18px rgba(0,200,255,0.25);
+    }
+    .ui-card.locked .card-title { color:rgba(255,110,90,0.9); text-shadow:0 2px 8px rgba(0,0,0,0.9); }
+    .card-status-text { font-size:10px; letter-spacing:0.8px; text-transform:uppercase; color:rgba(140,195,225,0.8); font-family:'Teko',monospace; }
+    .ui-card.locked .card-status-text { color:rgba(255,80,70,0.7); }
+    .ws-card-select-btn { display:none; }
+    .ws-card-trophy {
+      position:absolute; top:26px; right:10px; z-index:6;
+      font-size:22px; pointer-events:none;
+      filter:drop-shadow(0 0 6px rgba(255,190,0,0.9));
+    }
+    .button-group { display:none; }
+    .action-btn { display:none; }
+
+    #world-select-overlay[data-mobile="true"] .ui-card .button-group,
+    #world-select-overlay[data-force-mobile="true"] .ui-card .button-group {
+      margin-top: 8px !important;
+      transform: translateY(2px);
+    }
+
+    #world-select-overlay[data-mobile="true"] .commander-bar,
+    #world-select-overlay[data-force-mobile="true"] .commander-bar {
+      padding-left: 10px;
+      padding-right: 10px;
+    }
+
+    #world-select-overlay[data-mobile="true"] .cards-grid,
+    #world-select-overlay[data-force-mobile="true"] .cards-grid {
+      touch-action: auto;
+    }
+
+    #world-select-overlay[data-mobile="true"] .ws-settings-btn,
+    #world-select-overlay[data-force-mobile="true"] .ws-settings-btn {
+      transform: scale(1.28);
+      transform-origin: right center;
+    }
+
+    @media (max-width: 1024px) {
+      .ws-settings-btn {
+        width: 100px;
+        height: 26px;
+        flex-shrink: 0;
+      }
+
+      .cards-grid {
+        overflow-x: auto;
+        align-items: flex-start;
+      }
+
+      .ui-card {
+        height: 220px;
+        transition: box-shadow 0.2s ease, height 0.25s ease, margin-top 0.25s ease;
+      }
+
+      .ui-card.ws-mobile-large {
+        height: 230px;
+        margin-top: 0;
+      }
+
+      .ui-card.ws-mobile-peek {
+        height: 165px;
+        margin-top: 24px;
+        opacity: 0.9;
+      }
+
+      .ui-card.ws-mobile-peek .button-group,
+      .ui-card.ws-mobile-small .button-group {
+        display: none;
+      }
+
+      .map-thumbnail {
+        height: 188px;
+      }
+    }
+
+    @media (max-width: 1024px) and (orientation: landscape) and (max-height: 500px) {
+      .hud-container {
+        gap: 10px;
+      }
+
+      .commander-bar {
+        font-size: 13px;
+      }
+
+      .ws-settings-btn {
+        width: 90px;
+        height: 22px;
+        font-size: 7px;
+      }
+
+      .tier-header {
+        width: min(62%, 360px);
+        padding: 4px 10px;
+      }
+
+      .tier-title {
+        font-size: 13px;
+        letter-spacing: 0.8px;
+      }
+
+      .ui-card {
+        height: 205px;
+      }
+
+      .map-thumbnail {
+        height: 96px;
+      }
+
+      .card-info {
+        padding: 4px 5px 4px 26px !important;
+      }
+
+      .card-title {
+        font-size: 10px;
+      }
+
+      .card-status-text {
+        display: -webkit-box;
+        font-size: 9px;
+        line-height: 1.1;
+        opacity: 0.95;
+        white-space: normal;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+      }
+
+      .button-group {
+        gap: 12px;
+        padding-top: 2px;
+        margin-top: 0 !important;
+        transform: translateY(0);
+      }
+
+      .action-btn {
+        padding: 3px 0;
+        font-size: 8px;
+      }
+
+      .carousel-dots {
+        margin-top: 6px;
+      }
+    }
+  </style>
+
+  <div class="hud-container" id="worldSelectContainer"></div>
+</div>
+
+<script>
+(function() {
+  function drawMap(canvas, waypoints, isLocked) {
+    const ctx = canvas.getContext('2d');
+    const w = canvas.width  = canvas.offsetWidth  || 240;
+    const h = canvas.height = canvas.offsetHeight || 190;
+    ctx.fillStyle = isLocked ? '#12161a' : '#c8d8e0';
+    ctx.fillRect(0, 0, w, h);
+    if (!isLocked) {
+      ctx.fillStyle = '#8a9ab0';
+      [[0.3,0.7,32],[0.78,0.2,22],[0.55,0.5,18]].forEach(([rx,ry,r])=>{
+        ctx.beginPath(); ctx.arc(w*rx, h*ry, r, 0, Math.PI*2); ctx.fill();
+      });
+      ctx.fillStyle = '#1a3a1a';
+      [[0.15,0.75],[0.18,0.82],[0.52,0.42],[0.57,0.48],[0.85,0.22],[0.88,0.28]].forEach(([rx,ry])=>{
+        ctx.beginPath(); ctx.arc(w*rx, h*ry, 9, 0, Math.PI*2); ctx.fill();
+      });
+    }
+    const pts = waypoints.map(p => ({ x: (p.x/100)*w, y: (p.y/200)*h }));
+    // road shoulder
+    ctx.beginPath(); ctx.moveTo(pts[0].x, pts[0].y);
+    pts.slice(1).forEach(p => ctx.lineTo(p.x, p.y));
+    ctx.strokeStyle = isLocked ? '#1e252c' : '#374151';
+    ctx.lineWidth = 16; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.stroke();
+    // road surface
+    ctx.beginPath(); ctx.moveTo(pts[0].x, pts[0].y);
+    pts.slice(1).forEach(p => ctx.lineTo(p.x, p.y));
+    ctx.strokeStyle = isLocked ? '#2d3741' : '#6b7280';
+    ctx.lineWidth = 11; ctx.stroke();
+    // center line
+    ctx.beginPath(); ctx.moveTo(pts[0].x, pts[0].y);
+    pts.slice(1).forEach(p => ctx.lineTo(p.x, p.y));
+    ctx.strokeStyle = isLocked ? '#1e252c' : '#22c55e';
+    ctx.lineWidth = 2; ctx.setLineDash(isLocked ? [] : [6,6]); ctx.stroke();
+    ctx.setLineDash([]);
+    // entry/exit dots
+    if (!isLocked) {
+      ctx.fillStyle = '#22c55e'; ctx.beginPath(); ctx.arc(pts[0].x, pts[0].y, 5, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle = '#ef4444'; ctx.beginPath(); ctx.arc(pts[pts.length-1].x, pts[pts.length-1].y, 5, 0, Math.PI*2); ctx.fill();
+    }
+  }
+
+  function buildUI() {
+    const scene = window.__tdScene;
+    if (!scene) return;
+
+    const cmdData = scene.loadCommanderData ? scene.loadCommanderData() : { level: 1 };
+    const worlds = window.WORLDS_DATA || [];
+    const clearedIds = cmdData.worldsCleared || [];
+    const commanderName = String(cmdData.name || 'Commander');
+
+    const container = document.getElementById('worldSelectContainer');
+    container.querySelectorAll('.tier-row').forEach(row => {
+      if (typeof row._cleanupResize === 'function') row._cleanupResize();
+    });
+    container.innerHTML = '';
+
+    // Commander bar
+    const cmdBar = document.createElement('div');
+    cmdBar.className = 'commander-bar';
+    const cmdLabel = document.createElement('span');
+    cmdLabel.className = 'commander-bar-label';
+    cmdLabel.textContent = '⭐  ' + commanderName + ' LVL ' + cmdData.level;
+    const settingsBtn = document.createElement('button');
+    settingsBtn.className = 'ws-settings-btn';
+    settingsBtn.textContent = '⚙ Settings';
+    settingsBtn.addEventListener('click', function() {
+      if (typeof window.__showSettings === 'function') window.__showSettings();
+    });
+    cmdBar.appendChild(cmdLabel);
+    cmdBar.appendChild(settingsBtn);
+    container.appendChild(cmdBar);
+
+    const isDevUnlockAllWorldsEnabled = () => {
+      const params = new URLSearchParams(window.location.search || '');
+      const explicitFlag = params.get('unlockAllTiers') === '1' || params.get('devUnlockAllWorlds') === '1';
+      if (explicitFlag) return true;
+
+      const host = String(window.location.hostname || '').toLowerCase();
+      return host === 'localhost' || host === '127.0.0.1' || host.endsWith('.local');
+    };
+
+    const tiers = [
+      { num: 1, label: 'TIER 1  ✦  RECRUIT',  worlds: worlds.filter(w => w.tier === 1) },
+      { num: 2, label: 'TIER 2  ✦  VETERAN',  worlds: worlds.filter(w => w.tier === 2) },
+      { num: 3, label: 'TIER 3  ✦  ELITE',    worlds: worlds.filter(w => w.tier === 3) },
+    ];
+
+    tiers.forEach(tier => {
+      // tier header
+      const hdr = document.createElement('div');
+      hdr.className = 'tier-header';
+      if (tier.num >= 2) {
+        hdr.style.marginTop = '18px';
+      }
+      hdr.innerHTML = '<div class="tier-title">' + tier.label + '</div>';
+      container.appendChild(hdr);
+
+      // carousel wrapper (gives room for prev/next buttons)
+      const tierRow = document.createElement('div');
+      tierRow.className = 'tier-row';
+      tierRow.style.marginTop = '8px';
+      container.appendChild(tierRow);
+
+      // cards carousel track
+      const grid = document.createElement('div');
+      grid.className = 'cards-grid';
+      tierRow.appendChild(grid);
+
+      // prev/next buttons
+      const prevBtn = document.createElement('button');
+      prevBtn.className = 'carousel-btn prev'; prevBtn.textContent = '‹';
+      const nextBtn = document.createElement('button');
+      nextBtn.className = 'carousel-btn next'; nextBtn.textContent = '›';
+      tierRow.appendChild(prevBtn);
+      tierRow.appendChild(nextBtn);
+
+      // dot indicators
+      const dotsEl = document.createElement('div'); dotsEl.className = 'carousel-dots';
+      tierRow.appendChild(dotsEl);
+
+      const prevTierCleared = tier.worlds.filter(w => clearedIds.includes(w.id)).length;
+      const tierUnlocked = isDevUnlockAllWorldsEnabled() || tier.num === 1 ||
+        (tier.worlds[0] && prevTierCleared >= 0 && countClearedPrevTier(tier.num, worlds, clearedIds) >= (tier.worlds[0].unlockReq || 0));
+
+      tier.worlds.forEach(world => {
+        const isLocked = !tierUnlocked;
+        const card = document.createElement('div');
+        card.className = 'ui-card ' + (isLocked ? 'locked' : 'active');
+
+        // rivets
+        const rv = document.createElement('div'); rv.className = 'card-rivets'; card.appendChild(rv);
+        const frv = document.createElement('div'); frv.className = 'ui-card-footer-rivet'; card.appendChild(frv);
+
+        // map
+        const mapDiv = document.createElement('div'); mapDiv.className = 'map-thumbnail';
+        const cvs = document.createElement('canvas'); cvs.className = 'map-canvas'; mapDiv.appendChild(cvs);
+        if (isLocked) {
+          const ov = document.createElement('div'); ov.className = 'lock-overlay';
+          ov.innerHTML = '<div class="hazard-strip"></div><div class="lock-icon">🔒</div>'; mapDiv.appendChild(ov);
+        }
+        card.appendChild(mapDiv);
+
+        // info
+        const info = document.createElement('div'); info.className = 'card-info';
+        info.innerHTML = '<div class="card-title">' + world.name + '</div>' +
+          '<div class="card-status-text">' + (isLocked ? 'CLEAR TIER ' + (tier.num-1) + ' TO UNLOCK' : world.description) + '</div>';
+        card.appendChild(info);
+
+        // buttons
+        const btnGrp = document.createElement('div'); btnGrp.className = 'button-group';
+        ['easy','normal','hard'].forEach(diff => {
+          const btn = document.createElement('button');
+          btn.className = 'action-btn ' + diff;
+          btn.textContent = diff;
+          if (isLocked) { btn.disabled = true; }
+          else {
+            btn.addEventListener('click', e => {
+              e.stopPropagation();
+              launchWorld(world.id, diff);
+            });
+          }
+          btnGrp.appendChild(btn);
+        });
+        card.appendChild(btnGrp);
+        grid.appendChild(card);
+
+        // draw map canvas after DOM insertion
+        requestAnimationFrame(() => drawMap(cvs, getPathWaypoints(world), isLocked));
+      });
+
+      // Set up carousel after cards are in DOM
+      requestAnimationFrame(() => {
+        const cards = grid.querySelectorAll('.ui-card');
+        if (!cards.length) return;
+
+        let currentIdx = 0;
+        const dots = [];
+
+        const setButtonGroupState = (buttonGroup, visible, animate) => {
+          if (!buttonGroup) return;
+          if (!animate) {
+            buttonGroup.style.display = visible ? 'grid' : 'none';
+            buttonGroup.style.maxHeight = '';
+            buttonGroup.style.opacity = '';
+            buttonGroup.style.pointerEvents = '';
+            return;
+          }
+
+          buttonGroup.style.display = 'grid';
+          buttonGroup.style.overflow = 'hidden';
+          buttonGroup.style.transition = 'max-height 0.24s ease, opacity 0.2s ease';
+          buttonGroup.style.maxHeight = visible ? '64px' : '0px';
+          buttonGroup.style.opacity = visible ? '1' : '0';
+          buttonGroup.style.pointerEvents = visible ? 'auto' : 'none';
+        };
+
+        const applyDesktopShowcaseStates = (progress) => {
+          const p = Number.isFinite(progress) ? progress : 0;
+          const distances = Array.from(cards, (_, cardIdx) => ({ cardIdx, d: Math.abs(cardIdx - p) }))
+            .sort((a, b) => a.d - b.d);
+          const visibleButtonIdx = new Set(distances.slice(0, Math.min(3, cards.length)).map(x => x.cardIdx));
+
+          cards.forEach((card, cardIdx) => {
+            const buttonGroup = card.querySelector('.button-group');
+            const mapThumb = card.querySelector('.map-thumbnail');
+            const cardInfo = card.querySelector('.card-info');
+
+            const dist = Math.min(2.2, Math.abs(cardIdx - p));
+            const z = Math.max(1, 10 - Math.round(dist * 3));
+
+            card.classList.remove('ws-mobile-large', 'ws-mobile-peek', 'ws-mobile-small');
+            card.style.height = '336px';
+            card.style.marginTop = '0px';
+            card.style.opacity = '1';
+            card.style.transform = 'none';
+            card.style.zIndex = String(z);
+            card.style.transition = 'transform 0.34s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.26s ease, box-shadow 0.2s ease';
+            card.style.willChange = 'transform, opacity';
+
+            if (mapThumb) {
+              mapThumb.style.height = '188px';
+              mapThumb.style.transition = 'height 0.32s cubic-bezier(0.22, 1, 0.36, 1)';
+            }
+            if (cardInfo) {
+              cardInfo.style.padding = '10px 6px 6px';
+              cardInfo.style.transition = 'padding 0.28s cubic-bezier(0.22, 1, 0.36, 1)';
+            }
+            setButtonGroupState(buttonGroup, visibleButtonIdx.has(cardIdx), true);
+          });
+        };
+
+        const isMobileViewport = () => {
+          const platformMobile = Boolean(window.__appPlatform?.isMobile);
+          const forceMobile = Boolean(window.__appPlatform?.forceMobile || document.body?.dataset?.forceMobile === 'true');
+          const narrowViewport = window.matchMedia('(max-width: 1024px)').matches;
+          const compactLandscape = window.matchMedia('(orientation: landscape) and (max-height: 500px)').matches;
+          const coarsePointer = window.matchMedia('(pointer: coarse)').matches;
+          return forceMobile || platformMobile || narrowViewport || (coarsePointer && compactLandscape);
+        };
+
+        const isCompactCarouselMode = () => {
+          const params = new URLSearchParams(window.location.search || '');
+          const compactCarouselParam = params.get('compactCarousel');
+          if (compactCarouselParam === '0') {
+            return false;
+          }
+          if (compactCarouselParam === '1') {
+            return true;
+          }
+          return true;
+        };
+
+        const applyMobileCardStates = (idx) => {
+          const compactMode = isCompactCarouselMode();
+          const mobileViewport = isMobileViewport();
+          const compactLandscape = window.matchMedia('(orientation: landscape) and (max-height: 500px)').matches;
+          const desktopShowcaseMode = compactMode && !mobileViewport && !compactLandscape;
+          if (desktopShowcaseMode) {
+            const step = (grid._cardW || 0) + (grid._gap || 0);
+            const progress = step > 0 ? (grid.scrollLeft / step) : idx;
+            applyDesktopShowcaseStates(progress);
+            return;
+          }
+          const availableDesktopHeight = Math.max(250, Math.round(window.innerHeight - grid.getBoundingClientRect().top - 74));
+          const desktopLargeH = Math.max(296, Math.min(336, availableDesktopHeight));
+          const largeH = compactLandscape ? 205 : (mobileViewport ? 230 : desktopLargeH);
+          const peekH = compactLandscape ? 155 : (mobileViewport ? 165 : Math.max(246, largeH - 54));
+          const largeMapH = compactLandscape ? 96 : (mobileViewport ? 188 : Math.max(156, Math.min(188, largeH - 126)));
+          const peekMapH = compactLandscape ? 96 : (mobileViewport ? Math.max(118, largeMapH - 30) : Math.max(132, largeMapH - 24));
+          const peekOffset = Math.max(0, Math.round((largeH - peekH) / 2));
+          const maxPrimaryIdx = Math.max(0, cards.length - 2);
+          const primaryIdx = Number.isFinite(idx) ? Math.max(0, Math.min(maxPrimaryIdx, idx)) : 0;
+          const desktopPeekMode = !mobileViewport && !compactLandscape;
+          const cardFiveIdx = cards.length - 1;
+          const cardThreeIdx = 2;
+          const cardFiveButtonsVisible = desktopPeekMode && cardFiveIdx >= 0 && (primaryIdx + 1) === cardFiveIdx;
+
+          cards.forEach((card, cardIdx) => {
+            const buttonGroup = card.querySelector('.button-group');
+            const mapThumb = card.querySelector('.map-thumbnail');
+            const cardInfo = card.querySelector('.card-info');
+            card.classList.remove('ws-mobile-large', 'ws-mobile-peek', 'ws-mobile-small');
+            if (!compactMode) {
+              card.style.height = '';
+              card.style.marginTop = '';
+              card.style.opacity = '';
+              if (mapThumb) mapThumb.style.height = '';
+              if (cardInfo) cardInfo.style.padding = '';
+              if (buttonGroup) buttonGroup.style.display = '';
+              return;
+            }
+
+            // Card 3 is only forced to peek when card 5 is in the active large pair.
+            if (cards.length >= 5 && cardFiveButtonsVisible && cardIdx === cardThreeIdx) {
+              card.classList.add('ws-mobile-peek');
+              card.style.height = String(peekH) + 'px';
+              card.style.marginTop = String(peekOffset) + 'px';
+              card.style.opacity = '0.9';
+              if (mapThumb) mapThumb.style.height = String(peekMapH) + 'px';
+              if (cardInfo) cardInfo.style.padding = '6px 6px 3px';
+              if (buttonGroup) buttonGroup.style.display = 'none';
+              return;
+            }
+
+            if (cardIdx === primaryIdx || cardIdx === primaryIdx + 1) {
+              card.classList.add('ws-mobile-large');
+              card.style.height = String(largeH) + 'px';
+              card.style.marginTop = '0px';
+              card.style.opacity = '1';
+              if (mapThumb) mapThumb.style.height = String(largeMapH) + 'px';
+              if (cardInfo) {
+                cardInfo.style.padding = (!mobileViewport && !compactLandscape) ? '8px 6px 4px' : '';
+              }
+              if (buttonGroup) buttonGroup.style.display = 'grid';
+              return;
+            }
+
+            if (cardIdx === primaryIdx + 2) {
+              card.classList.add('ws-mobile-peek');
+              card.style.height = String(peekH) + 'px';
+              card.style.marginTop = String(peekOffset) + 'px';
+              card.style.opacity = '0.9';
+              if (mapThumb) mapThumb.style.height = String(peekMapH) + 'px';
+              if (cardInfo) cardInfo.style.padding = desktopPeekMode ? '6px 6px 3px' : '';
+              if (buttonGroup) buttonGroup.style.display = 'none';
+              return;
+            }
+
+            card.classList.add('ws-mobile-peek');
+            card.style.height = String(peekH) + 'px';
+            card.style.marginTop = String(peekOffset) + 'px';
+            card.style.opacity = '0.9';
+            if (mapThumb) mapThumb.style.height = String(peekMapH) + 'px';
+            if (cardInfo) cardInfo.style.padding = desktopPeekMode ? '6px 6px 3px' : '';
+            if (buttonGroup) buttonGroup.style.display = 'none';
+          });
+        };
+
+        const applyCardSizing = () => {
+          const overlay = document.getElementById('world-select-overlay');
+          const containerW = grid.offsetWidth;
+          const compactMode = isCompactCarouselMode();
+          const mobileViewport = isMobileViewport();
+          const compactLandscape = window.matchMedia('(orientation: landscape) and (max-height: 500px)').matches;
+          const desktopShowcaseMode = compactMode && !mobileViewport && !compactLandscape;
+          const gap = compactMode ? (compactLandscape ? 10 : 12) : 18;
+          grid.style.gap = gap + 'px';
+          if (overlay) {
+            overlay.style.overflowY = 'auto';
+            overlay.style.webkitOverflowScrolling = 'touch';
+            overlay.style.touchAction = 'pan-y';
+            overlay.style.pointerEvents = 'auto';
+          }
+          grid.style.overflowX = compactMode ? 'auto' : 'hidden';
+          grid.style.webkitOverflowScrolling = compactMode ? 'touch' : '';
+          grid.style.touchAction = 'auto';
+          grid.style.scrollSnapType = compactMode ? 'x mandatory' : 'x mandatory';
+          grid.style.scrollBehavior = compactMode ? 'smooth' : '';
+          grid.style.overscrollBehaviorX = compactMode ? 'contain' : '';
+
+          const cardW = desktopShowcaseMode
+            ? Math.floor(Math.min(486, Math.max(380, containerW * 0.44)))
+            : (compactMode
+              ? Math.floor((containerW - gap * 1.2) / (compactLandscape ? 2.55 : 2.75))
+              : Math.floor((containerW - gap * 1.3) / 2.3));
+
+          if (desktopShowcaseMode) {
+            const railInset = Math.max(72, Math.round((containerW - cardW) / 2 - gap + 34));
+            grid.style.paddingLeft = String(railInset) + 'px';
+            grid.style.paddingRight = String(railInset) + 'px';
+          } else if (!mobileViewport && !compactLandscape) {
+            const desktopInset = compactMode
+              ? Math.max(46, Math.round(containerW * 0.06))
+              : Math.max(88, Math.round(containerW * 0.11));
+            grid.style.paddingLeft = String(desktopInset) + 'px';
+            grid.style.paddingRight = String(desktopInset) + 'px';
+          } else {
+            grid.style.paddingLeft = '0px';
+            grid.style.paddingRight = '0px';
+          }
+
+          cards.forEach(c => { c.style.width = cardW + 'px'; });
+          prevBtn.style.display = compactMode ? 'none' : '';
+          nextBtn.style.display = compactMode ? 'none' : '';
+
+          grid._cardW = cardW;
+          grid._gap = gap;
+
+          const step = (grid._cardW || 0) + (grid._gap || 0);
+          const maxScrollLeft = Math.max(0, grid.scrollWidth - grid.clientWidth);
+          const maxScrollableIdx = step > 0 ? Math.max(0, Math.floor((maxScrollLeft + step * 0.2) / step)) : 0;
+
+          const maxIdx = desktopShowcaseMode ? Math.max(0, cards.length - 1) : cards.length - 1;
+          currentIdx = Math.max(0, Math.min(maxIdx, currentIdx));
+          const scrollIdx = compactMode ? Math.min(currentIdx, maxScrollableIdx) : currentIdx;
+          const offset = scrollIdx * (cardW + gap);
+          grid.scrollTo({ left: offset, behavior: 'auto' });
+
+          if (!desktopShowcaseMode && compactMode && scrollIdx === maxScrollableIdx && cards.length >= 2) {
+            currentIdx = Math.max(0, cards.length - 2);
+          } else {
+            currentIdx = scrollIdx;
+          }
+
+          applyMobileCardStates(currentIdx);
+        };
+
+        applyCardSizing();
+
+        cards.forEach((_, i) => {
+          const dot = document.createElement('div');
+          dot.className = 'carousel-dot' + (i === 0 ? ' active' : '');
+          dotsEl.appendChild(dot);
+          dots.push(dot);
+        });
+
+        const updateDots = (idx) => {
+          dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+        };
+
+        let scrollRaf = null;
+        let scrollEndTimer = null;
+
+        const deriveCurrentIdxFromScroll = () => {
+          const step = (grid._cardW || 0) + (grid._gap || 0);
+          if (step <= 0) return 0;
+          const mobileViewport = isMobileViewport();
+          const compactLandscape = window.matchMedia('(orientation: landscape) and (max-height: 500px)').matches;
+          const desktopShowcaseMode = !mobileViewport && !compactLandscape;
+          const maxScrollLeft = Math.max(0, grid.scrollWidth - grid.clientWidth);
+          const atScrollEnd = grid.scrollLeft >= (maxScrollLeft - Math.max(2, step * 0.2));
+          const derived = !desktopShowcaseMode && atScrollEnd && cards.length >= 2
+            ? Math.max(0, cards.length - 2)
+            : Math.max(0, Math.min(cards.length - 1, Math.round(grid.scrollLeft / step)));
+          const maxIdx = desktopShowcaseMode ? Math.max(0, cards.length - 1) : Math.max(0, cards.length - 2);
+          return Math.max(0, Math.min(maxIdx, derived));
+        };
+
+        const settleScrollState = () => {
+          if (!isCompactCarouselMode()) return;
+          const step = (grid._cardW || 0) + (grid._gap || 0);
+          if (step <= 0) return;
+
+          currentIdx = deriveCurrentIdxFromScroll();
+          updateDots(currentIdx);
+
+          const maxScrollLeft = Math.max(0, grid.scrollWidth - grid.clientWidth);
+          const targetLeft = Math.max(0, Math.min(maxScrollLeft, currentIdx * step));
+          if (Math.abs(grid.scrollLeft - targetLeft) > 2) {
+            grid.scrollTo({ left: targetLeft, behavior: 'smooth' });
+          }
+
+          applyMobileCardStates(currentIdx);
+        };
+
+        const scheduleScrollSettle = (delayMs = 120) => {
+          if (scrollEndTimer) clearTimeout(scrollEndTimer);
+          scrollEndTimer = setTimeout(settleScrollState, delayMs);
+        };
+
+        const scrollTo = (idx) => {
+          const compactMode = isCompactCarouselMode();
+          const mobileViewport = isMobileViewport();
+          const compactLandscape = window.matchMedia('(orientation: landscape) and (max-height: 500px)').matches;
+          const desktopShowcaseMode = compactMode && !mobileViewport && !compactLandscape;
+          const step = (grid._cardW || 0) + (grid._gap || 0);
+          const maxScrollLeft = Math.max(0, grid.scrollWidth - grid.clientWidth);
+          const maxScrollableIdx = step > 0 ? Math.max(0, Math.floor((maxScrollLeft + step * 0.2) / step)) : 0;
+          const maxIdx = compactMode
+            ? (desktopShowcaseMode ? Math.max(0, cards.length - 1) : Math.max(0, cards.length - 2))
+            : cards.length - 1;
+          const targetIdx = Math.max(0, Math.min(maxIdx, idx));
+          const scrollIdx = compactMode ? Math.min(targetIdx, maxScrollableIdx) : targetIdx;
+          const offset = scrollIdx * step;
+          grid.scrollTo({ left: offset, behavior: 'smooth' });
+          currentIdx = compactMode
+            ? Math.max(0, Math.min(maxIdx, scrollIdx))
+            : scrollIdx;
+          updateDots(currentIdx);
+          applyMobileCardStates(currentIdx);
+          scheduleScrollSettle(140);
+        };
+
+        prevBtn.onclick = () => scrollTo(currentIdx - 1);
+        nextBtn.onclick = () => scrollTo(currentIdx + 1);
+
+        const onGridScroll = () => {
+          if (!isCompactCarouselMode()) return;
+          if (scrollRaf) return;
+          scrollRaf = requestAnimationFrame(() => {
+            scrollRaf = null;
+            const derived = deriveCurrentIdxFromScroll();
+            if (derived !== currentIdx) {
+              currentIdx = derived;
+              updateDots(currentIdx);
+            }
+            applyMobileCardStates(currentIdx);
+            scheduleScrollSettle(120);
+          });
+        };
+        grid.addEventListener('scroll', onGridScroll, { passive: true });
+
+        // Store ref for keyboard nav
+        tierRow._scrollTo = scrollTo;
+        tierRow._getCurrentIdx = () => currentIdx;
+
+        window.addEventListener('resize', applyCardSizing);
+        tierRow._cleanupResize = () => {
+          window.removeEventListener('resize', applyCardSizing);
+          grid.removeEventListener('scroll', onGridScroll);
+          if (scrollEndTimer) clearTimeout(scrollEndTimer);
+        };
+      }); // end requestAnimationFrame
+    }); // end tiers.forEach
+
+    // Keyboard: arrows scroll the topmost visible carousel
+    document.removeEventListener('keydown', window._carouselKeyHandler);
+    window._carouselKeyHandler = (e) => {
+      if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+      const rows = container.querySelectorAll('.tier-row');
+      for (const row of rows) {
+        const rect = row.getBoundingClientRect();
+        if (rect.top < window.innerHeight && rect.bottom > 0 && row._scrollTo) {
+          row._scrollTo(row._getCurrentIdx() + (e.key === 'ArrowLeft' ? -1 : 1));
+          e.preventDefault(); break;
+        }
+      }
+    };
+    document.addEventListener('keydown', window._carouselKeyHandler);
+  }
+
+  function countClearedPrevTier(tierNum, worlds, clearedIds) {
+    return worlds.filter(w => w.tier === (tierNum - 1) && clearedIds.includes(w.id)).length;
+  }
+
+  function getPathWaypoints(world) {
+    // Convert WORLDS pathIndex points to canvas waypoints (x: 0-100, y: 0-200)
+    const scene = window.__tdScene;
+    if (!scene || typeof window.PATH_LAYOUT_TEMPLATES_DATA === 'undefined') {
+      return [{x:0,y:30},{x:15,y:30},{x:15,y:130},{x:40,y:130},{x:40,y:15},{x:75,y:15},{x:75,y:170},{x:100,y:170}];
+    }
+    const pts = window.PATH_LAYOUT_TEMPLATES_DATA[world.pathIndex] || [];
+    return pts.map(p => ({ x: p.x / 10, y: p.y / 3 }));
+  }
+
+  function launchWorld(worldId, difficulty) {
+    const scene = window.__tdScene;
+    if (!scene) return;
+    var gameContainer = document.getElementById('game-container');
+    if (gameContainer) gameContainer.style.visibility = 'visible';
+    if (typeof window.__hideSettings === 'function') {
+      window.__hideSettings();
+    }
+    scene.gameState.selectedWorldIndex = worldId;
+    scene.gameState.selectedDifficulty = difficulty;
+    scene.gameState.wave = 1;
+    scene.gameState.level = 1;
+    document.getElementById('world-select-overlay').style.display = 'none';
+    var pbg = document.getElementById('ws-parallax-bg');
+    if (pbg) pbg.style.display = 'none';
+    scene.initializeGameplayAfterWorldSelection();
+    if (window.__game) window.__game.emit('game:started', true);
+  }
+
+  window.__showWorldSelect = function() {
+    if (typeof window.__hideSettings === 'function') {
+      window.__hideSettings();
+    }
+    buildUI();
+    if (typeof window.__syncOverlaysToCanvas === 'function') window.__syncOverlaysToCanvas();
+    var ov = document.getElementById('world-select-overlay');
+    var bg = document.getElementById('ws-parallax-bg');
+    ov.style.opacity = '0';
+    ov.style.transition = 'opacity 0.5s ease';
+    ov.style.display = 'block';
+    if (bg) {
+      bg.style.opacity = '0';
+      bg.style.transition = 'opacity 0.5s ease';
+      bg.style.display = 'block';
+    }
+    // Delay fade-in until splash has finished its own 0.5s fade-out
+    setTimeout(function() {
+      ov.style.opacity = '1';
+      if (bg) bg.style.opacity = '1';
+    }, 520);
+  };
+
+  window.__hideWorldSelect = function() {
+    document.getElementById('world-select-overlay').style.display = 'none';
+    var bg = document.getElementById('ws-parallax-bg');
+    if (bg) bg.style.display = 'none';
+  };
+
+})();
+</script>
+
+    <script>
+    (function () {
+      if (!('serviceWorker' in navigator)) return;
+
+      var isNative = false;
+      try {
+        isNative = !!(window.Capacitor && typeof window.Capacitor.isNativePlatform === 'function' && window.Capacitor.isNativePlatform());
+      } catch (_) {
+        isNative = false;
+      }
+
+      if (isNative) {
+        navigator.serviceWorker.getRegistrations()
+          .then(function (registrations) {
+            return Promise.all(registrations.map(function (registration) { return registration.unregister(); }));
+          })
+          .catch(function () {});
+
+        if (window.caches && typeof window.caches.keys === 'function') {
+          window.caches.keys()
+            .then(function (keys) {
+              return Promise.all(keys.map(function (key) { return window.caches.delete(key); }));
+            })
+            .catch(function () {});
+        }
+        return;
+      }
+
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('/sw.js').catch(function () {});
+      }, { once: true });
+    })();
+    </script>
+
+</body>
+</html>

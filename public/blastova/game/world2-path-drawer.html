@@ -1,0 +1,599 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>World Path Drawer</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #101618;
+      --panel: #182125;
+      --panel-2: #223036;
+      --line: #f7fbff;
+      --text: #edf4f6;
+      --muted: #9bb0b6;
+      --accent: #8fd3ff;
+      --danger: #ff8585;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top, rgba(143, 211, 255, 0.12), transparent 30%),
+        linear-gradient(180deg, #0b1114 0%, var(--bg) 100%);
+      color: var(--text);
+    }
+
+    .app {
+      display: grid;
+      grid-template-columns: minmax(320px, 420px) minmax(0, 1fr);
+      gap: 16px;
+      padding: 16px;
+    }
+
+    .panel {
+      background: rgba(24, 33, 37, 0.94);
+      border: 1px solid rgba(143, 211, 255, 0.16);
+      border-radius: 18px;
+      padding: 16px;
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
+      backdrop-filter: blur(14px);
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 26px;
+      letter-spacing: 0.04em;
+    }
+
+    p {
+      margin: 0 0 10px;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin: 14px 0 14px;
+    }
+
+    button {
+      appearance: none;
+      border: 0;
+      border-radius: 12px;
+      padding: 12px 14px;
+      background: linear-gradient(180deg, #2d434d, #213038);
+      color: var(--text);
+      font: inherit;
+      cursor: pointer;
+      transition: transform 120ms ease, filter 120ms ease;
+    }
+
+    button:hover {
+      filter: brightness(1.08);
+      transform: translateY(-1px);
+    }
+
+    button.secondary {
+      background: linear-gradient(180deg, #27343a, #1d272c);
+    }
+
+    button.danger {
+      background: linear-gradient(180deg, #6b3131, #4e2424);
+      color: #ffe2e2;
+    }
+
+    .picker {
+      margin: 12px 0 14px;
+      display: grid;
+      gap: 6px;
+    }
+
+    .picker label {
+      font-size: 13px;
+      color: var(--muted);
+      letter-spacing: 0.02em;
+    }
+
+    .picker select {
+      appearance: none;
+      border: 1px solid rgba(143, 211, 255, 0.26);
+      border-radius: 12px;
+      padding: 10px 12px;
+      background: rgba(13, 20, 24, 0.95);
+      color: var(--text);
+      font: inherit;
+    }
+
+    .picker-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .stats {
+      display: grid;
+      gap: 8px;
+      margin-bottom: 14px;
+      padding: 12px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .stat {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 14px;
+    }
+
+    .stat strong {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .hint {
+      margin-top: 8px;
+      padding: 12px;
+      border-radius: 14px;
+      background: rgba(143, 211, 255, 0.08);
+      border: 1px solid rgba(143, 211, 255, 0.14);
+      font-size: 14px;
+    }
+
+    .canvas-shell {
+      min-width: 0;
+      display: grid;
+      align-content: start;
+      gap: 12px;
+    }
+
+    .canvas-wrap {
+      position: relative;
+      width: min(100%, 1200px);
+      margin: 0 auto;
+      border-radius: 22px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 22px 50px rgba(0, 0, 0, 0.35);
+      touch-action: none;
+      background: #0b1114;
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: auto;
+      background: #0b1114;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 220px;
+      resize: vertical;
+      border: 1px solid rgba(143, 211, 255, 0.18);
+      border-radius: 14px;
+      background: rgba(10, 15, 18, 0.9);
+      color: var(--text);
+      padding: 14px;
+      font: 13px/1.45 ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+
+    .status {
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    @media (max-width: 980px) {
+      .app {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <section class="panel">
+      <h1>World Path Drawer</h1>
+      <p>Pick a world, draw directly on its map, then export route points. Each world keeps its own separate drawing and output.</p>
+
+      <div class="picker-grid">
+        <div class="picker">
+          <label for="worldSelect">Target World</label>
+          <select id="worldSelect"></select>
+        </div>
+        <div class="picker">
+          <label for="viewportSelect">Drawer View</label>
+          <select id="viewportSelect">
+            <option value="desktop">1600 x 900</option>
+            <option value="mobile">780 x 360</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div class="stat"><span>Selected world</span><strong id="worldLabel">World 2</strong></div>
+        <div class="stat"><span>Draw mode</span><strong id="modeLabel">Idle</strong></div>
+        <div class="stat"><span>Raw sampled points</span><strong id="rawCount">0</strong></div>
+        <div class="stat"><span>Simplified route points</span><strong id="simpleCount">0</strong></div>
+      </div>
+
+      <div class="controls">
+        <button id="undoButton" class="secondary" type="button">Undo Last Stroke</button>
+        <button id="clearButton" class="danger" type="button">Clear Drawing</button>
+        <button id="simplifyButton" type="button">Simplify + Export</button>
+        <button id="copyButton" class="secondary" type="button">Copy Output</button>
+      </div>
+
+      <p class="status" id="statusText">Draw one continuous path for the selected world, then press Simplify + Export.</p>
+
+      <div class="hint">
+        Tips: start at one end of the route and draw all the way to the other end. If a section looks wrong, press Undo Last Stroke and redraw that stroke.
+      </div>
+    </section>
+
+    <section class="canvas-shell">
+      <div class="canvas-wrap">
+        <canvas id="board" width="1600" height="900"></canvas>
+      </div>
+      <textarea id="output" spellcheck="false" placeholder="Exported route points will appear here."></textarea>
+    </section>
+  </main>
+
+  <script>
+    const BOARD_PRESETS = {
+      desktop: { width: 1600, height: 900 },
+      mobile: { width: 780, height: 360 },
+    };
+    const BASE_W = 1000;
+    const BASE_H = 600;
+    const MAP_OFFSET_Y = 15;
+    const WORLD_OPTIONS = Array.from({ length: 12 }, (_, index) => ({
+      id: index,
+      label: `World ${index + 1}`,
+      imagePath: `./assets/maps/tower-defense/LAIMap${index + 1}.jpg`,
+    }));
+
+    const canvas = document.getElementById('board');
+    const ctx = canvas.getContext('2d');
+    const output = document.getElementById('output');
+    const statusText = document.getElementById('statusText');
+    const worldSelect = document.getElementById('worldSelect');
+    const viewportSelect = document.getElementById('viewportSelect');
+    const worldLabel = document.getElementById('worldLabel');
+    const rawCountEl = document.getElementById('rawCount');
+    const simpleCountEl = document.getElementById('simpleCount');
+    const modeLabel = document.getElementById('modeLabel');
+    const undoButton = document.getElementById('undoButton');
+    const clearButton = document.getElementById('clearButton');
+    const simplifyButton = document.getElementById('simplifyButton');
+    const copyButton = document.getElementById('copyButton');
+
+    const mapImage = new Image();
+    const worldState = new Map();
+    const strokes = [];
+    let activeStroke = null;
+    let simplifiedStrokes = [];
+    let mapPlacement = null;
+    let selectedWorldId = 1;
+    let selectedViewportId = 'desktop';
+
+    function getBoardSize() {
+      return BOARD_PRESETS[selectedViewportId] || BOARD_PRESETS.desktop;
+    }
+
+    function refreshMapPlacement() {
+      if (!mapImage.complete || !mapImage.naturalWidth || !mapImage.naturalHeight) {
+        mapPlacement = null;
+        return;
+      }
+      const board = getBoardSize();
+      const coverScale = Math.max(board.width / mapImage.naturalWidth, board.height / mapImage.naturalHeight);
+      const width = mapImage.naturalWidth * coverScale;
+      const height = mapImage.naturalHeight * coverScale;
+      mapPlacement = {
+        width,
+        height,
+        x: (board.width - width) / 2,
+        y: (board.height - height) / 2,
+      };
+    }
+
+    function applyViewportSize() {
+      const board = getBoardSize();
+      canvas.width = board.width;
+      canvas.height = board.height;
+      const wrap = canvas.parentElement;
+      if (wrap) {
+        wrap.style.width = `min(100%, ${board.width}px)`;
+      }
+      refreshMapPlacement();
+    }
+
+    function updateStats() {
+      const world = WORLD_OPTIONS.find((entry) => entry.id === selectedWorldId) || WORLD_OPTIONS[0];
+      worldLabel.textContent = world.label;
+      const rawCount = strokes.reduce((sum, stroke) => sum + stroke.length, 0) + (activeStroke ? activeStroke.length : 0);
+      rawCountEl.textContent = String(rawCount);
+      const simplifiedCount = simplifiedStrokes.reduce((sum, stroke) => sum + stroke.length, 0);
+      simpleCountEl.textContent = String(simplifiedCount);
+      modeLabel.textContent = activeStroke ? 'Drawing' : 'Idle';
+    }
+
+    function boardToBase(point) {
+      const board = getBoardSize();
+      return {
+        x: Math.max(0, Math.min(BASE_W, Math.round(point.x / (board.width / BASE_W)))),
+        y: Math.max(0, Math.min(BASE_H, Math.round((point.y - MAP_OFFSET_Y) / (board.height / BASE_H)))),
+      };
+    }
+
+    function getCanvasPoint(event) {
+      const rect = canvas.getBoundingClientRect();
+      const scaleX = canvas.width / rect.width;
+      const scaleY = canvas.height / rect.height;
+      return {
+        x: (event.clientX - rect.left) * scaleX,
+        y: (event.clientY - rect.top) * scaleY,
+      };
+    }
+
+    function distance(a, b) {
+      return Math.hypot(a.x - b.x, a.y - b.y);
+    }
+
+    function simplifyPoints(points, minDistance) {
+      if (points.length <= 2) {
+        return points.slice();
+      }
+      const simplified = [points[0]];
+      for (let index = 1; index < points.length - 1; index += 1) {
+        if (distance(points[index], simplified[simplified.length - 1]) >= minDistance) {
+          simplified.push(points[index]);
+        }
+      }
+      simplified.push(points[points.length - 1]);
+      return simplified;
+    }
+
+    function exportRoute() {
+      const drawableStrokes = strokes.filter((stroke) => stroke.length >= 2);
+      if (drawableStrokes.length === 0) {
+        statusText.textContent = 'Draw the path first.';
+        simplifiedStrokes = [];
+        updateStats();
+        return;
+      }
+
+      const simplifiedBoardStrokes = drawableStrokes.map((stroke) => simplifyPoints(stroke, 14));
+      simplifiedStrokes = simplifiedBoardStrokes.map((stroke) => stroke.map(boardToBase));
+      const world = WORLD_OPTIONS.find((entry) => entry.id === selectedWorldId) || WORLD_OPTIONS[0];
+      const header = `worldId: ${world.id}, // ${world.label}`;
+
+      if (simplifiedStrokes.length === 1) {
+        const jsPoints = simplifiedStrokes[0].map((point) => `      { x: ${point.x}, y: ${point.y} },`).join('\n');
+        output.value = `${header}\npoints: [\n${jsPoints}\n    ]`;
+        statusText.textContent = `Export complete for ${world.label}. Single continuous path captured with no fake connectors.`;
+      } else {
+        const strokeBlocks = simplifiedStrokes.map((stroke, index) => {
+          const jsPoints = stroke.map((point) => `        { x: ${point.x}, y: ${point.y} },`).join('\n');
+          return `  stroke${index + 1}: [\n${jsPoints}\n  ]`;
+        }).join(',\n');
+        output.value = `${header}\nstrokes: {\n${strokeBlocks}\n}`;
+        statusText.textContent = `Export complete for ${world.label}. Multiple separate strokes were preserved without adding straight connector lines.`;
+      }
+
+      persistCurrentWorldState();
+      updateStats();
+      drawScene();
+    }
+
+    function cloneStrokeCollection(strokeCollection) {
+      return strokeCollection.map((stroke) => stroke.map((point) => ({ x: point.x, y: point.y })));
+    }
+
+    function persistCurrentWorldState() {
+      worldState.set(selectedWorldId, {
+        strokes: cloneStrokeCollection(strokes),
+        simplifiedStrokes: cloneStrokeCollection(simplifiedStrokes),
+        outputText: output.value,
+        statusText: statusText.textContent,
+      });
+    }
+
+    function restoreWorldState(worldId) {
+      const saved = worldState.get(worldId);
+      strokes.length = 0;
+      simplifiedStrokes = [];
+      activeStroke = null;
+      output.value = '';
+      statusText.textContent = 'Draw one continuous path for the selected world, then press Simplify + Export.';
+      if (!saved) {
+        return;
+      }
+      const restoredStrokes = cloneStrokeCollection(saved.strokes || []);
+      restoredStrokes.forEach((stroke) => strokes.push(stroke));
+      simplifiedStrokes = cloneStrokeCollection(saved.simplifiedStrokes || []);
+      output.value = saved.outputText || '';
+      if (saved.statusText) {
+        statusText.textContent = saved.statusText;
+      }
+    }
+
+    function switchWorld(worldId) {
+      persistCurrentWorldState();
+      selectedWorldId = worldId;
+      restoreWorldState(worldId);
+      const world = WORLD_OPTIONS.find((entry) => entry.id === worldId) || WORLD_OPTIONS[0];
+      mapPlacement = null;
+      mapImage.src = world.imagePath;
+      updateStats();
+      drawScene();
+    }
+
+    function switchViewport(viewportId) {
+      selectedViewportId = BOARD_PRESETS[viewportId] ? viewportId : 'desktop';
+      applyViewportSize();
+      drawScene();
+    }
+
+    function drawPolyline(points, color, lineWidth) {
+      if (points.length < 2) {
+        return;
+      }
+      ctx.strokeStyle = color;
+      ctx.lineWidth = lineWidth;
+      ctx.lineJoin = 'round';
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(points[0].x, points[0].y);
+      for (let index = 1; index < points.length; index += 1) {
+        ctx.lineTo(points[index].x, points[index].y);
+      }
+      ctx.stroke();
+    }
+
+    function drawScene() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = '#0b1114';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      if (mapPlacement) {
+        ctx.drawImage(mapImage, mapPlacement.x, mapPlacement.y, mapPlacement.width, mapPlacement.height);
+      }
+
+      for (const stroke of strokes) {
+        drawPolyline(stroke, 'rgba(255,255,255,0.92)', 8);
+      }
+
+      if (activeStroke) {
+        drawPolyline(activeStroke, 'rgba(255,255,255,0.92)', 8);
+      }
+
+      if (simplifiedStrokes.length > 0) {
+        for (const stroke of simplifiedStrokes) {
+          if (stroke.length < 2) {
+            continue;
+          }
+          const boardPoints = stroke.map((point) => ({
+            x: point.x * (getBoardSize().width / BASE_W),
+            y: point.y * (getBoardSize().height / BASE_H) + MAP_OFFSET_Y,
+          }));
+          drawPolyline(boardPoints, 'rgba(143,211,255,0.9)', 3);
+        }
+      }
+    }
+
+    function startStroke(event) {
+      event.preventDefault();
+      canvas.setPointerCapture(event.pointerId);
+      activeStroke = [getCanvasPoint(event)];
+      simplifiedStrokes = [];
+      updateStats();
+      drawScene();
+    }
+
+    function moveStroke(event) {
+      if (!activeStroke) {
+        return;
+      }
+      const point = getCanvasPoint(event);
+      if (distance(point, activeStroke[activeStroke.length - 1]) < 4) {
+        return;
+      }
+      activeStroke.push(point);
+      updateStats();
+      drawScene();
+    }
+
+    function endStroke(event) {
+      if (!activeStroke) {
+        return;
+      }
+      if (event && canvas.hasPointerCapture(event.pointerId)) {
+        canvas.releasePointerCapture(event.pointerId);
+      }
+      if (activeStroke.length > 1) {
+        strokes.push(activeStroke);
+      }
+      activeStroke = null;
+      updateStats();
+      drawScene();
+    }
+
+    undoButton.addEventListener('click', () => {
+      strokes.pop();
+      simplifiedStrokes = [];
+      updateStats();
+      drawScene();
+    });
+
+    clearButton.addEventListener('click', () => {
+      strokes.length = 0;
+      activeStroke = null;
+      simplifiedStrokes = [];
+      output.value = '';
+      statusText.textContent = 'Drawing cleared.';
+      persistCurrentWorldState();
+      updateStats();
+      drawScene();
+    });
+
+    simplifyButton.addEventListener('click', exportRoute);
+
+    copyButton.addEventListener('click', async () => {
+      if (!output.value.trim()) {
+        statusText.textContent = 'Nothing to copy yet. Press Simplify + Export after drawing.';
+        return;
+      }
+      try {
+        await navigator.clipboard.writeText(output.value);
+        statusText.textContent = 'Copied exported route points to clipboard.';
+        persistCurrentWorldState();
+      } catch {
+        statusText.textContent = 'Clipboard copy failed. Select the output text manually.';
+      }
+    });
+
+    worldSelect.addEventListener('change', () => {
+      switchWorld(Number(worldSelect.value));
+    });
+
+    viewportSelect.addEventListener('change', () => {
+      switchViewport(viewportSelect.value);
+    });
+
+    canvas.addEventListener('pointerdown', startStroke);
+    canvas.addEventListener('pointermove', moveStroke);
+    canvas.addEventListener('pointerup', endStroke);
+    canvas.addEventListener('pointercancel', endStroke);
+
+    mapImage.addEventListener('load', () => {
+      refreshMapPlacement();
+      updateStats();
+      drawScene();
+    });
+
+    WORLD_OPTIONS.forEach((world) => {
+      const option = document.createElement('option');
+      option.value = String(world.id);
+      option.textContent = world.label;
+      worldSelect.appendChild(option);
+    });
+
+    applyViewportSize();
+    worldSelect.value = String(selectedWorldId);
+    viewportSelect.value = selectedViewportId;
+    switchWorld(selectedWorldId);
+  </script>
+</body>
+</html>

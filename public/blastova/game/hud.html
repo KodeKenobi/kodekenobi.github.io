@@ -1,0 +1,473 @@
+<style>
+
+  #ab-hud-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 220;
+    pointer-events: none;
+    box-sizing: border-box;
+    padding: 0;
+  }
+
+  #ab-hud-overlay .hud {
+    border: 2px solid rgba(30, 30, 30, 0.8);
+    border-radius: 0;
+    background: rgba(0, 0, 0, 1);
+    display: grid;
+    grid-template-columns: 2.1fr 1.35fr 1.25fr 1.7fr;
+    align-items: stretch;
+    overflow: hidden;
+  }
+
+  #ab-hud-overlay .hud-col {
+    padding: 10px 12px;
+    border-right: 1px solid rgba(60, 60, 60, 0.6);
+  }
+
+  #ab-hud-overlay .hud-col:last-child {
+    border-right: 0;
+  }
+
+  #ab-hud-overlay .title {
+    font-family: 'BlackOpsOne', sans-serif;
+    font-weight: 800;
+    font-size: 30px;
+    letter-spacing: 2px;
+    line-height: 0.95;
+    margin-bottom: 6px;
+    color: #e8f7ff;
+  }
+
+  #ab-hud-overlay .stats {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  #ab-hud-overlay .stat-key {
+    text-transform: uppercase;
+    color: #71a4bf;
+    font-size: 11px;
+    letter-spacing: 1px;
+    font-weight: 700;
+    font-family: 'Teko', sans-serif;
+  }
+
+  #ab-hud-overlay .stat-value {
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1;
+    margin-top: 3px;
+    color: #e8f7ff;
+    font-family: 'Teko', sans-serif;
+  }
+
+  #ab-hud-overlay .score {
+    color: #ffd289;
+    font-size: 34px;
+    font-weight: 800;
+    line-height: 0.95;
+    margin-top: 4px;
+    font-family: 'Teko', sans-serif;
+  }
+
+  #ab-hud-overlay .hint {
+    color: #ddb87a;
+    font-size: 16px;
+    font-weight: 700;
+    margin-top: 8px;
+    font-family: 'Teko', sans-serif;
+  }
+
+  #ab-hud-overlay .protocol-title {
+    font-family: 'BlackOpsOne', sans-serif;
+    text-transform: uppercase;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1;
+    margin-top: 2px;
+    color: #e8f7ff;
+  }
+
+  #ab-hud-overlay .protocol-copy {
+    color: #9ecbe0;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.08;
+    margin-top: 8px;
+    font-family: 'Teko', sans-serif;
+  }
+
+  #ab-hud-overlay .protocol-meta {
+    color: #f0c679;
+    font-size: 13px;
+    font-weight: 700;
+    margin-top: 7px;
+    font-family: 'Teko', sans-serif;
+  }
+
+  #ab-hud-overlay .controls {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    justify-content: center;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  #ab-hud-overlay .ctrl-row {
+    display: flex;
+    gap: 4px;
+  }
+
+  #ab-hud-overlay .ctrl-row .btn.green {
+    flex: 1;
+  }
+
+  #ab-hud-overlay .btn.ctrl-sm {
+    flex-shrink: 0;
+    font-size: 11px;
+    padding: 0 8px;
+    letter-spacing: 0.5px;
+    background: transparent;
+    border-color: rgba(145, 222, 255, 0.3);
+  }
+
+  #ab-hud-overlay .buttons {
+    display: grid;
+    gap: 4px;
+  }
+
+  #ab-hud-overlay .btn {
+    border: 2px solid rgba(145, 222, 255, 0.52);
+    background: #1d3b5b;
+    color: #e7f8ff;
+    font-family: 'BlackOpsOne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    height: 32px;
+    cursor: pointer;
+    pointer-events: auto;
+  }
+
+  #ab-hud-overlay .btn[disabled] {
+    opacity: 0.6;
+    cursor: default;
+  }
+
+  #ab-hud-overlay .btn.green {
+    border-color: rgba(164, 255, 203, 0.44);
+    background: #2c5a3f;
+  }
+
+  #ab-hud-overlay .rounds {
+    display: flex;
+    gap: 6px;
+    justify-content: flex-end;
+  }
+
+  #ab-hud-overlay .round-wrap {
+    display: flex;
+    justify-content: flex-end;
+    color: #c4eaff;
+    font-family: 'BlackOpsOne', sans-serif;
+    font-size: 12px;
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 1px;
+  }
+
+  #ab-hud-overlay .round {
+    width: auto;
+    height: auto;
+    border-radius: 4px;
+    border: 1px solid rgba(145, 222, 255, 0.3);
+    display: flex;
+    place-items: center;
+    background: transparent;
+    color: #c4eaff;
+    font-size: 9px;
+    font-weight: 700;
+    font-family: 'BlackOpsOne', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    line-height: 1;
+    pointer-events: auto;
+    cursor: pointer;
+    padding: 3px 6px;
+    white-space: nowrap;
+  }
+
+  #ab-hud-overlay .round:hover,
+  #ab-hud-overlay .round:focus-visible {
+    background: transparent;
+    color: #ffffff;
+    outline: none;
+    box-shadow: none;
+  }
+
+  @media (max-width: 1200px) {
+    #ab-hud-overlay {
+      left: 0;
+      right: 0;
+      top: 0;
+    }
+
+    #ab-hud-overlay .hud {
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: auto auto;
+    }
+
+    #ab-hud-overlay .title {
+      font-size: 28px;
+    }
+
+    #ab-hud-overlay .score {
+      font-size: 36px;
+    }
+
+    #ab-hud-overlay .hint,
+    #ab-hud-overlay .protocol-copy,
+    #ab-hud-overlay .protocol-meta {
+      font-size: 16px;
+    }
+  }
+
+  #ab-hud-overlay[data-force-desktop='true'] .hud {
+    grid-template-columns: 2.1fr 1.35fr 1.25fr 1.7fr;
+    grid-template-rows: none;
+  }
+
+  #ab-hud-overlay[data-force-desktop='true'] .title {
+    font-size: 28px;
+  }
+
+  #ab-hud-overlay[data-force-desktop='true'] .score {
+    font-size: 32px;
+  }
+
+  #ab-hud-overlay[data-force-desktop='true'] .hint {
+    font-size: 15px;
+  }
+
+  #ab-hud-overlay[data-force-desktop='true'] .protocol-copy {
+    font-size: 13px;
+  }
+
+  #ab-hud-overlay[data-force-desktop='true'] .protocol-meta {
+    font-size: 12px;
+  }
+
+  #ab-hud-overlay[data-force-desktop='true'] .hud-col {
+    padding: 8px 10px;
+  }
+
+  #ab-hud-overlay[data-force-desktop='true'] .stat-value {
+    font-size: 24px;
+  }
+
+  #ab-hud-overlay[data-force-desktop='true'] .btn {
+    height: 30px;
+  }
+
+  #ab-hud-overlay[data-force-desktop='true'] .round {
+    width: 34px;
+    height: 34px;
+    font-size: 20px;
+  }
+
+  #ab-hud-overlay[data-compact='true'] .hud {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+  }
+
+  #ab-hud-overlay[data-compact='true'] .title {
+    font-size: 28px;
+  }
+
+  #ab-hud-overlay[data-compact='true'] .score {
+    font-size: 36px;
+  }
+
+  #ab-hud-overlay[data-compact='true'] .hint,
+  #ab-hud-overlay[data-compact='true'] .protocol-copy,
+  #ab-hud-overlay[data-compact='true'] .protocol-meta {
+    font-size: 16px;
+  }
+
+  #ab-hud-overlay[data-narrow='true'] .hud-col {
+    padding: 10px 12px;
+  }
+
+  #ab-hud-overlay[data-narrow='true'] .title {
+    font-size: 24px;
+  }
+
+  #ab-hud-overlay[data-narrow='true'] .stat-key {
+    font-size: 12px;
+  }
+
+  #ab-hud-overlay[data-narrow='true'] .stat-value {
+    font-size: 28px;
+  }
+
+  #ab-hud-overlay[data-narrow='true'] .score {
+    font-size: 30px;
+  }
+
+  #ab-hud-overlay[data-narrow='true'] .protocol-title {
+    font-size: 19px;
+  }
+
+  #ab-hud-overlay[data-narrow='true'] .protocol-copy,
+  #ab-hud-overlay[data-narrow='true'] .protocol-meta,
+  #ab-hud-overlay[data-narrow='true'] .hint {
+    font-size: 14px;
+  }
+
+  #ab-hud-overlay[data-narrow='true'] .btn {
+    height: 34px;
+    font-size: 13px;
+  }
+
+  #ab-hud-overlay[data-narrow='true'] .round-wrap {
+    font-size: 11px;
+  }
+
+  #ab-hud-overlay[data-narrow='true'] .round {
+    width: 32px;
+    height: 32px;
+    font-size: 16px;
+  }
+
+  #ab-hud-overlay[data-mobile='true'] .hud-col {
+    padding: 7px 9px;
+  }
+
+  #ab-hud-overlay[data-mobile='true'] .title {
+    font-size: 20px;
+    margin-bottom: 2px;
+  }
+
+  #ab-hud-overlay[data-mobile='true'] .stat-key {
+    font-size: 9px;
+  }
+
+  #ab-hud-overlay[data-mobile='true'] .stat-value {
+    font-size: 21px;
+    margin-top: 1px;
+  }
+
+  #ab-hud-overlay[data-mobile='true'] .score {
+    font-size: 24px;
+    margin-top: 1px;
+  }
+
+  #ab-hud-overlay[data-mobile='true'] .hint {
+    font-size: 12px;
+    margin-top: 3px;
+  }
+
+  #ab-hud-overlay[data-mobile='true'] .protocol-title {
+    font-size: 14px;
+    margin-top: 0;
+  }
+
+  #ab-hud-overlay[data-mobile='true'] .protocol-copy,
+  #ab-hud-overlay[data-mobile='true'] .protocol-meta {
+    font-size: 11px;
+    margin-top: 3px;
+    line-height: 1;
+  }
+
+  #ab-hud-overlay[data-mobile='true'] .stats {
+    gap: 8px;
+  }
+
+  #ab-hud-overlay .btn.start-wave {
+    border-color: rgba(145, 235, 255, 0.65);
+    background: #164469;
+    color: #f3fcff;
+  }
+
+  #ab-hud-overlay .btn.wave-active {
+    opacity: 0.55;
+    cursor: default;
+  }
+
+  #ab-hud-overlay[data-mobile='true'] .btn {
+    height: 28px;
+    font-size: 10px;
+    letter-spacing: 0.6px;
+  }
+
+  #ab-hud-overlay[data-mobile='true'] .btn.ctrl-sm {
+    font-size: 9px;
+    padding: 0 5px;
+  }
+
+  #ab-hud-overlay[data-mobile='true'] .round-wrap {
+    font-size: 10px;
+  }
+
+  #ab-hud-overlay[data-mobile='true'] .round {
+    width: 30px;
+    height: 30px;
+    font-size: 15px;
+  }
+
+</style>
+
+<div id="ab-hud-overlay" aria-label="Player HUD">
+  <section class="hud">
+    <section class="hud-col">
+      <div class="title" data-hud="commander-name">PLAYER</div>
+      <div class="stats">
+        <div>
+          <div class="stat-key">Gold</div>
+          <div class="stat-value" data-hud="gold">0</div>
+        </div>
+        <div>
+          <div class="stat-key">Supplies</div>
+          <div class="stat-value" data-hud="tech">0</div>
+        </div>
+        <div>
+          <div class="stat-key">Lives</div>
+          <div class="stat-value" data-hud="lives">0</div>
+        </div>
+        <div>
+          <div class="stat-key">Wave</div>
+          <div class="stat-value" data-hud="wave">0</div>
+        </div>
+        <div>
+          <div class="stat-key">World</div>
+          <div class="stat-value" data-hud="world">1</div>
+        </div>
+        <div>
+          <div class="stat-key">Player Lvl</div>
+          <div class="stat-value" data-hud="level">1</div>
+        </div>
+      </div>
+    </section>
+    <section class="hud-col">
+      <div class="score" data-hud="score">SCORE 0</div>
+      <div class="hint" data-hud="status">Armory open. Spend gold or supplies to prep for next wave.</div>
+    </section>
+    <section class="hud-col">
+      <div class="protocol-title">DEFENSE PROTOCOL</div>
+      <div class="protocol-copy">Drag a weapon from the loadout and drop it near the path (not on it).</div>
+      <div class="protocol-meta">Costs vary • Auto-target • Defend the core</div>
+    </section>
+    <section class="hud-col controls">
+      <button class="btn start-wave" type="button" data-hud-action="start-or-pause">START WAVE</button>
+      <div class="ctrl-row">
+        <button class="btn green" type="button" data-hud-action="restart">RESTART</button>
+        <button class="btn ctrl-sm" type="button" data-hud-action="settings">SETTINGS</button>
+        <button class="btn ctrl-sm" type="button" data-hud-action="home">HOME</button>
+      </div>
+    </section>
+  </section>
+</div>
