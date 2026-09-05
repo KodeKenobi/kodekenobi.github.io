@@ -26,6 +26,8 @@
     .platform-btn.mac { color: #f3f6ff; }
     .platform-btn.lnx { color: #ffd37a; }
     .platform-btn.ios { color: #8db8ff; opacity: 0.42; pointer-events: none; }
+    .platform-btn.is-current { border-color: rgba(143,220,255,0.65); box-shadow: 0 0 12px rgba(143,220,255,0.25); }
+    .btn-os-download[hidden] { display: none; }
     @media (max-width: 640px) {
       .platform-btn { width: 38px; height: 38px; border-radius: 10px; }
       .platform-btn svg { width: 18px; height: 18px; }
@@ -132,6 +134,7 @@
         <p class="summary">Stand against fractured front lines, absorb armored assaults, and outlast a battlefield that keeps tightening around your last defense.</p>
         <div class="cta-row">
           <a class="btn" href="https://blastova-frontend-production.up.railway.app/" target="_blank" rel="noopener">Play Now</a>
+          <a class="btn btn-os-download" id="os-download" hidden></a>
         </div>
         <p class="meta">Play instantly in browser or download.</p>
         <div class="platforms">
@@ -151,5 +154,46 @@
       </div>
     </section>
   </div>
+  <script>
+  (function () {
+    var RELEASE = 'https://github.com/KodeKenobi/blastova-website/releases/download/v1.0.0/';
+    var BUILDS = {
+      android: { file: 'app-release.apk',                  label: 'Download APK',           cls: 'and' },
+      windows: { file: 'Blastova.Setup.1.0.0.exe',         label: 'Download for Windows',   cls: 'win' },
+      macos:   { file: 'Blastova-1.0.0-arm64.dmg',         label: 'Download for macOS',     cls: 'mac' },
+      linux:   { file: 'Blastova-1.0.0-arm64.AppImage',    label: 'Download for Linux',     cls: 'lnx' }
+    };
+
+    function detectOS() {
+      var ua = navigator.userAgent;
+      var platform = (navigator.userAgentData && navigator.userAgentData.platform) || navigator.platform || '';
+      if (/Android/i.test(ua)) return 'android';
+      // iPadOS 13+ reports a Mac UA, so disambiguate with touch support.
+      if (/iPhone|iPad|iPod/i.test(ua) || (/Mac/i.test(platform) && navigator.maxTouchPoints > 1)) return 'ios';
+      if (/Win/i.test(platform) || /Windows/i.test(ua)) return 'windows';
+      if (/Mac/i.test(platform) || /Mac OS X/i.test(ua)) return 'macos';
+      if (/Linux|X11|CrOS/i.test(platform + ua)) return 'linux';
+      return null;
+    }
+
+    var os = detectOS();
+    var build = os && BUILDS[os];
+    var link = document.getElementById('os-download');
+
+    if (build && link) {
+      link.href = RELEASE + build.file;
+      link.textContent = build.label;
+      link.setAttribute('download', '');
+      link.hidden = false;
+      var match = document.querySelector('.platform-btn.' + build.cls);
+      if (match) match.classList.add('is-current');
+    }
+
+    // On Android the browser offers to install a web shortcut; suppress it so the APK stays the install path.
+    window.addEventListener('beforeinstallprompt', function (e) {
+      if (os === 'android') e.preventDefault();
+    });
+  })();
+  </script>
 </body>
 </html>
