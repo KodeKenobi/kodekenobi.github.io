@@ -40,20 +40,20 @@
         position:fixed; inset:0; z-index:100000;
         display:flex; flex-direction:column; align-items:center; justify-content:center;
         gap:18px; padding:32px 24px; text-align:center; overflow:hidden;
-        color:#fff; letter-spacing:1px;
+        color:#d8d5ba; letter-spacing:1px;
         font-family:"Teko Local","Teko",monospace;
-        background-color:#070d14;
-        background-image:linear-gradient(rgba(5,10,20,.28),rgba(5,10,20,.28)),linear-gradient(rgba(18,30,49,.3) 1px,transparent 1px),linear-gradient(90deg,rgba(18,30,49,.3) 1px,transparent 1px);
+        background-color:#161a10;
+        background-image:linear-gradient(rgba(10,13,7,.32),rgba(10,13,7,.32)),linear-gradient(rgba(85,102,52,.28) 1px,transparent 1px),linear-gradient(90deg,rgba(85,102,52,.28) 1px,transparent 1px);
         background-size:auto,30px 30px,30px 30px;
         background-position:center,0 0,0 0;
       }
-      #portrait-orientation-gate::before { content:""; position:absolute; inset:12px; border:1px solid rgba(0,162,255,.28); clip-path:polygon(2% 0,98% 0,100% 2%,100% 98%,98% 100%,2% 100%,0 98%,0 2%); }
+      #portrait-orientation-gate::before { content:""; position:absolute; inset:12px; border:1px solid rgba(138,154,91,.35); clip-path:polygon(2% 0,98% 0,100% 2%,100% 98%,98% 100%,2% 100%,0 98%,0 2%); }
       .orientation-device { position:relative; display:flex; align-items:center; justify-content:center; width:190px; height:116px; }
-      .orientation-phone { position:absolute; width:42px; height:76px; border:2px solid #3df4ff; border-radius:2px; background:#1c242c; box-shadow:0 0 14px rgba(0,162,255,.35); animation:orientation-rotate 2.8s ease-in-out infinite alternate; }
-      .orientation-phone::before { content:""; position:absolute; left:7px; right:7px; top:7px; bottom:7px; border:1px solid rgba(61,244,255,.45); background:repeating-linear-gradient(0deg,transparent 0 7px,rgba(61,244,255,.14) 8px); }
-      .orientation-target { position:absolute; width:84px; height:48px; border:2px solid #d4af37; border-radius:2px; background:#1c242c; box-shadow:0 0 16px rgba(212,175,55,.3); opacity:.9; clip-path:polygon(8% 0,92% 0,100% 12%,100% 88%,92% 100%,8% 100%,0 88%,0 12%); }
-      .orientation-target::before { content:""; position:absolute; inset:8px; border:1px solid rgba(212,175,55,.55); }
-      .orientation-title { margin:0; font-family:"Black Ops One Local","BlackOpsOne",monospace; font-size:clamp(24px,8vw,38px); letter-spacing:2px; text-shadow:0 0 8px rgba(255,255,255,.2); }
+      .orientation-phone { position:absolute; width:42px; height:76px; border:2px solid #8a9a5b; border-radius:2px; background:#252b1a; box-shadow:0 0 14px rgba(138,154,91,.35); animation:orientation-rotate 2.8s ease-in-out infinite alternate; }
+      .orientation-phone::before { content:""; position:absolute; left:7px; right:7px; top:7px; bottom:7px; border:1px solid rgba(168,183,122,.45); background:repeating-linear-gradient(0deg,transparent 0 7px,rgba(168,183,122,.16) 8px); }
+      .orientation-target { position:absolute; width:84px; height:48px; border:2px solid #b3812f; border-radius:2px; background:#252b1a; box-shadow:0 0 16px rgba(179,129,47,.3); opacity:.9; clip-path:polygon(8% 0,92% 0,100% 12%,100% 88%,92% 100%,8% 100%,0 88%,0 12%); }
+      .orientation-target::before { content:""; position:absolute; inset:8px; border:1px solid rgba(179,129,47,.55); }
+      .orientation-title { margin:0; color:#e2dfc4; font-family:"Black Ops One Local","BlackOpsOne",monospace; font-size:clamp(24px,8vw,38px); letter-spacing:2px; text-shadow:0 0 8px rgba(138,154,91,.45); }
       body > iframe,
       body > #app-splash,
       body > .hero-shell { visibility:hidden; }
