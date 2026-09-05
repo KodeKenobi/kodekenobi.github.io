@@ -1,0 +1,4883 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tower Blueprints UI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <style>
+    @font-face {
+      font-family: 'BlackOpsOne';
+      src: url('./assets/fonts/BlackOpsOne.ttf') format('truetype');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: 'Teko';
+      src: url('./assets/fonts/Teko-Regular.ttf') format('truetype');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: 'Teko';
+      src: url('./assets/fonts/Teko-SemiBold.ttf') format('truetype');
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    :root {
+      --bg: #040c1b;
+      --line: #5fd2ff;
+      --line-soft: rgba(95, 210, 255, 0.35);
+      --text: #ddf2ff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Teko', sans-serif;
+    }
+
+    #three-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .screen {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      height: 100%;
+      padding: 0;
+      display: grid;
+      place-items: stretch;
+    }
+
+    .standalone-close {
+      position: fixed;
+      top: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 40;
+      border: 0;
+      border-radius: 0 0 8px 8px;
+      background: rgba(30, 71, 108, 0.96);
+      color: #f2fbff;
+      font-family: 'BlackOpsOne', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      min-width: 78px;
+      padding: 4px 10px;
+      cursor: pointer;
+      display: none;
+    }
+
+    .standalone-close.visible {
+      display: inline-block;
+    }
+
+    .standalone-close:hover {
+      background: rgba(39, 88, 133, 0.96);
+    }
+
+    .outer-frame {
+      margin: 4px;
+      border: 2px solid rgba(191, 223, 245, 0.85);
+      background: linear-gradient(180deg, #2b4768, #1d3550);
+      border-radius: 20px;
+      padding: 7px;
+      box-shadow: inset 0 0 0 2px rgba(82, 131, 166, 0.7), 0 8px 34px rgba(0, 0, 0, 0.4);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .outer-frame::before,
+    .outer-frame::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      width: 250px;
+      height: 26px;
+      border: 2px solid rgba(205, 231, 247, 0.8);
+      background: linear-gradient(180deg, #577896, #2f4e6f);
+      clip-path: polygon(12% 0, 88% 0, 100% 100%, 0 100%);
+      z-index: 4;
+    }
+
+    .outer-frame::before {
+      left: 62px;
+    }
+
+    .outer-frame::after {
+      right: 62px;
+    }
+
+    .workspace {
+      width: 100%;
+      height: 100%;
+      border-radius: 14px;
+      border: 2px solid rgba(95, 210, 255, 0.32);
+      background: linear-gradient(180deg, rgba(10, 24, 43, 0.96), rgba(5, 14, 28, 0.98));
+      display: grid;
+      grid-template-columns: 2.15fr 1fr;
+      gap: 10px;
+      padding: 10px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .left-stack {
+      display: grid;
+      grid-template-rows: auto auto 1fr;
+      gap: 8px;
+      padding-top: 28px;
+      min-height: 0;
+    }
+
+    .top-title {
+      font-family: 'BlackOpsOne', sans-serif;
+      font-weight: 800;
+      letter-spacing: 1px;
+      font-size: 28px;
+      text-transform: uppercase;
+      color: #96eaff;
+      text-shadow: 0 0 12px rgba(80, 214, 255, 0.3);
+    }
+
+    .top-tabs {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .tab {
+      border: 2px solid rgba(103, 178, 232, 0.45);
+      border-radius: 8px;
+      background: linear-gradient(180deg, #1b395c, #122a46);
+      min-height: 48px;
+      display: grid;
+      place-items: center;
+      font-family: 'BlackOpsOne', sans-serif;
+      font-size: 16px;
+      letter-spacing: 0.7px;
+      color: #8cb6ce;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .tab.active {
+      color: #d7f6ff;
+      border-color: rgba(146, 231, 255, 0.9);
+      background: linear-gradient(180deg, #2a5884, #18446a);
+      box-shadow: inset 0 0 0 1px rgba(190, 245, 255, 0.26);
+      position: relative;
+    }
+
+    .tab.active::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      width: 0;
+      height: 0;
+      border-left: 10px solid transparent;
+      border-right: 10px solid transparent;
+      border-top: 10px solid #73dfff;
+    }
+
+    .arena {
+      border: 2px solid rgba(97, 183, 241, 0.4);
+      border-radius: 12px;
+      background: linear-gradient(180deg, rgba(11, 29, 51, 0.85), rgba(8, 22, 40, 0.88));
+      position: relative;
+      overflow: hidden;
+      min-height: 0;
+    }
+
+    .left-rail {
+      position: absolute;
+      top: 8px;
+      bottom: 8px;
+      left: 8px;
+      width: 246px;
+      border: 2px solid rgba(101, 187, 245, 0.37);
+      border-radius: 10px;
+      background: linear-gradient(180deg, rgba(20, 49, 78, 0.86), rgba(13, 35, 58, 0.9));
+      padding: 8px;
+      display: grid;
+      grid-template-rows: 20px 1fr 20px;
+      gap: 6px;
+      z-index: 3;
+    }
+
+    .rail-arrow {
+      width: 100%;
+      display: grid;
+      place-items: center;
+      color: #71e4ff;
+      font-size: 18px;
+      text-shadow: 0 0 8px rgba(108, 232, 255, 0.5);
+      user-select: none;
+      cursor: pointer;
+    }
+
+    .rail-items {
+      display: grid;
+      gap: 10px;
+      align-content: start;
+      overflow-y: auto;
+      overflow-x: hidden;
+      min-height: 0;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+      touch-action: pan-y;
+    }
+
+    .rail-items::-webkit-scrollbar {
+      width: 0;
+      height: 0;
+    }
+
+    .rail-items::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .rail-items::-webkit-scrollbar-thumb {
+      background: transparent;
+    }
+
+    .rail-card {
+      border: 2px solid rgba(108, 186, 238, 0.45);
+      border-radius: 10px;
+      background: linear-gradient(180deg, #22466f, #1a3a5f);
+      min-height: 136px;
+      padding: 10px;
+      display: grid;
+      grid-template-rows: 1fr auto;
+      place-items: center;
+      color: #d8efff;
+      font-size: 21px;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .rail-card.selected {
+      border-color: #86e6ff;
+      background: linear-gradient(180deg, #2f6796, #24567f);
+      box-shadow: inset 0 0 0 1px rgba(195, 242, 255, 0.32);
+    }
+
+    .tiny-icon {
+      width: 84px;
+      height: 84px;
+      border-radius: 10px;
+      background-color: transparent;
+      background-image: url("assets/ground-shaker/ground_shaker_asset/Red/Weapons/weapons.png");
+      background-repeat: no-repeat;
+      background-size: 400% 400%;
+      background-position: 0% 0%;
+      border: none;
+      box-shadow: none;
+    }
+
+    .tiny-icon.burst {
+      background-position: 100% 0%;
+    }
+
+    .tiny-icon.laser {
+      background-position: 100% 33.333%;
+    }
+
+    .tiny-icon.plasma {
+      background-position: 100% 100%;
+    }
+
+    .tiny-icon.missile {
+      background-position: 100% 66.666%;
+    }
+
+    .stage {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background: #0b2038;
+    }
+
+    .weapon-cloud {
+      position: absolute;
+      left: 274px;
+      right: 18px;
+      top: 28px;
+      bottom: 24px;
+      z-index: 2;
+      overflow: hidden;
+      background: #0b2038;
+      display: flex;
+      flex-direction: column;
+      padding: 0;
+    }
+
+    .carousel-header {
+      flex-shrink: 0;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 10px 16px 8px;
+      border-bottom: 1px solid rgba(108, 186, 238, 0.22);
+    }
+
+    .carousel-heading {
+      min-width: 0;
+    }
+
+    .carousel-viewport {
+      flex: 1;
+      overflow: hidden;
+      position: relative;
+      min-height: 0;
+    }
+
+    .carousel-track {
+      display: flex;
+      height: 100%;
+      transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .carousel-slide {
+      flex-shrink: 0;
+      height: 100%;
+      padding: 12px 18px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .slide-thumb {
+      flex: none;
+      height: 42%;
+      aspect-ratio: 1;
+      width: auto;
+      position: relative;
+      border-radius: 14px;
+      border: none;
+      background-color: #0b2038;
+      background-image: url("assets/ground-shaker/ground_shaker_asset/Red/Weapons/weapons.png");
+      background-repeat: no-repeat;
+      background-size: 400% 400%;
+      background-position: 0% 0%;
+      box-shadow: none;
+    }
+
+    .slide-thumb .tank-turret-overlay {
+      position: absolute;
+      left: 14%;
+      top: 2%;
+      width: 72%;
+      height: 72%;
+      background-repeat: no-repeat;
+      background-position: 0% 50%;
+      background-size: 800% 100%;
+      filter: drop-shadow(0 1px 0 rgba(0, 0, 0, 0.85));
+      pointer-events: none;
+      opacity: 0.96;
+    }
+
+    .slide-info {
+      flex-shrink: 0;
+      width: 100%;
+      text-align: center;
+      padding: 0 2px;
+    }
+
+    .slide-title {
+      font-family: 'BlackOpsOne', sans-serif;
+      font-size: 20px;
+      color: #e6fbff;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 4px;
+    }
+
+    .slide-desc {
+      margin-top: 8px;
+      width: 88%;
+      margin-left: auto;
+      margin-right: auto;
+      text-align: center;
+      font-size: 19px;
+      font-weight: 700;
+      color: #f6fcff;
+      line-height: 1.65;
+      letter-spacing: 0.3px;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+      padding: 0;
+    }
+
+    .carousel-nav {
+      flex-shrink: 0;
+      display: grid;
+      grid-template-columns: 44px 1fr 44px;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 16px;
+    }
+
+    .carousel-prev,
+    .carousel-next {
+      background: rgba(20, 60, 96, 0.9);
+      border: 1px solid rgba(108, 186, 238, 0.5);
+      border-radius: 8px;
+      color: #a8d8f0;
+      font-size: 16px;
+      width: 44px;
+      height: 36px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 150ms;
+    }
+
+    .carousel-prev:hover,
+    .carousel-next:hover {
+      background: rgba(35, 90, 138, 0.95);
+    }
+
+    .carousel-prev:disabled,
+    .carousel-next:disabled {
+      opacity: 0.35;
+      cursor: default;
+    }
+
+    .carousel-dots {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .carousel-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(108, 186, 238, 0.28);
+      border: 1px solid rgba(108, 186, 238, 0.5);
+      cursor: pointer;
+      transition: background 150ms;
+    }
+
+    .carousel-dot.active {
+      background: #a8d8f0;
+      border-color: #a8d8f0;
+    }
+
+    .carousel-pos {
+      flex-shrink: 0;
+      font-family: 'BlackOpsOne', sans-serif;
+      font-size: 14px;
+      color: #6ab5d8;
+      letter-spacing: 0.5px;
+      text-align: right;
+    }
+
+    .weapon-grid {
+      display: none;
+    }
+
+    .weapon-card {
+      border: 2px solid rgba(108, 186, 238, 0.45);
+      background: linear-gradient(180deg, rgba(11, 28, 48, 0.4), rgba(8, 20, 35, 0.52));
+      display: grid;
+      grid-template-columns: 34px 1fr;
+      gap: 8px;
+      align-items: center;
+      color: #d8efff;
+      text-align: left;
+      background: #0b2038;
+      padding-left: 12px;
+    }
+
+    .weapon-card.hero {
+      grid-column: 1 / -1;
+      min-height: 92px;
+      grid-template-columns: 58px 1fr;
+      background: linear-gradient(180deg, #2f6796, #24567f);
+      border-color: #86e6ff;
+      box-shadow: inset 0 0 0 1px rgba(195, 242, 255, 0.32);
+      padding-left: 14px;
+    }
+
+    .weapon-thumb {
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      border: 1px solid rgba(157, 228, 255, 0.55);
+      background-color: #0b2038;
+      background-image: url("assets/ground-shaker/ground_shaker_asset/Red/Weapons/weapons.png");
+      background-repeat: no-repeat;
+      background-size: 400% 400%;
+      box-shadow: inset 0 -6px 10px rgba(0, 0, 0, 0.35);
+    }
+
+    .weapon-card.hero .weapon-thumb {
+      width: 52px;
+      height: 52px;
+      border-radius: 12px;
+    }
+
+    .weapon-grid .weapon-card:nth-child(1) .weapon-thumb,
+    .weapon-grid .weapon-card:nth-child(2) .weapon-thumb {
+      background-position: 0% 0%;
+    }
+
+    .weapon-grid .weapon-card:nth-child(3) .weapon-thumb { background-position: 33.333% 0%; }
+    .weapon-grid .weapon-card:nth-child(4) .weapon-thumb { background-position: 66.666% 0%; }
+    .weapon-grid .weapon-card:nth-child(5) .weapon-thumb { background-position: 100% 0%; }
+    .weapon-grid .weapon-card:nth-child(6) .weapon-thumb { background-position: 0% 33.333%; }
+    .weapon-grid .weapon-card:nth-child(7) .weapon-thumb { background-position: 33.333% 33.333%; }
+    .weapon-grid .weapon-card:nth-child(8) .weapon-thumb { background-position: 66.666% 33.333%; }
+    .weapon-grid .weapon-card:nth-child(9) .weapon-thumb { background-position: 100% 33.333%; }
+    .weapon-grid .weapon-card:nth-child(10) .weapon-thumb { background-position: 0% 66.666%; }
+    .weapon-grid .weapon-card:nth-child(11) .weapon-thumb { background-position: 33.333% 66.666%; }
+    .weapon-grid .weapon-card:nth-child(12) .weapon-thumb { background-position: 66.666% 66.666%; }
+    .weapon-grid .weapon-card:nth-child(13) .weapon-thumb { background-position: 100% 66.666%; }
+    .weapon-grid .weapon-card:nth-child(14) .weapon-thumb { background-position: 0% 100%; }
+    .weapon-grid .weapon-card:nth-child(15) .weapon-thumb { background-position: 33.333% 100%; }
+    .weapon-grid .weapon-card:nth-child(16) .weapon-thumb { background-position: 66.666% 100%; }
+    .weapon-grid .weapon-card:nth-child(17) .weapon-thumb { background-position: 100% 100%; }
+    .weapon-grid .weapon-card:nth-child(18) .weapon-thumb { background-position: 66.666% 66.666%; }
+
+    .weapon-grid .weapon-card:nth-child(1) .weapon-thumb,
+    .weapon-grid .weapon-card:nth-child(2) .weapon-thumb {
+      background-position: 0% 0%;
+    }
+
+    .weapon-grid .weapon-card:nth-child(3) .weapon-thumb { background-position: 33.333% 0%; }
+    .weapon-grid .weapon-card:nth-child(4) .weapon-thumb { background-position: 66.666% 0%; }
+    .weapon-grid .weapon-card:nth-child(5) .weapon-thumb { background-position: 100% 0%; }
+    .weapon-grid .weapon-card:nth-child(6) .weapon-thumb { background-position: 0% 33.333%; }
+    .weapon-grid .weapon-card:nth-child(7) .weapon-thumb { background-position: 33.333% 33.333%; }
+    .weapon-grid .weapon-card:nth-child(8) .weapon-thumb { background-position: 66.666% 33.333%; }
+    .weapon-grid .weapon-card:nth-child(9) .weapon-thumb { background-position: 100% 33.333%; }
+    .weapon-grid .weapon-card:nth-child(10) .weapon-thumb { background-position: 0% 66.666%; }
+    .weapon-grid .weapon-card:nth-child(11) .weapon-thumb { background-position: 33.333% 66.666%; }
+    .weapon-grid .weapon-card:nth-child(12) .weapon-thumb { background-position: 66.666% 66.666%; }
+    .weapon-grid .weapon-card:nth-child(13) .weapon-thumb { background-position: 100% 66.666%; }
+    .weapon-grid .weapon-card:nth-child(14) .weapon-thumb { background-position: 0% 100%; }
+    .weapon-grid .weapon-card:nth-child(15) .weapon-thumb { background-position: 33.333% 100%; }
+    .weapon-grid .weapon-card:nth-child(16) .weapon-thumb { background-position: 66.666% 100%; }
+    .weapon-grid .weapon-card:nth-child(17) .weapon-thumb { background-position: 100% 100%; }
+    .weapon-grid .weapon-card:nth-child(18) .weapon-thumb { background-position: 66.666% 66.666%; }
+
+    .weapon-title {
+      font-family: 'BlackOpsOne', sans-serif;
+      font-size: 18px;
+      text-transform: uppercase;
+      color: #e6fbff;
+      letter-spacing: 0.8px;
+      margin-bottom: 2px;
+    }
+
+    .weapon-role {
+      font-size: 10px;
+      line-height: 1.1;
+      color: #abd2ea;
+    }
+
+    .weapon-card.small {
+      min-height: 64px;
+      padding: 7px;
+      grid-template-columns: 28px 1fr;
+      gap: 7px;
+      font-size: 11px;
+    }
+
+    .weapon-card.small .weapon-title {
+      font-size: 12px;
+      margin-bottom: 1px;
+      letter-spacing: 0.3px;
+      text-transform: none;
+    }
+
+    .weapon-thumb img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: contain;
+    }
+
+    .weapon-meta {
+      font-size: 9px;
+      color: #7fb8d5;
+      line-height: 1.05;
+      margin-top: 1px;
+    }
+
+    .power-grid {
+      margin-top: 12px;
+      border: 2px solid rgba(109, 207, 255, 0.46);
+      border-radius: 10px;
+      background: rgba(16, 38, 63, 0.9);
+      width: 100%;
+      padding: 8px 10px;
+      color: #b8d9f0;
+      font-size: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .power-grid .p-title {
+      color: #82deff;
+      font-family: 'BlackOpsOne', sans-serif;
+      font-size: 16px;
+      margin-bottom: 5px;
+    }
+
+    .power-bars {
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      gap: 3px;
+      margin-bottom: 4px;
+    }
+
+    .power-bars span {
+      height: 10px;
+      border: 1px solid rgba(121, 194, 235, 0.5);
+      background: rgba(16, 51, 78, 0.85);
+    }
+
+    .power-bars span.live {
+      background: linear-gradient(180deg, #7af3ff, #2fa4cf);
+    }
+
+    .power-bars span.warn {
+      background: linear-gradient(180deg, #ffd77a, #cf8c2f);
+    }
+
+    .power-bars span.critical {
+      background: linear-gradient(180deg, #ff9a9a, #c43c3c);
+    }
+
+    .power-bars span.progress {
+      background: linear-gradient(180deg, #9bff8b, #4da93a);
+    }
+
+    .right-stack {
+      display: grid;
+      grid-template-rows: 1fr 292px;
+      gap: 10px;
+      padding-top: 16px;
+      min-height: 0;
+    }
+
+    .detail-panel,
+    .manage-panel {
+      border: 2px solid rgba(111, 192, 243, 0.4);
+      border-radius: 14px;
+      background: linear-gradient(180deg, rgba(17, 39, 68, 0.92), rgba(11, 26, 46, 0.94));
+      padding: 10px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .manage-panel {
+      overflow-y: auto;
+      overflow-x: hidden;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(95, 210, 255, 0.4) transparent;
+    }
+
+    .detail-panel::before,
+    .manage-panel::before {
+      content: '';
+      position: absolute;
+      inset: 6px;
+      border: 1px solid rgba(106, 190, 240, 0.16);
+      border-radius: 10px;
+      pointer-events: none;
+    }
+
+    .manage-panel::before {
+      border-top: none;
+    }
+
+    .detail-panel::before,
+    .manage-panel::before {
+      content: none;
+    }
+
+    .right-stack .detail-body,
+    .right-stack .power-grid,
+    .right-stack .tier-summary,
+    .right-stack .turret-preview-strip,
+    .right-stack .turret-preview-card,
+    .right-stack .tune-quick,
+    .right-stack .evolve-panel,
+    .right-stack .levelup-conditions {
+      border: none !important;
+      box-shadow: none;
+    }
+
+    .right-stack .tier-summary,
+    .right-stack .tune-quick,
+    .right-stack .evolve-panel,
+    .right-stack .levelup-conditions {
+      border-top: none !important;
+    }
+
+    .d-title {
+      font-family: 'BlackOpsOne', sans-serif;
+      text-transform: uppercase;
+      font-size: 39px;
+      color: #8fe7ff;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+      line-height: 1;
+    }
+
+    .d-sub {
+      text-align: center;
+      color: #75d8f5;
+      font-family: 'BlackOpsOne', sans-serif;
+      text-transform: uppercase;
+      font-size: 14px;
+      letter-spacing: 0.9px;
+      margin-bottom: 8px;
+    }
+
+    .detail-body {
+      border: 1px solid rgba(108, 196, 248, 0.2);
+      border-radius: 10px;
+      background: rgba(10, 21, 39, 0.45);
+      padding: 10px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      min-height: 0;
+      overflow-y: hidden;
+      overflow-x: hidden;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    .detail-body::-webkit-scrollbar {
+      display: none;
+      width: 0;
+      height: 0;
+    }
+
+    .weapon-name {
+      font-size: 37px;
+      font-weight: 700;
+      color: #96dfff;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .stat-row {
+      display: grid;
+      grid-template-columns: 138px 1fr 82px 92px 82px;
+      gap: 6px;
+      align-items: center;
+      margin-bottom: 6px;
+      font-size: 18px;
+      color: #d6ecff;
+      font-weight: 700;
+    }
+
+    .stat-value {
+      text-align: right;
+    }
+
+    .stat-adjust {
+      display: none;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .evolve-open .stat-adjust {
+      display: flex;
+    }
+
+    .stat-adjust button {
+      width: 36px;
+      height: 24px;
+      border-radius: 7px;
+      border: 1px solid rgba(117, 206, 248, 0.7);
+      background: linear-gradient(180deg, #2a638c, #1b425f);
+      color: #ddf3ff;
+      font-family: 'BlackOpsOne', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .stat-adjust button:disabled {
+      cursor: not-allowed;
+      opacity: 0.45;
+      filter: grayscale(0.28);
+    }
+
+    .bar {
+      height: 9px;
+      border-radius: 10px;
+      border: 1px solid rgba(115, 195, 241, 0.55);
+      background: rgba(18, 46, 72, 0.8);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .detail-body {
+      --tier-main-start: #5be6ff;
+      --tier-main-end: #9af5ff;
+      --tier-main-glow: rgba(122, 237, 255, 0.55);
+      --tier-aoe-start: #efad5a;
+      --tier-aoe-end: #ffd189;
+      --tier-aoe-glow: rgba(255, 196, 123, 0.45);
+    }
+
+    .bar > span {
+      display: block;
+      height: 100%;
+      background: linear-gradient(90deg, var(--tier-main-start), var(--tier-main-end));
+      width: 72%;
+      box-shadow: 0 0 10px var(--tier-main-glow);
+      position: relative;
+      z-index: 2;
+    }
+
+    .bar::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: var(--base-width, 0%);
+      background: rgba(255, 255, 255, 0.18);
+      z-index: 1;
+    }
+
+    .bar.orange > span {
+      background: linear-gradient(90deg, var(--tier-aoe-start), var(--tier-aoe-end));
+      width: 48%;
+      box-shadow: 0 0 9px var(--tier-aoe-glow);
+    }
+
+    .detail-body.preview-tier-1 {
+      --tier-main-start: #5be6ff;
+      --tier-main-end: #9af5ff;
+      --tier-main-glow: rgba(122, 237, 255, 0.55);
+      --tier-aoe-start: #efad5a;
+      --tier-aoe-end: #ffd189;
+      --tier-aoe-glow: rgba(255, 196, 123, 0.45);
+    }
+
+    .detail-body.preview-tier-2 {
+      --tier-main-start: #57ff57;
+      --tier-main-end: #d6ff52;
+      --tier-main-glow: rgba(149, 255, 95, 0.78);
+      --tier-aoe-start: #80ff6f;
+      --tier-aoe-end: #eaff93;
+      --tier-aoe-glow: rgba(191, 255, 127, 0.7);
+    }
+
+    .detail-body.preview-tier-3 {
+      --tier-main-start: #ff4a4a;
+      --tier-main-end: #ffd24a;
+      --tier-main-glow: rgba(255, 124, 72, 0.84);
+      --tier-aoe-start: #ff8a33;
+      --tier-aoe-end: #fff27a;
+      --tier-aoe-glow: rgba(255, 174, 77, 0.82);
+    }
+
+    .stat-row.upgraded .bar > span {
+      box-shadow: 0 0 14px var(--tier-main-glow);
+    }
+
+    .stat-row.upgraded .bar.orange > span {
+      box-shadow: 0 0 14px var(--tier-aoe-glow);
+    }
+
+    .stat-row.upgraded .stat-value {
+      color: #f6ff9f;
+      text-shadow: 0 0 7px rgba(224, 255, 121, 0.55);
+    }
+
+    .stat-delta {
+      text-align: right;
+      color: #9ce8ff;
+      font-size: 14px;
+      font-family: 'BlackOpsOne', sans-serif;
+      letter-spacing: 0.2px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .stat-delta.gain {
+      color: #b8ff85;
+      text-shadow: 0 0 8px rgba(184, 255, 133, 0.42);
+    }
+
+    .tier-summary {
+      margin-top: 10px;
+      border: none;
+      border-top: 1px solid rgba(126, 214, 252, 0.24);
+      border-radius: 8px;
+      padding: 8px 0 0;
+      color: #c9f0ff;
+      font-size: 13px;
+      line-height: 1.3;
+      background: transparent;
+    }
+
+    .turret-preview-strip {
+      margin-top: 8px;
+      display: flex;
+      align-items: stretch;
+      overflow-x: auto;
+      overflow-y: hidden;
+      scroll-snap-type: x proximity;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      gap: 7px;
+      padding: 8px;
+      border: 1px solid rgba(126, 214, 252, 0.35);
+      border-radius: 8px;
+      background: rgba(12, 34, 56, 0.7);
+    }
+
+    .turret-preview-strip::-webkit-scrollbar {
+      display: none;
+      width: 0;
+      height: 0;
+    }
+
+    .turret-preview-card {
+      flex: 0 0 42%;
+      min-width: 104px;
+      border: 1px solid rgba(122, 192, 232, 0.38);
+      border-radius: 7px;
+      background: rgba(8, 25, 41, 0.82);
+      padding: 5px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      scroll-snap-align: start;
+    }
+
+    .turret-preview-card.unlocked {
+      border-color: rgba(152, 236, 255, 0.72);
+      box-shadow: inset 0 0 0 1px rgba(186, 246, 255, 0.2);
+    }
+
+    .turret-preview-card.current {
+      border-color: rgba(255, 244, 173, 0.86);
+      box-shadow: 0 0 12px rgba(255, 231, 134, 0.2);
+    }
+
+    .turret-preview-card.next {
+      border-color: rgba(159, 255, 147, 0.86);
+      box-shadow: 0 0 12px rgba(160, 255, 145, 0.2);
+    }
+
+    .turret-preview-card.locked {
+      opacity: 0.58;
+      filter: grayscale(0.42);
+    }
+
+    .turret-preview-thumb {
+      width: 64px;
+      height: 64px;
+      border-radius: 6px;
+      border: 1px solid rgba(110, 182, 224, 0.4);
+      background: radial-gradient(circle at 50% 38%, rgba(63, 117, 156, 0.42), rgba(8, 25, 41, 0.9) 72%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .turret-preview-overlay {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 86%;
+      height: 86%;
+      transform: translate(-50%, -50%);
+      background-repeat: no-repeat;
+      background-position: 0% 50%;
+      background-size: 800% 100%;
+      filter: drop-shadow(0 1px 0 rgba(0, 0, 0, 0.8));
+      pointer-events: none;
+      opacity: 0.97;
+    }
+
+    .turret-preview-label {
+      font-size: 11px;
+      font-family: 'BlackOpsOne', sans-serif;
+      color: #d5f4ff;
+      letter-spacing: 0.3px;
+    }
+
+    .turret-preview-state {
+      font-size: 10px;
+      font-weight: 700;
+      color: #9bc3d8;
+      text-transform: uppercase;
+      line-height: 1.1;
+      text-align: center;
+      min-height: 11px;
+    }
+
+    .turret-preview-card.current .turret-preview-state {
+      color: #ffe594;
+    }
+
+    .turret-preview-card.next .turret-preview-state {
+      color: #adff95;
+    }
+
+    .mk-ribbons {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 2px 6px;
+      margin-top: 3px;
+      align-items: center;
+      align-content: start;
+    }
+
+    .mk-lbl {
+      font-size: 14px;
+      color: #8eaec6;
+      font-weight: 700;
+      white-space: nowrap;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .ribbon {
+      width: 100%;
+      height: 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(111, 196, 246, 0.42);
+      clip-path: none;
+      background: linear-gradient(180deg, #1f4b74, #17395f);
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .ribbon.active {
+      border-color: rgba(136, 236, 255, 0.95);
+      background: linear-gradient(180deg, #2f7aa4, #245b87);
+      box-shadow: inset 0 0 0 1px rgba(196, 250, 255, 0.4), 0 0 14px rgba(122, 230, 255, 0.4);
+    }
+
+    .ribbon.selected {
+      border-color: rgba(255, 246, 176, 0.98);
+      box-shadow: inset 0 0 0 1px rgba(255, 250, 204, 0.6), 0 0 18px rgba(255, 236, 130, 0.7);
+    }
+
+    .ribbon::before {
+      content: '';
+      position: absolute;
+      inset: 2px;
+      border-radius: 999px;
+      border: none;
+      transform: none;
+      background: linear-gradient(90deg, rgba(205, 226, 242, 0.32), rgba(205, 226, 242, 0.08));
+    }
+
+    .ribbon.locked::after {
+      content: none;
+    }
+
+    .ribbon.locked::before {
+      content: none;
+    }
+
+    .ribbon.locked {
+      opacity: 0.5;
+      filter: saturate(0.55);
+    }
+
+    .manage-title {
+      text-align: center;
+      font-family: 'BlackOpsOne', sans-serif;
+      font-size: 26px;
+      text-transform: uppercase;
+      color: #94e8ff;
+      margin-bottom: 14px;
+      letter-spacing: 1px;
+    }
+
+    .unit-price-sub {
+      font-size: 14px;
+      color: #9de6ff;
+      letter-spacing: 0.5px;
+    }
+
+    .manage-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      height: 210px;
+    }
+
+    .big-btn {
+      border-radius: 14px;
+      border: 2px solid rgba(130, 198, 243, 0.62);
+      background: linear-gradient(180deg, #2a6b9d, #184a74);
+      color: #ddf3ff;
+      font-family: 'BlackOpsOne', sans-serif;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      line-height: 1.2;
+      text-transform: uppercase;
+      font-weight: 700;
+      box-shadow: inset 0 0 0 2px rgba(171, 226, 255, 0.2), 0 0 18px rgba(108, 214, 255, 0.25);
+      padding: 12px;
+    }
+
+    .big-btn.levelup-card {
+      grid-template-rows: auto auto auto auto;
+      align-content: center;
+      gap: 6px;
+      padding: 10px;
+    }
+
+    .big-btn.levelup-card.locked {
+      opacity: 0.52;
+      filter: grayscale(0.55);
+      border-color: rgba(128, 150, 171, 0.55);
+      background: linear-gradient(180deg, #3a4b5d, #2a3644);
+      box-shadow: inset 0 0 0 2px rgba(187, 207, 227, 0.12), 0 0 0 rgba(0, 0, 0, 0);
+    }
+
+    .big-btn.levelup-card.ready {
+      border-color: rgba(178, 255, 122, 0.86);
+      background: linear-gradient(180deg, #325524, #243f18);
+      box-shadow: inset 0 0 0 2px rgba(193, 255, 167, 0.2), 0 0 24px rgba(155, 255, 124, 0.24);
+    }
+
+    .big-btn .main {
+      font-size: 24px;
+      margin-bottom: 8px;
+    }
+
+    .big-btn .sub {
+      font-size: 18px;
+      color: #bde4ff;
+    }
+
+    .big-btn.green {
+      border-color: rgba(133, 227, 162, 0.62);
+      background: linear-gradient(180deg, #3d8658, #2d6242);
+      box-shadow: inset 0 0 0 2px rgba(197, 255, 211, 0.18), 0 0 20px rgba(121, 217, 157, 0.2);
+    }
+
+    #evolveBtn {
+      cursor: pointer;
+    }
+
+    #evolveBtn:hover {
+      box-shadow: inset 0 0 0 2px rgba(226, 255, 234, 0.26), 0 0 24px rgba(140, 244, 172, 0.35);
+    }
+
+    .big-btn:disabled {
+      cursor: not-allowed;
+      opacity: 0.58;
+    }
+
+    .claim-btn {
+      border: 1px solid rgba(178, 255, 122, 0.75);
+      border-radius: 8px;
+      background: linear-gradient(180deg, #6fb53d, #4f8a2a);
+      color: #f2ffe6;
+      font-family: 'BlackOpsOne', sans-serif;
+      font-size: 18px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      padding: 8px 12px;
+      align-self: start;
+      margin-top: 2px;
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(163, 255, 120, 0.35);
+    }
+
+    .claim-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      filter: grayscale(0.3);
+    }
+
+    .claim-btn.ready {
+      border-color: rgba(219, 255, 178, 0.95);
+      background: linear-gradient(180deg, #91dc52, #5ea62f);
+      color: #ffffff;
+      box-shadow: 0 0 18px rgba(163, 255, 120, 0.5);
+    }
+
+    .evolve-panel {
+      margin-top: 10px;
+      border-radius: 10px;
+      border: none;
+      border-top: 1px solid rgba(120, 205, 247, 0.28);
+      background: transparent;
+      padding: 8px 0 0;
+      color: #cfeeff;
+      font-family: 'BlackOpsOne', sans-serif;
+      font-size: 15px;
+      display: none;
+      text-align: center;
+      line-height: 1.35;
+    }
+
+    .evolve-panel .wallet {
+      color: #a9e6ff;
+      font-weight: 700;
+      margin-bottom: 4px;
+      font-size: 15px;
+    }
+
+    .evolve-panel .cost-line,
+    .evolve-panel .spent-line,
+    .evolve-panel .remain-line {
+      font-size: 14px;
+      margin-bottom: 3px;
+      color: #d6f1ff;
+    }
+
+    .evolve-panel .spent-line {
+      color: #ffe79f;
+      font-weight: 700;
+    }
+
+    .evolve-panel .remain-line {
+      color: #9ff5bb;
+      font-weight: 700;
+    }
+
+    .evolve-panel .hint {
+      color: #d7f3ff;
+      font-size: 14px;
+    }
+
+    .icon-tuner {
+      margin-top: 10px;
+      border: 1px solid rgba(125, 203, 245, 0.35);
+      border-radius: 10px;
+      background: rgba(8, 24, 43, 0.72);
+      padding: 8px 10px;
+      text-align: left;
+      color: #bfe7ff;
+      font-family: 'BlackOpsOne', sans-serif;
+      line-height: 1.3;
+    }
+
+    .icon-tuner.floating {
+      position: fixed;
+      right: 12px;
+      bottom: 12px;
+      width: min(240px, calc(100vw - 16px));
+      max-height: 36vh;
+      overflow-y: auto;
+      overflow-x: hidden;
+      z-index: 55;
+      box-shadow: 0 16px 38px rgba(0, 0, 0, 0.45);
+      margin-top: 0;
+    }
+
+    .icon-tuner-title {
+      font-size: 12px;
+      letter-spacing: 0.9px;
+      color: #9edfff;
+      margin-bottom: 4px;
+      cursor: move;
+      user-select: none;
+      touch-action: none;
+    }
+
+    .icon-tuner-row {
+      display: grid;
+      grid-template-columns: 54px 1fr;
+      align-items: center;
+      gap: 4px;
+      margin: 3px 0;
+      font-size: 11px;
+    }
+
+    .icon-stepper {
+      display: grid;
+      grid-template-columns: 26px 1fr 26px;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .icon-step-value {
+      text-align: center;
+      font-size: 11px;
+      color: #d7f3ff;
+      line-height: 1;
+    }
+
+    .icon-step-btn {
+      border: 1px solid rgba(125, 203, 245, 0.55);
+      border-radius: 6px;
+      background: rgba(33, 91, 129, 0.55);
+      color: #e0f3ff;
+      font-family: 'BlackOpsOne', sans-serif;
+      font-size: 12px;
+      line-height: 1;
+      height: 22px;
+      cursor: pointer;
+    }
+
+    .icon-tuner-actions {
+      margin-top: 6px;
+      display: flex;
+      gap: 6px;
+    }
+
+    .icon-tuner-btn {
+      flex: 1 1 0;
+      border: 1px solid rgba(125, 203, 245, 0.55);
+      border-radius: 7px;
+      background: rgba(33, 91, 129, 0.55);
+      color: #e0f3ff;
+      font-family: 'BlackOpsOne', sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.4px;
+      padding: 5px 6px;
+      cursor: pointer;
+    }
+
+    .icon-tuner-btn:hover {
+      filter: brightness(1.08);
+    }
+
+    .icon-tuner-status {
+      margin-top: 4px;
+      font-size: 10px;
+      color: #d7f3ff;
+      min-height: 13px;
+    }
+
+    .icon-code-output {
+      margin-top: 4px;
+      width: 100%;
+      min-height: 44px;
+      border-radius: 7px;
+      border: 1px solid rgba(128, 203, 240, 0.45);
+      background: rgba(6, 16, 28, 0.85);
+      color: #d5ecff;
+      font-family: 'Teko', sans-serif;
+      font-size: 10px;
+      padding: 6px;
+      resize: vertical;
+      display: none;
+    }
+
+    .icon-code-output.show {
+      display: block;
+    }
+
+    .tune-quick {
+      margin-top: 10px;
+      border: none;
+      border-top: 1px solid rgba(125, 203, 245, 0.22);
+      border-radius: 10px;
+      background: transparent;
+      padding: 8px 0 0;
+      text-align: center;
+      color: #bfe7ff;
+      font-family: 'BlackOpsOne', sans-serif;
+      line-height: 1.3;
+    }
+
+    .tune-quick-title {
+      font-size: 12px;
+      letter-spacing: 0.9px;
+      color: #9edfff;
+      margin-bottom: 2px;
+    }
+
+    .tune-quick-line {
+      font-size: 13px;
+      color: #d8f2ff;
+    }
+
+    .tune-quick-line.tune-spent {
+      color: #ffe8a5;
+      font-weight: 700;
+    }
+
+    .tune-quick-line.tune-left {
+      color: #a7ffbf;
+      font-weight: 700;
+    }
+
+    .tune-quick-status {
+      margin-top: 3px;
+      font-size: 12px;
+      color: #d7f3ff;
+    }
+
+    .levelup-conditions {
+      margin-top: 8px;
+      border: none;
+      border-top: 1px solid rgba(125, 203, 245, 0.24);
+      border-radius: 10px;
+      background: transparent;
+      padding: 7px 0 0;
+      text-align: center;
+      color: #bfe7ff;
+      font-family: 'BlackOpsOne', sans-serif;
+      font-size: 14px;
+      line-height: 1.35;
+    }
+
+    .tier-feedback {
+      margin-top: 6px;
+      text-transform: uppercase;
+      color: #9fe8ff;
+      letter-spacing: 0.7px;
+      min-height: 16px;
+    }
+
+    .detail-panel.tier-flash {
+      animation: tierPulse 420ms ease;
+      box-shadow: 0 0 0 2px rgba(173, 255, 136, 0.45), 0 0 28px rgba(174, 255, 109, 0.34);
+    }
+
+    @keyframes tierPulse {
+      0% { transform: scale(1); }
+      40% { transform: scale(1.01); }
+      100% { transform: scale(1); }
+    }
+
+    .wires {
+      position: absolute;
+      right: 14px;
+      bottom: 0;
+      width: 88px;
+      height: 68px;
+      pointer-events: none;
+      z-index: 4;
+    }
+
+    .cable {
+      position: absolute;
+      bottom: 0;
+      width: 18px;
+      height: 60px;
+      border-radius: 12px 12px 0 0;
+      border: 1px solid rgba(122, 160, 192, 0.45);
+      border-bottom: none;
+      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.28);
+    }
+
+    .cable::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 6px;
+      width: 3px;
+      height: 100%;
+      border-radius: 3px;
+      background: rgba(255, 255, 255, 0.16);
+    }
+
+    .cable.red {
+      left: 6px;
+      height: 64px;
+      background: linear-gradient(180deg, #b76166, #4f2a2d);
+      transform: skewX(-2deg);
+    }
+
+    .cable.black {
+      left: 32px;
+      height: 56px;
+      background: linear-gradient(180deg, #4c5864, #1e252c);
+      transform: skewX(1deg);
+    }
+
+    .cable.blue {
+      left: 58px;
+      height: 62px;
+      background: linear-gradient(180deg, #5d8fc7, #233857);
+      transform: skewX(3deg);
+    }
+
+    @media (min-width: 1321px) {
+      .workspace {
+        grid-template-columns: 2.28fr 0.92fr;
+        gap: 8px;
+      }
+
+      .right-stack {
+        grid-template-rows: minmax(0, 1fr) 252px;
+        gap: 8px;
+        padding-top: 12px;
+      }
+
+      .detail-panel,
+      .manage-panel {
+        padding: 8px;
+      }
+
+      .detail-panel::before,
+      .manage-panel::before {
+        inset: 5px;
+      }
+
+      .d-title {
+        font-size: 31px;
+        margin-bottom: 6px;
+      }
+
+      .detail-body {
+        padding: 8px;
+        gap: 8px;
+      }
+
+      .weapon-name {
+        font-size: 30px;
+        margin-bottom: 4px;
+      }
+
+      .stat-row {
+        grid-template-columns: 112px 1fr 62px 76px 70px;
+        gap: 5px;
+        margin-bottom: 4px;
+        font-size: 15px;
+      }
+
+      .stat-adjust button {
+        width: 31px;
+        height: 22px;
+        font-size: 13px;
+      }
+
+      .bar {
+        height: 8px;
+      }
+
+      .power-grid {
+        margin-top: 10px;
+        padding: 7px 9px;
+      }
+
+      .power-grid .p-title {
+        font-size: 18px;
+      }
+
+      .manage-title {
+        font-size: 28px;
+      }
+
+      .manage-actions {
+        gap: 8px;
+      }
+
+      .big-btn {
+        padding: 8px;
+      }
+
+      .big-btn .main {
+        font-size: 20px;
+        margin-bottom: 5px;
+      }
+
+      .big-btn .sub {
+        font-size: 14px;
+      }
+
+      .claim-btn {
+        font-size: 14px;
+        padding: 6px 10px;
+      }
+
+      .evolve-panel {
+        margin-top: 8px;
+        padding: 8px 9px;
+        font-size: 13px;
+      }
+
+      .evolve-panel .wallet,
+      .evolve-panel .cost-line,
+      .evolve-panel .spent-line,
+      .evolve-panel .remain-line,
+      .evolve-panel .hint,
+      .levelup-conditions,
+      .tier-summary,
+      .tier-feedback,
+      .tune-quick-line,
+      .tune-quick-status {
+        font-size: 12px;
+      }
+
+    }
+
+    @media (max-width: 1320px) {
+      .workspace {
+        grid-template-columns: 1fr;
+      }
+
+      .right-stack {
+        grid-template-rows: auto auto;
+      }
+
+      .left-rail {
+        position: relative;
+        width: auto;
+        left: 0;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        margin: 8px;
+      }
+
+      .weapon-cloud {
+        left: 14px;
+      }
+    }
+
+    @media (max-height: 820px) {
+      .outer-frame {
+        margin: 2px;
+      }
+
+      .workspace {
+        padding: 8px;
+        gap: 8px;
+      }
+
+      .left-stack {
+        gap: 6px;
+        padding-top: 12px;
+      }
+
+      .right-stack {
+        padding-top: 8px;
+      }
+
+      .top-title {
+        font-size: 24px;
+      }
+
+      .tab {
+        min-height: 42px;
+        font-size: 14px;
+      }
+
+      .weapon {
+        width: 142px;
+        height: 142px;
+      }
+
+      .weapon::after {
+        width: 66px;
+        height: 16px;
+      }
+
+      .weapon.one { left: 100px; top: 96px; }
+      .weapon.two { left: 272px; top: 30px; }
+      .weapon.three { left: 474px; top: 88px; }
+      .weapon.four { left: 130px; top: 246px; }
+      .weapon.five { left: 298px; top: 300px; }
+      .weapon.six { left: 494px; top: 248px; }
+    }
+
+    @media (max-width: 1200px) and (max-height: 520px) and (orientation: landscape) {
+      .outer-frame {
+        margin: 0;
+        padding: 3px;
+        border-radius: 10px;
+      }
+
+      .outer-frame::before,
+      .outer-frame::after {
+        width: 170px;
+        height: 18px;
+        top: 1px;
+        z-index: 2;
+      }
+
+      .outer-frame::before {
+        left: 40px;
+      }
+
+      .outer-frame::after {
+        right: 40px;
+      }
+
+      .workspace {
+        grid-template-columns: 2.15fr 1fr !important;
+        gap: 5px;
+        padding: 5px;
+      }
+
+      .left-stack {
+        gap: 4px;
+        padding-top: 8px;
+      }
+
+      .top-title {
+        font-size: 12px;
+        position: relative;
+        z-index: 6;
+        margin-top: 10px;
+        padding-left: 2px;
+      }
+
+      .top-tabs {
+        grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+        gap: 3px;
+      }
+
+      .tab {
+        min-height: 30px;
+        font-size: 8px;
+        line-height: 1;
+      }
+
+      .tab.active::after {
+        border-left-width: 7px;
+        border-right-width: 7px;
+        border-top-width: 7px;
+        bottom: -7px;
+      }
+
+      .left-rail {
+        position: absolute !important;
+        left: 6px;
+        top: 6px;
+        bottom: 6px;
+        width: 168px;
+        padding: 4px;
+        gap: 3px;
+      }
+
+      .rail-items {
+        gap: 5px;
+        overflow-y: auto;
+        overflow-x: hidden;
+        -webkit-overflow-scrolling: touch;
+        touch-action: pan-y;
+      }
+
+      .rail-card {
+        min-height: 64px;
+        padding: 4px;
+        font-size: 10px;
+      }
+
+      .tiny-icon {
+        width: 30px;
+        height: 30px;
+      }
+
+      .weapon-cloud {
+        position: absolute;
+        left: 182px;
+        right: 8px;
+        top: 8px;
+        bottom: 8px;
+        min-height: 0;
+      }
+
+      .carousel-header {
+        padding: 4px 7px;
+      }
+
+      .weapon-title,
+      .slide-title {
+        font-size: 12px;
+      }
+
+      .weapon-role,
+      .carousel-pos {
+        font-size: 9px;
+      }
+
+      .carousel-slide {
+        padding: 6px 8px;
+        gap: 4px;
+      }
+
+      .slide-thumb {
+        height: 28%;
+      }
+
+      .carousel-slide .slide-info {
+        max-width: 88%;
+      }
+
+      .slide-desc {
+        width: 100%;
+        font-size: 9px;
+        line-height: 1.15;
+        margin-top: 2px;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+
+      .carousel-nav {
+        grid-template-columns: 32px 1fr 32px;
+        gap: 6px;
+        padding: 5px 8px;
+      }
+
+      .carousel-prev,
+      .carousel-next {
+        width: 30px;
+        height: 24px;
+        font-size: 11px;
+      }
+
+      .carousel-dot {
+        width: 6px;
+        height: 6px;
+      }
+
+      .right-stack {
+        grid-template-rows: minmax(0, 1fr) 88px;
+        gap: 5px;
+        padding-top: 4px;
+      }
+
+      .manage-panel {
+        padding: 4px;
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+      }
+
+      .detail-panel,
+      .manage-panel {
+        padding: 6px;
+      }
+
+      .detail-panel::before,
+      .manage-panel::before {
+        inset: 4px;
+      }
+
+      .d-title {
+        font-size: 11px;
+        margin-top: 4px;
+        margin-bottom: 1px;
+      }
+
+      .d-sub {
+        font-size: 8px;
+        margin-bottom: 2px;
+      }
+
+      .detail-body {
+        padding: 4px;
+        gap: 3px;
+      }
+
+      .weapon-name {
+        font-size: 11px;
+        line-height: 1.15;
+        margin-bottom: 2px;
+      }
+
+      .stat-row {
+        grid-template-columns: 78px minmax(0, 1fr) 38px 44px 42px;
+        gap: 3px;
+        margin-bottom: 2px;
+        font-size: 8px;
+        line-height: 1.05;
+      }
+
+      .stat-row > span:first-child {
+        white-space: nowrap;
+      }
+
+      .stat-value,
+      .stat-delta {
+        white-space: nowrap;
+      }
+
+      .stat-delta {
+        font-size: 8px;
+      }
+
+      .stat-adjust button {
+        width: 24px;
+        height: 18px;
+        font-size: 10px;
+      }
+
+      .bar {
+        height: 5px;
+      }
+
+      .mk-ribbons {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 2px 6px;
+        margin-top: 3px;
+        align-items: center;
+      }
+
+      .mk-lbl {
+        font-size: 8px;
+      }
+
+      .ribbon {
+        width: 100%;
+        height: 12px;
+        border-radius: 999px;
+        clip-path: none;
+        border-width: 1px;
+        background: linear-gradient(180deg, #1f4b74, #17395f);
+      }
+
+      .ribbon::before {
+        content: '';
+        position: absolute;
+        inset: 2px;
+        border-radius: 999px;
+        border: none;
+        transform: none;
+        background: linear-gradient(90deg, rgba(205, 226, 242, 0.32), rgba(205, 226, 242, 0.08));
+      }
+
+      .ribbon.locked {
+        opacity: 0.5;
+        filter: saturate(0.55);
+      }
+
+      .ribbon.locked::before,
+      .ribbon.locked::after {
+        content: none;
+      }
+
+      .ribbon.active {
+        box-shadow: inset 0 0 0 1px rgba(196, 250, 255, 0.35), 0 0 8px rgba(122, 230, 255, 0.35);
+      }
+
+      .ribbon.selected {
+        box-shadow: inset 0 0 0 1px rgba(255, 250, 204, 0.5), 0 0 10px rgba(255, 236, 130, 0.55);
+      }
+
+      .tier-summary,
+      .turret-preview-strip,
+      .tune-quick,
+      .levelup-conditions,
+      .evolve-panel {
+        margin-top: 4px;
+        padding: 4px 5px;
+        font-size: 9px;
+      }
+
+      .tier-summary {
+        display: none;
+      }
+
+      .turret-preview-strip {
+        gap: 5px;
+        padding: 5px;
+      }
+
+      .turret-preview-card {
+        flex-basis: 54%;
+        min-width: 86px;
+        padding: 4px;
+      }
+
+      .turret-preview-thumb {
+        width: 46px;
+        height: 46px;
+      }
+
+      .turret-preview-label,
+      .turret-preview-state {
+        font-size: 8px;
+      }
+
+      .tune-quick-title,
+      .tune-quick-line,
+      .tune-quick-status,
+      .evolve-panel .wallet,
+      .evolve-panel .cost-line,
+      .evolve-panel .spent-line,
+      .evolve-panel .remain-line,
+      .evolve-panel .hint {
+        font-size: 9px;
+      }
+
+      .tune-quick-title {
+        margin-bottom: 1px;
+      }
+
+      .tune-quick-line {
+        margin-bottom: 1px;
+        line-height: 1.05;
+      }
+
+      .tune-quick-status {
+        display: block;
+      }
+
+      .power-grid {
+        margin-top: 5px;
+        padding: 5px 6px;
+        font-size: 10px;
+      }
+
+      .power-grid .p-title {
+        font-size: 11px;
+        margin-bottom: 2px;
+      }
+
+      .power-bars span {
+        height: 6px;
+      }
+
+      .manage-title {
+        display: none;
+      }
+
+      .manage-actions {
+        grid-template-columns: 1fr 1fr;
+        gap: 4px;
+        height: 100%;
+        align-content: stretch;
+      }
+
+      .big-btn {
+        padding: 3px 5px;
+        border-radius: 6px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 1px;
+        text-align: center;
+      }
+
+      .big-btn.levelup-card {
+        grid-template-rows: unset;
+        align-content: unset;
+        gap: 1px;
+      }
+
+      .big-btn .main {
+        font-size: 9px;
+        margin-bottom: 0;
+      }
+
+      .big-btn .sub,
+      .claim-btn {
+        font-size: 7px;
+      }
+
+      .claim-btn {
+        padding: 3px 5px;
+        font-size: 7px;
+        flex-shrink: 0;
+        align-self: center;
+      }
+
+      .levelup-conditions {
+        display: none;
+      }
+
+      /* JS-rendered levelup requirements are a second .sub — hide on mobile */
+      .big-btn.levelup-card .sub ~ .sub {
+        display: none;
+      }
+
+      .wires {
+        display: none;
+      }
+
+      /* ---- Mobile touch & overflow fixes ---- */
+      .top-tabs {
+        display: flex !important;
+        grid-template-columns: unset !important;
+        overflow-x: auto;
+        overflow-y: hidden;
+        flex-wrap: nowrap;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 2px;
+        scrollbar-width: none;
+        gap: 5px;
+      }
+
+      .top-tabs::-webkit-scrollbar { display: none; }
+
+      .tab.active::after {
+        display: none;
+      }
+
+      .tab {
+        flex-shrink: 0;
+        min-width: 72px;
+        min-height: 36px;
+        font-size: 9px;
+        scroll-snap-align: start;
+      }
+
+      .detail-panel {
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .detail-body {
+        overflow-y: auto;
+        overflow-x: hidden;
+        flex: 1 1 auto;
+        min-height: 0;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .tune-quick {
+        padding: 2px 0;
+        margin-top: 6px;
+        font-size: 8px;
+        text-align: left;
+        border: none;
+        background: none;
+        border-radius: 0;
+      }
+
+      .tune-quick-title,
+      .tune-quick-line,
+      .tune-quick-status {
+        font-size: 8px;
+      }
+
+      .tune-quick-status {
+        display: block;
+      }
+
+      .tune-quick-line,
+      .tune-quick-title {
+        white-space: normal;
+        overflow-wrap: break-word;
+        word-break: break-word;
+        font-size: 8px;
+      }
+
+      .icon-tuner {
+        margin-top: 5px;
+        padding: 4px 0;
+        border: none;
+        background: none;
+        border-radius: 0;
+      }
+
+      .icon-tuner.floating {
+        right: 8px;
+        left: auto;
+        width: min(220px, calc(100vw - 16px));
+        max-height: 40vh;
+        padding: 6px 8px;
+        border: 1px solid rgba(125, 203, 245, 0.35);
+        border-radius: 10px;
+        background: rgba(8, 24, 43, 0.92);
+      }
+
+      .icon-tuner-title {
+        font-size: 8px;
+        margin-bottom: 2px;
+      }
+
+      .icon-tuner-row {
+        grid-template-columns: 50px 1fr;
+        font-size: 8px;
+        gap: 4px;
+        margin: 2px 0;
+      }
+
+      .icon-stepper {
+        grid-template-columns: 22px 1fr 22px;
+        gap: 3px;
+      }
+
+      .icon-step-btn {
+        height: 18px;
+        font-size: 10px;
+      }
+
+      .icon-tuner-actions {
+        margin-top: 4px;
+        gap: 4px;
+      }
+
+      .icon-tuner-btn {
+        font-size: 8px;
+        padding: 3px 4px;
+      }
+
+      .icon-tuner-status {
+        font-size: 8px;
+        min-height: 10px;
+      }
+
+      .icon-code-output {
+        min-height: 48px;
+        font-size: 8px;
+        padding: 4px;
+      }
+
+      .rail-card {
+        min-height: 52px;
+        font-size: 9px;
+      }
+
+      .tiny-icon {
+        width: 26px;
+        height: 26px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="three-bg" aria-hidden="true"></canvas>
+  <button id="standaloneCloseBtn" class="standalone-close" type="button">CLOSE</button>
+
+  <main class="screen">
+    <section class="outer-frame">
+      <section class="workspace" aria-label="Tower Blueprints Panel">
+        <section class="left-stack">
+          <div class="top-title">TOWER BLUEPRINTS</div>
+
+          <div class="top-tabs" role="tablist" aria-label="Blueprint Categories">
+            <div class="tab active">TOWERS</div>
+            <div class="tab">UPGRADES</div>
+            <div class="tab">FORGE</div>
+            <div class="tab">REPAIRS</div>
+            <div class="tab">BEACONS</div>
+            <div class="tab">SYSTEMS</div>
+          </div>
+
+          <section class="arena">
+            <div class="stage"></div>
+
+            <aside class="left-rail">
+              <div class="rail-arrow">▲</div>
+              <div class="rail-items">
+                <article class="rail-card selected" data-cat="burst">
+                  <div class="tiny-icon burst"></div>
+                  <div>Burst Turrets</div>
+                </article>
+                <article class="rail-card" data-cat="laser">
+                  <div class="tiny-icon laser"></div>
+                  <div>Laser Turrets</div>
+                </article>
+                <article class="rail-card" data-cat="plasma">
+                  <div class="tiny-icon plasma"></div>
+                  <div>Plasma Turrets</div>
+                </article>
+                <article class="rail-card" data-cat="missile">
+                  <div class="tiny-icon missile"></div>
+                  <div>Missile Turrets</div>
+                </article>
+                <article class="rail-card attack-only-rail-card" data-cat="air" style="display:none">
+                  <div class="tiny-icon air"></div>
+                  <div>Air Turrets</div>
+                </article>
+              </div>
+              <div class="rail-arrow">▼</div>
+            </aside>
+
+            <section class="weapon-cloud" aria-label="Weapon Showcase">
+              <div class="carousel-header">
+                <div class="carousel-heading">
+                  <div class="weapon-title cat-title">Burst Turrets</div>
+                  <div class="weapon-role cat-count">4 weapon blueprints in category</div>
+                </div>
+                <span class="carousel-pos">1 / 4</span>
+              </div>
+              <div class="carousel-viewport">
+                <div class="carousel-track">
+                  <article class="carousel-slide" data-category="burst"><div class="slide-thumb" style="background-position:0% 0%"></div><div class="slide-info"><div class="slide-title">Pulse Mk1</div><div class="slide-desc">Pulse Mk1 is a dependable entry platform tuned for stable ballistic rhythm and low recoil drift, making it easy to hold long lanes while your early economy is still fragile and placement options are limited.</div></div></article>
+                  <article class="carousel-slide" data-category="burst"><div class="slide-thumb" style="background-position:33.333% 0%"></div><div class="slide-info"><div class="slide-title">Burst Mk2</div><div class="slide-desc">Burst Mk2 fires in quick paired shots that retarget quickly between advancing enemies, giving it strong cleanup value against mixed waves where single-target towers tend to lose momentum.</div></div></article>
+                  <article class="carousel-slide" data-category="laser"><div class="slide-thumb" style="background-position:0% 33.333%"></div><div class="slide-info"><div class="slide-title">Laser Mk1</div><div class="slide-desc">Laser Mk1 projects a focused instant-hit beam that punishes fast movers and scouts before they slip through outer defenses, especially when posted on long, unobstructed approach angles.</div></div></article>
+                  <article class="carousel-slide" data-category="burst"><div class="slide-thumb" style="background-position:66.666% 0%"></div><div class="slide-info"><div class="slide-title">Scatter Mk3</div><div class="slide-desc">Scatter Mk3 spreads a broader shot cone across clustered lanes, trading some precision for lane control and repeated chip damage that softens large packs before they reach the core zone.</div></div></article>
+                  <article class="carousel-slide" data-category="burst"><div class="slide-thumb" style="background-position:100% 0%"></div><div class="slide-info"><div class="slide-title">Tri-barrel Mk4</div><div class="slide-desc">Tri-barrel Mk4 cycles three synchronized barrels to maintain continuous pressure, making it a strong anti-armor anchor whenever you need sustained burst output without long downtime windows.</div></div></article>
+                  <article class="carousel-slide" data-category="laser"><div class="slide-thumb" style="background-position:33.333% 33.333%"></div><div class="slide-info"><div class="slide-title">Laser Mk2</div><div class="slide-desc">Laser Mk2 improves beam stability and thermal control for cleaner sustained contact, giving it reliable mid-range burn performance when enemies curve through overlapping path segments.</div></div></article>
+                  <article class="carousel-slide" data-category="laser"><div class="slide-thumb" style="background-position:66.666% 33.333%"></div><div class="slide-info"><div class="slide-title">Pulsar Mk3</div><div class="slide-desc">Pulsar Mk3 releases rapid pulsed laser bursts that stack damage aggressively on armored targets, excelling at chokepoints where enemies remain inside the firing corridor for longer durations.</div></div></article>
+                  <article class="carousel-slide" data-category="laser"><div class="slide-thumb" style="background-position:100% 33.333%"></div><div class="slide-info"><div class="slide-title">Pulsar Mk4</div><div class="slide-desc">Pulsar Mk4 extends pulse windows with a larger capacitor bank, delivering high sustained DPS and stronger anti-elite control when paired with slowing effects or forced-path bottlenecks.</div></div></article>
+                  <article class="carousel-slide" data-category="missile"><div class="slide-thumb" style="background-position:0% 66.666%"></div><div class="slide-info"><div class="slide-title">Rocket Mk9</div><div class="slide-desc">Rocket Mk9 brings straightforward explosive coverage with dependable blast timing, making it ideal for reducing dense packs before they break into multiple route branches.</div></div></article>
+                  <article class="carousel-slide" data-category="missile"><div class="slide-thumb" style="background-position:33.333% 66.666%"></div><div class="slide-info"><div class="slide-title">Rocket Mk10</div><div class="slide-desc">Rocket Mk10 upgrades payload mass and splash influence to broaden area denial, helping defend intersections where enemy density spikes and precision towers are easily overwhelmed.</div></div></article>
+                  <article class="carousel-slide" data-category="missile"><div class="slide-thumb" style="background-position:66.666% 66.666%"></div><div class="slide-info"><div class="slide-title">Rocket Mk11</div><div class="slide-desc">Rocket Mk11 uses a faster dual-stage propulsion profile for better travel speed and tracking consistency, increasing practical DPS at longer range while keeping pressure on moving targets.</div></div></article>
+                  <article class="carousel-slide" data-category="missile"><div class="slide-thumb" style="background-position:100% 66.666%"></div><div class="slide-info"><div class="slide-title">Rocket Mk12</div><div class="slide-desc">Rocket Mk12 is a heavy siege configuration built for peak detonation impact, delivering large burst damage that performs best against elite targets and compact end-wave formations.</div></div></article>
+                  <article class="carousel-slide" data-category="plasma"><div class="slide-thumb" style="background-position:0% 100%"></div><div class="slide-info"><div class="slide-title">Ion Mk13</div><div class="slide-desc">Ion Mk13 channels ionized plasma bolts with consistent shield pressure and smooth firing cadence, giving it strong utility in mixed waves where defensive layers vary by unit type.</div></div></article>
+                  <article class="carousel-slide" data-category="plasma"><div class="slide-thumb" style="background-position:33.333% 100%"></div><div class="slide-info"><div class="slide-title">Ion Mk14</div><div class="slide-desc">Ion Mk14 increases per-volley energy charge and containment stability, improving sustained lane pressure and allowing better armor penetration across mid-to-late wave transitions.</div></div></article>
+                  <article class="carousel-slide" data-category="plasma"><div class="slide-thumb" style="background-position:66.666% 100%"></div><div class="slide-info"><div class="slide-title">Ion Mk15</div><div class="slide-desc">Ion Mk15 refines plasma containment with reduced spread and drift, making it effective for precision long-lane damage where missed shots can quickly collapse your defense tempo.</div></div></article>
+                  <article class="carousel-slide" data-category="plasma"><div class="slide-thumb" style="background-position:100% 100%"></div><div class="slide-info"><div class="slide-title">Ion Mk16</div><div class="slide-desc">Ion Mk16 is a top-tier plasma core designed for maximum throughput and elite anti-armor pressure, serving as a late-game cornerstone when enemy durability scales sharply.</div></div></article>
+                  <article class="carousel-slide" data-category="missile"><div class="slide-thumb" style="background-position:66.666% 66.666%"></div><div class="slide-info"><div class="slide-title">Storm Barrage Mk2</div><div class="slide-desc">Storm Barrage Mk2 combines burst-fire setup with a dense follow-up micro-rocket saturation pattern, creating overwhelming control against stacked enemies at route merges and core approaches.</div></div></article>
+                </div>
+              </div>
+              <div class="carousel-nav">
+                <button class="carousel-prev" type="button">&#9664;</button>
+                <div class="carousel-dots"></div>
+                <button class="carousel-next" type="button">&#9654;</button>
+              </div>
+            </section>
+
+          </section>
+        </section>
+
+        <section class="right-stack">
+          <section class="detail-panel">
+            <div class="d-title">WEAPON DETAILS</div>
+            <div class="d-sub"></div>
+
+            <section class="detail-body">
+              <div>
+                <div class="weapon-name">Pulse Mk1</div>
+
+                <div class="stat-row" data-stat-row="damage"><span>Damage:</span><div class="bar"><span style="width: 78%"></span></div><span class="stat-value">225</span><span class="stat-delta">BASE</span><div class="stat-adjust" data-stat="damage"><button type="button" data-adjust="minus">-</button><button type="button" data-adjust="plus">+</button></div></div>
+                <div class="stat-row" data-stat-row="range"><span>Range:</span><div class="bar"><span style="width: 66%"></span></div><span class="stat-value">3.30</span><span class="stat-delta">BASE</span><div class="stat-adjust" data-stat="range"><button type="button" data-adjust="minus">-</button><button type="button" data-adjust="plus">+</button></div></div>
+                <div class="stat-row" data-stat-row="fireRate"><span>Fire Rate:</span><div class="bar"><span style="width: 40%"></span></div><span class="stat-value">1.40</span><span class="stat-delta">BASE</span><div class="stat-adjust" data-stat="fireRate"><button type="button" data-adjust="minus">-</button><button type="button" data-adjust="plus">+</button></div></div>
+                <div class="stat-row" data-stat-row="aoe"><span>Area of Effect:</span><div class="bar orange"><span></span></div><span class="stat-value">30</span><span class="stat-delta">BASE</span><div class="stat-adjust" data-stat="aoe"><button type="button" data-adjust="minus">-</button><button type="button" data-adjust="plus">+</button></div></div>
+                <div class="stat-row" data-stat-row="health"><span>Health:</span><div class="bar"><span style="width: 64%"></span></div><span class="stat-value">32</span><span class="stat-delta">BASE</span><div class="stat-adjust" data-stat="health"><button type="button" data-adjust="minus">-</button><button type="button" data-adjust="plus">+</button></div></div>
+
+                <div class="mk-ribbons">
+                  <div class="mk-lbl" data-tier-label="1">Tier 1</div>
+                  <div class="mk-lbl" data-tier-label="2">Tier 2</div>
+                  <div class="mk-lbl" data-tier-label="3">Tier 3</div>
+                  <div class="ribbon active" data-tier-ribbon="1"></div>
+                  <div class="ribbon" data-tier-ribbon="2"></div>
+                  <div class="ribbon locked" data-tier-ribbon="3"></div>
+                </div>
+
+                <div class="tier-summary" id="tierDeltaSummary">Tier 1 base stats.</div>
+                <div class="tier-summary" id="turretUnlockRoadmap" hidden></div>
+                <div class="turret-preview-strip" id="turretUnlockPreview" hidden>
+                  <div class="turret-preview-card" data-turret-mk="1">
+                    <div class="turret-preview-thumb"><div class="turret-preview-overlay"></div></div>
+                    <div class="turret-preview-label">MK1</div>
+                    <div class="turret-preview-state">Unlocked</div>
+                  </div>
+                  <div class="turret-preview-card" data-turret-mk="2">
+                    <div class="turret-preview-thumb"><div class="turret-preview-overlay"></div></div>
+                    <div class="turret-preview-label">MK2</div>
+                    <div class="turret-preview-state">Locked</div>
+                  </div>
+                  <div class="turret-preview-card" data-turret-mk="3">
+                    <div class="turret-preview-thumb"><div class="turret-preview-overlay"></div></div>
+                    <div class="turret-preview-label">MK3</div>
+                    <div class="turret-preview-state">Locked</div>
+                  </div>
+                </div>
+
+              </div>
+            </section>
+
+            <section class="power-grid" aria-label="Power Grid">
+              <div class="p-title">POWER GRID</div>
+              <div class="power-bars" id="powerGridBars">
+                <span class="live"></span><span class="live"></span><span class="live"></span><span class="live"></span><span class="live"></span>
+                <span></span><span></span><span></span><span></span><span></span>
+              </div>
+              <div id="powerGridMeta">Tier 1 / 3  Progress to Tier 2: 0%</div>
+            </section>
+
+            <section class="tune-quick" aria-label="Tune Costs">
+              <div class="tune-quick-title">TUNE COST</div>
+              <div class="tune-quick-line" id="tuneQuickCost">Each + costs Score 10 | Supplies 1 | Gold 0</div>
+              <div class="tune-quick-line" id="tuneQuickWallet">You have: Score 0 | Supplies 0 | Gold 0</div>
+              <div class="tune-quick-status" id="tuneQuickStatus">Ready to tune.</div>
+            </section>
+          </section>
+
+          <section class="manage-panel">
+            <div class="manage-title"></div>
+
+            <section class="manage-actions">
+              <div class="big-btn levelup-card" id="levelUpCard">
+                <span class="main">Level Up</span>
+                <span class="sub" id="levelUpTierText">Level 1 to 2</span>
+                <span class="sub" id="levelUpCostText">score 45 | supplies 2</span>
+                <span class="sub unit-price-sub" id="unitDeployPrice" hidden>Unit Cost: Score 0 | Supplies 0 | Gold 0</span>
+                <button class="claim-btn" type="button" id="levelUpClaimBtn" hidden>CLAIM</button>
+              </div>
+
+              <button class="big-btn green" type="button" id="evolveBtn">
+                <span class="main">Evolve</span>
+                <span class="sub" id="evolveSubText">Tune Stat Bars</span>
+              </button>
+            </section>
+
+            <section class="icon-tuner" id="attackIconTuner" hidden>
+              <div class="icon-tuner-title">ATTACK ICON TUNER (CODE SOURCE)</div>
+              <div class="icon-tuner-row">
+                <span>Scale</span>
+                <div class="icon-stepper">
+                  <button class="icon-step-btn" type="button" data-tune="scale" data-delta="-1">-</button>
+                  <span class="icon-step-value" id="attackIconScaleValue">100%</span>
+                  <button class="icon-step-btn" type="button" data-tune="scale" data-delta="1">+</button>
+                </div>
+              </div>
+              <div class="icon-tuner-row">
+                <span>Move X</span>
+                <div class="icon-stepper">
+                  <button class="icon-step-btn" type="button" data-tune="offsetX" data-delta="-1">-</button>
+                  <span class="icon-step-value" id="attackIconOffsetXValue">0%</span>
+                  <button class="icon-step-btn" type="button" data-tune="offsetX" data-delta="1">+</button>
+                </div>
+              </div>
+              <div class="icon-tuner-row">
+                <span>Move Y</span>
+                <div class="icon-stepper">
+                  <button class="icon-step-btn" type="button" data-tune="offsetY" data-delta="-1">-</button>
+                  <span class="icon-step-value" id="attackIconOffsetYValue">0%</span>
+                  <button class="icon-step-btn" type="button" data-tune="offsetY" data-delta="1">+</button>
+                </div>
+              </div>
+              <div class="icon-tuner-actions">
+                <button class="icon-tuner-btn" type="button" id="attackIconSaveBtn">Save To Code</button>
+                <button class="icon-tuner-btn" type="button" id="attackIconResetBtn">Reset</button>
+              </div>
+              <div class="icon-tuner-status" id="attackIconTunerStatus"></div>
+              <textarea class="icon-code-output" id="attackIconCodeOutput" readonly></textarea>
+            </section>
+
+            <div class="wires" aria-hidden="true">
+              <span class="cable red"></span>
+              <span class="cable black"></span>
+              <span class="cable blue"></span>
+            </div>
+          </section>
+        </section>
+      </section>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      const canvas = document.getElementById('three-bg');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      const stars = Array.from({ length: 180 }, () => ({
+        x: Math.random(),
+        y: Math.random(),
+        z: 0.3 + Math.random() * 0.7,
+        r: 0.6 + Math.random() * 1.8,
+      }));
+
+      const resize = () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      };
+
+      const draw = (time) => {
+        const w = canvas.width;
+        const h = canvas.height;
+        ctx.clearRect(0, 0, w, h);
+
+        const grad = ctx.createRadialGradient(w * 0.72, h * 0.36, 8, w * 0.72, h * 0.36, Math.max(w, h) * 0.24);
+        grad.addColorStop(0, 'rgba(255, 213, 122, 0.9)');
+        grad.addColorStop(0.16, 'rgba(98, 216, 255, 0.26)');
+        grad.addColorStop(1, 'rgba(4, 12, 27, 0)');
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.arc(w * 0.72, h * 0.36, Math.max(w, h) * 0.22, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.save();
+        ctx.translate(w * 0.72, h * 0.36);
+        ctx.rotate(time * 0.00025);
+        ctx.strokeStyle = 'rgba(104, 216, 255, 0.45)';
+        ctx.lineWidth = Math.max(1, Math.min(w, h) * 0.0022);
+        ctx.beginPath();
+        ctx.ellipse(0, 0, Math.min(w, h) * 0.17, Math.min(w, h) * 0.05, 0.9, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.restore();
+
+        for (const star of stars) {
+          const x = (star.x * w + (time * 0.01 * star.z)) % w;
+          const y = (star.y * h + Math.sin((time * 0.0002) + (star.x * 12)) * 6 * star.z);
+          ctx.fillStyle = 'rgba(154, 216, 255,' + (0.35 + (star.z * 0.55)).toFixed(3) + ')';
+          ctx.beginPath();
+          ctx.arc(x, y, star.r, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        requestAnimationFrame(draw);
+      };
+
+      window.addEventListener('resize', resize);
+      resize();
+      requestAnimationFrame(draw);
+    })();
+  </script>
+
+  <script>
+    (function () {
+      const LABELS = { burst: 'Burst Turrets', laser: 'Laser Turrets', plasma: 'Plasma Turrets', missile: 'Missile Turrets' };
+      const ATTACK_LABELS = {
+        burst: 'Infantry Squad',
+        laser: 'Grenadier Squad',
+        plasma: 'Vehicle Division',
+        missile: 'Tanks',
+        air: 'Planes',
+      };
+      const ATTACK_SLIDES = [
+        {
+          category: 'burst',
+          name: 'Soldier Squad',
+          assetPath: 'assets/soldier-sprites/craftpix-net-507107-free-soldier-sprite-sheets-pixel-art/Soldier_1/Attack.png',
+          desc: 'Standard rifle squad for rapid lane pressure and fast bounty conversion at route entries.',
+          stats: { damage: 0.12, range: 2.8, fireRate: 3.1, aoe: 0.2, health: 14 },
+        },
+        {
+          category: 'burst',
+          name: 'Raider Squad',
+          assetPath: 'assets/soldier-sprites/craftpix-net-507107-free-soldier-sprite-sheets-pixel-art/Soldier_2/Attack.png',
+          desc: 'Faster shock infantry from Craftpix Soldier_2 kit, tuned for earlier contact and lane tempo spikes.',
+          stats: { damage: 0.14, range: 2.9, fireRate: 3.3, aoe: 0.2, health: 18 },
+        },
+        {
+          category: 'burst',
+          name: 'Elite Squad',
+          assetPath: 'assets/soldier-sprites/craftpix-net-507107-free-soldier-sprite-sheets-pixel-art/Soldier_3/Run.png',
+          desc: 'Heavy elite infantry detachment with better survivability for sustained path pressure.',
+          stats: { damage: 0.26, range: 3.0, fireRate: 4.5, aoe: 0.4, health: 42 },
+        },
+        {
+          category: 'laser',
+          name: 'Grenadier Squad',
+          assetPath: 'assets/soldier-sprites/craftpix-net-507107-free-soldier-sprite-sheets-pixel-art/Soldier_3/Grenade.png',
+          desc: 'Arc-pressure grenadiers with wider lane control. Best for breaking fortified defender clusters.',
+          stats: { damage: 0.55, range: 3.1, fireRate: 1.7, aoe: 1.6, health: 16 },
+        },
+        {
+          category: 'plasma',
+          name: 'Humvee Column',
+          assetPath: 'assets/vehicles/humvee-top.png',
+          desc: 'Fast armored vehicle wing tuned for route penetration and tempo pressure on mid lanes.',
+          stats: { damage: 0.55, range: 2.2, fireRate: 1.1, aoe: 0.6, health: 12 },
+        },
+        {
+          category: 'missile',
+          name: 'Tank Vanguard',
+          assetPath: 'assets/ground-shaker/ground_shaker_asset/Red/Bodies/body_halftrack.png',
+          desc: 'Heavy assault armor for siege pushes. Slow but high bounty impact and lane disruption. Turret unlocks are in the UPGRADES tab.',
+          stats: { damage: 0.72, range: 2.5, fireRate: 0.9, aoe: 1.2, health: 20 },
+        },
+        {
+          category: 'air',
+          name: 'Strike Plane',
+          assetPath: 'assets/planes/1.png',
+          desc: 'Air assault craft for top, mid, or bottom lane pressure with high wave scaling potential.',
+          stats: { damage: 0.62, range: 3.5, fireRate: 1.0, aoe: 1.4, health: 18 },
+        },
+        {
+          category: 'air',
+          name: 'B17 Bomber',
+          assetPath: 'assets/planes/b17/1.png',
+          desc: 'Heavy bomber wing with broad lane suppression and strong structure-breaking pressure.',
+          stats: { damage: 0.78, range: 3.7, fireRate: 0.85, aoe: 1.9, health: 24 },
+        },
+        {
+          category: 'air',
+          name: 'BF109 Interceptor',
+          assetPath: 'assets/planes/bf109/1.png',
+          desc: 'Fast interceptor optimized for rapid target acquisition and repeated strike passes.',
+          stats: { damage: 0.55, range: 3.4, fireRate: 1.35, aoe: 0.9, health: 16 },
+        },
+        {
+          category: 'air',
+          name: 'Hawker Striker',
+          assetPath: 'assets/planes/hawker/1.png',
+          desc: 'Balanced fighter-bomber squadron tuned for consistent mixed-wave damage output.',
+          stats: { damage: 0.66, range: 3.6, fireRate: 1.1, aoe: 1.2, health: 20 },
+        },
+        {
+          category: 'air',
+          name: 'JU87 Diver',
+          assetPath: 'assets/planes/ju87/1.png',
+          desc: 'Dive-bombing aircraft with high precision burst on fortified choke points.',
+          stats: { damage: 0.84, range: 3.8, fireRate: 0.74, aoe: 2.1, health: 19 },
+        },
+        {
+          category: 'air',
+          name: 'TBM3 Torpedo',
+          assetPath: 'assets/planes/tbm3/1.png',
+          desc: 'Payload-focused strike craft delivering heavy impact damage against armored lanes.',
+          stats: { damage: 0.72, range: 3.65, fireRate: 0.92, aoe: 1.6, health: 22 },
+        },
+        {
+          category: 'air',
+          name: 'Sky Spear',
+          assetPath: 'assets/planes/3.png',
+          desc: 'Advanced late-wave aircraft variant for sustained pressure during long engagements.',
+          stats: { damage: 0.7, range: 3.7, fireRate: 1.05, aoe: 1.5, health: 21 },
+        },
+      ];
+      const ATTACK_UNIT_COST_BY_NAME = {
+        'Soldier Squad': { score: 120, bonus: 4, gold: 0 },
+        'Raider Squad': { score: 145, bonus: 5, gold: 2 },
+        'Elite Squad': { score: 210, bonus: 7, gold: 8 },
+        'Grenadier Squad': { score: 170, bonus: 6, gold: 5 },
+        'Humvee Column': { score: 220, bonus: 8, gold: 12 },
+        'Tank Vanguard': { score: 300, bonus: 10, gold: 18 },
+        'Strike Plane': { score: 320, bonus: 11, gold: 20 },
+        'B17 Bomber': { score: 360, bonus: 13, gold: 24 },
+        'BF109 Interceptor': { score: 290, bonus: 10, gold: 16 },
+        'Hawker Striker': { score: 335, bonus: 12, gold: 21 },
+        'JU87 Diver': { score: 380, bonus: 14, gold: 28 },
+        'TBM3 Torpedo': { score: 350, bonus: 13, gold: 23 },
+        'Sky Spear': { score: 345, bonus: 12, gold: 22 },
+      };
+      const ATTACK_ICON_TUNE_SOURCE_BY_VIEW = {
+        desktop: {
+          default: {
+            scale: 1.98,
+            offsetX: 23,
+            offsetY: -40,
+          },
+          'Soldier Squad': {
+            scale: 1.2,
+            offsetX: -14,
+            offsetY: -40,
+          },
+          'Raider Squad': {
+            scale: 1.2,
+            offsetX: 8,
+            offsetY: -40,
+          },
+          'Elite Squad': {
+            scale: 1.2,
+            offsetX: -40,
+            offsetY: -40,
+          },
+          'Grenadier Squad': {
+            scale: 0.6,
+            offsetX: 38,
+            offsetY: -40,
+          },
+          'Humvee Column': {
+            scale: 0.76,
+            offsetX: 2,
+            offsetY: 40,
+          },
+          'Tank Vanguard': {
+            scale: 1.14,
+            offsetX: 0,
+            offsetY: 33,
+          },
+          'Strike Plane': {
+            scale: 1,
+            offsetX: 0,
+            offsetY: 30,
+          },
+          'B17 Bomber': {
+            scale: 1.78,
+            offsetX: 0,
+            offsetY: 30,
+          },
+          'BF109 Interceptor': {
+            scale: 1.6,
+            offsetX: 0,
+            offsetY: 20,
+          },
+          'Hawker Striker': {
+            scale: 1.56,
+            offsetX: 0,
+            offsetY: -14,
+          },
+          'JU87 Diver': {
+            scale: 1.78,
+            offsetX: 0,
+            offsetY: -14,
+          },
+          'TBM3 Torpedo': {
+            scale: 1.6,
+            offsetX: 0,
+            offsetY: 30,
+          },
+          'Sky Spear': {
+            scale: 1.6,
+            offsetX: 0,
+            offsetY: -14,
+          },
+        },
+        mobile: {
+          default: {
+            scale: 1.98,
+            offsetX: 23,
+            offsetY: -40,
+          },
+          'Soldier Squad': {
+            scale: 2,
+            offsetX: -6,
+            offsetY: -28,
+          },
+          'Raider Squad': {
+            scale: 2,
+            offsetX: 6,
+            offsetY: -28,
+          },
+          'Elite Squad': {
+            scale: 2,
+            offsetX: -14,
+            offsetY: -28,
+          },
+          'Grenadier Squad': {
+            scale: 1,
+            offsetX: 22,
+            offsetY: -37,
+          },
+          'Humvee Column': {
+            scale: 1.36,
+            offsetX: 2,
+            offsetY: 0,
+          },
+          'Tank Vanguard': {
+            scale: 2,
+            offsetX: 0,
+            offsetY: -12,
+          },
+          'Strike Plane': {
+            scale: 2,
+            offsetX: 0,
+            offsetY: -14,
+          },
+          'B17 Bomber': {
+            scale: 2,
+            offsetX: 0,
+            offsetY: -14,
+          },
+          'BF109 Interceptor': {
+            scale: 2,
+            offsetX: 0,
+            offsetY: -14,
+          },
+          'Hawker Striker': {
+            scale: 2,
+            offsetX: 0,
+            offsetY: -14,
+          },
+          'JU87 Diver': {
+            scale: 2,
+            offsetX: 0,
+            offsetY: -14,
+          },
+          'TBM3 Torpedo': {
+            scale: 2,
+            offsetX: 0,
+            offsetY: -14,
+          },
+          'Sky Spear': {
+            scale: 2,
+            offsetX: 0,
+            offsetY: -14,
+          },
+        },
+      };
+      const RANGE_DISPLAY_FACTOR = 3.67;
+      const ATTACK_BLUEPRINT_INFANTRY_SELECTION_STORAGE_KEY = 'blastova.attackBlueprint.selectedInfantry.v1';
+      const DEV_UI_TOOLS_STORAGE_KEY = 'tdDevUiToolsV1';
+      const ATTACK_BLUEPRINT_INFANTRY_OPTIONS = new Set(['Soldier Squad', 'Raider Squad', 'Elite Squad']);
+      let currentCat = 'burst';
+      let currentIndex = 0;
+      let attackBlueprintMode = false;
+      let attackBlueprintTopTab = 'units';
+      let devUiToolsEnabledOverride = null;
+      const weaponStatsByName = new Map();
+      const weaponBaseStatsByName = new Map();
+      const weaponTierByName = new Map();
+      const weaponTurretMkByName = new Map();
+      const weaponEvolveStateByName = new Map();
+      const weaponPreviewTierByName = new Map();
+      const attackIconTuneByView = new Map();
+      const MAX_TIER = 3;
+      const MAX_TURRET_MK = 3;
+      const BASE_LEVEL_UP_REQUIREMENTS = {
+        2: { score: 45, bonus: 2, gold: 0, tunedPoints: 0 },
+        3: { score: 140, bonus: 4, gold: 24, tunedPoints: 0 },
+      };
+      const TIER_GROWTH = {
+        damage: 1.22,
+        range: 1.04,
+        fireRate: 1.06,
+        aoe: 1.12,
+        health: 1.1,
+      };
+      const EVOLVE_STEP = {
+        damage: 0.2,
+        range: 0.08,
+        fireRate: 0.1,
+        aoe: 0.1,
+        health: 1,
+      };
+      const EVOLVE_COST = {
+        score: 10,
+        bonus: 1,
+        gold: 1,
+        tier3GoldBonus: 1,
+      };
+      const localEconomyState = {
+        score: 250,
+        bonus: 20,
+        gold: 90,
+      };
+      let evolveModeOpen = false;
+
+      function isDevUiToolsEnabled() {
+        if (typeof devUiToolsEnabledOverride === 'boolean') {
+          return devUiToolsEnabledOverride;
+        }
+        if (typeof window !== 'undefined' && typeof window.__tdDevUiToolsEnabled === 'boolean') {
+          return !!window.__tdDevUiToolsEnabled;
+        }
+        try {
+          return String(window.localStorage.getItem(DEV_UI_TOOLS_STORAGE_KEY) || '').trim() === '1';
+        } catch (_) {
+          return false;
+        }
+      }
+
+      function clamp(n, min, max) {
+        return Math.max(min, Math.min(max, n));
+      }
+
+      function normalizeWeaponNameKey(name) {
+        return String(name || '').trim().toLowerCase();
+      }
+
+      function resolveBlueprintWeaponName(name) {
+        const fallback = String(name || '').trim();
+        const normalized = normalizeWeaponNameKey(fallback);
+        if (!normalized) {
+          return fallback;
+        }
+
+        const knownNames = new Set([
+          ...weaponStatsByName.keys(),
+          ...weaponBaseStatsByName.keys(),
+          ...weaponTierByName.keys(),
+          ...weaponTurretMkByName.keys(),
+          ...weaponEvolveStateByName.keys(),
+          ...weaponPreviewTierByName.keys(),
+        ]);
+
+        document.querySelectorAll('.carousel-slide .slide-title').forEach((node) => {
+          const text = node?.textContent?.trim();
+          if (text) {
+            knownNames.add(text);
+          }
+        });
+
+        for (const knownName of knownNames) {
+          if (normalizeWeaponNameKey(knownName) === normalized) {
+            return knownName;
+          }
+        }
+
+        return fallback;
+      }
+
+      function persistAttackBlueprintInfantrySelection(name) {
+        if (!ATTACK_BLUEPRINT_INFANTRY_OPTIONS.has(name)) return;
+        try {
+          if (typeof window !== 'undefined' && window.localStorage) {
+            window.localStorage.setItem(ATTACK_BLUEPRINT_INFANTRY_SELECTION_STORAGE_KEY, name);
+          }
+        } catch (_) {
+          // Ignore storage failures.
+        }
+      }
+
+      function setStatRow(row, valueText, widthPct, baseWidthPct, deltaText) {
+        if (!row) return;
+        const fill = row.querySelector('.bar > span');
+        const barEl = row.querySelector('.bar');
+        const valueEl = row.querySelector('.stat-value') || row.lastElementChild;
+        const deltaEl = row.querySelector('.stat-delta');
+        if (valueEl) valueEl.textContent = valueText;
+        if (fill) fill.style.width = clamp(widthPct, 8, 100).toFixed(0) + '%';
+        if (barEl && Number.isFinite(baseWidthPct)) {
+          barEl.style.setProperty('--base-width', clamp(baseWidthPct, 8, 100).toFixed(0) + '%');
+        }
+        if (deltaEl) {
+          deltaEl.textContent = deltaText || 'BASE';
+          deltaEl.classList.toggle('gain', typeof deltaText === 'string' && deltaText.startsWith('+'));
+        }
+      }
+
+      function round2(v) {
+        return Math.round(v * 100) / 100;
+      }
+
+      function getWeaponIteration(name) {
+        const match = String(name || '').match(/mk\s*(\d+)/i);
+        return clamp(Number(match?.[1] || 1), 1, 99);
+      }
+
+      function scaleCostByWeaponIteration(baseCost, name, tierAnchor) {
+        const weaponIteration = getWeaponIteration(name);
+        const scoreFactor = 1 + ((weaponIteration - 1) * 0.55);
+        const resourceFactor = 1 + ((weaponIteration - 1) * 0.35);
+        return {
+          score: Math.max(0, Math.round((baseCost.score || 0) * scoreFactor)),
+          bonus: Math.max(0, Math.ceil((baseCost.bonus || 0) * resourceFactor)),
+          gold: Math.max(0, Math.ceil((baseCost.gold || 0) * resourceFactor)),
+          tunedPoints: Math.max(0, Math.ceil((baseCost.tunedPoints || 0) * resourceFactor)),
+        };
+      }
+
+      function cloneStats(stats) {
+        if (!stats) return null;
+        return {
+          damage: round2(Number(stats.damage || 0)),
+          range: round2(Number(stats.range || 0)),
+          fireRate: round2(Number(stats.fireRate || 0)),
+          dps: round2(Number(stats.dps || 0)),
+          aoe: round2(Number(stats.aoe || 0)),
+          health: round2(Number(stats.health || 0)),
+        };
+      }
+
+      function cloneEvolveState(state) {
+        if (!state) return null;
+        return {
+          floor: {
+            damage: round2(Number(state.floor?.damage || 0)),
+            range: round2(Number(state.floor?.range || 0)),
+            fireRate: round2(Number(state.floor?.fireRate || 0)),
+            aoe: round2(Number(state.floor?.aoe || 0)),
+            health: round2(Number(state.floor?.health || 0)),
+          },
+          points: {
+            damage: Number(state.points?.damage || 0),
+            range: Number(state.points?.range || 0),
+            fireRate: Number(state.points?.fireRate || 0),
+            aoe: Number(state.points?.aoe || 0),
+            health: Number(state.points?.health || 0),
+          },
+          spent: {
+            score: Number(state.spent?.score || 0),
+            bonus: Number(state.spent?.bonus || 0),
+            gold: Number(state.spent?.gold || 0),
+          },
+        };
+      }
+
+      function getRuntimeScene() {
+        try {
+          if (window.parent && window.parent !== window && window.parent.__tdScene) {
+            return window.parent.__tdScene;
+          }
+        } catch (_) {
+          // Ignore cross-window access issues.
+        }
+        try {
+          if (window.top && window.top !== window && window.top.__tdScene) {
+            return window.top.__tdScene;
+          }
+        } catch (_) {
+          // Ignore cross-window access issues.
+        }
+        return null;
+      }
+
+      function setupStandaloneCloseButton() {
+        const closeBtn = document.getElementById('standaloneCloseBtn');
+        if (!closeBtn) return;
+        const scene = getRuntimeScene();
+        const standalone = !scene && window.top === window;
+        closeBtn.classList.toggle('visible', standalone);
+        if (!standalone) return;
+        closeBtn.addEventListener('click', () => {
+          if (window.history.length > 1) {
+            window.history.back();
+          } else {
+            window.location.href = '/';
+          }
+        });
+      }
+
+      function isAttackCommanderRole() {
+        try {
+          const params = new URLSearchParams(window.location.search || '');
+          const modeFlag = String(params.get('mode') || '').toLowerCase();
+          if (modeFlag === 'attack' || modeFlag === 'enemy') {
+            return true;
+          }
+        } catch (_) {
+          // Ignore URL parsing issues and continue runtime detection.
+        }
+        const scene = getRuntimeScene();
+        if (!scene?.gameState) {
+          return false;
+        }
+        return scene.gameState.selectedMode === 'multiplayer'
+          && scene.gameState.multiplayerRole === 'enemyCommander';
+      }
+
+      function formatIconTuneNumber(value) {
+        const rounded = Math.round(value * 100) / 100;
+        return String(rounded).replace(/\.0+$/, '').replace(/(\.\d*[1-9])0+$/, '$1');
+      }
+
+      function normalizeAttackIconTune(raw) {
+        const tune = raw || {};
+        return {
+          scale: clamp(Number(tune.scale) || 1, 0.6, 2),
+          offsetX: clamp(Number(tune.offsetX) || 0, -40, 40),
+          offsetY: clamp(Number(tune.offsetY) || 0, -40, 40),
+        };
+      }
+
+      function isMobileBlueprintView() {
+        try {
+          const platformMobile = !!(window && window.__appPlatform && window.__appPlatform.isMobile);
+          const narrowViewport = typeof window !== 'undefined' && window.matchMedia('(max-width: 900px)').matches;
+          const compactLandscape = typeof window !== 'undefined' && window.matchMedia('(orientation: landscape) and (max-height: 520px)').matches;
+          const coarsePointer = typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches;
+          return !!(platformMobile || narrowViewport || (coarsePointer && compactLandscape));
+        } catch (_) {
+          return false;
+        }
+      }
+
+      function getAttackIconTuneViewKey() {
+        return isMobileBlueprintView() ? 'mobile' : 'desktop';
+      }
+
+      function getAttackIconTuneViewLabel() {
+        return getAttackIconTuneViewKey() === 'mobile' ? 'Mobile' : 'Desktop';
+      }
+
+      function getAttackIconSourceTune(unitName) {
+        const sourceMap = ATTACK_ICON_TUNE_SOURCE_BY_VIEW[getAttackIconTuneViewKey()] || ATTACK_ICON_TUNE_SOURCE_BY_VIEW.desktop || {};
+        const sourceTune = (unitName && sourceMap[unitName]) || sourceMap.default || { scale: 1, offsetX: 0, offsetY: 0 };
+        return normalizeAttackIconTune(sourceTune);
+      }
+
+      function getAttackIconTuneStore() {
+        const viewKey = getAttackIconTuneViewKey();
+        if (!attackIconTuneByView.has(viewKey)) {
+          attackIconTuneByView.set(viewKey, new Map());
+        }
+        return attackIconTuneByView.get(viewKey);
+      }
+
+      function getActiveAttackSlide() {
+        return visibleSlides()[currentIndex] || null;
+      }
+
+      function getActiveAttackUnitName() {
+        const activeSlide = getActiveAttackSlide();
+        return activeSlide?.querySelector('.slide-title')?.textContent?.trim() || '';
+      }
+
+      function getAttackIconTuneForUnit(unitName) {
+        if (!unitName) return getAttackIconSourceTune('');
+        const tuneStore = getAttackIconTuneStore();
+        if (!tuneStore.has(unitName)) {
+          tuneStore.set(unitName, getAttackIconSourceTune(unitName));
+        }
+        return tuneStore.get(unitName);
+      }
+
+      function setAttackIconTuneForUnit(unitName, tunePatch) {
+        if (!unitName) return getAttackIconSourceTune('');
+        const current = { ...getAttackIconTuneForUnit(unitName) };
+        const merged = normalizeAttackIconTune({ ...current, ...tunePatch });
+        getAttackIconTuneStore().set(unitName, merged);
+        return merged;
+      }
+
+      function tuneBackgroundSize(baseSize, scale) {
+        const safeScale = clamp(Number(scale) || 1, 0.6, 2);
+        const parts = String(baseSize || '').trim().split(/\s+/).filter(Boolean);
+        if (!parts.length) return '';
+        return parts.map((part) => {
+          if (!part.endsWith('%')) return part;
+          const parsed = Number(part.slice(0, -1));
+          if (!Number.isFinite(parsed)) return part;
+          return formatIconTuneNumber(parsed * safeScale) + '%';
+        }).join(' ');
+      }
+
+      function parseIconAxisToken(token, fallback) {
+        const raw = String(token || '').trim().toLowerCase();
+        if (!raw) return fallback;
+        if (raw === 'left' || raw === 'top') return 0;
+        if (raw === 'center') return 50;
+        if (raw === 'right' || raw === 'bottom') return 100;
+        if (raw.endsWith('%')) {
+          const parsed = Number(raw.slice(0, -1));
+          if (Number.isFinite(parsed)) return parsed;
+        }
+        return fallback;
+      }
+
+      function tuneBackgroundPosition(basePos, offsetX, offsetY) {
+        const parts = String(basePos || '').trim().split(/\s+/).filter(Boolean);
+        const baseX = parseIconAxisToken(parts[0], 50);
+        const baseY = parseIconAxisToken(parts[1], 50);
+        const tunedX = baseX + (Number(offsetX) || 0);
+        const tunedY = baseY + (Number(offsetY) || 0);
+        return formatIconTuneNumber(tunedX) + '% ' + formatIconTuneNumber(tunedY) + '%';
+      }
+
+      function captureAttackIconBase(el) {
+        if (!el) return;
+        if (!el.dataset.baseBgSize) {
+          el.dataset.baseBgSize = el.style.backgroundSize || window.getComputedStyle(el).backgroundSize || '';
+        }
+        if (!el.dataset.baseBgPos) {
+          el.dataset.baseBgPos = el.style.backgroundPosition || window.getComputedStyle(el).backgroundPosition || '';
+        }
+      }
+
+      function getTankTurretOverlayPath(unitName, assetPath, tier = 1) {
+        if (!unitName || unitName.indexOf('Tank') === -1) return '';
+        const safeTier = clamp(Number(tier) || 1, 1, MAX_TURRET_MK);
+        const familyByTankName = {
+          'Tank Vanguard': 'turret_01',
+          'Tank Glacier': 'turret_02',
+          'Tank Dune': 'turret_01',
+          'Tank Phantom': 'turret_02',
+          'Tank Ranger': 'turret_01',
+        };
+        const turretFamily = familyByTankName[unitName] || 'turret_02';
+        if (safeTier >= 3) {
+          return String(assetPath || '').replace('/Bodies/body_halftrack.png', '/Weapons/turret_01_mk3.png');
+        }
+        return String(assetPath || '').replace('/Bodies/body_halftrack.png', '/Weapons/' + turretFamily + '_mk' + safeTier + '.png');
+      }
+
+      function getTankTurretFramePosition(tier = 1) {
+        const safeTier = clamp(Number(tier) || 1, 1, MAX_TURRET_MK);
+        if (safeTier >= 3) return '28.571% 50%';
+        return '0% 50%';
+      }
+
+      function isTankUnit(name) {
+        return String(name || '').indexOf('Tank') !== -1;
+      }
+
+      function getTurretMk(name) {
+        return clamp(Number(weaponTurretMkByName.get(name) || 1), 1, MAX_TURRET_MK);
+      }
+
+      function canUnlockTurret(name) {
+        const mk = getTurretMk(name);
+        const targetMk = mk + 1;
+        if (!isTankUnit(name)) {
+          return {
+            ok: false,
+            targetMk,
+            requirement: { score: 0, bonus: 0, gold: 0, tunedPoints: 0 },
+            missing: ['turret unlock only applies to tanks'],
+          };
+        }
+        if (mk >= MAX_TURRET_MK) {
+          return {
+            ok: false,
+            targetMk,
+            requirement: getLevelUpRequirement(name, targetMk),
+            missing: ['maximum turret mark unlocked'],
+          };
+        }
+
+        const req = getLevelUpRequirement(name, targetMk);
+        const eco = getEconomySnapshot();
+        const tuned = getTotalTunedPoints(name);
+        const missing = [];
+        if (eco.score < req.score) missing.push('score ' + req.score);
+        if (eco.bonus < req.bonus) missing.push('supplies ' + req.bonus);
+        if (eco.gold < req.gold) missing.push('gold ' + req.gold);
+        if (tuned < req.tunedPoints) missing.push('tuned points ' + req.tunedPoints);
+
+        return {
+          ok: missing.length === 0,
+          targetMk,
+          requirement: req,
+          missing,
+        };
+      }
+
+      function applyAttackIconTuning() {
+        if (!attackBlueprintMode) return;
+        const allThumbs = document.querySelectorAll('.carousel-slide .slide-thumb');
+        allThumbs.forEach((el) => {
+          captureAttackIconBase(el);
+          if (el.dataset.baseBgSize) el.style.backgroundSize = el.dataset.baseBgSize;
+          if (el.dataset.baseBgPos) el.style.backgroundPosition = el.dataset.baseBgPos;
+          el.style.transform = 'translate(0px, 0px) scale(1)';
+        });
+
+        const activeSlide = getActiveAttackSlide();
+        const activeThumb = activeSlide?.querySelector('.slide-thumb');
+        if (!activeThumb) return;
+        captureAttackIconBase(activeThumb);
+        if (activeThumb.dataset.baseBgSize) activeThumb.style.backgroundSize = activeThumb.dataset.baseBgSize;
+        const activeTitle = activeSlide.querySelector('.slide-title')?.textContent || '';
+        const activeTune = getAttackIconTuneForUnit(activeTitle);
+        const grenadierBoost = activeTitle.indexOf('Grenadier Squad') !== -1 ? 2.35 : 1;
+        const tunedScale = (activeTune.scale || 1) * grenadierBoost;
+        activeThumb.style.transform = 'translate(' + formatIconTuneNumber(activeTune.offsetX || 0) + 'px, ' + formatIconTuneNumber(activeTune.offsetY || 0) + 'px) scale(' + formatIconTuneNumber(tunedScale) + ')';
+
+        if (activeTitle.indexOf('Tank') !== -1) {
+          const activeMk = getTurretMk(activeTitle);
+          const activeTurretOverlay = activeThumb.querySelector('.tank-turret-overlay');
+          const activeAssetPath = ATTACK_SLIDES.find((entry) => entry.name === activeTitle)?.assetPath || '';
+          if (activeTurretOverlay) {
+            const activeTurretPath = getTankTurretOverlayPath(activeTitle, activeAssetPath, activeMk);
+            if (activeTurretPath) {
+              activeTurretOverlay.style.backgroundImage = 'url("/' + activeTurretPath + '")';
+              activeTurretOverlay.style.backgroundPosition = getTankTurretFramePosition(activeMk);
+            }
+          }
+        }
+      }
+
+      function buildAttackIconTuneCodeBlock() {
+        const desktopDefault = normalizeAttackIconTune((ATTACK_ICON_TUNE_SOURCE_BY_VIEW.desktop || {}).default || {});
+        const mobileDefault = normalizeAttackIconTune((ATTACK_ICON_TUNE_SOURCE_BY_VIEW.mobile || ATTACK_ICON_TUNE_SOURCE_BY_VIEW.desktop || {}).default || {});
+        const desktopTuneMap = attackIconTuneByView.get('desktop') || new Map();
+        const mobileTuneMap = attackIconTuneByView.get('mobile') || new Map();
+        const lines = [
+          'const ATTACK_ICON_TUNE_SOURCE_BY_VIEW = {',
+          '  desktop: {',
+          '    default: {',
+          '      scale: ' + formatIconTuneNumber((desktopTuneMap.get('default') || desktopDefault).scale) + ',',
+          '      offsetX: ' + formatIconTuneNumber((desktopTuneMap.get('default') || desktopDefault).offsetX) + ',',
+          '      offsetY: ' + formatIconTuneNumber((desktopTuneMap.get('default') || desktopDefault).offsetY) + ',',
+          '    },',
+        ];
+
+        ATTACK_SLIDES.forEach((slide) => {
+          const name = slide.name;
+          const desktopSourceMap = ATTACK_ICON_TUNE_SOURCE_BY_VIEW.desktop || {};
+          const desktopTune = normalizeAttackIconTune((desktopTuneMap.get(name) || desktopSourceMap[name] || desktopDefault));
+          const desktopDiffers = desktopTune.scale !== desktopDefault.scale
+            || desktopTune.offsetX !== desktopDefault.offsetX
+            || desktopTune.offsetY !== desktopDefault.offsetY;
+          const desktopHasSourceOverride = Object.prototype.hasOwnProperty.call(desktopSourceMap, name);
+          if (!desktopDiffers && !desktopHasSourceOverride) return;
+          lines.push("  '" + name.replace(/'/g, "\\'") + "': {");
+          lines.push('      scale: ' + formatIconTuneNumber(desktopTune.scale) + ',');
+          lines.push('      offsetX: ' + formatIconTuneNumber(desktopTune.offsetX) + ',');
+          lines.push('      offsetY: ' + formatIconTuneNumber(desktopTune.offsetY) + ',');
+          lines.push('    },');
+        });
+
+        lines.push('  },');
+        lines.push('  mobile: {');
+        lines.push('    default: {');
+        lines.push('      scale: ' + formatIconTuneNumber((mobileTuneMap.get('default') || mobileDefault).scale) + ',');
+        lines.push('      offsetX: ' + formatIconTuneNumber((mobileTuneMap.get('default') || mobileDefault).offsetX) + ',');
+        lines.push('      offsetY: ' + formatIconTuneNumber((mobileTuneMap.get('default') || mobileDefault).offsetY) + ',');
+        lines.push('    },');
+
+        ATTACK_SLIDES.forEach((slide) => {
+          const name = slide.name;
+          const mobileSourceMap = ATTACK_ICON_TUNE_SOURCE_BY_VIEW.mobile || ATTACK_ICON_TUNE_SOURCE_BY_VIEW.desktop || {};
+          const mobileTune = normalizeAttackIconTune((mobileTuneMap.get(name) || mobileSourceMap[name] || mobileDefault));
+          const mobileDiffers = mobileTune.scale !== mobileDefault.scale
+            || mobileTune.offsetX !== mobileDefault.offsetX
+            || mobileTune.offsetY !== mobileDefault.offsetY;
+          const mobileHasSourceOverride = Object.prototype.hasOwnProperty.call(mobileSourceMap, name);
+          if (!mobileDiffers && !mobileHasSourceOverride) return;
+          lines.push("    '" + name.replace(/'/g, "\\'") + "': {");
+          lines.push('      scale: ' + formatIconTuneNumber(mobileTune.scale) + ',');
+          lines.push('      offsetX: ' + formatIconTuneNumber(mobileTune.offsetX) + ',');
+          lines.push('      offsetY: ' + formatIconTuneNumber(mobileTune.offsetY) + ',');
+          lines.push('    },');
+        });
+
+        lines.push('  },');
+
+        lines.push('};');
+        return lines.join('\n');
+      }
+
+      function setAttackBlueprintTopTab(tabKey) {
+        if (!attackBlueprintMode) return;
+        const normalized = tabKey === 'upgrades' ? 'upgrades' : 'units';
+        attackBlueprintTopTab = normalized;
+
+        document.querySelectorAll('.top-tabs .tab').forEach((tab) => {
+          const tabMode = tab.dataset.attackTab || '';
+          tab.classList.toggle('active', tabMode === normalized);
+        });
+
+        const rail = document.querySelector('.left-rail');
+        if (rail) {
+          const upgradesMode = normalized === 'upgrades';
+          rail.style.pointerEvents = upgradesMode ? 'none' : '';
+          rail.style.opacity = upgradesMode ? '0.55' : '';
+        }
+
+        applyFilter(normalized === 'upgrades' ? 'missile' : 'burst');
+      }
+
+      function syncAttackIconTunerUI(message) {
+        const scaleValue = document.getElementById('attackIconScaleValue');
+        const offsetXValue = document.getElementById('attackIconOffsetXValue');
+        const offsetYValue = document.getElementById('attackIconOffsetYValue');
+        const status = document.getElementById('attackIconTunerStatus');
+        const codeOutput = document.getElementById('attackIconCodeOutput');
+
+        const activeUnit = getActiveAttackUnitName();
+        const activeTune = getAttackIconTuneForUnit(activeUnit);
+
+        if (scaleValue) scaleValue.textContent = Math.round((activeTune.scale || 1) * 100) + '%';
+        if (offsetXValue) offsetXValue.textContent = formatIconTuneNumber(activeTune.offsetX || 0) + 'px';
+        if (offsetYValue) offsetYValue.textContent = formatIconTuneNumber(activeTune.offsetY || 0) + 'px';
+        if (status) status.textContent = '[' + getAttackIconTuneViewLabel() + '] ' + (message || '');
+        if (codeOutput) codeOutput.value = buildAttackIconTuneCodeBlock();
+        const tunerTitle = document.querySelector('#attackIconTuner .icon-tuner-title');
+        if (tunerTitle) {
+          tunerTitle.textContent = 'ATTACK ICON TUNER (CODE SOURCE · ' + getAttackIconTuneViewLabel().toUpperCase() + ')';
+        }
+      }
+
+      function mountAttackIconTunerUI() {
+        const panel = document.getElementById('attackIconTuner');
+        if (!panel) return;
+        const shouldShow = !!attackBlueprintMode && isDevUiToolsEnabled();
+        panel.hidden = !shouldShow;
+        if (!shouldShow) return;
+        panel.classList.add('floating');
+
+        const clampPanelToViewport = () => {
+          const rect = panel.getBoundingClientRect();
+          const maxLeft = Math.max(0, window.innerWidth - rect.width);
+          const maxTop = Math.max(0, window.innerHeight - rect.height);
+          const style = window.getComputedStyle(panel);
+          const left = Number.parseFloat(style.left);
+          const top = Number.parseFloat(style.top);
+          if (Number.isFinite(left)) {
+            panel.style.left = clamp(left, 0, maxLeft) + 'px';
+          }
+          if (Number.isFinite(top)) {
+            panel.style.top = clamp(top, 0, maxTop) + 'px';
+          }
+        };
+
+        syncAttackIconTunerUI('Code is the source of truth. Save copies constant values below.');
+
+        if (panel.dataset.bound === '1') {
+          clampPanelToViewport();
+          return;
+        }
+        panel.dataset.bound = '1';
+
+        const dragHandle = panel.querySelector('.icon-tuner-title');
+        if (dragHandle) {
+          let dragging = false;
+          let dragOffsetX = 0;
+          let dragOffsetY = 0;
+
+          const onPointerMove = (event) => {
+            if (!dragging) return;
+            const rect = panel.getBoundingClientRect();
+            const maxLeft = Math.max(0, window.innerWidth - rect.width);
+            const maxTop = Math.max(0, window.innerHeight - rect.height);
+            const nextLeft = clamp(event.clientX - dragOffsetX, 0, maxLeft);
+            const nextTop = clamp(event.clientY - dragOffsetY, 0, maxTop);
+            panel.style.left = nextLeft + 'px';
+            panel.style.top = nextTop + 'px';
+            panel.style.right = 'auto';
+            panel.style.bottom = 'auto';
+          };
+
+          const stopDragging = () => {
+            dragging = false;
+          };
+
+          const beginDragging = (clientX, clientY) => {
+            const rect = panel.getBoundingClientRect();
+            dragOffsetX = clientX - rect.left;
+            dragOffsetY = clientY - rect.top;
+            dragging = true;
+            panel.style.right = 'auto';
+            panel.style.bottom = 'auto';
+          };
+
+          dragHandle.addEventListener('pointerdown', (event) => {
+            if (event.button !== 0) return;
+            event.preventDefault();
+            beginDragging(event.clientX, event.clientY);
+          });
+
+          dragHandle.addEventListener('mousedown', (event) => {
+            if (event.button !== 0) return;
+            event.preventDefault();
+            beginDragging(event.clientX, event.clientY);
+          });
+
+          dragHandle.addEventListener('touchstart', (event) => {
+            const touch = event.touches?.[0];
+            if (!touch) return;
+            event.preventDefault();
+            beginDragging(touch.clientX, touch.clientY);
+          }, { passive: false });
+
+          window.addEventListener('mousemove', onPointerMove);
+          window.addEventListener('touchmove', (event) => {
+            const touch = event.touches?.[0];
+            if (!touch) return;
+            onPointerMove({ clientX: touch.clientX, clientY: touch.clientY });
+          }, { passive: true });
+          window.addEventListener('touchend', stopDragging);
+          window.addEventListener('touchcancel', stopDragging);
+          window.addEventListener('mouseup', stopDragging);
+          window.addEventListener('mouseleave', stopDragging);
+
+          panel.addEventListener('dragstart', (event) => {
+            event.preventDefault();
+          });
+
+          window.addEventListener('pointermove', onPointerMove);
+          window.addEventListener('pointerup', stopDragging);
+          window.addEventListener('pointercancel', stopDragging);
+        }
+
+        const saveBtn = document.getElementById('attackIconSaveBtn');
+        const resetBtn = document.getElementById('attackIconResetBtn');
+
+        const stepByTune = {
+          scale: 0.02,
+          offsetX: 1,
+          offsetY: 1,
+        };
+
+        const applyStep = (tuneKey, direction, previewMsg) => {
+          if (!stepByTune[tuneKey]) return;
+          const activeUnit = getActiveAttackUnitName();
+          const activeTune = getAttackIconTuneForUnit(activeUnit);
+          const next = Number(activeTune[tuneKey] || 0) + (stepByTune[tuneKey] * direction);
+          if (tuneKey === 'scale') {
+            setAttackIconTuneForUnit(activeUnit, { scale: clamp(next, 0.6, 2) });
+          } else if (tuneKey === 'offsetX') {
+            setAttackIconTuneForUnit(activeUnit, { offsetX: clamp(next, -40, 40) });
+          } else if (tuneKey === 'offsetY') {
+            setAttackIconTuneForUnit(activeUnit, { offsetY: clamp(next, -40, 40) });
+          }
+          applyAttackIconTuning();
+          syncAttackIconTunerUI(previewMsg || ('Preview for ' + (activeUnit || 'unit') + '. Save to generate code constants.'));
+        };
+
+        panel.querySelectorAll('[data-tune][data-delta]').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const tuneKey = btn.getAttribute('data-tune');
+            const direction = Number(btn.getAttribute('data-delta') || 0);
+            applyStep(tuneKey, direction);
+          });
+        });
+
+        saveBtn?.addEventListener('click', () => {
+          const output = document.getElementById('attackIconCodeOutput');
+          const activeUnit = getActiveAttackUnitName();
+          output?.classList.add('show');
+          syncAttackIconTunerUI('Saved tune for ' + (activeUnit || 'unit') + '. Copy the per-unit code block below.');
+          output?.focus();
+          output?.select();
+        });
+
+        resetBtn?.addEventListener('click', () => {
+          const activeUnit = getActiveAttackUnitName();
+          getAttackIconTuneStore().set(activeUnit, getAttackIconSourceTune(activeUnit));
+          applyAttackIconTuning();
+          syncAttackIconTunerUI('Reset ' + (activeUnit || 'unit') + ' to code defaults.');
+        });
+
+        window.addEventListener('resize', () => {
+          clampPanelToViewport();
+          applyAttackIconTuning();
+          syncAttackIconTunerUI('Viewport profile switched.');
+        });
+      }
+
+      if (typeof window !== 'undefined') {
+        window.__setDevToolsEnabled = function (enabled) {
+          devUiToolsEnabledOverride = !!enabled;
+          window.__tdDevUiToolsEnabled = !!enabled;
+          mountAttackIconTunerUI();
+        };
+      }
+
+      function applyAttackBlueprintPresentation() {
+        if (!isAttackCommanderRole()) {
+          return false;
+        }
+
+        attackBlueprintMode = true;
+
+        const topTitle = document.querySelector('.top-title');
+        if (topTitle) topTitle.textContent = 'ATTACK BLUEPRINTS';
+
+        const tabLabels = ['UNITS', 'UPGRADES', 'FORGE', 'REPAIRS', 'BEACONS', 'SYSTEMS'];
+        const tabModes = ['units', 'upgrades', 'disabled', 'disabled', 'disabled', 'disabled'];
+        document.querySelectorAll('.top-tabs .tab').forEach((tab, idx) => {
+          if (tabLabels[idx]) tab.textContent = tabLabels[idx];
+          tab.dataset.attackTab = tabModes[idx] || 'disabled';
+          tab.style.cursor = (tabModes[idx] === 'units' || tabModes[idx] === 'upgrades') ? 'pointer' : 'not-allowed';
+          tab.style.opacity = tabModes[idx] === 'disabled' ? '0.55' : '1';
+        });
+
+        const detailTitle = document.querySelector('.d-title');
+        const detailSub = document.querySelector('.d-sub');
+        if (detailTitle) detailTitle.textContent = 'ENEMY UNIT DETAILS';
+        if (detailSub) detailSub.textContent = '';
+
+        const manageTitle = document.querySelector('.manage-title');
+        if (manageTitle) manageTitle.textContent = 'ATTACK MANAGEMENT';
+
+        const railConfig = [
+          { cat: 'burst', label: 'Infantry Squad', iconPath: 'assets/soldier-sprites/craftpix-net-507107-free-soldier-sprite-sheets-pixel-art/Soldier_1/Attack.png', pos: '0% 86%', size: '330% 90%', filter: 'drop-shadow(0 1px 0 rgba(0,0,0,0.85)) brightness(1.18)' },
+          { cat: 'laser', label: 'Grenadier Squad', iconPath: 'assets/soldier-sprites/craftpix-net-507107-free-soldier-sprite-sheets-pixel-art/Soldier_3/Grenade.png', pos: '57.142% 86%', size: '1200% 90%', filter: 'drop-shadow(0 1px 0 rgba(0,0,0,0.85)) brightness(1.18)' },
+          { cat: 'plasma', label: 'Vehicle Division', iconPath: 'assets/vehicles/humvee-top.png', pos: '50% 34%', size: 'auto 92%', filter: '' },
+          { cat: 'missile', label: 'Tanks', iconPath: 'assets/ground-shaker/ground_shaker_asset/Red/Bodies/body_halftrack.png', pos: '0% 50%', size: '200% 88%', filter: '' },
+          { cat: 'air', label: 'Planes', iconPath: 'assets/planes/1.png', pos: '50% 48%', size: 'auto 74%', filter: '' },
+        ];
+
+        document.querySelectorAll('.attack-only-rail-card').forEach((card) => {
+          card.style.display = '';
+        });
+
+        document.querySelectorAll('.rail-card').forEach((card, idx) => {
+          const cfg = railConfig[idx];
+          if (!cfg) return;
+          card.setAttribute('data-cat', cfg.cat);
+          const textNode = card.querySelector('div:last-child');
+          if (textNode) textNode.textContent = cfg.label;
+          const icon = card.querySelector('.tiny-icon');
+          if (!icon) return;
+          icon.style.backgroundImage = 'url("/' + cfg.iconPath + '")';
+          icon.style.backgroundRepeat = 'no-repeat';
+          icon.style.backgroundPosition = cfg.pos;
+          icon.style.backgroundSize = cfg.size;
+          icon.style.filter = cfg.filter;
+          icon.dataset.baseBgSize = cfg.size;
+          icon.dataset.baseBgPos = cfg.pos;
+        });
+
+        const track = document.querySelector('.carousel-track');
+        if (track) {
+          track.innerHTML = '';
+          ATTACK_SLIDES.forEach((slide) => {
+            const article = document.createElement('article');
+            article.className = 'carousel-slide';
+            article.dataset.category = slide.category;
+
+            const thumb = document.createElement('div');
+            thumb.className = 'slide-thumb';
+            thumb.style.backgroundImage = 'url("/' + slide.assetPath + '")';
+            thumb.style.backgroundRepeat = 'no-repeat';
+            thumb.style.backgroundColor = 'transparent';
+            thumb.style.borderRadius = '0';
+            thumb.style.boxShadow = 'none';
+            if (slide.name.indexOf('Soldier Squad') !== -1) {
+              thumb.style.backgroundSize = '400% 98%';
+              thumb.style.backgroundPosition = '0% 82%';
+              thumb.style.filter = 'drop-shadow(0 2px 0 rgba(0,0,0,0.9)) brightness(1.22)';
+            } else if (slide.name.indexOf('Raider Squad') !== -1) {
+              thumb.style.backgroundSize = '400% 98%';
+              thumb.style.backgroundPosition = '0% 82%';
+              thumb.style.filter = 'drop-shadow(0 2px 0 rgba(0,0,0,0.9)) brightness(1.22)';
+            } else if (slide.name.indexOf('Elite Squad') !== -1) {
+              thumb.style.backgroundSize = '800% 98%';
+              thumb.style.backgroundPosition = '0% 82%';
+              thumb.style.filter = 'drop-shadow(0 2px 0 rgba(0,0,0,0.9)) brightness(1.22)';
+            } else if (slide.name.indexOf('Grenadier Squad') !== -1) {
+              thumb.style.backgroundSize = '1200% 98%';
+              thumb.style.backgroundPosition = '57.142% 82%';
+              thumb.style.filter = 'drop-shadow(0 2px 0 rgba(0,0,0,0.9)) brightness(1.22)';
+            } else if (slide.name.indexOf('Humvee') !== -1) {
+              thumb.style.backgroundSize = 'auto 92%';
+              thumb.style.backgroundPosition = '50% 48%';
+              thumb.style.filter = '';
+            } else if (slide.name.indexOf('Tank') !== -1) {
+              thumb.style.backgroundSize = '200% 88%';
+              thumb.style.backgroundPosition = '0% 50%';
+              thumb.style.filter = '';
+              const turretLayer = document.createElement('div');
+              turretLayer.className = 'tank-turret-overlay';
+              const turretPath = getTankTurretOverlayPath(slide.name, slide.assetPath, 1);
+              turretLayer.style.backgroundImage = 'url("/' + turretPath + '")';
+              thumb.appendChild(turretLayer);
+            } else if (slide.category === 'air') {
+              thumb.style.backgroundSize = '100% auto';
+              thumb.style.backgroundPosition = '50% 48%';
+              thumb.style.filter = '';
+            }
+            thumb.dataset.baseBgSize = thumb.style.backgroundSize;
+            thumb.dataset.baseBgPos = thumb.style.backgroundPosition;
+
+            const info = document.createElement('div');
+            info.className = 'slide-info';
+            const title = document.createElement('div');
+            title.className = 'slide-title';
+            title.textContent = slide.name;
+            const desc = document.createElement('div');
+            desc.className = 'slide-desc';
+            desc.textContent = slide.desc;
+            info.appendChild(title);
+            info.appendChild(desc);
+            article.appendChild(thumb);
+            article.appendChild(info);
+            track.appendChild(article);
+          });
+        }
+
+        weaponStatsByName.clear();
+        weaponBaseStatsByName.clear();
+        weaponTierByName.clear();
+        weaponTurretMkByName.clear();
+        weaponPreviewTierByName.clear();
+        weaponEvolveStateByName.clear();
+
+        ATTACK_SLIDES.forEach((slide) => {
+          const stats = {
+            damage: slide.stats.damage,
+            range: slide.stats.range,
+            fireRate: slide.stats.fireRate,
+            dps: round2(slide.stats.damage * slide.stats.fireRate),
+            aoe: slide.stats.aoe,
+            health: slide.stats.health,
+          };
+          weaponStatsByName.set(slide.name, cloneStats(stats));
+          weaponBaseStatsByName.set(slide.name, cloneStats(stats));
+          weaponTierByName.set(slide.name, 1);
+          weaponTurretMkByName.set(slide.name, 1);
+          weaponPreviewTierByName.set(slide.name, 1);
+          ensureEvolveState(slide.name);
+        });
+
+        setAttackBlueprintTopTab('units');
+
+        mountAttackIconTunerUI();
+        applyAttackIconTuning();
+        return true;
+      }
+
+      function getEconomySnapshot() {
+        const scene = getRuntimeScene();
+        const gameState = scene?.gameState;
+        if (gameState) {
+          if (!Number.isFinite(gameState.techParts)) gameState.techParts = 0;
+          return {
+            score: Math.max(0, Number(gameState.score || 0)),
+            bonus: Math.max(0, Number(gameState.techParts || 0)),
+            gold: Math.max(0, Number(gameState.gold || 0)),
+            scene,
+            runtime: true,
+          };
+        }
+        return {
+          score: localEconomyState.score,
+          bonus: localEconomyState.bonus,
+          gold: localEconomyState.gold,
+          scene: null,
+          runtime: false,
+        };
+      }
+
+      function restoreRuntimeWeaponStates() {
+        const scene = getRuntimeScene();
+        if (!scene || typeof scene.getBlueprintWeaponRuntimeStateSnapshot !== 'function') {
+          return;
+        }
+
+        const snapshot = scene.getBlueprintWeaponRuntimeStateSnapshot();
+        if (!snapshot || typeof snapshot !== 'object') {
+          return;
+        }
+
+        Object.entries(snapshot).forEach(([name, state]) => {
+          if (!name || !state) return;
+          const resolvedName = resolveBlueprintWeaponName(name);
+          if (state.stats) {
+            const stats = cloneStats(state.stats);
+            if (stats) {
+              weaponStatsByName.set(resolvedName, stats);
+            }
+          }
+          if (Number.isFinite(state.tier)) {
+            weaponTierByName.set(resolvedName, clamp(Number(state.tier) || 1, 1, MAX_TIER));
+          }
+          if (Number.isFinite(state.turretMk)) {
+            weaponTurretMkByName.set(resolvedName, clamp(Number(state.turretMk) || 1, 1, MAX_TURRET_MK));
+          }
+          if (Number.isFinite(state.previewTier)) {
+            weaponPreviewTierByName.set(resolvedName, clamp(Number(state.previewTier) || 1, 1, MAX_TIER));
+          }
+          if (state.evolveState) {
+            weaponEvolveStateByName.set(resolvedName, cloneEvolveState(state.evolveState));
+          }
+        });
+      }
+
+      function syncWeaponRuntimeState(name, previousStats) {
+        const resolvedName = resolveBlueprintWeaponName(name);
+        const scene = getRuntimeScene();
+        if (!scene || typeof scene.applyBlueprintWeaponRuntimeState !== 'function' || !resolvedName) {
+          return;
+        }
+
+        const currentStats = weaponStatsByName.get(resolvedName);
+        if (!currentStats) {
+          return;
+        }
+
+        scene.applyBlueprintWeaponRuntimeState({
+          name: resolvedName,
+          tier: weaponTierByName.get(resolvedName) || 1,
+          turretMk: getTurretMk(resolvedName),
+          previewTier: getDisplayedTier(resolvedName),
+          previousStats: cloneStats(previousStats),
+          stats: cloneStats(currentStats),
+          evolveState: cloneEvolveState(weaponEvolveStateByName.get(resolvedName)),
+        });
+      }
+
+      function spendEconomy(cost) {
+        const eco = getEconomySnapshot();
+        if (eco.score < cost.score || eco.bonus < cost.bonus || eco.gold < cost.gold) {
+          return false;
+        }
+        if (eco.runtime) {
+          eco.scene.gameState.score = Math.max(0, eco.scene.gameState.score - cost.score);
+          eco.scene.gameState.techParts = Math.max(0, (eco.scene.gameState.techParts || 0) - cost.bonus);
+          eco.scene.gameState.gold = Math.max(0, eco.scene.gameState.gold - cost.gold);
+          eco.scene.updateHud?.();
+        } else {
+          localEconomyState.score = Math.max(0, localEconomyState.score - cost.score);
+          localEconomyState.bonus = Math.max(0, localEconomyState.bonus - cost.bonus);
+          localEconomyState.gold = Math.max(0, localEconomyState.gold - cost.gold);
+        }
+        return true;
+      }
+
+      function refundEconomy(cost) {
+        const eco = getEconomySnapshot();
+        if (eco.runtime) {
+          eco.scene.gameState.score = Math.max(0, Number(eco.scene.gameState.score || 0) + cost.score);
+          eco.scene.gameState.techParts = Math.max(0, Number(eco.scene.gameState.techParts || 0) + cost.bonus);
+          eco.scene.gameState.gold = Math.max(0, Number(eco.scene.gameState.gold || 0) + cost.gold);
+          eco.scene.updateHud?.();
+        } else {
+          localEconomyState.score = Math.max(0, localEconomyState.score + cost.score);
+          localEconomyState.bonus = Math.max(0, localEconomyState.bonus + cost.bonus);
+          localEconomyState.gold = Math.max(0, localEconomyState.gold + cost.gold);
+        }
+      }
+
+      function getEvolveCostForTier(name, tier) {
+        return scaleCostByWeaponIteration({
+          score: EVOLVE_COST.score,
+          bonus: EVOLVE_COST.bonus,
+          gold: EVOLVE_COST.gold + (tier >= 3 ? EVOLVE_COST.tier3GoldBonus : 0),
+        }, name, tier);
+      }
+
+      function setEvolveHint(text) {
+        const hint = document.getElementById('evolveHint');
+        if (hint) hint.textContent = text;
+      }
+
+      function updateUnitPriceLine(name) {
+        const priceLine = document.getElementById('unitDeployPrice');
+        if (!priceLine) return;
+        if (!attackBlueprintMode) {
+          priceLine.hidden = true;
+          return;
+        }
+        const cost = ATTACK_UNIT_COST_BY_NAME[name] || ATTACK_UNIT_COST_BY_NAME['Soldier Squad'];
+        priceLine.textContent = 'UNIT COST: Score ' + cost.score + ' | Supplies ' + cost.bonus + ' | Gold ' + cost.gold;
+        priceLine.hidden = false;
+      }
+
+      function updateEvolveWalletLine() {
+        const eco = getEconomySnapshot();
+        const wallet = document.getElementById('evolveWallet');
+        if (wallet) {
+          wallet.textContent = 'Score ' + eco.score + ' | Supplies ' + eco.bonus + ' | Gold ' + eco.gold;
+        }
+        const quickWallet = document.getElementById('tuneQuickWallet');
+        if (quickWallet) {
+          quickWallet.textContent = 'You have: Score ' + eco.score + ' | Supplies ' + eco.bonus + ' | Gold ' + eco.gold;
+        }
+      }
+
+      function ensureEvolveState(name) {
+        if (!name) return null;
+        let state = weaponEvolveStateByName.get(name);
+        if (!state) {
+          const current = weaponStatsByName.get(name);
+          if (!current) return null;
+          state = {
+            floor: {
+              damage: round2(current.damage),
+              range: round2(current.range),
+              fireRate: round2(current.fireRate),
+              aoe: round2(current.aoe),
+              health: round2(current.health),
+            },
+            points: {
+              damage: 0,
+              range: 0,
+              fireRate: 0,
+              aoe: 0,
+              health: 0,
+            },
+            spent: {
+              score: 0,
+              bonus: 0,
+              gold: 0,
+            },
+          };
+          weaponEvolveStateByName.set(name, state);
+        }
+        return state;
+      }
+
+      function updateEvolveSpendLines() {
+        const name = getCurrentWeaponName();
+        const state = ensureEvolveState(name);
+        const tier = weaponTierByName.get(name) || 1;
+        const cost = getEvolveCostForTier(name, tier);
+        const eco = getEconomySnapshot();
+
+        const perClickEl = document.getElementById('evolvePerClickCost');
+        if (perClickEl) {
+          perClickEl.textContent = 'Each + costs Score ' + cost.score + ' | Supplies ' + cost.bonus + ' | Gold ' + cost.gold;
+        }
+        const quickCostEl = document.getElementById('tuneQuickCost');
+        if (quickCostEl) {
+          quickCostEl.textContent = 'Each + costs Score ' + cost.score + ' | Supplies ' + cost.bonus + ' | Gold ' + cost.gold;
+        }
+
+        const spentEl = document.getElementById('evolveSpentLine');
+        if (spentEl) {
+          const spent = state?.spent || { score: 0, bonus: 0, gold: 0 };
+          spentEl.textContent = 'Spent here: Score ' + spent.score + ' | Supplies ' + spent.bonus + ' | Gold ' + spent.gold;
+        }
+
+        const remainEl = document.getElementById('evolveRemainLine');
+        if (remainEl) {
+          remainEl.textContent = 'Left: Score ' + eco.score + ' | Supplies ' + eco.bonus + ' | Gold ' + eco.gold;
+        }
+
+        const quickStatusEl = document.getElementById('tuneQuickStatus');
+        if (quickStatusEl) {
+          const missing = [];
+          if (eco.score < cost.score) missing.push('Score ' + Math.max(0, cost.score - eco.score));
+          if (eco.bonus < cost.bonus) missing.push('Supplies ' + Math.max(0, cost.bonus - eco.bonus));
+          if (eco.gold < cost.gold) missing.push('Gold ' + Math.max(0, cost.gold - eco.gold));
+          if (missing.length > 0) {
+            quickStatusEl.textContent = 'Missing: ' + missing.join(' | ') + '.';
+          } else {
+            quickStatusEl.textContent = 'Ready: You can tune +1 now.';
+          }
+        }
+      }
+
+      function getTotalTunedPoints(name) {
+        const state = weaponEvolveStateByName.get(name);
+        if (!state) return 0;
+        return (state.points.damage || 0)
+          + (state.points.range || 0)
+          + (state.points.fireRate || 0)
+          + (state.points.aoe || 0)
+          + (state.points.health || 0);
+      }
+
+      function getLevelUpRequirement(name, targetTier) {
+        return scaleCostByWeaponIteration(
+          BASE_LEVEL_UP_REQUIREMENTS[targetTier] || { score: 0, bonus: 0, gold: 0, tunedPoints: 0 },
+          name,
+          targetTier
+        );
+      }
+
+      function canLevelUpWeapon(name) {
+        const tier = weaponTierByName.get(name) || 1;
+        const targetTier = tier + 1;
+        if (tier >= MAX_TIER) {
+          return {
+            ok: false,
+            targetTier,
+            requirement: getLevelUpRequirement(name, targetTier),
+            missing: ['maximum tier reached'],
+          };
+        }
+
+        const req = getLevelUpRequirement(name, targetTier);
+        const eco = getEconomySnapshot();
+        const tuned = getTotalTunedPoints(name);
+        const missing = [];
+        if (eco.score < req.score) missing.push('score ' + req.score);
+        if (eco.bonus < req.bonus) missing.push('supplies ' + req.bonus);
+        if (eco.gold < req.gold) missing.push('gold ' + req.gold);
+        if (tuned < req.tunedPoints) missing.push('tuned points ' + req.tunedPoints);
+        return {
+          ok: missing.length === 0,
+          targetTier,
+          requirement: req,
+          missing,
+        };
+      }
+
+      function triggerTierFeedback(name, newTier) {
+        const detailPanel = document.querySelector('.detail-panel');
+        detailPanel?.classList.remove('tier-flash');
+        void detailPanel?.offsetWidth;
+        detailPanel?.classList.add('tier-flash');
+        window.setTimeout(() => detailPanel?.classList.remove('tier-flash'), 470);
+        const feedback = document.getElementById('tierFeedbackText');
+        if (feedback) {
+          feedback.textContent = name + ' reached Tier ' + newTier + '!';
+        }
+      }
+
+      function refreshLevelUpConditions() {
+        const name = getCurrentWeaponName();
+        if (!name) return;
+        const check = canLevelUpWeapon(name);
+        const reqText = document.getElementById('levelUpReqText');
+        if (!reqText) return;
+
+        if ((weaponTierByName.get(name) || 1) >= MAX_TIER) {
+          reqText.textContent = 'Maximum tier reached for this weapon.';
+          return;
+        }
+
+        if (attackBlueprintMode && attackBlueprintTopTab === 'upgrades' && isTankUnit(name)) {
+          const turretCheck = canUnlockTurret(name);
+          if (getTurretMk(name) >= MAX_TURRET_MK) {
+            reqText.textContent = 'Maximum turret mark unlocked.';
+            return;
+          }
+          reqText.textContent = 'Turret unlock needs Score ' + turretCheck.requirement.score
+            + ' + Supplies ' + turretCheck.requirement.bonus
+            + (turretCheck.requirement.gold > 0 ? ' + Gold ' + turretCheck.requirement.gold : '')
+            + (turretCheck.requirement.tunedPoints > 0 ? ' + Tuned Points ' + turretCheck.requirement.tunedPoints : '') + '.';
+          return;
+        }
+
+        reqText.textContent = 'Need Score ' + check.requirement.score
+          + ' + Supplies ' + check.requirement.bonus
+          + (check.requirement.gold > 0 ? ' + Gold ' + check.requirement.gold : '')
+          + (check.requirement.tunedPoints > 0 ? ' + Tuned Points ' + check.requirement.tunedPoints : '') + '.';
+      }
+
+      function updateRowUpgradeState(name, stats) {
+        const base = weaponBaseStatsByName.get(name);
+        if (!base) return;
+        const rows = [
+          { key: 'damage', row: document.querySelector('.stat-row[data-stat-row="damage"]') },
+          { key: 'range', row: document.querySelector('.stat-row[data-stat-row="range"]') },
+          { key: 'fireRate', row: document.querySelector('.stat-row[data-stat-row="fireRate"]') },
+          { key: 'aoe', row: document.querySelector('.stat-row[data-stat-row="aoe"]') },
+          { key: 'health', row: document.querySelector('.stat-row[data-stat-row="health"]') },
+        ];
+        rows.forEach((entry) => {
+          if (!entry.row) return;
+          const upgraded = Number(stats[entry.key] || 0) > Number(base[entry.key] || 0) + 0.0001;
+          entry.row.classList.toggle('upgraded', upgraded);
+        });
+      }
+
+      function syncEvolveMinusButtons() {
+        const name = getCurrentWeaponName();
+        const state = ensureEvolveState(name);
+        document.querySelectorAll('.stat-adjust[data-stat]').forEach((holder) => {
+          const stat = holder.getAttribute('data-stat');
+          const minusBtn = holder.querySelector('button[data-adjust="minus"]');
+          if (!minusBtn) return;
+          const canLower = !!(state && stat && state.points[stat] > 0);
+          minusBtn.disabled = !canLower;
+        });
+      }
+
+      function updateEvolveUI() {
+        document.body.classList.toggle('evolve-open', evolveModeOpen);
+        const panel = document.getElementById('evolvePanel');
+        if (panel) panel.setAttribute('aria-hidden', evolveModeOpen ? 'false' : 'true');
+        const subText = document.getElementById('evolveSubText');
+        if (subText) subText.textContent = evolveModeOpen ? 'Close Tuning' : 'Tune Stat Bars';
+        const name = getCurrentWeaponName();
+        const tier = weaponTierByName.get(name) || 1;
+        const cost = getEvolveCostForTier(name, tier);
+        setEvolveHint(
+          'Each + spends Score ' + cost.score +
+          ' + Supplies ' + cost.bonus +
+          (cost.gold > 0 ? ' + Gold ' + cost.gold : '') +
+          '. You cannot go below default stats.'
+        );
+        updateEvolveWalletLine();
+        updateEvolveSpendLines();
+        syncEvolveMinusButtons();
+        refreshLevelUpConditions();
+      }
+
+      function adjustEvolveStat(statKey, direction) {
+        const name = getCurrentWeaponName();
+        if (!name || !statKey || !EVOLVE_STEP[statKey]) return;
+        const stats = weaponStatsByName.get(name);
+        const state = ensureEvolveState(name);
+        if (!stats || !state) return;
+        const previousStats = cloneStats(stats);
+
+        const tier = weaponTierByName.get(name) || 1;
+        const cost = getEvolveCostForTier(name, tier);
+        if (direction > 0) {
+          if (!spendEconomy(cost)) {
+            setEvolveHint('Need more funds. Requires Score ' + cost.score + ', Supplies ' + cost.bonus + (cost.gold > 0 ? ', Gold ' + cost.gold : '') + '.');
+            updateEvolveWalletLine();
+            updateEvolveSpendLines();
+            return;
+          }
+          state.points[statKey] += 1;
+          state.spent.score += cost.score;
+          state.spent.bonus += cost.bonus;
+          state.spent.gold += cost.gold;
+          stats[statKey] = round2(stats[statKey] + EVOLVE_STEP[statKey]);
+          setEvolveHint('Upgraded ' + statKey + '. Funds spent.');
+        } else {
+          if (state.points[statKey] <= 0) {
+            setEvolveHint('You cannot reduce below default value for ' + statKey + '.');
+            updateEvolveSpendLines();
+            return;
+          }
+          state.points[statKey] -= 1;
+          state.spent.score = Math.max(0, state.spent.score - cost.score);
+          state.spent.bonus = Math.max(0, state.spent.bonus - cost.bonus);
+          state.spent.gold = Math.max(0, state.spent.gold - cost.gold);
+          stats[statKey] = round2(Math.max(state.floor[statKey], stats[statKey] - EVOLVE_STEP[statKey]));
+          refundEconomy(cost);
+          setEvolveHint('Reduced ' + statKey + ' and refunded funds.');
+        }
+
+        stats.dps = stats.damage * stats.fireRate;
+        syncWeaponRuntimeState(name, previousStats);
+        updateWeaponDetailsFromSlide(visibleSlides()[currentIndex]);
+        updateEvolveWalletLine();
+        updateEvolveSpendLines();
+      }
+
+      function getCurrentWeaponName() {
+        const slides = visibleSlides();
+        return slides[currentIndex]?.querySelector('.slide-title')?.textContent?.trim() || null;
+      }
+
+      function getDisplayedTier(name) {
+        const unlockedTier = weaponTierByName.get(name) || 1;
+        const previewTier = weaponPreviewTierByName.get(name) || unlockedTier;
+        return clamp(previewTier, 1, MAX_TIER);
+      }
+
+      function projectStatsForTier(base, tier) {
+        const out = {
+          damage: Number(base.damage || 0),
+          range: Number(base.range || 0),
+          fireRate: Number(base.fireRate || 0),
+          aoe: Number(base.aoe || 0),
+          health: Number(base.health || 1),
+        };
+        const loops = Math.max(0, Math.floor(tier) - 1);
+        for (let i = 0; i < loops; i += 1) {
+          out.damage *= TIER_GROWTH.damage;
+          out.range *= TIER_GROWTH.range;
+          out.fireRate *= TIER_GROWTH.fireRate;
+          out.aoe *= TIER_GROWTH.aoe;
+          out.health *= TIER_GROWTH.health;
+        }
+        out.dps = out.damage * out.fireRate;
+        return out;
+      }
+
+      function projectStatsBySteps(base, steps) {
+        return projectStatsForTier(base, Math.max(1, Math.floor(steps) + 1));
+      }
+
+      function formatDelta(curr, prev) {
+        if (!Number.isFinite(curr) || !Number.isFinite(prev)) return 'BASE';
+        if (prev <= 0) {
+          if (curr <= 0.0001) return 'BASE';
+          return '+' + curr.toFixed(2);
+        }
+        const pct = ((curr - prev) / prev) * 100;
+        if (Math.abs(pct) < 0.01) return 'BASE';
+        const sign = pct >= 0 ? '+' : '';
+        return sign + pct.toFixed(1) + '%';
+      }
+
+      function updateTierSummaryText(tier, tier1Stats, prevStats, currStats) {
+        const el = document.getElementById('tierDeltaSummary');
+        if (!el) return;
+        if (tier <= 1) {
+          el.textContent = 'Tier 1 base stats.';
+          return;
+        }
+        const overall =
+          'Tier ' + tier + ' gains vs Tier 1: '
+          + 'Damage ' + formatDelta(currStats.damage, tier1Stats.damage)
+          + ', Range ' + formatDelta(currStats.range, tier1Stats.range)
+          + ', Fire Rate ' + formatDelta(currStats.fireRate, tier1Stats.fireRate)
+          + ', Area ' + formatDelta(currStats.aoe, tier1Stats.aoe)
+          + ', Health ' + formatDelta(currStats.health, tier1Stats.health) + '.';
+        if (tier >= 3) {
+          el.textContent = overall
+            + ' Step from Tier ' + (tier - 1) + ': '
+            + 'Damage ' + formatDelta(currStats.damage, prevStats.damage)
+            + ', Range ' + formatDelta(currStats.range, prevStats.range)
+            + ', Fire Rate ' + formatDelta(currStats.fireRate, prevStats.fireRate)
+            + ', Area ' + formatDelta(currStats.aoe, prevStats.aoe)
+            + ', Health ' + formatDelta(currStats.health, prevStats.health) + '.';
+          return;
+        }
+        el.textContent = overall;
+      }
+
+      function updateTurretUnlockRoadmap(name) {
+        const roadmapEl = document.getElementById('turretUnlockRoadmap');
+        if (!roadmapEl) return;
+        const isTurretUpgradeContext = attackBlueprintMode
+          && attackBlueprintTopTab === 'upgrades'
+          && String(name || '').indexOf('Tank') !== -1;
+        if (!isTurretUpgradeContext) {
+          roadmapEl.hidden = true;
+          roadmapEl.textContent = '';
+          return;
+        }
+
+        const unlockedMk = getTurretMk(name);
+        const nextMk = unlockedMk < MAX_TURRET_MK ? (unlockedMk + 1) : MAX_TURRET_MK;
+        const nextUnlockText = unlockedMk < MAX_TURRET_MK
+          ? ('Next unlock: Turret MK' + nextMk + '.')
+          : 'All turret marks unlocked.';
+
+        roadmapEl.hidden = false;
+        roadmapEl.textContent = 'Turret roadmap: MK1 -> MK2 -> MK3. Current: MK'
+          + unlockedMk + '. ' + nextUnlockText;
+      }
+
+      function updateTurretUnlockPreview(name) {
+        const previewHost = document.getElementById('turretUnlockPreview');
+        if (!previewHost) return;
+
+        const shouldShow = attackBlueprintMode && isTankUnit(name);
+        if (!shouldShow) {
+          previewHost.hidden = true;
+          previewHost.style.display = 'none';
+          return;
+        }
+
+        const unitEntry = ATTACK_SLIDES.find((entry) => entry.name === name);
+        const bodyPath = unitEntry?.assetPath || '';
+        const unlockedMk = getTurretMk(name);
+
+        Array.from(previewHost.querySelectorAll('.turret-preview-card')).forEach((card) => {
+          const mk = clamp(Number(card.getAttribute('data-turret-mk') || 1), 1, MAX_TURRET_MK);
+          const thumbEl = card.querySelector('.turret-preview-thumb');
+          const overlayEl = card.querySelector('.turret-preview-overlay');
+          const stateEl = card.querySelector('.turret-preview-state');
+
+          card.classList.remove('locked', 'unlocked', 'current', 'next');
+          if (mk < unlockedMk) {
+            card.classList.add('unlocked');
+            if (stateEl) stateEl.textContent = 'Unlocked';
+          } else if (mk === unlockedMk) {
+            card.classList.add('current');
+            if (stateEl) stateEl.textContent = 'Equipped';
+          } else if (mk === unlockedMk + 1) {
+            card.classList.add('next');
+            if (stateEl) stateEl.textContent = 'Next';
+          } else {
+            card.classList.add('locked');
+            if (stateEl) stateEl.textContent = 'Locked';
+          }
+
+          if (thumbEl && bodyPath) {
+            thumbEl.style.backgroundImage = '';
+          }
+          if (overlayEl) {
+            const turretPath = getTankTurretOverlayPath(name, bodyPath, mk);
+            overlayEl.style.backgroundImage = turretPath ? 'url("/' + turretPath + '")' : '';
+            overlayEl.style.backgroundPosition = getTankTurretFramePosition(mk);
+          }
+        });
+
+        previewHost.hidden = false;
+        previewHost.style.display = 'flex';
+      }
+
+      function updateAttackUpgradeHeaderRoadmap(name) {
+        const countEl = document.querySelector('.cat-count');
+        if (!countEl) return;
+        const isTurretUpgradeContext = attackBlueprintMode
+          && attackBlueprintTopTab === 'upgrades'
+          && String(name || '').indexOf('Tank') !== -1;
+        if (!isTurretUpgradeContext) return;
+        const unlockedMk = getTurretMk(name);
+        const nextText = unlockedMk < MAX_TURRET_MK
+          ? ('Next unlock: MK' + (unlockedMk + 1))
+          : 'All turret marks unlocked';
+        countEl.textContent = 'Turret unlocks: MK1 | MK2 | MK3. ' + nextText;
+      }
+
+      function updatePowerGrid(name, shownStats, displayedTier) {
+        const barsHost = document.getElementById('powerGridBars');
+        const metaEl = document.getElementById('powerGridMeta');
+        if (!barsHost || !metaEl || !shownStats) return;
+
+        const isTurretUpgradeContext = attackBlueprintMode
+          && attackBlueprintTopTab === 'upgrades'
+          && isTankUnit(name);
+
+        if (isTurretUpgradeContext) {
+          const currentMk = getTurretMk(name);
+          const bars = Array.from(barsHost.querySelectorAll('span'));
+          const baseBars = clamp(Math.round(((currentMk - 1) / Math.max(1, MAX_TURRET_MK - 1)) * bars.length), 0, bars.length);
+          let progressPct = 100;
+          let line = 'MK ' + currentMk + ' / ' + MAX_TURRET_MK + '  MAXED';
+
+          if (currentMk < MAX_TURRET_MK) {
+            const check = canUnlockTurret(name);
+            const req = check.requirement;
+            const eco = getEconomySnapshot();
+            const tuned = getTotalTunedPoints(name);
+            const scorePct = req.score > 0 ? clamp(eco.score / req.score, 0, 1) : 1;
+            const suppliesPct = req.bonus > 0 ? clamp(eco.bonus / req.bonus, 0, 1) : 1;
+            const goldPct = req.gold > 0 ? clamp(eco.gold / req.gold, 0, 1) : 1;
+            const tunedPct = req.tunedPoints > 0 ? clamp(tuned / req.tunedPoints, 0, 1) : 1;
+            progressPct = Math.round(Math.min(scorePct, suppliesPct, goldPct, tunedPct) * 100);
+            line = 'MK ' + currentMk + ' / ' + MAX_TURRET_MK + '  '
+              + (check.ok ? 'UNLOCK READY' : ('Progress to MK' + (currentMk + 1) + ': ' + progressPct + '%'));
+          }
+
+          const progressBars = clamp(Math.round((progressPct / 100) * (bars.length - baseBars)), 0, Math.max(0, bars.length - baseBars));
+          bars.forEach((bar, idx) => {
+            const tierFilled = idx < baseBars;
+            const progressFilled = !tierFilled && idx < (baseBars + progressBars);
+            bar.classList.toggle('live', tierFilled);
+            bar.classList.toggle('progress', progressFilled);
+            bar.classList.remove('warn', 'critical');
+          });
+
+          metaEl.textContent = line;
+          return;
+        }
+
+        const currentTier = weaponTierByName.get(name) || 1;
+        const bars = Array.from(barsHost.querySelectorAll('span'));
+        const baseBars = clamp(Math.round(((currentTier - 1) / Math.max(1, MAX_TIER - 1)) * bars.length), 0, bars.length);
+
+        let progressPct = 100;
+        let line = 'Tier ' + currentTier + ' / ' + MAX_TIER + '  MAXED';
+
+        if (currentTier < MAX_TIER) {
+          const check = canLevelUpWeapon(name);
+          const req = check.requirement;
+          const eco = getEconomySnapshot();
+          const tuned = getTotalTunedPoints(name);
+          const scorePct = req.score > 0 ? clamp(eco.score / req.score, 0, 1) : 1;
+          const suppliesPct = req.bonus > 0 ? clamp(eco.bonus / req.bonus, 0, 1) : 1;
+          const goldPct = req.gold > 0 ? clamp(eco.gold / req.gold, 0, 1) : 1;
+          const tunedPct = req.tunedPoints > 0 ? clamp(tuned / req.tunedPoints, 0, 1) : 1;
+          progressPct = Math.round(Math.min(scorePct, suppliesPct, goldPct, tunedPct) * 100);
+          line = 'Tier ' + currentTier + ' / ' + MAX_TIER + '  '
+            + (check.ok ? 'CLAIM READY' : ('Progress to Tier ' + (currentTier + 1) + ': ' + progressPct + '%'));
+        }
+
+        const progressBars = clamp(Math.round((progressPct / 100) * (bars.length - baseBars)), 0, Math.max(0, bars.length - baseBars));
+        bars.forEach((bar, idx) => {
+          const tierFilled = idx < baseBars;
+          const progressFilled = !tierFilled && idx < (baseBars + progressBars);
+          bar.classList.toggle('live', tierFilled);
+          bar.classList.toggle('progress', progressFilled);
+          bar.classList.remove('warn', 'critical');
+        });
+
+        if (displayedTier !== currentTier) {
+          line += '  (preview Tier ' + displayedTier + ')';
+        }
+        metaEl.textContent = line;
+      }
+
+      function applyTierPreviewColors(tier) {
+        const body = document.querySelector('.detail-body');
+        if (!body) return;
+        body.classList.remove('preview-tier-1', 'preview-tier-2', 'preview-tier-3');
+        body.classList.add('preview-tier-' + clamp(tier, 1, MAX_TIER));
+      }
+
+      function updateTierRibbons() {
+        const name = getCurrentWeaponName();
+        if (!name) return;
+        const isTurretUpgradeContext = attackBlueprintMode
+          && attackBlueprintTopTab === 'upgrades'
+          && isTankUnit(name);
+        const tier = weaponTierByName.get(name) || 1;
+        const displayedTier = isTurretUpgradeContext ? getTurretMk(name) : getDisplayedTier(name);
+        const unlockedProgression = isTurretUpgradeContext ? getTurretMk(name) : tier;
+        const ribbons = Array.from(document.querySelectorAll('[data-tier-ribbon]'));
+        ribbons.forEach((ribbon, i) => {
+          const idxTier = i + 1;
+          ribbon.classList.remove('active', 'locked', 'selected');
+          if (idxTier <= unlockedProgression) {
+            ribbon.classList.add('active');
+          } else {
+            ribbon.classList.add('locked');
+          }
+          if (idxTier === displayedTier) {
+            ribbon.classList.add('selected');
+          }
+        });
+
+        const labels = Array.from(document.querySelectorAll('[data-tier-label]'));
+        labels.forEach((label) => {
+          const idxTier = Number(label.getAttribute('data-tier-label') || 1);
+          label.textContent = (isTurretUpgradeContext ? 'MK ' : 'Tier ') + idxTier;
+          label.style.color = idxTier === displayedTier ? '#fff2a6' : '#8eaec6';
+        });
+      }
+
+      function updateLevelUpLabels() {
+        const name = getCurrentWeaponName();
+        if (!name) return;
+        const tier = weaponTierByName.get(name) || 1;
+        const tierText = document.getElementById('levelUpTierText');
+        const costText = document.getElementById('levelUpCostText');
+        const claimBtn = document.getElementById('levelUpClaimBtn');
+        const levelCard = document.getElementById('levelUpCard');
+        const isTurretUpgradeContext = attackBlueprintMode && attackBlueprintTopTab === 'upgrades' && isTankUnit(name);
+
+        if (isTurretUpgradeContext) {
+          const turretMk = getTurretMk(name);
+          const turretCheck = canUnlockTurret(name);
+          if (turretMk >= MAX_TURRET_MK) {
+            if (tierText) tierText.textContent = 'Maximum turret mark unlocked';
+            if (costText) costText.textContent = 'TURRET MAXED';
+            if (costText) costText.hidden = false;
+            if (claimBtn) {
+              claimBtn.hidden = true;
+              claimBtn.disabled = true;
+              claimBtn.classList.remove('ready');
+            }
+            levelCard?.classList.add('locked');
+            levelCard?.classList.remove('ready');
+            return;
+          }
+
+          if (tierText) tierText.textContent = 'Turret MK' + turretMk + ' to MK' + (turretMk + 1);
+          if (costText) {
+            const req = turretCheck.requirement;
+            costText.textContent = 'score ' + req.score + ' | supplies ' + req.bonus + (req.gold > 0 ? ' | gold ' + req.gold : '') + (req.tunedPoints > 0 ? ' | tuned ' + req.tunedPoints : '');
+            costText.hidden = false;
+          }
+          if (claimBtn) {
+            claimBtn.hidden = false;
+            claimBtn.disabled = !turretCheck.ok;
+            claimBtn.textContent = 'UNLOCK TURRET MK' + (turretMk + 1);
+            claimBtn.classList.toggle('ready', turretCheck.ok);
+          }
+          levelCard?.classList.toggle('locked', !turretCheck.ok);
+          levelCard?.classList.toggle('ready', turretCheck.ok);
+          return;
+        }
+
+        if (tier >= MAX_TIER) {
+          if (tierText) tierText.textContent = 'Maximum tier reached';
+          if (costText) costText.textContent = 'MAXED';
+          if (costText) costText.hidden = false;
+          if (claimBtn) {
+            claimBtn.hidden = true;
+            claimBtn.disabled = true;
+            claimBtn.classList.remove('ready');
+          }
+          levelCard?.classList.add('locked');
+          levelCard?.classList.remove('ready');
+          return;
+        }
+        const check = canLevelUpWeapon(name);
+        const req = check.requirement;
+        if (tierText) tierText.textContent = 'Level ' + tier + ' to ' + (tier + 1);
+        if (costText) {
+          costText.textContent = 'score ' + req.score + ' | supplies ' + req.bonus + (req.gold > 0 ? ' | gold ' + req.gold : '') + (req.tunedPoints > 0 ? ' | tuned ' + req.tunedPoints : '');
+          costText.hidden = false;
+        }
+        if (claimBtn) {
+          claimBtn.hidden = false;
+          claimBtn.disabled = !check.ok;
+          claimBtn.textContent = 'CLAIM TIER ' + (tier + 1);
+          claimBtn.classList.toggle('ready', check.ok);
+        }
+        levelCard?.classList.toggle('locked', !check.ok);
+        levelCard?.classList.toggle('ready', check.ok);
+      }
+
+      function applyWeaponUpgrade(name) {
+        const stats = weaponStatsByName.get(name);
+        if (!stats) return;
+
+        if (attackBlueprintMode && attackBlueprintTopTab === 'upgrades' && isTankUnit(name)) {
+          const turretCheck = canUnlockTurret(name);
+          if (!turretCheck.ok) {
+            setEvolveHint('Cannot unlock turret yet: need ' + turretCheck.missing.join(', ') + '.');
+            return;
+          }
+          if (!spendEconomy({
+            score: turretCheck.requirement.score,
+            bonus: turretCheck.requirement.bonus,
+            gold: turretCheck.requirement.gold,
+          })) {
+            setEvolveHint('Not enough resources for turret unlock.');
+            return;
+          }
+
+          const nextMk = getTurretMk(name) + 1;
+          weaponTurretMkByName.set(name, clamp(nextMk, 1, MAX_TURRET_MK));
+          syncWeaponRuntimeState(name, cloneStats(stats));
+
+          const feedback = document.getElementById('tierFeedbackText');
+          if (feedback) {
+            feedback.textContent = name + ' unlocked Turret MK' + clamp(nextMk, 1, MAX_TURRET_MK) + '!';
+          }
+          return;
+        }
+
+        const tier = weaponTierByName.get(name) || 1;
+        if (tier >= MAX_TIER) return;
+        const previousStats = cloneStats(stats);
+        const check = canLevelUpWeapon(name);
+        if (!check.ok) {
+          setEvolveHint('Cannot level up yet: need ' + check.missing.join(', ') + '.');
+          return;
+        }
+        if (!spendEconomy({
+          score: check.requirement.score,
+          bonus: check.requirement.bonus,
+          gold: check.requirement.gold,
+        })) {
+          setEvolveHint('Not enough resources for tier upgrade.');
+          return;
+        }
+        stats.damage *= 1.22;
+        stats.range *= 1.04;
+        stats.fireRate *= 1.06;
+        stats.dps = stats.damage * stats.fireRate;
+        stats.aoe *= 1.12;
+        stats.health *= 1.1;
+        const nextTier = tier + 1;
+        weaponTierByName.set(name, nextTier);
+        weaponPreviewTierByName.set(name, nextTier);
+        const state = ensureEvolveState(name);
+        if (state) {
+          state.floor = {
+            damage: round2(stats.damage),
+            range: round2(stats.range),
+            fireRate: round2(stats.fireRate),
+            aoe: round2(stats.aoe),
+            health: round2(stats.health),
+          };
+        }
+        syncWeaponRuntimeState(name, previousStats);
+        triggerTierFeedback(name, nextTier);
+      }
+
+      function updateWeaponDetailsFromSlide(slide) {
+        if (!slide) return;
+        const name = slide.querySelector('.slide-title')?.textContent?.trim();
+        if (!name) return;
+        if (attackBlueprintMode && currentCat === 'infantry') {
+          persistAttackBlueprintInfantrySelection(name);
+        }
+        updateUnitPriceLine(name);
+
+        const nameEl = document.querySelector('.weapon-name');
+        if (nameEl) nameEl.textContent = name;
+
+        const stats = weaponStatsByName.get(name);
+        if (!stats) return;
+
+        const currentTier = weaponTierByName.get(name) || 1;
+        const displayedTier = getDisplayedTier(name);
+        const baseStats = weaponBaseStatsByName.get(name) || stats;
+        let shownStats = null;
+        let prevStats = null;
+        if (displayedTier < currentTier) {
+          shownStats = projectStatsForTier(baseStats, displayedTier);
+          prevStats = projectStatsForTier(baseStats, Math.max(1, displayedTier - 1));
+        } else if (displayedTier === currentTier) {
+          shownStats = cloneStats(stats);
+          prevStats = displayedTier > 1
+            ? projectStatsForTier(baseStats, displayedTier - 1)
+            : projectStatsForTier(baseStats, 1);
+        } else {
+          shownStats = projectStatsBySteps(stats, displayedTier - currentTier);
+          prevStats = displayedTier - currentTier === 1
+            ? cloneStats(stats)
+            : projectStatsBySteps(stats, displayedTier - currentTier - 1);
+        }
+        const tier1Stats = projectStatsForTier(baseStats, 1);
+
+        const rows = document.querySelectorAll('.stat-row');
+        setStatRow(rows[0], shownStats.damage.toFixed(2), (shownStats.damage / 10) * 100, (tier1Stats.damage / 10) * 100, formatDelta(shownStats.damage, tier1Stats.damage));
+        setStatRow(rows[1], shownStats.range.toFixed(2), (shownStats.range / 6) * 100, (tier1Stats.range / 6) * 100, formatDelta(shownStats.range, tier1Stats.range));
+        setStatRow(rows[2], shownStats.fireRate.toFixed(2), (shownStats.fireRate / 6) * 100, (tier1Stats.fireRate / 6) * 100, formatDelta(shownStats.fireRate, tier1Stats.fireRate));
+        setStatRow(rows[3], shownStats.aoe.toFixed(2), (shownStats.aoe / 8) * 100, (tier1Stats.aoe / 8) * 100, formatDelta(shownStats.aoe, tier1Stats.aoe));
+        setStatRow(rows[4], shownStats.health.toFixed(0), (shownStats.health / 50) * 100, (tier1Stats.health / 50) * 100, formatDelta(shownStats.health, tier1Stats.health));
+        applyTierPreviewColors(displayedTier);
+        updateTierSummaryText(displayedTier, tier1Stats, prevStats, shownStats);
+        updatePowerGrid(name, shownStats, displayedTier);
+        updateRowUpgradeState(name, shownStats);
+        updateTierRibbons();
+        updateLevelUpLabels();
+        updateTurretUnlockRoadmap(name);
+        updateTurretUnlockPreview(name);
+        updateAttackUpgradeHeaderRoadmap(name);
+        updateEvolveUI();
+        if (attackBlueprintMode) {
+          applyAttackIconTuning();
+          syncAttackIconTunerUI('Editing: ' + name);
+        }
+      }
+
+      async function hydrateWeaponStatsFromGameSource() {
+        try {
+          const gameRes = await fetch('/src/game.js', { cache: 'no-store' });
+          const gameSrc = gameRes.ok ? await gameRes.text() : '';
+          let libMatch = gameSrc.match(/const WEAPON_LIBRARY = \[([\s\S]*?)\n\];/);
+          if (!libMatch) {
+            const weaponRes = await fetch('/src/systems/game-weapon-data.js', { cache: 'no-store' });
+            if (!weaponRes.ok) return;
+            const weaponSrc = await weaponRes.text();
+            libMatch = weaponSrc.match(/export const WEAPON_LIBRARY = \[([\s\S]*?)\n\];/);
+          }
+          if (!libMatch) return;
+
+          const rawBlocks = libMatch[1]
+            .split('\n  },')
+            .map((block, index, arr) => (index < arr.length - 1 ? block + '\n  }' : block))
+            .filter((block) => block.includes('name:'));
+
+          rawBlocks.forEach((block) => {
+            const name = (block.match(/name:\s*['\"]([^'\"]+)['\"]/) || [])[1];
+            if (!name) return;
+            const resolvedName = resolveBlueprintWeaponName(name);
+
+            const damage = parseFloat((block.match(/damage:\s*([0-9.]+)/) || [])[1]);
+            const fireRateMs = parseFloat((block.match(/fireRate:\s*([0-9.]+)/) || [])[1]);
+            const rangeMult = parseFloat((block.match(/range:\s*TOWER_RANGE\s*\*\s*([0-9.]+)/) || [])[1]);
+            const rangeRaw = parseFloat((block.match(/range:\s*([0-9.]+)\s*,/) || [])[1]);
+            const splashRaw = parseFloat((block.match(/splashRadius:\s*sx\(([0-9.]+)\)/) || [])[1]);
+            const splashDirect = parseFloat((block.match(/splashRadius:\s*([0-9.]+)\s*,/) || [])[1]);
+            const laneRaw = parseFloat((block.match(/laserLaneRadius:\s*sx\(([0-9.]+)\)/) || [])[1]);
+            const laneDirect = parseFloat((block.match(/laserLaneRadius:\s*([0-9.]+)\s*,/) || [])[1]);
+            const moduleIntegrity = parseFloat((block.match(/moduleIntegrity:\s*([0-9.]+)/) || [])[1]);
+
+            const range = Number.isFinite(rangeMult)
+              ? rangeMult * RANGE_DISPLAY_FACTOR
+              : Number.isFinite(rangeRaw)
+                ? rangeRaw / 60
+                : 0;
+            const fireRate = Number.isFinite(fireRateMs) && fireRateMs > 0 ? 1000 / fireRateMs : 0;
+            const dps = Number.isFinite(damage) && Number.isFinite(fireRateMs) && fireRateMs > 0
+              ? damage * (1000 / fireRateMs)
+              : 0;
+            const aoeRaw = Number.isFinite(splashRaw)
+              ? splashRaw
+              : Number.isFinite(splashDirect)
+                ? splashDirect
+                : Number.isFinite(laneRaw)
+                  ? laneRaw
+                  : Number.isFinite(laneDirect)
+                    ? laneDirect
+                    : 0;
+            const aoe = aoeRaw / 10;
+            const health = 32 + (Number.isFinite(moduleIntegrity) ? moduleIntegrity : 0);
+
+            weaponStatsByName.set(resolvedName, {
+              damage: Number.isFinite(damage) ? damage : 0,
+              range,
+              fireRate,
+              dps,
+              aoe,
+              health,
+            });
+            weaponBaseStatsByName.set(resolvedName, {
+              damage: Number.isFinite(damage) ? damage : 0,
+              range,
+              fireRate,
+              dps,
+              aoe,
+              health,
+            });
+            weaponTierByName.set(resolvedName, 1);
+            if (!weaponTurretMkByName.has(resolvedName)) {
+              weaponTurretMkByName.set(resolvedName, 1);
+            }
+          });
+        } catch (_) {
+          // Keep static fallback values if source parsing fails.
+        }
+      }
+
+      function updateSlideWidths() {
+        const vp = document.querySelector('.carousel-viewport');
+        if (!vp) return;
+        const w = vp.getBoundingClientRect().width;
+        if (!w) return;
+        document.querySelectorAll('.carousel-slide').forEach(s => {
+          s.style.width = w + 'px';
+        });
+        // re-apply current transform in px
+        const track = document.querySelector('.carousel-track');
+        if (track) track.style.transform = 'translateX(-' + (currentIndex * w) + 'px)';
+      }
+
+      function visibleSlides() {
+        return Array.from(document.querySelectorAll('.carousel-slide[data-category="' + currentCat + '"]'));
+      }
+
+      function renderDots(slides) {
+        const dotsEl = document.querySelector('.carousel-dots');
+        const posEl = document.querySelector('.carousel-pos');
+        if (!dotsEl) return;
+        dotsEl.innerHTML = '';
+        slides.forEach((_, i) => {
+          const d = document.createElement('span');
+          d.className = 'carousel-dot' + (i === currentIndex ? ' active' : '');
+          d.addEventListener('click', () => goTo(i));
+          dotsEl.appendChild(d);
+        });
+        if (posEl) posEl.textContent = slides.length ? (currentIndex + 1) + ' / ' + slides.length : '';
+      }
+
+      function goTo(idx) {
+        const slides = visibleSlides();
+        currentIndex = Math.max(0, Math.min(idx, slides.length - 1));
+        const vp = document.querySelector('.carousel-viewport');
+        const w = vp ? vp.offsetWidth : 0;
+        const track = document.querySelector('.carousel-track');
+        if (track) track.style.transform = 'translateX(-' + (currentIndex * w) + 'px)';
+        renderDots(slides);
+        const prev = document.querySelector('.carousel-prev');
+        const next = document.querySelector('.carousel-next');
+        if (prev) prev.disabled = currentIndex === 0;
+        if (next) next.disabled = currentIndex >= slides.length - 1;
+        updateWeaponDetailsFromSlide(slides[currentIndex]);
+      }
+
+      function applyFilter(cat) {
+        if (attackBlueprintMode && attackBlueprintTopTab === 'upgrades') {
+          cat = 'missile';
+        }
+        currentCat = cat;
+        currentIndex = 0;
+
+        // Show/hide slides
+        document.querySelectorAll('.carousel-slide').forEach(s => {
+          s.style.display = s.dataset.category === cat ? '' : 'none';
+        });
+
+        // Update header
+        const titleEl = document.querySelector('.cat-title');
+        const countEl = document.querySelector('.cat-count');
+        if (titleEl) {
+          if (attackBlueprintMode && attackBlueprintTopTab === 'upgrades') {
+            titleEl.textContent = 'Turret Upgrades';
+          } else {
+            titleEl.textContent = attackBlueprintMode
+              ? (ATTACK_LABELS[cat] || cat)
+              : (LABELS[cat] || cat);
+          }
+        }
+        const n = visibleSlides().length;
+        if (countEl) {
+          if (attackBlueprintMode && attackBlueprintTopTab === 'upgrades') {
+            countEl.textContent = n + ' turret unlock path' + (n !== 1 ? 's' : '') + ' in category';
+          } else {
+            if (attackBlueprintMode) {
+              if (cat === 'air') {
+                countEl.textContent = n + ' attack asset' + (n !== 1 ? 's' : '') + ' in category · Use ▶ to browse all planes';
+              } else {
+                countEl.textContent = n + ' attack asset' + (n !== 1 ? 's' : '') + ' in category · Turrets unlock in UPGRADES tab';
+              }
+            } else {
+              countEl.textContent = n + ' weapon blueprint' + (n !== 1 ? 's' : '') + ' in category';
+            }
+          }
+        }
+
+        // Reset carousel
+        const track = document.querySelector('.carousel-track');
+        if (track) track.style.transform = 'translateX(0)';
+
+        updateSlideWidths();
+        renderDots(visibleSlides());
+
+        const prev = document.querySelector('.carousel-prev');
+        const next = document.querySelector('.carousel-next');
+        if (prev) prev.disabled = true;
+        if (next) next.disabled = visibleSlides().length <= 1;
+
+        // Update rail selection
+        document.querySelectorAll('.rail-card').forEach(rc => rc.classList.remove('selected'));
+        const activeRail = document.querySelector('.rail-card[data-cat="' + cat + '"]');
+        if (activeRail) activeRail.classList.add('selected');
+
+        const slides = visibleSlides();
+        updateWeaponDetailsFromSlide(slides[currentIndex]);
+      }
+
+      document.querySelector('.carousel-prev')?.addEventListener('click', () => goTo(currentIndex - 1));
+      document.querySelector('.carousel-next')?.addEventListener('click', () => goTo(currentIndex + 1));
+
+      document.querySelectorAll('.rail-card').forEach(rc => {
+        rc.addEventListener('click', () => applyFilter(rc.dataset.cat));
+      });
+
+      document.querySelectorAll('.top-tabs .tab').forEach((tab) => {
+        tab.addEventListener('click', () => {
+          if (!attackBlueprintMode) return;
+          const tabMode = tab.dataset.attackTab || 'disabled';
+          if (tabMode === 'units' || tabMode === 'upgrades') {
+            setAttackBlueprintTopTab(tabMode);
+          }
+        });
+      });
+
+      document.querySelectorAll('.left-rail').forEach((rail) => {
+        const items = rail.querySelector('.rail-items');
+        const arrows = rail.querySelectorAll('.rail-arrow');
+        const upArrow = arrows[0];
+        const downArrow = arrows[1];
+        if (!items || !upArrow || !downArrow) return;
+
+        const syncArrowState = () => {
+          const maxScroll = Math.max(0, items.scrollHeight - items.clientHeight);
+          upArrow.style.opacity = items.scrollTop <= 1 ? '0.45' : '1';
+          downArrow.style.opacity = items.scrollTop >= maxScroll - 1 ? '0.45' : '1';
+        };
+
+        const step = () => Math.max(44, Math.round(items.clientHeight * 0.45));
+        upArrow.addEventListener('click', () => {
+          items.scrollBy({ top: -step(), behavior: 'smooth' });
+        });
+        downArrow.addEventListener('click', () => {
+          items.scrollBy({ top: step(), behavior: 'smooth' });
+        });
+
+        items.addEventListener('scroll', syncArrowState, { passive: true });
+        window.addEventListener('resize', syncArrowState);
+        syncArrowState();
+      });
+
+      document.getElementById('levelUpClaimBtn')?.addEventListener('click', () => {
+        const name = getCurrentWeaponName();
+        if (!name) return;
+        applyWeaponUpgrade(name);
+        const slides = visibleSlides();
+        updateWeaponDetailsFromSlide(slides[currentIndex]);
+      });
+
+      document.getElementById('evolveBtn')?.addEventListener('click', () => {
+        const name = getCurrentWeaponName();
+        if (!name) return;
+        ensureEvolveState(name);
+        evolveModeOpen = !evolveModeOpen;
+        updateEvolveUI();
+      });
+
+      function bindTierPreviewClickers() {
+        const clickHandler = (tier) => {
+          const name = getCurrentWeaponName();
+          if (!name) return;
+          if (attackBlueprintMode && attackBlueprintTopTab === 'upgrades' && isTankUnit(name)) {
+            return;
+          }
+          weaponPreviewTierByName.set(name, clamp(tier, 1, MAX_TIER));
+          updateWeaponDetailsFromSlide(visibleSlides()[currentIndex]);
+        };
+
+        document.querySelectorAll('[data-tier-ribbon]').forEach((ribbon) => {
+          ribbon.addEventListener('click', () => {
+            const tier = Number(ribbon.getAttribute('data-tier-ribbon') || 1);
+            clickHandler(tier);
+          });
+        });
+
+        document.querySelectorAll('[data-tier-label]').forEach((label) => {
+          label.addEventListener('click', () => {
+            const tier = Number(label.getAttribute('data-tier-label') || 1);
+            clickHandler(tier);
+          });
+        });
+      }
+
+      document.querySelectorAll('.stat-adjust[data-stat]').forEach((holder) => {
+        const stat = holder.getAttribute('data-stat');
+        holder.querySelector('button[data-adjust="plus"]')?.addEventListener('click', () => {
+          adjustEvolveStat(stat, 1);
+        });
+        holder.querySelector('button[data-adjust="minus"]')?.addEventListener('click', () => {
+          adjustEvolveStat(stat, -1);
+        });
+      });
+
+      const usingAttackPresentation = applyAttackBlueprintPresentation();
+      const hydratePromise = usingAttackPresentation
+        ? Promise.resolve()
+        : hydrateWeaponStatsFromGameSource();
+
+      hydratePromise.finally(() => {
+        setupStandaloneCloseButton();
+        restoreRuntimeWeaponStates();
+        bindTierPreviewClickers();
+        applyFilter('burst');
+      });
+
+      // Re-measure after fonts + layout settle
+      requestAnimationFrame(() => requestAnimationFrame(updateSlideWidths));
+      const ro = new ResizeObserver(updateSlideWidths);
+      const vp = document.querySelector('.carousel-viewport');
+      if (vp) ro.observe(vp);
+    })();
+  </script>
+</body>
+</html>

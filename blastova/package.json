@@ -1,0 +1,10 @@
+{
+  "name": "blastova-local",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Local Node-only static server for Blastova",
+  "scripts": {
+    "start": "node node-static-server.js",
+    "dev": "node node-static-server.js"
+  }
+}

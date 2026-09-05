@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Blastova — The Last Wave</title>
+  <meta name="description" content="Tactical tower defense battleground. Stand against fractured front lines, absorb armored assaults, and outlast a battlefield that keeps tightening around your last defense." />
+    <link rel="icon" type="image/x-icon" href="game/icons/icon.ico" />
+    <link rel="icon" type="image/svg+xml" href="game/icons/icon.svg" />
+    <link rel="apple-touch-icon" href="game/icons/icon-256.png" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="preload" href="assets/fonts/BlackOpsOne.ttf" as="font" type="font/ttf" crossorigin>
+  <style>
+    @font-face { font-family:'BlackOpsOne'; src:url('assets/fonts/BlackOpsOne.ttf') format('truetype'); font-display:block; }
+    @keyframes blastova-pulse { 0%,100%{opacity:1} 50%{opacity:0.55} }
+    @keyframes blastova-tank-move { from{transform:translateY(-50%) translateX(-100px)} to{transform:translateY(-50%) translateX(800px)} }
+    #app-splash-title { font-size:clamp(22px,5vw,42px); text-shadow:0 0 8px #cc4400,0 0 18px #aa2200; will-change:opacity; }
+  </style>
+  <style>
+    .platforms { display: inline-flex; align-items: center; gap: 10px; margin-top: 14px; }
+    .platform-btn { width: 46px; height: 46px; display: inline-flex; align-items: center; justify-content: center; border-radius: 14px; border: 1px solid rgba(143,220,255,0.18); background: linear-gradient(180deg, rgba(22,28,38,0.92), rgba(10,14,20,0.92)); text-decoration: none; color: #eaf5ff; transition: transform 140ms ease, border-color 140ms ease; }
+    .platform-btn:hover { transform: translateY(-2px); border-color: rgba(143,220,255,0.36); }
+    .platform-btn svg { width: 22px; height: 22px; fill: currentColor; display: block; }
+    .platform-btn.win { color: #78d6ff; }
+    .platform-btn.and { color: #9ff96b; }
+    .platform-btn.mac { color: #f3f6ff; }
+    .platform-btn.lnx { color: #ffd37a; }
+    .platform-btn.ios { color: #8db8ff; opacity: 0.42; pointer-events: none; }
+    @media (max-width: 640px) {
+      .platform-btn { width: 38px; height: 38px; border-radius: 10px; }
+      .platform-btn svg { width: 18px; height: 18px; }
+    }
+    @keyframes orientation-scan { 0%,100% { opacity:.45; transform:scaleX(.82); } 50% { opacity:1; transform:scaleX(1); } }
+    @keyframes orientation-rotate { 0%,20% { transform:rotate(0deg); } 55%,100% { transform:rotate(90deg); } }
+    #portrait-orientation-gate { display:none; }
+    @media (orientation: portrait) {
+      #portrait-orientation-gate {
+        position:fixed; inset:0; z-index:100000;
+        display:flex; flex-direction:column; align-items:center; justify-content:center;
+        gap:18px; padding:32px 24px; text-align:center; overflow:hidden;
+        color:#fff; letter-spacing:1px;
+        font-family:"Teko Local","Teko",monospace;
+        background-color:#070d14;
+        background-image:linear-gradient(rgba(5,10,20,.28),rgba(5,10,20,.28)),linear-gradient(rgba(18,30,49,.3) 1px,transparent 1px),linear-gradient(90deg,rgba(18,30,49,.3) 1px,transparent 1px);
+        background-size:auto,30px 30px,30px 30px;
+        background-position:center,0 0,0 0;
+      }
+      #portrait-orientation-gate::before { content:""; position:absolute; inset:12px; border:1px solid rgba(0,162,255,.28); clip-path:polygon(2% 0,98% 0,100% 2%,100% 98%,98% 100%,2% 100%,0 98%,0 2%); }
+      .orientation-device { position:relative; display:flex; align-items:center; justify-content:center; width:190px; height:116px; }
+      .orientation-phone { position:absolute; width:42px; height:76px; border:2px solid #3df4ff; border-radius:2px; background:#1c242c; box-shadow:0 0 14px rgba(0,162,255,.35); animation:orientation-rotate 2.8s ease-in-out infinite alternate; }
+      .orientation-phone::before { content:""; position:absolute; left:7px; right:7px; top:7px; bottom:7px; border:1px solid rgba(61,244,255,.45); background:repeating-linear-gradient(0deg,transparent 0 7px,rgba(61,244,255,.14) 8px); }
+      .orientation-target { position:absolute; width:84px; height:48px; border:2px solid #d4af37; border-radius:2px; background:#1c242c; box-shadow:0 0 16px rgba(212,175,55,.3); opacity:.9; clip-path:polygon(8% 0,92% 0,100% 12%,100% 88%,92% 100%,8% 100%,0 88%,0 12%); }
+      .orientation-target::before { content:""; position:absolute; inset:8px; border:1px solid rgba(212,175,55,.55); }
+      .orientation-title { margin:0; font-family:"Black Ops One Local","BlackOpsOne",monospace; font-size:clamp(24px,8vw,38px); letter-spacing:2px; text-shadow:0 0 8px rgba(255,255,255,.2); }
+      body > iframe,
+      body > #app-splash,
+      body > .hero-shell { visibility:hidden; }
+    }
+  </style>
+</head>
+<body>
+  <div id="portrait-orientation-gate" aria-live="polite">
+    <div class="orientation-device" aria-hidden="true"><div class="orientation-phone"></div><div class="orientation-target"></div></div>
+    <h1 class="orientation-title">ROTATE DEVICE</h1>
+  </div>
+  <!-- Actual Phaser game running W1W1 in attract mode as fullscreen background -->
+  <iframe
+    src="game/index.html?landingAttract=1"
+    style="position:fixed;inset:0;width:100%;height:100%;border:none;pointer-events:auto;z-index:0;"
+    title="Blastova gameplay"
+    onload=""
+  ></iframe>
+
+  <div id="app-splash" style="position:fixed;inset:0;z-index:9999;background:#000;display:flex;align-items:center;justify-content:center;transition:opacity 0.5s ease;">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:2px;width:90vw;max-width:600px;">
+      <div id="app-splash-title" style="font-family:'BlackOpsOne',sans-serif;font-weight:bold;letter-spacing:4px;color:#ff7a20;text-transform:uppercase;animation:blastova-pulse 1.6s ease-in-out infinite;white-space:nowrap;">Blastova: The Last Wave</div>
+      <div id="app-splash-track" style="position:relative;width:100%;height:110px;overflow:hidden;-webkit-mask-image:linear-gradient(to right,transparent 0%,black 10%,black 90%,transparent 100%);mask-image:linear-gradient(to right,transparent 0%,black 10%,black 90%,transparent 100%);">
+        <div id="app-splash-tank" style="position:absolute;top:50%;left:0;width:52px;height:52px;background:transparent;will-change:transform;transform:translateY(-50%) translateX(-100px);">
+          <img src="assets/splash/body_tracks.gif" decoding="async" style="position:absolute;inset:0;width:52px;height:52px;transform:rotate(90deg);" />
+          <div id="asl-turrets" style="position:absolute;inset:0;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+  (function(){
+    var BASE='assets/splash/';
+    var TURRETS=['turret_01_mk1.gif','turret_01_mk2.gif','turret_01_mk3.gif','turret_01_mk4.gif','turret_02_mk1.gif','turret_02_mk2.gif','turret_02_mk3.gif','turret_02_mk4.gif'];
+    var turretEl=document.getElementById('asl-turrets');
+    var turretImg=document.createElement('img');
+    turretImg.decoding='async';
+    turretImg.style.cssText='position:absolute;inset:0;width:52px;height:52px;transform:rotate(90deg);';
+    turretEl.appendChild(turretImg);
+    var cur=-1;
+    function setT(i){if(i===cur)return;cur=i;turretImg.src=BASE+TURRETS[i];}
+    var next=new Image();next.src=BASE+TURRETS[0];
+    var tank=document.getElementById('app-splash-tank');
+    var track=document.getElementById('app-splash-track');
+    var shownAt=Date.now();
+    var trackW=track?track.offsetWidth:600;
+    var styleTag=document.createElement('style');document.head.appendChild(styleTag);
+    function applyAnim(){
+      var dist=trackW+200;
+      var dur=dist/96;
+      styleTag.textContent='@keyframes btm{from{transform:translateY(-50%) translateX(-100px)}to{transform:translateY(-50%) translateX('+(trackW+100)+'px)}}';
+      tank.style.animation='btm '+dur.toFixed(2)+'s linear infinite';
+      tank.style.animationDelay='-'+(dur*0.15).toFixed(2)+'s';
+      return dur;
+    }
+    var dur=applyAnim();
+    setT(Math.min(7,Math.floor(0.15*8)));
+    var timer=setInterval(function(){setT((cur+1)%8);},(dur*1000)/8);
+    window.addEventListener('message',function(e){if(e.data==='blastova-game-ready')window.__dismissSplash&&window.__dismissSplash();});
+    window.__dismissSplash=function(){
+      clearInterval(timer);
+      var s=document.getElementById('app-splash');
+      if(!s)return;
+      var delay=Math.max(0,700-(Date.now()-shownAt));
+      setTimeout(function(){s.style.opacity='0';setTimeout(function(){s&&s.remove();},520);},delay);
+    };
+    setTimeout(function(){window.__dismissSplash&&window.__dismissSplash();},3200);
+  })();
+  </script>
+
+  <div class="hero-shell" style="pointer-events:none;">
+    <section class="hero" style="background:none;pointer-events:none;">
+      <div class="hero-overlay" style="pointer-events:none;"></div>
+
+      <div class="hero-content" style="pointer-events:auto;">
+        <h1>BLASTOVA</h1>
+        <p class="subtitle">The Last Wave</p>
+        <p class="summary">Stand against fractured front lines, absorb armored assaults, and outlast a battlefield that keeps tightening around your last defense.</p>
+        <div class="cta-row">
+          <a class="btn" href="https://blastova-frontend-production.up.railway.app/" target="_blank" rel="noopener">Play Now</a>
+        </div>
+        <p class="meta">Play instantly in browser or download.</p>
+        <div class="platforms">
+          <a class="platform-btn win" href="https://github.com/KodeKenobi/blastova-website/releases/download/v1.0.0/Blastova.Setup.1.0.0.exe" title="Download for Windows">
+            <svg viewBox="0 0 24 24"><path d="M3 4.2 10.4 3v8H3zm8.5-1.35L21 1.3v9.7h-9.5zM3 12.2h7.4v8L3 19.1zm8.5 0H21v10.5L11.5 21z"/></svg>
+          </a>
+          <a class="platform-btn and" href="https://github.com/KodeKenobi/blastova-website/releases/download/v1.0.0/app-release.apk" title="Download for Android">
+            <svg viewBox="0 0 24 24"><path d="M8.05 6.15 6.9 4.18a.48.48 0 1 1 .83-.48l1.2 2.08A6.8 6.8 0 0 1 12 5.1c1.1 0 2.14.25 3.07.68l1.2-2.08a.48.48 0 1 1 .83.48l-1.14 1.97A5.46 5.46 0 0 1 18.7 10H5.3c.18-1.63 1.18-3.02 2.75-3.85ZM9.2 8.35a.65.65 0 1 0 0-1.3.65.65 0 0 0 0 1.3Zm5.6 0a.65.65 0 1 0 0-1.3.65.65 0 0 0 0 1.3ZM6.4 10.9h11.2v6.33c0 .95-.77 1.72-1.72 1.72h-.73v2.18a.93.93 0 0 1-1.86 0v-2.18h-2.58v2.18a.93.93 0 1 1-1.86 0v-2.18h-.73a1.72 1.72 0 0 1-1.72-1.72z"/></svg>
+          </a>
+          <a class="platform-btn mac" href="https://github.com/KodeKenobi/blastova-website/releases/download/v1.0.0/Blastova-1.0.0-arm64.dmg" title="Download for macOS">
+            <svg viewBox="0 0 24 24"><path d="M15.35 2.2c0 .82-.28 1.62-.84 2.3-.64.8-1.7 1.42-2.62 1.34-.12-.9.28-1.8.82-2.43.62-.74 1.67-1.27 2.64-1.21ZM19.05 17.35c-.47 1.03-.69 1.48-1.28 2.37-.82 1.27-1.99 2.86-3.42 2.87-1.27.01-1.6-.81-3.32-.8-1.72.01-2.08.82-3.35.8-1.43-.01-2.54-1.45-3.36-2.72-2.3-3.55-2.54-7.72-1.13-9.88.99-1.53 2.55-2.43 4.02-2.43 1.5 0 2.45.83 3.69.83 1.2 0 1.93-.83 3.67-.83 1.31 0 2.7.71 3.69 1.94-3.23 1.77-2.71 6.39 1.09 7.85Z"/></svg>
+          </a>
+          <a class="platform-btn lnx" href="https://github.com/KodeKenobi/blastova-website/releases/download/v1.0.0/Blastova-1.0.0-arm64.AppImage" title="Download for Linux">
+            <img src="assets/linux-icon.svg" alt="Linux" style="width: 22px; height: 22px; display: block;" />
+          </a>
+        </div>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

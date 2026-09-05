@@ -1,0 +1,522 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ActiveDesk | License Key Ready</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Montserrat:wght@400;500;600;700&family=Lato:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="site.css" />
+    <style>
+      body {
+        background: linear-gradient(135deg, #fff9f1 0%, var(--cream) 48%, #f4ebde 100%);
+      }
+
+      .success-shell {
+        width: calc(100% - 24px);
+        margin: 0 auto;
+        padding: 64px 12px;
+        max-width: 800px;
+      }
+
+      .success-card {
+        background: rgba(255, 249, 241, 0.95);
+        border: 1px solid var(--line);
+        border-radius: 28px;
+        padding: 48px;
+        text-align: center;
+      }
+
+      .success-icon {
+        font-size: 4rem;
+        margin-bottom: 24px;
+      }
+
+      .success-heading {
+        font-family: "Fraunces", serif;
+        font-size: clamp(2rem, 5vw, 3rem);
+        font-weight: 700;
+        color: var(--ink);
+        margin: 0 0 16px;
+      }
+
+      .success-text {
+        font-family: "Montserrat", sans-serif;
+        font-size: 1.1rem;
+        color: var(--ink-soft);
+        margin: 0 0 40px;
+        line-height: 1.6;
+      }
+
+      .license-display {
+        background: linear-gradient(135deg, rgba(63, 131, 255, 0.08), rgba(155, 224, 207, 0.08));
+        border: 1px solid rgba(63, 131, 255, 0.3);
+        border-radius: 16px;
+        padding: 24px;
+        margin-bottom: 32px;
+      }
+
+      .license-summary {
+        font-family: "Montserrat", sans-serif;
+        color: var(--ink);
+        margin: 0 0 18px;
+        line-height: 1.6;
+      }
+
+      .license-grid {
+        display: grid;
+        gap: 16px;
+        text-align: left;
+      }
+
+      .license-card {
+        background: rgba(255, 255, 255, 0.72);
+        border: 1px solid rgba(63, 131, 255, 0.24);
+        border-radius: 16px;
+        padding: 20px;
+      }
+
+      .license-card-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: center;
+        flex-wrap: wrap;
+        margin-bottom: 10px;
+      }
+
+      .license-plan {
+        font-family: "Fraunces", serif;
+        font-size: 1.15rem;
+        color: var(--ink);
+        margin: 0;
+      }
+
+      .license-status {
+        border-radius: 999px;
+        padding: 6px 12px;
+        font-family: "Montserrat", sans-serif;
+        font-size: 0.78rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+
+      .license-status.active {
+        background: rgba(16, 185, 129, 0.12);
+        color: #047857;
+      }
+
+      .license-status.expired {
+        background: rgba(220, 38, 38, 0.12);
+        color: #b91c1c;
+      }
+
+      .license-meta {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 10px 16px;
+        margin: 16px 0;
+      }
+
+      .meta-label {
+        display: block;
+        font-family: "Montserrat", sans-serif;
+        font-size: 0.76rem;
+        font-weight: 700;
+        color: var(--ink-soft);
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        margin-bottom: 4px;
+      }
+
+      .meta-value {
+        font-family: "Lato", sans-serif;
+        color: var(--ink);
+      }
+
+      .license-label {
+        font-family: "Lato", sans-serif;
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--ink-soft);
+        margin-bottom: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .license-key {
+        font-family: "Lato", sans-serif;
+        font-size: 1.1rem;
+        font-weight: 500;
+        color: var(--blue);
+        word-break: break-all;
+        line-height: 1.8;
+        margin: 0 0 16px;
+        min-height: 60px;
+      }
+
+      .button-group {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      .btn {
+        padding: 12px 28px;
+        font-family: "Lato", sans-serif;
+        font-weight: 700;
+        font-size: 1rem;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-decoration: none;
+        display: inline-block;
+      }
+
+      .btn-primary {
+        background: var(--ink);
+        color: #fff;
+      }
+
+      .btn-primary:hover {
+        background: var(--ink-soft);
+        transform: translateY(-2px);
+      }
+
+      .btn-secondary {
+        background: rgba(63, 131, 255, 0.12);
+        color: var(--blue);
+        border: 1px solid var(--blue);
+      }
+
+      .btn-secondary:hover {
+        background: rgba(63, 131, 255, 0.2);
+      }
+
+      .loading {
+        text-align: center;
+      }
+
+      .spinner {
+        display: inline-block;
+        width: 40px;
+        height: 40px;
+        border: 3px solid rgba(16, 32, 51, 0.1);
+        border-top-color: var(--blue);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-bottom: 20px;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .error-message {
+        background: rgba(220, 38, 38, 0.1);
+        border: 1px solid rgba(220, 38, 38, 0.3);
+        border-radius: 12px;
+        padding: 16px;
+        color: #dc2626;
+        font-family: "Montserrat", sans-serif;
+        margin-bottom: 24px;
+      }
+
+      .next-steps {
+        text-align: left;
+        background: rgba(250, 250, 250, 0.5);
+        border-radius: 12px;
+        padding: 24px;
+        margin-top: 32px;
+      }
+
+      .next-steps h3 {
+        font-family: "Fraunces", serif;
+        font-size: 1.2rem;
+        margin: 0 0 16px;
+      }
+
+      .next-steps ol {
+        font-family: "Montserrat", sans-serif;
+        margin: 0;
+        padding-left: 24px;
+      }
+
+      .next-steps li {
+        margin-bottom: 12px;
+        line-height: 1.6;
+      }
+
+      .toast {
+        position: fixed;
+        right: 16px;
+        bottom: 16px;
+        max-width: 340px;
+        padding: 14px 16px;
+        border-radius: 14px;
+        box-shadow: var(--shadow);
+        font-family: "Montserrat", sans-serif;
+        font-size: 0.95rem;
+        line-height: 1.5;
+        color: #fff;
+        background: var(--ink);
+        opacity: 0;
+        transform: translateY(10px);
+        pointer-events: none;
+        transition: opacity 0.2s ease, transform 0.2s ease;
+      }
+
+      .toast.show {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .toast.success {
+        background: #0f766e;
+      }
+
+      .toast.error {
+        background: #b91c1c;
+      }
+
+      @media (max-width: 640px) {
+        .success-shell {
+          padding: 32px 12px;
+        }
+
+        .success-card {
+          padding: 32px 20px;
+        }
+
+        .button-group {
+          flex-direction: column;
+        }
+
+        .btn {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="success-shell">
+      <div class="success-card">
+        <div id="content">
+          <div class="loading">
+            <div class="spinner"></div>
+            <p style="font-family: Montserrat, sans-serif; color: var(--ink-soft)">
+              Preparing your license key...
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+      const SUPABASE_URL = "https://nibzfmjwisfdmwublvyu.supabase.co";
+      const SUPABASE_ANON_KEY = "sb_publishable_Cq5ljxAxHRZOJU4wiGc07g_6vrFU0lA";
+      const DOWNLOADS = {
+        mac: "https://github.com/KodeKenobi/ActiveDesk/releases/download/v1.0.5/ActiveDesk-1.0.5-arm64.dmg",
+        win: "https://github.com/KodeKenobi/ActiveDesk/releases/download/v1.0.5/ActiveDesk.Setup.1.0.5.exe",
+      };
+
+      const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      const toast = document.getElementById("toast");
+      let toastTimer = null;
+
+      function showToast(message, type = "success") {
+        if (toastTimer) clearTimeout(toastTimer);
+        toast.textContent = message;
+        toast.className = `toast ${type} show`;
+        toastTimer = setTimeout(() => {
+          toast.className = `toast ${type}`;
+        }, 2400);
+      }
+
+      function normalizePlan(plan) {
+        if (plan === "weekly") return "1 Week";
+        if (plan === "monthly") return "1 Month";
+        if (plan === "lifetime") return "Lifetime";
+        return plan || "Unknown";
+      }
+
+      function formatDate(value) {
+        if (!value) return "Forever";
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) return "-";
+        return date.toLocaleString();
+      }
+
+      function classifyLicense(license) {
+        const expiry = license.expires_at ? Date.parse(license.expires_at) : null;
+        const expired = Number.isFinite(expiry) && expiry < Date.now();
+        return {
+          expired,
+          label: expired ? "Expired" : "Active",
+        };
+      }
+
+      async function lookupPayment(email, plan) {
+        const { data, error } = await supabase
+          .from("payments")
+          .select("status, created_at")
+          .eq("email", email)
+          .eq("plan", plan)
+          .order("created_at", { ascending: false })
+          .limit(1);
+
+        if (error) {
+          console.error("Payment lookup error:", error);
+          return null;
+        }
+
+        return Array.isArray(data) ? data[0] || null : null;
+      }
+
+      async function init() {
+        try {
+          const params = new URLSearchParams(window.location.search);
+          const email = params.get("email");
+          const plan = params.get("plan");
+
+          if (!email || !plan) {
+            showError("Missing email or plan information. Please try again.");
+            return;
+          }
+
+          // Check if a paid license already exists for this email and plan.
+          const { data: existing, error: existError } = await supabase
+            .from("licenses")
+            .select("license_key, plan, issued_at, expires_at")
+            .eq("email", email)
+            .eq("plan", plan)
+            .order("issued_at", { ascending: false })
+            .limit(5);
+
+          if (existError) {
+            console.error("Lookup error:", existError);
+            showError("Could not confirm your payment yet. Please try again in a minute.");
+            return;
+          }
+
+          if (!existing || existing.length === 0) {
+            const payment = await lookupPayment(email, plan);
+            if (payment?.status === "completed") {
+              showError("We found your completed payment, but the license is still being prepared. Please refresh in a minute.");
+              return;
+            }
+
+            if (payment?.status === "pending") {
+              showError("Your payment is still pending. Finish the payment first, then this page will be able to show your license.");
+              return;
+            }
+
+            showError("No paid license was found for this email and plan yet. Please wait a minute and refresh.");
+            return;
+          }
+
+          showSuccess(email, plan, existing);
+        } catch (error) {
+          console.error("Error:", error);
+          showError("An unexpected error occurred. Please contact support.");
+        }
+      }
+
+      function showSuccess(email, plan, licenses) {
+        const content = document.getElementById("content");
+        const cards = licenses
+          .map((license) => {
+            const ui = classifyLicense(license);
+            return `
+              <section class="license-card">
+                <div class="license-card-head">
+                  <h2 class="license-plan">${normalizePlan(license.plan)}</h2>
+                  <span class="license-status ${ui.expired ? "expired" : "active"}">${ui.label}</span>
+                </div>
+                <div class="license-label">Your License Key</div>
+                <p class="license-key">${license.license_key}</p>
+                <div class="license-meta">
+                  <div>
+                    <span class="meta-label">Status</span>
+                    <span class="meta-value">${ui.label}</span>
+                  </div>
+                  <div>
+                    <span class="meta-label">Valid Until</span>
+                    <span class="meta-value">${formatDate(license.expires_at)}</span>
+                  </div>
+                  <div>
+                    <span class="meta-label">Issued</span>
+                    <span class="meta-value">${formatDate(license.issued_at)}</span>
+                  </div>
+                </div>
+                <button class="btn btn-secondary" onclick="copyToClipboard('${license.license_key.replace(/'/g, "\\'")}')">Copy Key</button>
+              </section>
+            `;
+          })
+          .join("");
+
+        content.innerHTML = `
+          <div class="success-icon">✓</div>
+          <h1 class="success-heading">License Ready!</h1>
+          <p class="success-text">We found your ${capitalize(plan)} purchase for ${email}. Copy the key below and paste it into the ActiveDesk app.</p>
+
+          <div class="license-display">
+            <p class="license-summary">If you change machines later, come back with the same purchase email and recover the same license again.</p>
+            <div class="license-grid">${cards}</div>
+          </div>
+
+          <div class="button-group">
+            <a href="${DOWNLOADS.mac}" class="btn btn-primary">Download for macOS</a>
+            <a href="${DOWNLOADS.win}" class="btn btn-secondary">Download for Windows</a>
+          </div>
+
+          <div class="next-steps">
+            <h3>Next Steps</h3>
+            <ol>
+              <li><strong>Copy</strong> the license key you want to use</li>
+              <li><strong>Download</strong> ActiveDesk for Mac or Windows</li>
+              <li><strong>Open</strong> the app</li>
+              <li><strong>Paste</strong> your license key in the License section</li>
+              <li><strong>Click Activate</strong> and start using</li>
+            </ol>
+          </div>
+        `;
+      }
+
+      function showError(message) {
+        const content = document.getElementById("content");
+        content.innerHTML = `
+          <div class="success-heading">Something went wrong</div>
+          <div class="error-message">${message}</div>
+          <a href="/" class="btn btn-primary">Back to Home</a>
+        `;
+      }
+
+      function capitalize(str) {
+        return str.charAt(0).toUpperCase() + str.slice(1);
+      }
+
+      function copyToClipboard(text) {
+        navigator.clipboard.writeText(text).then(() => {
+          showToast("License key copied. Paste it into the app and click Activate.", "success");
+        }).catch(() => {
+          showToast("Copy failed. Select the key manually and paste it into the app.", "error");
+        });
+      }
+
+      // Initialize
+      init();
+    </script>
+  </body>
+</html>

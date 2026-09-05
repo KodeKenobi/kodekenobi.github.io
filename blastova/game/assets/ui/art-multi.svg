@@ -1,0 +1,132 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 180">
+  <defs>
+    <radialGradient id="burst" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#c050ff" stop-opacity="0.85"/>
+      <stop offset="60%" stop-color="#7820d0" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#4010a0" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="bursthard" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#e090ff" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#8030d0" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="defender" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1e3248"/>
+      <stop offset="100%" stop-color="#0d1e30"/>
+    </linearGradient>
+    <linearGradient id="attacker" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#3a1828"/>
+      <stop offset="100%" stop-color="#200e18"/>
+    </linearGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="bigglow" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="8" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <style>
+    #bs { animation: bpulse 2.1s ease-in-out infinite; transform-box:fill-box; transform-origin:center; }
+    #bh { animation: bpulse 2.1s .35s ease-in-out infinite; transform-box:fill-box; transform-origin:center; }
+    @keyframes bpulse { 0%,100%{transform:scale(1);opacity:.5} 50%{transform:scale(1.2);opacity:.88} }
+    #btl,#bml { animation: bflick 2.6s ease-in-out infinite; }
+    #btr,#bmr { animation: bflick 2.6s 1.3s ease-in-out infinite; }
+    @keyframes bflick { 0%,40%,100%{opacity:.85} 46%{opacity:.08} 52%{opacity:.92} 58%{opacity:.3} 64%{opacity:.85} }
+    #vst { animation: vglow 2.2s ease-in-out infinite; }
+    @keyframes vglow { 0%,100%{opacity:.95} 50%{opacity:1} }
+    #p1,#p3,#p5,#p7 { animation: pdrift 3s ease-in-out infinite; }
+    #p2,#p4,#p6,#p8 { animation: pdrift 3s 1.5s ease-in-out infinite; }
+    @keyframes pdrift { 0%,100%{transform:translateY(0) scale(1);opacity:.85} 50%{transform:translateY(-8px) scale(1.5);opacity:.25} }
+    #dv { animation: visor 2.5s ease-in-out infinite; }
+    #av { animation: visor 2.5s 1.25s ease-in-out infinite; }
+    @keyframes visor { 0%,100%{opacity:.85} 50%{opacity:1} }
+  </style>
+
+  <!-- Ground shadows -->
+  <ellipse cx="68"  cy="172" rx="45" ry="6" fill="#000" opacity="0.45"/>
+  <ellipse cx="252" cy="172" rx="45" ry="6" fill="#000" opacity="0.45"/>
+
+  <!-- Central energy burst -->
+  <circle id="bs" cx="160" cy="88" r="50" fill="url(#burst)"/>
+  <circle id="bh" cx="160" cy="88" r="22" fill="url(#bursthard)" opacity="0.6"/>
+  <circle cx="160" cy="88" r="10" fill="#e8a0ff" opacity="0.9" filter="url(#bigglow)"/>
+
+  <!-- Energy lightning spikes radiating out -->
+  <path id="btl" d="M160 88 L120 44 L128 62 L96 28"  stroke="#d070ff" stroke-width="2"   fill="none" opacity="0.85" filter="url(#glow)"/>
+  <path id="btr" d="M160 88 L200 44 L192 62 L224 28" stroke="#d070ff" stroke-width="2"   fill="none" opacity="0.85" filter="url(#glow)"/>
+  <path id="bml" d="M160 88 L110 72 L126 76 L80  64" stroke="#a040e0" stroke-width="1.5" fill="none" opacity="0.7"  filter="url(#glow)"/>
+  <path id="bmr" d="M160 88 L210 72 L194 76 L240 64" stroke="#a040e0" stroke-width="1.5" fill="none" opacity="0.7"  filter="url(#glow)"/>
+  <path d="M160 88 L118 108 L132 104 L94 118" stroke="#9030c8" stroke-width="1.2" fill="none" opacity="0.55"/>
+  <path d="M160 88 L202 108 L188 104 L226 118" stroke="#9030c8" stroke-width="1.2" fill="none" opacity="0.55"/>
+
+  <!-- ── LEFT UNIT (DEFENDER — cyan) ── -->
+  <!-- Legs -->
+  <rect x="44" y="140" width="12" height="28" rx="3" fill="#0e1c2c"/>
+  <rect x="62" y="140" width="12" height="28" rx="3" fill="#0e1c2c"/>
+  <!-- Body -->
+  <rect x="36" y="92" width="58" height="52" rx="6" fill="url(#defender)" stroke="#2a3e52" stroke-width="1.5"/>
+  <!-- Chest plate -->
+  <rect x="44" y="100" width="42" height="28" rx="3" fill="#0a1828" stroke="#1e3040" stroke-width="1"/>
+  <rect x="44" y="100" width="42" height="10" rx="2" fill="#00a0cc" opacity="0.2"/>
+  <!-- Chest glow strip -->
+  <rect x="44" y="108" width="42" height="3" rx="1" fill="#00c4e8" opacity="0.6" filter="url(#glow)"/>
+  <!-- Head -->
+  <rect x="44" y="62" width="42" height="34" rx="5" fill="#1a2e42" stroke="#2a3e54" stroke-width="1.5"/>
+  <!-- Visor -->
+  <rect id="dv" x="49" y="72" width="32" height="10" rx="3" fill="#00b8e8" opacity="0.85" filter="url(#glow)"/>
+  <line x1="65" y1="72" x2="65" y2="82" stroke="#00e8ff" stroke-width="1" opacity="0.6"/>
+  <!-- Head antenna -->
+  <line x1="65" y1="62" x2="65" y2="50" stroke="#2a3e54" stroke-width="2"/>
+  <circle cx="65" cy="48" r="4" fill="#00b8e8" opacity="0.9" filter="url(#glow)"/>
+  <!-- Right arm / weapon -->
+  <rect x="92" y="98" width="28" height="14" rx="4" fill="#0e1c2c" stroke="#1e3040" stroke-width="1"/>
+  <rect x="116" y="96" width="14" height="18" rx="3" fill="#09141e"/>
+  <rect x="116" y="96" width="14" height="18" rx="3" fill="none" stroke="#00b4e0" stroke-width="1" opacity="0.7" filter="url(#glow)"/>
+  <!-- Left arm -->
+  <rect x="8"  y="98" width="30" height="12" rx="4" fill="#0e1c2c" stroke="#1e3040" stroke-width="1"/>
+  <!-- Shield on left arm -->
+  <path d="M8 96 Q2 103 8 116 Q4 106 8 96z" fill="none" stroke="#00c4e8" stroke-width="2" opacity="0.6"/>
+
+  <!-- ── RIGHT UNIT (ATTACKER — red) ── -->
+  <!-- Legs -->
+  <rect x="246" y="140" width="12" height="28" rx="3" fill="#200a10"/>
+  <rect x="264" y="140" width="12" height="28" rx="3" fill="#200a10"/>
+  <!-- Body -->
+  <rect x="226" y="92" width="58" height="52" rx="6" fill="url(#attacker)" stroke="#501828" stroke-width="1.5"/>
+  <!-- Chest plate -->
+  <rect x="234" y="100" width="42" height="28" rx="3" fill="#160810" stroke="#3a1020" stroke-width="1"/>
+  <rect x="234" y="100" width="42" height="10" rx="2" fill="#cc1800" opacity="0.2"/>
+  <!-- Chest glow strip -->
+  <rect x="234" y="108" width="42" height="3" rx="1" fill="#ff2800" opacity="0.6" filter="url(#glow)"/>
+  <!-- Head -->
+  <rect x="234" y="62" width="42" height="34" rx="5" fill="#2e1020" stroke="#481830" stroke-width="1.5"/>
+  <!-- Visor -->
+  <rect id="av" x="239" y="72" width="32" height="10" rx="3" fill="#ff2a14" opacity="0.85" filter="url(#glow)"/>
+  <line x1="255" y1="72" x2="255" y2="82" stroke="#ff4020" stroke-width="1" opacity="0.6"/>
+  <!-- Head horn/spike -->
+  <line x1="255" y1="62" x2="255" y2="50" stroke="#481830" stroke-width="2"/>
+  <polygon points="252,50 255,42 258,50" fill="#ff2a14" opacity="0.9" filter="url(#glow)"/>
+  <!-- Left arm / weapon pointing toward center -->
+  <rect x="200" y="98" width="28" height="14" rx="4" fill="#1c0810" stroke="#3a1020" stroke-width="1"/>
+  <rect x="190" y="96" width="14" height="18" rx="3" fill="#120610"/>
+  <rect x="190" y="96" width="14" height="18" rx="3" fill="none" stroke="#ff2010" stroke-width="1" opacity="0.7" filter="url(#glow)"/>
+  <!-- Right arm -->
+  <rect x="282" y="98" width="30" height="12" rx="4" fill="#1c0810" stroke="#3a1020" stroke-width="1"/>
+
+  <!-- VS text -->
+  <text id="vst" x="160" y="95" text-anchor="middle" dominant-baseline="middle"
+        font-family="'Arial Black', 'Impact', sans-serif"
+        font-weight="900" font-size="24"
+        fill="#ffffff" opacity="0.95" filter="url(#glow)" letter-spacing="2">VS</text>
+
+  <!-- Floating energy particles -->
+  <circle id="p1" cx="132" cy="64"  r="2.5" fill="#d870ff" opacity="0.85" filter="url(#glow)"/>
+  <circle id="p2" cx="188" cy="64"  r="2.5" fill="#d870ff" opacity="0.85" filter="url(#glow)"/>
+  <circle id="p3" cx="118" cy="92"  r="2"   fill="#b050e0" opacity="0.7"/>
+  <circle id="p4" cx="202" cy="92"  r="2"   fill="#b050e0" opacity="0.7"/>
+  <circle id="p5" cx="140" cy="50"  r="1.5" fill="#e8a0ff" opacity="0.8"/>
+  <circle id="p6" cx="180" cy="50"  r="1.5" fill="#e8a0ff" opacity="0.8"/>
+  <circle id="p7" cx="126" cy="110" r="1.5" fill="#9030c8" opacity="0.6"/>
+  <circle id="p8" cx="194" cy="110" r="1.5" fill="#9030c8" opacity="0.6"/>
+</svg>

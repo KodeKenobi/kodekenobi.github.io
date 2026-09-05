@@ -1,0 +1,96 @@
+{
+  "desktop": {
+    "soldier": {
+      "x": 5,
+      "y": -21,
+      "scale": 1.7400000000000004
+    },
+    "raider": {
+      "x": 20,
+      "y": -10,
+      "scale": 1.34
+    },
+    "grenadier": {
+      "x": 9,
+      "y": -20,
+      "scale": 1.7000000000000004
+    },
+    "elitesoldier": {
+      "x": 20,
+      "y": -10,
+      "scale": 1.34
+    },
+    "humvee": {
+      "x": 0,
+      "y": 3,
+      "scale": 1.02
+    },
+    "tank": {
+      "x": 0,
+      "y": 4,
+      "scale": 1.02
+    },
+    "plane": {
+      "x": 0,
+      "y": 0,
+      "scale": 1
+    },
+    "default": {
+      "x": 0,
+      "y": 0,
+      "scale": 1
+    },
+    "weapon-shared": {
+      "x": 1,
+      "y": 5,
+      "scale": 1.2600000000000002
+    }
+  },
+  "mobile": {
+    "soldier": {
+      "x": 20,
+      "y": -10,
+      "scale": 1.34
+    },
+    "raider": {
+      "x": 6,
+      "y": -21,
+      "scale": 1.4600000000000002
+    },
+    "grenadier": {
+      "x": 7,
+      "y": -18,
+      "scale": 1.3800000000000001
+    },
+    "elitesoldier": {
+      "x": 20,
+      "y": -10,
+      "scale": 1.34
+    },
+    "humvee": {
+      "x": 0,
+      "y": 2,
+      "scale": 0.9
+    },
+    "tank": {
+      "x": 1,
+      "y": 2,
+      "scale": 0.88
+    },
+    "plane": {
+      "x": 0,
+      "y": 1,
+      "scale": 1
+    },
+    "default": {
+      "x": 0,
+      "y": 0,
+      "scale": 1
+    },
+    "weapon-shared": {
+      "x": -7,
+      "y": 4,
+      "scale": 1.02
+    }
+  }
+}

@@ -1,0 +1,115 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 210">
+  <defs>
+    <linearGradient id="wall" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2a3d52"/>
+      <stop offset="100%" stop-color="#0d1a28"/>
+    </linearGradient>
+    <linearGradient id="side" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#0a1520"/>
+      <stop offset="100%" stop-color="#1e3040"/>
+    </linearGradient>
+    <radialGradient id="shieldfill" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#00c8ff" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#0050ff" stop-opacity="0.04"/>
+    </radialGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="biglow" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="7" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <style>
+    #sa { animation: shieldOrbit 4s linear infinite; }
+    @keyframes shieldOrbit { from{stroke-dashoffset:0} to{stroke-dashoffset:-33} }
+    #bc { animation: beacon 1.8s ease-in-out infinite; transform-box:fill-box; transform-origin:center; }
+    @keyframes beacon { 0%,100%{transform:scale(1);opacity:.95} 50%{transform:scale(1.6);opacity:1} }
+    #wl { animation: winglow 3.2s ease-in-out infinite; }
+    #wr { animation: winglow 3.2s 1.1s ease-in-out infinite; }
+    @keyframes winglow { 0%,100%{opacity:.12} 50%{opacity:.35} }
+    #clg { animation: canpulse 2.8s ease-in-out infinite; }
+    #crg { animation: canpulse 2.8s 1.4s ease-in-out infinite; }
+    @keyframes canpulse { 0%,100%{opacity:.7} 50%{opacity:1} }
+    #sa2  { animation: shieldRev 7s linear infinite; }
+    @keyframes shieldRev { from{stroke-dashoffset:0} to{stroke-dashoffset:33} }
+    #scan { animation: scanRot 4s linear infinite; transform-box:view-box; transform-origin:160px 8px; }
+    @keyframes scanRot { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+    #clb  { animation: lbrl 4s ease-in-out infinite; transform-box:fill-box; transform-origin:center; }
+    #crb  { animation: rbrl 4s 2s ease-in-out infinite; transform-box:fill-box; transform-origin:center; }
+    @keyframes lbrl { 0%,100%{transform:translateX(0)} 50%{transform:translateX(-6px)} }
+    @keyframes rbrl { 0%,100%{transform:translateX(0)} 50%{transform:translateX(6px)} }
+    #ba   { animation: baseacc 2.5s ease-in-out infinite; }
+    @keyframes baseacc { 0%,100%{opacity:.7} 50%{opacity:1} }
+  </style>
+
+  <!-- Ground shadow -->
+  <ellipse cx="160" cy="203" rx="95" ry="6" fill="#000" opacity="0.5"/>
+
+  <!-- Energy shield dome -->
+  <ellipse cx="160" cy="108" rx="118" ry="94" fill="url(#shieldfill)"/>
+  <path id="sa" d="M42 108 A118 94 0 0 1 278 108" fill="none" stroke="#00d8ff" stroke-width="1.5" opacity="0.5" stroke-dasharray="7 4"/>
+  <path d="M42 108 A118 94 0 0 1 278 108" fill="none" stroke="#00d8ff" stroke-width="3" opacity="0.18" filter="url(#biglow)"/>
+
+  <!-- Base platform -->
+  <path d="M72 198 L84 188 L236 188 L248 198 Z" fill="#0a1622"/>
+  <path d="M60 207 L72 198 L248 198 L260 207 Z" fill="#070f18"/>
+  <!-- Platform edge glow -->
+  <line x1="84" y1="188" x2="236" y2="188" stroke="#00a0cc" stroke-width="2" opacity="0.5" filter="url(#glow)"/>
+
+  <!-- Buttresses -->
+  <path d="M108 188 L100 148 L110 148 L120 188 Z" fill="#12202e"/>
+  <path d="M200 188 L200 148 L212 148 L212 188 Z" fill="#0e1c28"/>
+
+  <!-- Side turret mounts -->
+  <rect x="62" y="126" width="48" height="26" rx="6" fill="#162030" stroke="#1e3040" stroke-width="1.5"/>
+  <rect id="clb" x="38" y="134" width="30" height="10" rx="3" fill="#0d1820"/>
+  <rect id="clg" x="38" y="134" width="30" height="10" rx="3" fill="none" stroke="#00b4e0" stroke-width="1" opacity="0.7" filter="url(#glow)"/>
+  <circle cx="76" cy="139" r="7" fill="#0a1420" stroke="#1e3040" stroke-width="1"/>
+
+  <rect x="210" y="126" width="48" height="26" rx="6" fill="#162030" stroke="#1e3040" stroke-width="1.5"/>
+  <rect id="crb" x="252" y="134" width="30" height="10" rx="3" fill="#0d1820"/>
+  <rect id="crg" x="252" y="134" width="30" height="10" rx="3" fill="none" stroke="#00b4e0" stroke-width="1" opacity="0.7" filter="url(#glow)"/>
+  <circle cx="244" cy="139" r="7" fill="#0a1420" stroke="#1e3040" stroke-width="1"/>
+
+  <!-- Main tower body -->
+  <rect x="106" y="52" width="108" height="138" fill="url(#wall)"/>
+  <!-- Side face shading -->
+  <rect x="106" y="52" width="12" height="138" fill="url(#side)"/>
+  <!-- Panel seam lines -->
+  <line x1="106" y1="100" x2="214" y2="100" stroke="#1a2e40" stroke-width="1"/>
+  <line x1="106" y1="148" x2="214" y2="148" stroke="#1a2e40" stroke-width="1"/>
+  <line x1="142" y1="52" x2="142" y2="188" stroke="#1a2e40" stroke-width="1"/>
+  <line x1="178" y1="52" x2="178" y2="188" stroke="#1a2e40" stroke-width="1"/>
+
+  <!-- Recessed panels / windows -->
+  <rect x="120" y="68"  width="22" height="28" rx="2" fill="#0a1620" stroke="#1e3040" stroke-width="1"/>
+  <rect x="178" y="68"  width="22" height="28" rx="2" fill="#0a1620" stroke="#1e3040" stroke-width="1"/>
+  <rect x="148" y="115" width="24" height="36" rx="2" fill="#0a1620" stroke="#1e3040" stroke-width="1"/>
+  <!-- Window glow -->
+  <rect id="wl" x="120" y="68"  width="22" height="28" rx="2" fill="#00a8e0" opacity="0.12"/>
+  <rect id="wr" x="178" y="68"  width="22" height="28" rx="2" fill="#00a8e0" opacity="0.12"/>
+  <line x1="131" y1="68" x2="131" y2="96" stroke="#00b8f0" stroke-width="1" opacity="0.3"/>
+  <line x1="189" y1="68" x2="189" y2="96" stroke="#00b8f0" stroke-width="1" opacity="0.3"/>
+
+  <!-- Battlements top -->
+  <rect x="106" y="34" width="22" height="20" rx="2" fill="url(#wall)" stroke="#1e3040" stroke-width="1"/>
+  <rect x="134" y="34" width="22" height="20" rx="2" fill="url(#wall)" stroke="#1e3040" stroke-width="1"/>
+  <rect x="162" y="34" width="22" height="20" rx="2" fill="url(#wall)" stroke="#1e3040" stroke-width="1"/>
+  <rect x="190" y="34" width="22" height="20" rx="2" fill="url(#wall)" stroke="#1e3040" stroke-width="1"/>
+  <rect x="106" y="52" width="108" height="6" fill="#1c3040"/>
+
+  <!-- Top antenna mast -->
+  <line x1="160" y1="34" x2="160" y2="10" stroke="#1e3040" stroke-width="2.5"/>
+  <line x1="148" y1="22" x2="172" y2="22" stroke="#1e3040" stroke-width="1.5"/>
+  <circle cx="160" cy="8" r="6" fill="#0d1820" stroke="#00c4ff" stroke-width="2" filter="url(#glow)"/>
+  <circle id="bc" cx="160" cy="8" r="3" fill="#00c4ff" opacity="0.95" filter="url(#glow)"/>
+
+  <!-- Cyan base accent stripe -->
+  <rect id="ba" x="106" y="184" width="108" height="5" rx="1" fill="#0090c0" opacity="0.7" filter="url(#glow)"/>
+  <!-- Counter-rotating secondary shield arc -->
+  <path id="sa2" d="M42 108 A118 94 0 0 1 278 108" fill="none" stroke="#00b0e8" stroke-width="1" opacity="0.22" stroke-dasharray="3 14"/>
+  <!-- Radar scan beam — rotates around antenna tip at (160,8) -->
+  <line id="scan" x1="160" y1="8" x2="208" y2="8" stroke="#00d8ff" stroke-width="1.5" opacity="0.4" stroke-linecap="round"/>
+</svg>
